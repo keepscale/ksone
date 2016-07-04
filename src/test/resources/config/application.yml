@@ -1,0 +1,51 @@
+server:
+    port: 10344
+    address: localhost
+
+
+# security configuration (this key should be unique for your application, and kept secret)
+jhipster.security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
+
+liquibase:
+    context: test
+
+spring:
+    datasource:
+        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+        url: jdbc:h2:mem:crossfit;DB_CLOSE_DELAY=-1
+        databaseName:
+        serverName:
+        username:
+        password:
+
+    jpa:
+        database-platform: org.crossfit.app.domain.util.FixedH2Dialect
+        database: H2
+        openInView: false
+        show_sql: true
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+        properties:
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: true
+            hibernate.hbm2ddl.auto: validate
+
+mail:
+    host: localhost
+    port: 25
+    username:
+    password:
+    protocol: smtp
+    tls: false
+    auth: false
+
+metrics:
+    jmx.enabled: false
