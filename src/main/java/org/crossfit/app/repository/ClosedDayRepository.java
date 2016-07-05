@@ -1,15 +1,15 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
+
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
+import org.joda.time.DateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Spring Data JPA repository for the ClosedDay entity.
@@ -17,7 +17,7 @@ import java.util.List;
 public interface ClosedDayRepository extends JpaRepository<ClosedDay,Long> {
 	
     @Query("select day from ClosedDay day where day.box =:box AND day.startAt between :startAt and :endAt")
-	List<ClosedDay> findAllByBoxAndBetween(@Param("box") CrossFitBox box, @Param("startAt") LocalDate startAt, @Param("endAt") LocalDate endAt);
+	List<ClosedDay> findAllByBoxAndBetween(@Param("box") CrossFitBox box, @Param("startAt") DateTime startAt, @Param("endAt") DateTime endAt);
 
 	static final String BY_ID = " cd.id = :id ";
 	static final String BY_BOX = " cd.box = :box ";

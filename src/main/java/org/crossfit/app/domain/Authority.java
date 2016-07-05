@@ -2,12 +2,15 @@ package org.crossfit.app.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import java.io.Serializable;
 
 /**
@@ -16,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "JHI_AUTHORITY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Authority implements Serializable {
+public class Authority implements Serializable, GrantedAuthority {
 
     @NotNull
     @Size(min = 0, max = 50)
@@ -61,4 +64,9 @@ public class Authority implements Serializable {
                 "name='" + name + '\'' +
                 "}";
     }
+
+	@Override
+	public String getAuthority() {
+		return name;
+	}
 }

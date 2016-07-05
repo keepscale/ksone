@@ -1,5 +1,7 @@
 package org.crossfit.app.service;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,15 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Sets;
-
 @Service
 @Transactional
 public class CrossFitBoxSerivce {
 
     private final Logger log = LoggerFactory.getLogger(CrossFitBoxSerivce.class);
 
-    private static final Set<String> KNOW_HOSTS = Sets.newHashSet("(.*).rhcloud.com", "(.*).localhost", "127.0.0.1");
+    private static final Set<String> KNOW_HOSTS = new HashSet<String>(Arrays.asList("(.*).rhcloud.com", "(.*).localhost", "127.0.0.1"));
     
 	@Autowired
 	private CrossFitBoxRepository crossFitBoxRepository;
@@ -101,8 +101,6 @@ public class CrossFitBoxSerivce {
 		Member memberToDelete = memberRepository.findOne(id);
 		CrossFitBox currentCrossFitBox = findCurrentCrossFitBox();
 		if (memberToDelete.getBox().equals(currentCrossFitBox)){
-			currentCrossFitBox.getAdministrators().remove(memberToDelete.getUser());
-			crossFitBoxRepository.save(currentCrossFitBox);
 			bookingRepository.deleteAllByMember(currentCrossFitBox, memberToDelete);
 			memberRepository.delete(memberToDelete);
 		}

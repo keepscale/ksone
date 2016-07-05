@@ -1,5 +1,6 @@
 package org.crossfit.app.security;
 
+import org.crossfit.app.domain.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,20 +21,13 @@ public final class SecurityUtils {
     /**
      * Get the login of the current user.
      */
-    public static String getCurrentLogin() {
+    public static Member getCurrentMember() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
-        UserDetails springSecurityUser = null;
-        String userName = null;
-        if(authentication != null) {
-            if (authentication.getPrincipal() instanceof UserDetails) {
-                springSecurityUser = (UserDetails) authentication.getPrincipal();
-                userName = springSecurityUser.getUsername();
-            } else if (authentication.getPrincipal() instanceof String) {
-                userName = (String) authentication.getPrincipal();
-            }
+        if(authentication != null && authentication.getPrincipal() instanceof Member) {
+            return (Member) authentication.getPrincipal();
         }
-        return userName;
+        return null;
     }
 
     /**

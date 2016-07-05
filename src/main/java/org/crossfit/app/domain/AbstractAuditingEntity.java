@@ -24,7 +24,7 @@ public abstract class AbstractAuditingEntity {
 
     @CreatedBy
     @NotNull
-    @Column(name = "created_by", nullable = false, length = 50, updatable = false)
+    @Column(name = "created_by", nullable = false, length = 100, updatable = false)
     @JsonIgnore
     private String createdBy;
 
@@ -36,7 +36,7 @@ public abstract class AbstractAuditingEntity {
     private DateTime createdDate = DateTime.now();
 
     @LastModifiedBy
-    @Column(name = "last_modified_by", length = 50)
+    @Column(name = "last_modified_by", length = 100)
     @JsonIgnore
     private String lastModifiedBy;
 

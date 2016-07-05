@@ -1,8 +1,13 @@
 package org.crossfit.app.service;
 
-import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.User;
+import java.util.Locale;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.mail.internet.MimeMessage;
+
 import org.apache.commons.lang.CharEncoding;
+import org.crossfit.app.domain.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -16,11 +21,6 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.mail.internet.MimeMessage;
-import java.util.Locale;
 
 /**
  * Service for sending e-mails.
@@ -103,27 +103,15 @@ public class MailService {
     }
 
     @Async
-    public void sendActivationEmail(User user, String clearPassword, CrossFitBox box) {
-        log.debug("Sending activation e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+    public void sendActivationEmail(Member member, String clearPassword) {
+        log.debug("Sending activation e-mail to '{}'", member.getLogin());
+        Locale locale = Locale.forLanguageTag(member.getLangKey());
         Context context = new Context(locale);
-        context.setVariable("user", user);
+        context.setVariable("user", member);
         context.setVariable("clearPassword", clearPassword);
-        context.setVariable("box", box);
+        context.setVariable("box", member.getBox());
         String content = templateEngine.process("activationEmail", context);
-        String subject = messageSource.getMessage("email.activation.title", new Object[]{box.getName()}, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
-    }
-
-    @Async
-    public void sendPasswordResetMail(User user, String baseUrl) {
-        log.debug("Sending password reset e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable("user", user);
-        context.setVariable("baseUrl", baseUrl);
-        String content = templateEngine.process("passwordResetEmail", context);
-        String subject = messageSource.getMessage("email.reset.title", null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
+        String subject = messageSource.getMessage("email.activation.title", new Object[]{member.getBox().getName()}, locale);
+        sendEmail(member.getLogin(), subject, content, false, true);
     }
 }

@@ -1,9 +1,17 @@
 package org.crossfit.app.security;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.crossfit.app.domain.PersistentToken;
-import org.crossfit.app.domain.User;
+import org.crossfit.app.exception.UserNotActivatedException;
+import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
-import org.crossfit.app.repository.UserRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +27,6 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.SecureRandom;
-import java.util.Arrays;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.
@@ -71,8 +73,11 @@ public class CustomPersistentRememberMeServices extends
     private PersistentTokenRepository persistentTokenRepository;
 
     @Inject
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
+    @Inject
+    private CrossFitBoxSerivce boxService;
+    
     @Inject
     public CustomPersistentRememberMeServices(Environment env, org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
         super(env.getProperty("jhipster.security.rememberme.key"), userDetailsService);
@@ -84,7 +89,7 @@ public class CustomPersistentRememberMeServices extends
     protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) {
 
         PersistentToken token = getPersistentToken(cookieTokens);
-        String login = token.getUser().getLogin();
+        String login = token.getMember().getLogin();
 
         // Token also matches, so login is valid. Update the token value, keeping the *same* series number.
         log.debug("Refreshing persistent login token for user '{}', series '{}'", login, token.getSeries());
@@ -110,12 +115,14 @@ public class CustomPersistentRememberMeServices extends
     @Override
     protected void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication successfulAuthentication) {
         String login = successfulAuthentication.getName();
+        
+        
 
         log.debug("Creating new persistent login for user {}", login);
-        PersistentToken token = userRepository.findOneByLogin(login).map(u -> {
+        PersistentToken token = memberRepository.findOneByLogin(login, boxService.findCurrentCrossFitBox()).map(m -> {
             PersistentToken t = new PersistentToken();
             t.setSeries(generateSeriesData());
-            t.setUser(u);
+            t.setMember(m);
             t.setTokenValue(generateTokenData());
             t.setTokenDate(new LocalDate());
             t.setIpAddress(request.getRemoteAddr());
