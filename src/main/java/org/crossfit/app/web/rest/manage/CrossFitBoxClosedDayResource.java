@@ -8,7 +8,7 @@ import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.MembershipTypeRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.web.rest.ClosedDayResource;
+import org.crossfit.app.web.rest.api.ClosedDayResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;

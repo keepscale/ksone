@@ -3,7 +3,7 @@ package org.crossfit.app.web.rest;
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.repository.BookingRepository;
-
+import org.crossfit.app.web.rest.api.BookingResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

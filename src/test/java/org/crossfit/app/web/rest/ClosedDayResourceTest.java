@@ -3,7 +3,7 @@ package org.crossfit.app.web.rest;
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.repository.ClosedDayRepository;
-
+import org.crossfit.app.web.rest.api.ClosedDayResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,13 @@
-package org.crossfit.app.web.rest;
+package org.crossfit.app.web.rest.api;
 
-import com.codahale.metrics.annotation.Timed;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.repository.CrossFitBoxRepository;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -12,14 +19,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing CrossFitBox.
@@ -34,30 +39,28 @@ public class CrossFitBoxResource {
     private CrossFitBoxRepository crossFitBoxRepository;
 
     /**
-     * POST  /crossFitBoxs -> Create a new crossFitBox.
+     * POST  /boxs -> Create a new crossFitBox.
      */
-    @RequestMapping(value = "/crossFitBoxs",
+    @RequestMapping(value = "/boxs",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<CrossFitBox> create(@Valid @RequestBody CrossFitBox crossFitBox) throws URISyntaxException {
         log.debug("REST request to save CrossFitBox : {}", crossFitBox);
         if (crossFitBox.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new crossFitBox cannot already have an ID").body(null);
         }
         CrossFitBox result = crossFitBoxRepository.save(crossFitBox);
-        return ResponseEntity.created(new URI("/api/crossFitBoxs/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/boxs/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert("crossFitBox", result.getId().toString()))
                 .body(result);
     }
 
     /**
-     * PUT  /crossFitBoxs -> Updates an existing crossFitBox.
+     * PUT  /boxs -> Updates an existing crossFitBox.
      */
-    @RequestMapping(value = "/crossFitBoxs",
+    @RequestMapping(value = "/boxs",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<CrossFitBox> update(@Valid @RequestBody CrossFitBox crossFitBox) throws URISyntaxException {
         log.debug("REST request to update CrossFitBox : {}", crossFitBox);
         if (crossFitBox.getId() == null) {
@@ -70,27 +73,25 @@ public class CrossFitBoxResource {
     }
 
     /**
-     * GET  /crossFitBoxs -> get all the crossFitBoxs.
+     * GET  /boxs -> get all the crossFitBoxs.
      */
-    @RequestMapping(value = "/crossFitBoxs",
+    @RequestMapping(value = "/boxs",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<List<CrossFitBox>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
         Page<CrossFitBox> page = crossFitBoxRepository.findAll(PaginationUtil.generatePageRequest(offset, limit));
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/crossFitBoxs", offset, limit);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/boxs", offset, limit);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
-     * GET  /crossFitBoxs/:id -> get the "id" crossFitBox.
+     * GET  /boxs/:id -> get the "id" crossFitBox.
      */
-    @RequestMapping(value = "/crossFitBoxs/{id}",
+    @RequestMapping(value = "/boxs/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<CrossFitBox> get(@PathVariable Long id) {
         log.debug("REST request to get CrossFitBox : {}", id);
         return Optional.ofNullable(crossFitBoxRepository.findOneWithEagerRelationships(id))
@@ -101,12 +102,11 @@ public class CrossFitBoxResource {
     }
 
     /**
-     * DELETE  /crossFitBoxs/:id -> delete the "id" crossFitBox.
+     * DELETE  /boxs/:id -> delete the "id" crossFitBox.
      */
-    @RequestMapping(value = "/crossFitBoxs/{id}",
+    @RequestMapping(value = "/boxs/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete CrossFitBox : {}", id);
         crossFitBoxRepository.delete(id);

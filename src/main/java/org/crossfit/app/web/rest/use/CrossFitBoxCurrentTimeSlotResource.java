@@ -18,11 +18,11 @@ import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
-import org.crossfit.app.web.rest.TimeSlotResource;
+import org.crossfit.app.web.rest.BookingPlanningResource;
+import org.crossfit.app.web.rest.api.TimeSlotResource;
 import org.crossfit.app.web.rest.dto.CurrentTimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
-import org.crossfit.app.web.rest.manage.CrossFitBoxBookingResource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ import com.codahale.metrics.annotation.Timed;
 @RequestMapping("/use")
 public class CrossFitBoxCurrentTimeSlotResource extends TimeSlotResource {
 
-	private final Logger log = LoggerFactory.getLogger(CrossFitBoxBookingResource.class);
+	private final Logger log = LoggerFactory.getLogger(BookingPlanningResource.class);
 
     @Inject
     private CrossFitBoxSerivce boxService;

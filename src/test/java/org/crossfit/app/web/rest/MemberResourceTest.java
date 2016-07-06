@@ -20,6 +20,7 @@ import org.crossfit.app.Application;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.Level;
 import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.web.rest.api.MemberResource;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
 /**
  * Spring MVC REST controllers.
  */
-package org.crossfit.app.web.rest;
+package org.crossfit.app.web.rest.api;

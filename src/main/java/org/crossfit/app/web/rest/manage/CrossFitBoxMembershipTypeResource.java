@@ -6,7 +6,7 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.MembershipType;
 import org.crossfit.app.repository.MembershipTypeRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.web.rest.MembershipTypeResource;
+import org.crossfit.app.web.rest.api.MembershipTypeResource;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

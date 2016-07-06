@@ -1,9 +1,14 @@
-package org.crossfit.app.web.rest;
+package org.crossfit.app.web.rest.api;
 
-import com.codahale.metrics.annotation.Timed;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
 import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
@@ -15,14 +20,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing Subscription.
@@ -41,7 +44,6 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Subscription> create(@Valid @RequestBody Subscription subscription) throws URISyntaxException {
 		log.debug("REST request to save Subscription : {}", subscription);
 		if (subscription.getId() != null) {
@@ -62,7 +64,6 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Subscription> update(@Valid @RequestBody Subscription subscription) throws URISyntaxException {
 		log.debug("REST request to update Subscription : {}", subscription);
 		if (subscription.getId() == null) {
@@ -78,7 +79,6 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<List<Subscription>> getAll(@RequestParam(value = "page", required = false) Integer offset,
 			@RequestParam(value = "per_page", required = false) Integer limit) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
@@ -97,7 +97,6 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Subscription> get(@PathVariable Long id) {
 		log.debug("REST request to get Subscription : {}", id);
 		return Optional.ofNullable(doGet(id))
@@ -114,7 +113,6 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		log.debug("REST request to delete Subscription : {}", id);
 		doDelete(id);

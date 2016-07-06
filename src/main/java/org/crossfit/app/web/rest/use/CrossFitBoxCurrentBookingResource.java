@@ -20,7 +20,7 @@ import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
-import org.crossfit.app.web.rest.BookingResource;
+import org.crossfit.app.web.rest.api.BookingResource;
 import org.crossfit.app.web.rest.dto.CurrentTimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;

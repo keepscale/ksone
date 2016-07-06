@@ -9,7 +9,7 @@ import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.web.rest.MemberResource;
+import org.crossfit.app.web.rest.api.MemberResource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

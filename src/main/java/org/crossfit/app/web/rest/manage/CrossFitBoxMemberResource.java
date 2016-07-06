@@ -18,7 +18,7 @@ import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MailService;
 import org.crossfit.app.service.util.RandomUtil;
-import org.crossfit.app.web.rest.MemberResource;
+import org.crossfit.app.web.rest.api.MemberResource;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

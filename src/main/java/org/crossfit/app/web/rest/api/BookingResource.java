@@ -1,6 +1,13 @@
-package org.crossfit.app.web.rest;
+package org.crossfit.app.web.rest.api;
 
-import com.codahale.metrics.annotation.Timed;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -12,14 +19,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing Booking.
@@ -39,7 +44,6 @@ public class BookingResource {
     @RequestMapping(value = "/bookings",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<Booking> create(@Valid @RequestBody Booking booking) throws URISyntaxException {
         log.debug("REST request to save Booking : {}", booking);
         if (booking.getId() != null) {
@@ -57,7 +61,6 @@ public class BookingResource {
     @RequestMapping(value = "/bookings",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<Booking> update(@Valid @RequestBody Booking booking) throws URISyntaxException {
         log.debug("REST request to update Booking : {}", booking);
         if (booking.getId() == null) {
@@ -75,7 +78,6 @@ public class BookingResource {
     @RequestMapping(value = "/bookings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<List<Booking>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
@@ -90,7 +92,6 @@ public class BookingResource {
     @RequestMapping(value = "/bookings/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<Booking> get(@PathVariable Long id) {
         log.debug("REST request to get Booking : {}", id);
         return Optional.ofNullable(bookingRepository.findOne(id))
@@ -106,7 +107,6 @@ public class BookingResource {
     @RequestMapping(value = "/bookings/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Booking : {}", id);
         bookingRepository.delete(id);

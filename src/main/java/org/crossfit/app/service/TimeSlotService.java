@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.crossfit.app.domain.ClosedDay;
-import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
-import org.crossfit.app.web.rest.dto.CurrentTimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -81,44 +79,6 @@ public class TimeSlotService {
 				slot.getDayOfWeek() == startF.getDayOfWeek() : slot.getDate().toLocalDate().equals(startF.toLocalDate()); };
 	}
 	
-	/**
-	 * TODO: A voir comment mieux le faire, refactor? changement de classe?
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public List<CurrentTimeSlotInstanceDTO> findAllTimeSlotInstance(DateTime start, DateTime end, Member member){
-
-		List<CurrentTimeSlotInstanceDTO> timeSlotInstances = new ArrayList<>();
-		
-		if (end.isBefore(start)){
-			return timeSlotInstances;
-		}
-		
-		List<TimeSlot> allSlots = timeSlotRepository.findAll();
-		List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), start, end);
-		
-		while(!start.isAfter(end)){
-			final DateTime startF = start;
-			List<CurrentTimeSlotInstanceDTO> slotInstanceOfDay = allSlots.stream()
-				.filter(isSlotInDay(startF))
-				.map(slot -> {return new CurrentTimeSlotInstanceDTO(startF, slot, member.getLevel());})
-				.collect(Collectors.toList());
-			
-			timeSlotInstances.addAll(slotInstanceOfDay);
-			
-			start = start.plusDays(1);
-		}
-		start = null;
-		//Attention la variable start a changé ici !!! elle n'est plus réutilisable
-    	
-    	List<CurrentTimeSlotInstanceDTO> timeSlotInstanceWithoutClosedDay = timeSlotInstances.stream()
-    			.filter(slotInstance -> slotNotInAnCloseDay(slotInstance, closedDays))
-				.collect(Collectors.toList());
-    	
-    	return timeSlotInstanceWithoutClosedDay;
-	}
-    
 	private boolean slotNotInAnCloseDay(TimeSlotInstanceDTO slot, List<ClosedDay> closedDays) {
 		Optional<ClosedDay> closedDayContainingSlot = closedDays.stream()
 				.filter( closeDay -> closeDay.contain(slot.getStart()) || 

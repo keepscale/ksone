@@ -1,4 +1,4 @@
-package org.crossfit.app.web.rest.manage;
+package org.crossfit.app.web.rest;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -37,10 +37,9 @@ import com.codahale.metrics.annotation.Timed;
  * REST controller for managing Booking.
  */
 @RestController
-@RequestMapping("/manage")
-public class CrossFitBoxBookingResource {
+public class BookingPlanningResource {
 
-    private final Logger log = LoggerFactory.getLogger(CrossFitBoxBookingResource.class);
+    private final Logger log = LoggerFactory.getLogger(BookingPlanningResource.class);
 
     @Inject
     private BookingRepository bookingRepository;
@@ -63,7 +62,6 @@ public class CrossFitBoxBookingResource {
     @RequestMapping(value = "/planning",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer offset,
                                   @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer limit)
         throws URISyntaxException {
@@ -109,7 +107,6 @@ public class CrossFitBoxBookingResource {
     @RequestMapping(value = "/event",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
     public ResponseEntity<List<EventSourceDTO>> getAll(
     		@RequestParam(value = "start", required = false) String startStr,
     		@RequestParam(value = "end", required = false) String endStr) {
