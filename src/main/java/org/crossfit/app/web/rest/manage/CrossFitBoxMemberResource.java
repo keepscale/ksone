@@ -1,31 +1,26 @@
 package org.crossfit.app.web.rest.manage;
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.User;
 import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.UserRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
-import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MailService;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.api.MemberResource;
-import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,9 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.Sets;
 
 /**
  * REST controller for managing Member.
@@ -52,8 +44,6 @@ public class CrossFitBoxMemberResource extends MemberResource {
     private MemberRepository memberRepository;
     @Inject
     private BookingRepository bookingRepository;
-    @Inject
-    private UserRepository userRepository;
 
     @Inject
     private CrossFitBoxSerivce boxService;
@@ -71,12 +61,9 @@ public class CrossFitBoxMemberResource extends MemberResource {
 	protected Member doSave(Member member) {
 		if (member.getId() == null){
 			
-			member.getUser().setAuthorities(Sets.newHashSet(authorityRepository.findOne(AuthoritiesConstants.USER)));
-			member.getUser().setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.getUser().setCreatedDate(DateTime.now());
-			member.getUser().setLogin(member.getUser().getEmail());
-			
-			
+			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
+			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			member.setCreatedDate(DateTime.now());			
 			member.setBox(boxService.findCurrentCrossFitBox());
 			
 
@@ -84,21 +71,22 @@ public class CrossFitBoxMemberResource extends MemberResource {
 		}
 		else{
 			//Les seuls champs modifiable de user, c'est le nom, le prénom & l'email
-			String firstName = member.getUser().getFirstName();
-			String lastName = member.getUser().getLastName();
-			String email = member.getUser().getEmail();
-			User user = userRepository.findOne(member.getUser().getId());
-			user.setFirstName(firstName);
-			user.setLastName(lastName);
-			user.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			user.setLastModifiedDate(DateTime.now());
+			String firstName = member.getFirstName();
+			String lastName = member.getLastName();
+			String telephonNumber = member.getTelephonNumber();
+			String login = member.getLogin();
 			
-			member.setUser(user);		
+			Member actualMember = memberRepository.findOne(member.getId());
+			actualMember.setFirstName(firstName);
+			actualMember.setLastName(lastName);
+			actualMember.setTelephonNumber(telephonNumber);
+			actualMember.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			actualMember.setLastModifiedDate(DateTime.now());
+			
 			
 			//L'email a changé ? on repasse par une validation d'email
-			if (!email.equals(user.getEmail())){
-				user.setEmail(email);
-				user.setLogin(email);
+			if (!login.equals(actualMember.getLogin())){
+				actualMember.setLogin(login.toLowerCase());
 				initAccountAndSendMail(member);
 			}
 		}
@@ -109,12 +97,12 @@ public class CrossFitBoxMemberResource extends MemberResource {
 
 	protected void initAccountAndSendMail(Member member) {
 		String generatePassword = RandomUtil.generatePassword();
-		member.getUser().setLogin(member.getUser().getEmail());
-		member.getUser().setPassword(passwordEncoder.encode(generatePassword));
-		member.getUser().setActivated(false);
-		member.getUser().setActivationKey(RandomUtil.generateActivationKey());
+		member.setLogin(member.getLogin().toLowerCase());
+		member.setPassword(passwordEncoder.encode(generatePassword));
+		member.setEnabled(false);
+		member.setLocked(false);
 
-		mailService.sendActivationEmail(member.getUser(), generatePassword, member.getBox());
+		mailService.sendActivationEmail(member, generatePassword);
 	}
 
 	@Override
@@ -124,7 +112,7 @@ public class CrossFitBoxMemberResource extends MemberResource {
 
 	@Override
 	protected Member doGet(Long id) {
-		return memberRepository.findOne(id, boxService.findCurrentCrossFitBox());
+		return memberRepository.findOne(id);
 	}
 
 	@Override
@@ -134,68 +122,43 @@ public class CrossFitBoxMemberResource extends MemberResource {
 	}
 	
 	@RequestMapping(value = "/members/{id}/resetaccount", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Void> reset(@PathVariable Long id) {
 		log.debug("REST request to reset Member : {}", id);
 		Member member = doGet(id);
 		if (member != null){
-			member.getUser().setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.getUser().setLastModifiedDate(DateTime.now());
+			member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			member.setLastModifiedDate(DateTime.now());
 		
 			initAccountAndSendMail(member);
 
 			try {
 				super.doSave(member);
 			} catch (Exception e) {
-				log.warn("Impossible d'envoyer le mail a {}", member.getUser().getEmail());
+				log.warn("Impossible d'envoyer le mail a {}", member.getLogin());
 			}
 		}
 		return ResponseEntity.ok().build();
 	}
 	@RequestMapping(value = "/members/massActivation", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
 	public ResponseEntity<Void> massActivation() {
 		log.debug("Envoi du mail d'activation a tous les membres non actif");
 		
-		List<Member> allMembersNotActivated = memberRepository.findAllUserNotActivated(boxService.findCurrentCrossFitBox());
+		List<Member> allMembersNotActivated = memberRepository.findAllUserNotEnabled(boxService.findCurrentCrossFitBox());
 		
 		for (Member member : allMembersNotActivated) {
 			
-			member.getUser().setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.getUser().setLastModifiedDate(DateTime.now());
+			member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			member.setLastModifiedDate(DateTime.now());
 			
 			initAccountAndSendMail(member);
 			
 			try {
 				super.doSave(member);
 			} catch (Exception e) {
-				log.warn("Impossible d'envoyer le mail a {}", member.getUser().getEmail());
+				log.warn("Impossible d'envoyer le mail a {}", member.getLogin());
 			}
 		}
 		return ResponseEntity.ok().build();
 	}
-    
-	
-	
-	//TODO: Guillaume: C'est utile cette méthode ? sachant qu'il y a déjà GET /api/account ? Faut peut être faire évoluer l'autre ?
-
-	/**
-	 * GET /members/logged -> get the current member.
-	 */
-
-	@RequestMapping(value = "/members/logged", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
-	public ResponseEntity<Member> getCurrentMember() {
-		log.debug("REST request to get current Member : {}", SecurityUtils.getCurrentLogin());
 		
-		
-		return Optional.ofNullable(doGetCurrent())
-				.map(member -> new ResponseEntity<>(member, HttpStatus.OK))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-	}
-    
-	protected Member doGetCurrent() {
-		return memberRepository.findOneByLogin(SecurityUtils.getCurrentLogin(), boxService.findCurrentCrossFitBox());
-	}
-	
 }

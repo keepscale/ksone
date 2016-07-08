@@ -1,27 +1,17 @@
 package org.crossfit.app.web.rest.manage;
 
-import com.codahale.metrics.annotation.Timed;
+import java.util.List;
 
-import org.crossfit.app.domain.CrossFitBox;
+import javax.inject.Inject;
+
 import org.crossfit.app.domain.MembershipType;
 import org.crossfit.app.repository.MembershipTypeRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.api.MembershipTypeResource;
-import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing MembershipType.

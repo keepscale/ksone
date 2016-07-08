@@ -16,14 +16,14 @@ import org.springframework.data.repository.query.Param;
  */
 public interface MemberRepository extends JpaRepository<Member,Long> {
 
-    @Query("select m from Member m where m.box = :box order by m.user.activated DESC, m.user.activationKey DESC, m.user.lastName, m.user.firstName")
+    @Query("select m from Member m where m.box = :box order by m.enabled DESC, m.lastName, m.firstName")
 	Page<Member> findAll(@Param("box") CrossFitBox box, Pageable pageable);
 
-    @Query("select m from Member m where m.user.login = :login and m.box = :box")
+    @Query("select m from Member m where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);
 
-    @Query("select m from Member m where m.box = :box and m.user.activated = false")
-    List<Member> findAllUserNotActivated(@Param("box") CrossFitBox box);
+    @Query("select m from Member m where m.box = :box and m.enabled = false")
+    List<Member> findAllUserNotEnabled(@Param("box") CrossFitBox box);
     
 
 }

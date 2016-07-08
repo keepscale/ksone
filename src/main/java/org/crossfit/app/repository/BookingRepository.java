@@ -3,6 +3,7 @@ package org.crossfit.app.repository;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +21,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     @Query("select b from Booking b where b.box =:box AND b.startAt between :start and :end")
-	List<Booking> findAll(@Param("box") CrossFitBox box, @Param("start") LocalDate start, @Param("end") LocalDate end);
+	List<Booking> findAll(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
     
     @Query("select b from Booking b where b.box =:box AND b.owner = :member AND b.startAt = :start and b.endAt = :end order by b.startAt desc")
 	List<Booking> findAllByMemberAndDate(@Param("box") CrossFitBox box, @Param("member") Member member, @Param("start") LocalDate start, @Param("end") LocalDate end);

@@ -21,12 +21,9 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.rest.api.BookingResource;
-import org.crossfit.app.web.rest.dto.CurrentTimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
-import org.crossfit.app.web.rest.dto.planning.CurrentPlanningDTO;
-import org.crossfit.app.web.rest.dto.planning.CurrentPlanningDayDTO;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -39,14 +36,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.annotation.Timed;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing Booking.

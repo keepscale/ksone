@@ -20,7 +20,6 @@ import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.rest.BookingPlanningResource;
 import org.crossfit.app.web.rest.api.TimeSlotResource;
-import org.crossfit.app.web.rest.dto.CurrentTimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.joda.time.DateTime;
@@ -29,13 +28,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.Timed;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * REST controller for managing imeSlot.

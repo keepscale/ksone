@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.repository.ClosedDayRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,29 @@ public class ClosedDayResource {
 
 	private final Logger log = LoggerFactory.getLogger(ClosedDayResource.class);
 
-	@Inject
-	private ClosedDayRepository closedDayRepository;
+
+    @Inject
+    private ClosedDayRepository closedDayRepository;
+    
+    @Inject
+    private CrossFitBoxSerivce boxService;
+
+	protected ClosedDay doSave(ClosedDay closedDay) {
+		closedDay.setBox(boxService.findCurrentCrossFitBox());
+		ClosedDay result = closedDayRepository.save(closedDay);
+		return result;	}
+
+	protected List<ClosedDay> doFindAll() {
+		return closedDayRepository.findAll(boxService.findCurrentCrossFitBox());
+	}
+
+	protected ClosedDay doGet(Long id) {
+		return closedDayRepository.findOne(id, boxService.findCurrentCrossFitBox());
+	}
+
+	protected void doDelete(Long id) {
+		closedDayRepository.delete(id, boxService.findCurrentCrossFitBox());
+	}
 
 	/**
 	 * POST /closedDays -> Create a new closedDay.
@@ -47,11 +69,6 @@ public class ClosedDayResource {
 		ClosedDay result = doSave(closedDay);
 		return ResponseEntity.created(new URI("/api/closedDays/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("closedDay", result.getId().toString())).body(result);
-	}
-
-	protected ClosedDay doSave(ClosedDay closedDay) {
-		ClosedDay result = closedDayRepository.save(closedDay);
-		return result;
 	}
 
 	/**
@@ -77,10 +94,6 @@ public class ClosedDayResource {
 		return doFindAll();
 	}
 
-	protected List<ClosedDay> doFindAll() {
-		return closedDayRepository.findAll();
-	}
-
 	/**
 	 * GET /closedDays/:id -> get the "id" closedDay.
 	 */
@@ -91,10 +104,6 @@ public class ClosedDayResource {
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	protected ClosedDay doGet(Long id) {
-		return closedDayRepository.findOne(id);
-	}
-
 	/**
 	 * DELETE /closedDays/:id -> delete the "id" closedDay.
 	 */
@@ -103,9 +112,5 @@ public class ClosedDayResource {
 		log.debug("REST request to delete ClosedDay : {}", id);
 		doDelete(id);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("closedDay", id.toString())).build();
-	}
-
-	protected void doDelete(Long id) {
-		closedDayRepository.delete(id);
 	}
 }
