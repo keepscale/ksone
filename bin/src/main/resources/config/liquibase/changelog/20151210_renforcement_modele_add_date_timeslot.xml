@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+	<changeSet id="20151210" author="lgangloff">
+		<validCheckSum>7:461038e4e1048b0efe44a74d0ce5e265</validCheckSum>
+		<dropNotNullConstraint tableName="MEMBERSHIPTYPE" columnName="box_id"/>
+		<!-- On essaie de retrouver le box_id qui peut etre utilise sur des membres -->
+		<sql>
+			update MEMBERSHIPTYPE set box_id = subquery.ze_box_id
+			FROM (	select max(box_id) as ze_box_id, membershiptype_id from MEMBER m GROUP BY membershiptype_id) as subquery
+			where subquery.membershiptype_id = MEMBERSHIPTYPE.id
+			and MEMBERSHIPTYPE.box_id is null
+		</sql>
+		<!-- on supprime tous ceux qui ne sont pas rattache a une box -->
+		<delete tableName="MEMBERSHIPTYPE"><where>box_id is null</where></delete>
+		
+		<!-- ajout de la contrainte -->
+		<addNotNullConstraint tableName="MEMBERSHIPTYPE" columnName="box_id"/>		
+
+		<!-- Le mot de passe doit faire 60 caracteres -->
+		<sql>
+			<![CDATA[
+			update jhi_user set password  = '123456789012345678901234567890123456789012345678901234567890' 
+			where char_length(password) < 60
+			]]>
+		</sql>
+		
+		<!-- Gestion de rgles plus complexe sur la recurrence d'un creneau -->
+		<addColumn tableName="TIMESLOT">
+			<column name="recurrent" type="varchar(32)" defaultValue="DAY_OF_WEEK">
+				<constraints nullable="false"/>
+			</column>
+            <column name="date" type="timestamp" />
+		</addColumn>
+		<dropNotNullConstraint tableName="TIMESLOT" columnName="day_of_week"/>
+		<sql>
+			<![CDATA[
+				ALTER TABLE TIMESLOT ADD CONSTRAINT recurrent_check CHECK(recurrent in ('DATE', 'DAY_OF_WEEK') AND (day_of_week IS NOT NULL OR date IS NOT NULL));
+				ALTER TABLE TIMESLOT ADD CONSTRAINT recurrent_day_of_week_check CHECK((day_of_week IS NOT NULL AND date IS NULL) OR (recurrent != 'DAY_OF_WEEK' AND day_of_week IS NULL)); 
+				ALTER TABLE TIMESLOT ADD CONSTRAINT recurrent_date_check CHECK((date IS NOT NULL AND day_of_week IS NULL) OR (recurrent != 'DATE' AND date IS NULL)); 
+				ALTER TABLE TIMESLOT ADD CONSTRAINT day_of_week_check CHECK(day_of_week >= 1 AND day_of_week <= 7); 			]]>
+		</sql>
+	</changeSet>
+</databaseChangeLog>

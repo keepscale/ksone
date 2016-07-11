@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.activation.title(${box.name})}">CrossFit activation</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p th:text="#{email.activation.greeting(${user.firstName}, ${user.lastName})}">
+            Dear
+        </p>
+        <p th:text="#{email.activation.text1(${box.name})}">
+            Your CrossFit account has been created, please click on the URL below to activate it:
+        </p>
+        <p>
+            <a th:href="@{|${box.bookingwebsite}#/activate?key=${user.activationKey}|}"
+               th:text="#{email.activation.link.text}">Activation Link</a>
+        </p>
+        <p>
+            <span th:text="#{email.activation.text2}">Regards, </span>
+            <ul>
+            	<li th:text="#{email.activation.login(${user.login})}"></li>
+            	<li th:text="#{email.activation.password(${clearPassword})}"></li>
+            </ul>
+            <br/>
+            <em th:text="#{email.signature(${box.name})}">JHipster.</em>
+        </p>
+    </body>
+</html>

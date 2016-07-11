@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.MembershipType;
 import org.crossfit.app.repository.MembershipTypeRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class MembershipTypeResource {
 	@Inject
 	private MembershipTypeRepository membershipTypeRepository;
 
+    @Inject
+    private CrossFitBoxSerivce boxService;
+
 	/**
 	 * POST /membershipTypes -> Create a new membershipType.
 	 */
@@ -52,6 +56,7 @@ public class MembershipTypeResource {
 	}
 
 	protected MembershipType doSave(MembershipType membershipType) {
+        membershipType.setBox(boxService.findCurrentCrossFitBox());
 		MembershipType result = membershipTypeRepository.save(membershipType);
 		return result;
 	}
@@ -82,7 +87,7 @@ public class MembershipTypeResource {
 	}
 
 	protected List<MembershipType> doFindAll() {
-		return membershipTypeRepository.findAll();
+		return membershipTypeRepository.findAll(boxService.findCurrentCrossFitBox());
 	}
 
 	/**
@@ -96,7 +101,7 @@ public class MembershipTypeResource {
 	}
 
 	protected MembershipType doGet(Long id) {
-		return membershipTypeRepository.findOne(id);
+		return membershipTypeRepository.findOne(id, boxService.findCurrentCrossFitBox());
 	}
 
 	/**
@@ -111,6 +116,6 @@ public class MembershipTypeResource {
 	}
 
 	protected void doDelete(Long id) {
-		membershipTypeRepository.delete(id);
+		membershipTypeRepository.delete(id, boxService.findCurrentCrossFitBox());
 	}
 }
