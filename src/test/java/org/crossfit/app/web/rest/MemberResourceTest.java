@@ -85,10 +85,6 @@ public class MemberResourceTest {
     public void initTest() {
         member = new Member();
         member.setTelephonNumber(DEFAULT_TELEPHON_NUMBER);
-        member.setSickNoteEndDate(DEFAULT_SICK_NOTE_END_DATE);
-        member.setMembershipStartDate(DEFAULT_MEMBERSHIP_START_DATE);
-        member.setMembershipEndDate(DEFAULT_MEMBERSHIP_END_DATE);
-        member.setLevel(DEFAULT_LEVEL);
     }
 
     @Test
@@ -108,10 +104,6 @@ public class MemberResourceTest {
         assertThat(members).hasSize(databaseSizeBeforeCreate + 1);
         Member testMember = members.get(members.size() - 1);
         assertThat(testMember.getTelephonNumber()).isEqualTo(DEFAULT_TELEPHON_NUMBER);
-        assertThat(testMember.getSickNoteEndDate()).isEqualTo(DEFAULT_SICK_NOTE_END_DATE);
-        assertThat(testMember.getMembershipStartDate()).isEqualTo(DEFAULT_MEMBERSHIP_START_DATE);
-        assertThat(testMember.getMembershipEndDate()).isEqualTo(DEFAULT_MEMBERSHIP_END_DATE);
-        assertThat(testMember.getLevel()).isEqualTo(DEFAULT_LEVEL);
     }
 
     @Test
@@ -119,7 +111,6 @@ public class MemberResourceTest {
     public void checkMembershipStartDateIsRequired() throws Exception {
         int databaseSizeBeforeTest = memberRepository.findAll().size();
         // set the field null
-        member.setMembershipStartDate(null);
 
         // Create the Member, which fails.
 
@@ -137,7 +128,6 @@ public class MemberResourceTest {
     public void checkLevelIsRequired() throws Exception {
         int databaseSizeBeforeTest = memberRepository.findAll().size();
         // set the field null
-        member.setLevel(null);
 
         // Create the Member, which fails.
 
@@ -204,10 +194,6 @@ public class MemberResourceTest {
 
         // Update the member
         member.setTelephonNumber(UPDATED_TELEPHON_NUMBER);
-        member.setSickNoteEndDate(UPDATED_SICK_NOTE_END_DATE);
-        member.setMembershipStartDate(UPDATED_MEMBERSHIP_START_DATE);
-        member.setMembershipEndDate(UPDATED_MEMBERSHIP_END_DATE);
-        member.setLevel(UPDATED_LEVEL);
         
 
         restMemberMockMvc.perform(put("/api/members")
@@ -220,10 +206,6 @@ public class MemberResourceTest {
         assertThat(members).hasSize(databaseSizeBeforeUpdate);
         Member testMember = members.get(members.size() - 1);
         assertThat(testMember.getTelephonNumber()).isEqualTo(UPDATED_TELEPHON_NUMBER);
-        assertThat(testMember.getSickNoteEndDate()).isEqualTo(UPDATED_SICK_NOTE_END_DATE);
-        assertThat(testMember.getMembershipStartDate()).isEqualTo(UPDATED_MEMBERSHIP_START_DATE);
-        assertThat(testMember.getMembershipEndDate()).isEqualTo(UPDATED_MEMBERSHIP_END_DATE);
-        assertThat(testMember.getLevel()).isEqualTo(UPDATED_LEVEL);
     }
 
     @Test
