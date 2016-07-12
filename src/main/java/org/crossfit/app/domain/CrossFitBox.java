@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "CROSSFITBOX")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class CrossFitBox extends AbstractAuditingEntity implements Serializable {
+public class CrossFitBox implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,6 +44,22 @@ public class CrossFitBox extends AbstractAuditingEntity implements Serializable 
     @NotNull        
     @Column(name = "rootwebsite", nullable = false)
     private String rootwebsite;
+
+    @NotNull        
+    @Column(name = "logo_url", nullable = true)
+    private String logoUrl;
+    
+    @Column(name = "time_zone", nullable = true)
+    private String timeZone;
+    
+    @Column(name = "nb_max_day_booking", nullable = true)
+    private int nbMaxDayBooking = 7;
+
+    @Column(name = "nb_hours_at_least_to_book", nullable = true)
+    private int nbHoursAtLeastToBook = 24;
+    
+    @Column(name = "nb_hours_at_least_to_cancel", nullable = true)
+    private int nbHoursAtLeastToCancel = 6;
 
     public Long getId() {
         return id;

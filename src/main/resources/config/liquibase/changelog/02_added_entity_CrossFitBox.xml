@@ -15,34 +15,37 @@
     <property name="floatType" value="float" dbms="mysql, oracle"/>
 
     <!--
-        Added the entity TimeSlot.
+        Added the entity CrossFitBox.
     -->
-    <changeSet id="20150905202637" author="jhipster">
-        <createTable tableName="TIMESLOT">
+    <changeSet id="20150828220843" author="jhipster">
+        <createTable tableName="CROSSFITBOX">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="day_of_week" type="integer">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="start_time" type="time"/>
-            <column name="end_time" type="time"/>
-            <column name="max_attendees" type="integer"/>
-            <column name="required_level" type="varchar(255)">
+            <column name="website" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="box_id" type="bigint"/>
+            <column name="adminwebsite" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="bookingwebsite" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rootwebsite" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="logo_url" type="varchar(255)"/>
+			<column name="time_zone" type="varchar(255)"/>
+			
+			<column name="nb_max_day_booking" type="int"/>
+			<column name="nb_hours_at_least_to_book" type="int"/>
+			<column name="nb_hours_at_least_to_cancel" type="int"/>
+			
         </createTable>
-        <dropDefaultValue tableName="TIMESLOT" columnName="start_time" columnDataType="datetime"/>
-
-        <dropDefaultValue tableName="TIMESLOT" columnName="end_time" columnDataType="datetime"/>
 
         
-        <addForeignKeyConstraint baseColumnNames="box_id"
-                                 baseTableName="TIMESLOT"
-                                 constraintName="fk_timeslot_box_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="CROSSFITBOX"/>
-
     </changeSet>
 </databaseChangeLog>

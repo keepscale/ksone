@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -42,6 +46,36 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull        
+    @Enumerated(EnumType.STRING)
+    @Column(name = "title", nullable = false)
+    private Title title;
+    
+    @Size(max = 50)
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+
+    @Size(max = 50)
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+
+    @Size(max = 255)
+    @Column(name = "address", length = 255)
+    private String address;
+
+    @Size(max = 20)
+    @Column(name = "zip_code", length = 20)
+    private String zipCode;
+    
+    @Size(max = 100)
+    @Column(name = "city", length = 100)
+    private String city;
+    
+    @Size(max = 32)
+    @Column(name = "telephon_number", length = 32)
+    private String telephonNumber;
+    
+
     @NotNull
     @Email
     @Size(max = 100)
@@ -53,15 +87,8 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Size(min = 60, max = 60) 
     @Column(length = 60)
     private String password;
-
-    @Size(max = 50)
-    @Column(name = "first_name", length = 50)
-    private String firstName;
-
-    @Size(max = 50)
-    @Column(name = "last_name", length = 50)
-    private String lastName;
-
+    
+    
     @Column(nullable = false)
     private boolean locked = false;
     
@@ -72,12 +99,6 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Column(name = "lang_key", length = 5)
     private String langKey;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    @Column(name = "reset_date", nullable = true)
-    private DateTime resetDate = null;
-
-    @Column(name = "telephon_number")
-    private String telephonNumber;
 
     @ManyToOne(optional=false)
     private CrossFitBox box;
@@ -85,14 +106,14 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "JHI_USER_AUTHORITY",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            name = "MEMBER_AUTHORITY",
+            joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Authority> authorities = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PersistentToken> persistentTokens = new HashSet<>();
 
@@ -164,14 +185,6 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
-	public DateTime getResetDate() {
-       return resetDate;
-    }
-
-    public void setResetDate(DateTime resetDate) {
-       this.resetDate = resetDate;
-    }
 
     public String getLangKey() {
         return langKey;

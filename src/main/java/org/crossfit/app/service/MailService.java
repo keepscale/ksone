@@ -110,8 +110,8 @@ public class MailService {
         context.setVariable("user", member);
         context.setVariable("clearPassword", clearPassword);
         context.setVariable("box", member.getBox());
-        String content = templateEngine.process("activationEmail", context);
-        String subject = messageSource.getMessage("email.activation.title", new Object[]{member.getBox().getName()}, locale);
+        String content = templateEngine.process("activationCompte", context);
+        String subject = messageSource.getMessage("email.creation.title", new Object[]{member.getBox().getName()}, locale);
         sendEmail(member.getLogin(), subject, content, false, true);
     }
 }

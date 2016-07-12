@@ -20,20 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 
-    @Query("select b from Booking b where b.box =:box AND b.startAt between :start and :end")
+    @Query("select b from Booking b where b.owner.box =:box AND b.startAt between :start and :end")
 	List<Booking> findAll(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
     
-    @Query("select b from Booking b where b.box =:box AND b.owner = :member AND b.startAt = :start and b.endAt = :end order by b.startAt desc")
-	List<Booking> findAllByMemberAndDate(@Param("box") CrossFitBox box, @Param("member") Member member, @Param("start") DateTime start, @Param("end") DateTime end);
+    @Query("select b from Booking b where b.owner = :member AND b.startAt = :start and b.endAt = :end order by b.startAt desc")
+	List<Booking> findAllByMemberAndDate(@Param("member") Member member, @Param("start") DateTime start, @Param("end") DateTime end);
     
-    @Query("select b from Booking b where b.box =:box AND b.owner = :member order by b.startAt desc")
-	Page<Booking> findAllByMember(@Param("box") CrossFitBox box, @Param("member") Member member, Pageable pageable);
+    @Query("select b from Booking b where b.owner = :member order by b.startAt desc")
+	Page<Booking> findAllByMember(@Param("member") Member member, Pageable pageable);
     
-    @Query("select b from Booking b where b.box =:box AND b.owner = :member AND b.startAt between :start and :end")
-	List<Booking> findAllByMemberForPlanning(@Param("box") CrossFitBox box, @Param("member") Member member, @Param("start") LocalDate start, @Param("end") LocalDate end);
+    @Query("select b from Booking b where b.owner = :member AND b.startAt between :start and :end")
+	List<Booking> findAllByMemberForPlanning(@Param("member") Member member, @Param("start") LocalDate start, @Param("end") LocalDate end);
 
     @Modifying
 	@Transactional
-	@Query("delete from Booking b where b.box =:box AND b.owner = :member")
-	void deleteAllByMember(@Param("box") CrossFitBox currentCrossFitBox, @Param("member") Member member);
+	@Query("delete from Booking b where b.owner = :member")
+	void deleteAllByMember(@Param("member") Member member);
 }

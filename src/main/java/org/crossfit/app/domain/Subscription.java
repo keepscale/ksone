@@ -1,13 +1,18 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -56,6 +61,12 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "subscription_end_date", nullable = false)
     private LocalDate subscriptionEndDate;
 
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "SUBSCRIPTION_TIMESLOTTYPE",
+               joinColumns = @JoinColumn(name="souscription_id", referencedColumnName="ID"),
+               inverseJoinColumns = @JoinColumn(name="timeslottype_id", referencedColumnName="ID"))
+    private Set<TimeSlotType> timeSlotTypes = new HashSet<>();
     
     public Long getId() {
         return id;

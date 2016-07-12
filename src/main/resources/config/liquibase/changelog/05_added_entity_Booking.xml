@@ -15,37 +15,38 @@
     <property name="floatType" value="float" dbms="mysql, oracle"/>
 
     <!--
-        Added the entity Subscription.
+        Added the entity Booking.
     -->
-    <changeSet id="20150903163700" author="gcolin">
-        <createTable tableName="SUBSCRIPTION">
+    <changeSet id="20150910173802" author="jhipster">
+        <createTable tableName="BOOKING">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="member_id" type="bigint">
-            	<constraints nullable="false" />
-            </column>
-            <column name="membershiptype_id" type="bigint">
-            	<constraints nullable="false" />
-            </column>
-            <column name="subscription_start_date" type="date">
+            <column name="owner_id" type="bigint"/>
+            <column name="start_at" type="timestamp">
                 <constraints nullable="false" />
             </column>
-            <column name="subscription_end_date" type="date"/>
+            <column name="end_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
         </createTable>
-        
-        <addForeignKeyConstraint baseColumnNames="member_id"
-                                 baseTableName="SUBSCRIPTION"
-                                 constraintName="fk_subscription_member_id"
+    
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="BOOKING"
+                                 constraintName="fk_booking_owner_id"
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
-                                 
-		<addForeignKeyConstraint baseColumnNames="membershiptype_id"
-                                 baseTableName="SUBSCRIPTION"
-                                 constraintName="fk_subscription_membershiptype_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="MEMBERSHIPTYPE"/>
-
 
     </changeSet>
 </databaseChangeLog>

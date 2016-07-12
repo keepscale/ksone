@@ -48,9 +48,6 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
     private BookingStatus status;
 
     @ManyToOne
-    private CrossFitBox box;
-
-    @ManyToOne
     private Member owner;
 
     public Long getId() {
@@ -85,25 +82,12 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
-    public CrossFitBox getBox() {
-        return box;
-    }
-
-    public void setBox(CrossFitBox crossFitBox) {
-        this.box = crossFitBox;
-    }
-
     public Member getOwner() {
         return owner;
     }
 
     public void setOwner(Member member) {
         this.owner = member;
-    }
-
-    // Méthode pour savoir si une réservation est passée
-    public boolean isPast(){
-    	return getStartAt().isBeforeNow();
     }
     
     @Override

@@ -1,5 +1,20 @@
 package org.crossfit.app.web.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.MembershipType;
 import org.crossfit.app.repository.MembershipTypeRepository;
@@ -7,7 +22,6 @@ import org.crossfit.app.web.rest.api.MembershipTypeResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -19,14 +33,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 /**
@@ -51,8 +57,8 @@ public class MembershipTypeResourceTest {
     private static final Integer DEFAULT_NUMBER_OF_SESSION = 100;
     private static final Integer UPDATED_NUMBER_OF_SESSION = 99;
 
-    private static final Integer DEFAULT_NUMBER_OF_SESSION_PER_WEEK = 20;
-    private static final Integer UPDATED_NUMBER_OF_SESSION_PER_WEEK = 19;
+    private static final Integer DEFAULT_NUMBER_OF_SESSION_PER_MONTH = 20;
+    private static final Integer UPDATED_NUMBER_OF_SESSION_PER_MONTH = 19;
 
     @Inject
     private MembershipTypeRepository membershipTypeRepository;
@@ -77,9 +83,7 @@ public class MembershipTypeResourceTest {
         membershipType = new MembershipType();
         membershipType.setName(DEFAULT_NAME);
         membershipType.setPrice(DEFAULT_PRICE);
-        membershipType.setOpenAccess(DEFAULT_OPEN_ACCESS);
         membershipType.setNumberOfSession(DEFAULT_NUMBER_OF_SESSION);
-        membershipType.setNumberOfSessionPerWeek(DEFAULT_NUMBER_OF_SESSION_PER_WEEK);
     }
 
     @Test
@@ -100,9 +104,8 @@ public class MembershipTypeResourceTest {
         MembershipType testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
         assertThat(testMembershipType.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testMembershipType.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testMembershipType.getOpenAccess()).isEqualTo(DEFAULT_OPEN_ACCESS);
         assertThat(testMembershipType.getNumberOfSession()).isEqualTo(DEFAULT_NUMBER_OF_SESSION);
-        assertThat(testMembershipType.getNumberOfSessionPerWeek()).isEqualTo(DEFAULT_NUMBER_OF_SESSION_PER_WEEK);
+        assertThat(testMembershipType.getNumberOfSessionPerMonth()).isEqualTo(DEFAULT_NUMBER_OF_SESSION_PER_MONTH);
     }
 
     @Test
@@ -146,7 +149,7 @@ public class MembershipTypeResourceTest {
     public void checkNumberOfSessionPerWeekIsRequired() throws Exception {
         int databaseSizeBeforeTest = membershipTypeRepository.findAll().size();
         // set the field null
-        membershipType.setNumberOfSessionPerWeek(null);
+        membershipType.setNumberOfSessionPerMonth(null);
 
         // Create the MembershipType, which fails.
 
@@ -174,7 +177,7 @@ public class MembershipTypeResourceTest {
                 .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.toString())))
                 .andExpect(jsonPath("$.[*].openAccess").value(hasItem(DEFAULT_OPEN_ACCESS.booleanValue())))
                 .andExpect(jsonPath("$.[*].numberOfSession").value(hasItem(DEFAULT_NUMBER_OF_SESSION)))
-                .andExpect(jsonPath("$.[*].numberOfSessionPerWeek").value(hasItem(DEFAULT_NUMBER_OF_SESSION_PER_WEEK)));
+                .andExpect(jsonPath("$.[*].numberOfSessionPerMonth").value(hasItem(DEFAULT_NUMBER_OF_SESSION_PER_MONTH)));
     }
 
     @Test
@@ -192,7 +195,7 @@ public class MembershipTypeResourceTest {
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.toString()))
             .andExpect(jsonPath("$.openAccess").value(DEFAULT_OPEN_ACCESS.booleanValue()))
             .andExpect(jsonPath("$.numberOfSession").value(DEFAULT_NUMBER_OF_SESSION))
-            .andExpect(jsonPath("$.numberOfSessionPerWeek").value(DEFAULT_NUMBER_OF_SESSION_PER_WEEK));
+            .andExpect(jsonPath("$.numberOfSessionPerMonth").value(DEFAULT_NUMBER_OF_SESSION_PER_MONTH));
     }
 
     @Test
@@ -214,9 +217,8 @@ public class MembershipTypeResourceTest {
         // Update the membershipType
         membershipType.setName(UPDATED_NAME);
         membershipType.setPrice(UPDATED_PRICE);
-        membershipType.setOpenAccess(UPDATED_OPEN_ACCESS);
         membershipType.setNumberOfSession(UPDATED_NUMBER_OF_SESSION);
-        membershipType.setNumberOfSessionPerWeek(UPDATED_NUMBER_OF_SESSION_PER_WEEK);
+        membershipType.setNumberOfSessionPerMonth(UPDATED_NUMBER_OF_SESSION_PER_MONTH);
         
 
         restMembershipTypeMockMvc.perform(put("/api/membershipTypes")
@@ -230,9 +232,8 @@ public class MembershipTypeResourceTest {
         MembershipType testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
         assertThat(testMembershipType.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testMembershipType.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testMembershipType.getOpenAccess()).isEqualTo(UPDATED_OPEN_ACCESS);
         assertThat(testMembershipType.getNumberOfSession()).isEqualTo(UPDATED_NUMBER_OF_SESSION);
-        assertThat(testMembershipType.getNumberOfSessionPerWeek()).isEqualTo(UPDATED_NUMBER_OF_SESSION_PER_WEEK);
+        assertThat(testMembershipType.getNumberOfSessionPerMonth()).isEqualTo(UPDATED_NUMBER_OF_SESSION_PER_MONTH);
     }
 
     @Test

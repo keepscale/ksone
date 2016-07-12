@@ -209,7 +209,7 @@ public class TimeSlotResource {
     	DateTime endAt = dateDispo.withTime(timeSlot.getEndTime().getHourOfDay(), timeSlot.getEndTime().getMinuteOfHour(), 0, 0);
     	
     	// Si il y a déjà une réservation pour ce créneau
-    	List<Booking> bookings = bookingRepository.findAllByMemberAndDate(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), startAt, endAt);
+    	List<Booking> bookings = bookingRepository.findAllByMemberAndDate(SecurityUtils.getCurrentMember(), startAt, endAt);
     	if(bookings == null || !bookings.isEmpty()){
     		return ResponseEntity.badRequest().header("Failure", "Une réservation existe déjà pour ce créneau").body(null);
     	}
@@ -218,7 +218,6 @@ public class TimeSlotResource {
     	booking.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         booking.setCreatedDate(DateTime.now());
         booking.setOwner(SecurityUtils.getCurrentMember());
-        booking.setBox(boxService.findCurrentCrossFitBox());
         booking.setStartAt(startAt);
         booking.setEndAt(endAt);
     	

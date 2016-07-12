@@ -1,13 +1,31 @@
 package org.crossfit.app.web.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.web.rest.api.TimeSlotResource;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -19,22 +37,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import org.joda.time.LocalTime;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.crossfit.app.domain.enumeration.Level;
 
 /**
  * Test class for the TimeSlotResource REST controller.
@@ -66,9 +68,6 @@ public class TimeSlotResourceTest {
     private static final Integer DEFAULT_MAX_ATTENDEES = 0;
     private static final Integer UPDATED_MAX_ATTENDEES = 1;
 
-    private static final Level DEFAULT_REQUIRED_LEVEL = Level.FOUNDATION;
-    private static final Level UPDATED_REQUIRED_LEVEL = Level.NOVICE;
-
     @Inject
     private TimeSlotRepository timeSlotRepository;
 
@@ -95,7 +94,6 @@ public class TimeSlotResourceTest {
         timeSlot.setStartTime(DEFAULT_START_TIME);
         timeSlot.setEndTime(DEFAULT_END_TIME);
         timeSlot.setMaxAttendees(DEFAULT_MAX_ATTENDEES);
-        timeSlot.setRequiredLevel(DEFAULT_REQUIRED_LEVEL);
     }
 
     @Test
@@ -119,7 +117,6 @@ public class TimeSlotResourceTest {
         assertThat(testTimeSlot.getStartTime()).isEqualTo(DEFAULT_START_TIME);
         assertThat(testTimeSlot.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testTimeSlot.getMaxAttendees()).isEqualTo(DEFAULT_MAX_ATTENDEES);
-        assertThat(testTimeSlot.getRequiredLevel()).isEqualTo(DEFAULT_REQUIRED_LEVEL);
     }
 
     @Test
@@ -128,24 +125,6 @@ public class TimeSlotResourceTest {
         int databaseSizeBeforeTest = timeSlotRepository.findAll().size();
         // set the field null
         timeSlot.setDayOfWeek(null);
-
-        // Create the TimeSlot, which fails.
-
-        restTimeSlotMockMvc.perform(post("/api/timeSlots")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(timeSlot)))
-                .andExpect(status().isBadRequest());
-
-        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
-        assertThat(timeSlots).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkRequiredLevelIsRequired() throws Exception {
-        int databaseSizeBeforeTest = timeSlotRepository.findAll().size();
-        // set the field null
-        timeSlot.setRequiredLevel(null);
 
         // Create the TimeSlot, which fails.
 
@@ -173,8 +152,7 @@ public class TimeSlotResourceTest {
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
                 .andExpect(jsonPath("$.[*].startTime").value(hasItem(DEFAULT_START_TIME_STR)))
                 .andExpect(jsonPath("$.[*].endTime").value(hasItem(DEFAULT_END_TIME_STR)))
-                .andExpect(jsonPath("$.[*].maxAttendees").value(hasItem(DEFAULT_MAX_ATTENDEES)))
-                .andExpect(jsonPath("$.[*].requiredLevel").value(hasItem(DEFAULT_REQUIRED_LEVEL.toString())));
+                .andExpect(jsonPath("$.[*].maxAttendees").value(hasItem(DEFAULT_MAX_ATTENDEES)));
     }
 
     @Test
@@ -192,8 +170,7 @@ public class TimeSlotResourceTest {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
             .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
-            .andExpect(jsonPath("$.maxAttendees").value(DEFAULT_MAX_ATTENDEES))
-            .andExpect(jsonPath("$.requiredLevel").value(DEFAULT_REQUIRED_LEVEL.toString()));
+            .andExpect(jsonPath("$.maxAttendees").value(DEFAULT_MAX_ATTENDEES));
     }
 
     @Test
@@ -218,7 +195,6 @@ public class TimeSlotResourceTest {
         timeSlot.setStartTime(UPDATED_START_TIME);
         timeSlot.setEndTime(UPDATED_END_TIME);
         timeSlot.setMaxAttendees(UPDATED_MAX_ATTENDEES);
-        timeSlot.setRequiredLevel(UPDATED_REQUIRED_LEVEL);
         
 
         restTimeSlotMockMvc.perform(put("/api/timeSlots")
@@ -235,7 +211,6 @@ public class TimeSlotResourceTest {
         assertThat(testTimeSlot.getStartTime()).isEqualTo(UPDATED_START_TIME);
         assertThat(testTimeSlot.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testTimeSlot.getMaxAttendees()).isEqualTo(UPDATED_MAX_ATTENDEES);
-        assertThat(testTimeSlot.getRequiredLevel()).isEqualTo(UPDATED_REQUIRED_LEVEL);
     }
 
     @Test

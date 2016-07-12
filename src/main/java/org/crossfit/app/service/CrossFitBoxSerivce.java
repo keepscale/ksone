@@ -101,7 +101,7 @@ public class CrossFitBoxSerivce {
 		Member memberToDelete = memberRepository.findOne(id);
 		CrossFitBox currentCrossFitBox = findCurrentCrossFitBox();
 		if (memberToDelete.getBox().equals(currentCrossFitBox)){
-			bookingRepository.deleteAllByMember(currentCrossFitBox, memberToDelete);
+			bookingRepository.deleteAllByMember(memberToDelete);
 			memberRepository.delete(memberToDelete);
 		}
 	}

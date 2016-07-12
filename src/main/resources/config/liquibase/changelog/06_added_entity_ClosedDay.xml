@@ -33,11 +33,7 @@
             </column>
             <column name="box_id" type="bigint"/>
         </createTable>
-        <dropDefaultValue tableName="CLOSEDDAY" columnName="start_at" columnDataType="datetime"/>
-
-        <dropDefaultValue tableName="CLOSEDDAY" columnName="end_at" columnDataType="datetime"/>
-
-        
+              
         <addForeignKeyConstraint baseColumnNames="box_id"
                                  baseTableName="CLOSEDDAY"
                                  constraintName="fk_closedday_box_id"

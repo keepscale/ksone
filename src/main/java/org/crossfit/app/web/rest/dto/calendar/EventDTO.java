@@ -18,7 +18,7 @@ public class EventDTO {
 		this.start = slotInstance.getStart();
 		this.end = slotInstance.getEnd();
 		this.title = 
-				(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getRequiredLevel() : slotInstance.getName() )
+				(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName() )
 						
 				+ " ("+ slotInstance.getValidatedBookings().size() + "/" + slotInstance.getMaxAttendees() + ")";
 	}

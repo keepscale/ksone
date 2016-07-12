@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
-import org.crossfit.app.domain.enumeration.Level;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -62,8 +62,8 @@ public class TimeSlotInstanceDTO {
 		return slot.getMaxAttendees();
 	}
 
-	public Level getRequiredLevel() {
-		return slot.getRequiredLevel();
+	public TimeSlotType getTimeSlotType() {
+		return slot.getType();
 	}
 
 	public List<Booking> getValidatedBookings() {

@@ -5,12 +5,10 @@ liquibase:
     context: dev
 
 spring:
-    profiles:
-        active: dev
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url:
-        databaseName: crossfit
+        databaseName: crossfit2
         serverName: localhost
         username: crossfit
         password: password

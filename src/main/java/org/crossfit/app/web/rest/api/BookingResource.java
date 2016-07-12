@@ -52,7 +52,7 @@ public class BookingResource {
     public ResponseEntity<List<Booking>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
-        Page<Booking> page = bookingRepository.findAllByMember(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+        Page<Booking> page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

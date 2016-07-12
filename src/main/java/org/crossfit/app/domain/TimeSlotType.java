@@ -10,8 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -21,30 +21,27 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A MembershipType.
  */
 @Entity
-@Table(name = "MEMBERSHIPTYPE")
+@Table(name = "TIMESLOTTYPE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class MembershipType extends AbstractAuditingEntity implements Serializable {
+public class TimeSlotType extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @NotNull        
     @Column(name = "name", nullable = false)
     private String name;
-
-    @NotNull        
-    @Column(name = "price", nullable = false)
-    private String price;
-
-    @Max(value = 100)        
-    @Column(name = "number_of_session")
-    private Integer numberOfSession;
-
-    @NotNull
-    @Max(value = 20)        
-    @Column(name = "number_of_session_per_month", nullable = false)
-    private Integer numberOfSessionPerMonth;
+    
+    @NotNull     
+    @Size(max = 32)
+    @Column(name = "color", nullable = false)
+    private String color;
+    
+    @NotNull   
+    @Size(max = 255)     
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @ManyToOne(optional=false)
     private CrossFitBox box;
@@ -65,29 +62,12 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
         this.name = name;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-
-    public Integer getNumberOfSession() {
-        return numberOfSession;
-    }
-
-    public void setNumberOfSession(Integer numberOfSession) {
-        this.numberOfSession = numberOfSession;
-    }
-
-    public Integer getNumberOfSessionPerMonth() {
-		return numberOfSessionPerMonth;
+	public String getColor() {
+		return color;
 	}
 
-	public void setNumberOfSessionPerMonth(Integer numberOfSessionPerMonth) {
-		this.numberOfSessionPerMonth = numberOfSessionPerMonth;
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 	public CrossFitBox getBox() {
@@ -98,7 +78,15 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
         this.box = crossFitBox;
     }
 
-    @Override
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -107,7 +95,7 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
             return false;
         }
 
-        MembershipType membershipType = (MembershipType) o;
+        TimeSlotType membershipType = (TimeSlotType) o;
 
         if ( ! Objects.equals(id, membershipType.id)) return false;
 
@@ -119,14 +107,9 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "MembershipType{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", price='" + price + "'" +
-                ", numberOfSession='" + numberOfSession + "'" +
-                ", numberOfSessionPerMonth='" + numberOfSessionPerMonth + "'" +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "TimeSlotType [id=" + id + ", name=" + name + ", description=" + description + "]";
+	}
+
 }

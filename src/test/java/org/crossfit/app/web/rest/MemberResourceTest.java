@@ -1,7 +1,6 @@
 package org.crossfit.app.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -18,7 +17,6 @@ import javax.inject.Inject;
 
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.enumeration.Level;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.web.rest.api.MemberResource;
 import org.joda.time.LocalDate;
@@ -59,9 +57,6 @@ public class MemberResourceTest {
 
     private static final LocalDate DEFAULT_MEMBERSHIP_END_DATE = new LocalDate(0L);
     private static final LocalDate UPDATED_MEMBERSHIP_END_DATE = new LocalDate();
-
-    private static final Level DEFAULT_LEVEL = Level.FOUNDATION;
-    private static final Level UPDATED_LEVEL = Level.NOVICE;
 
     @Inject
     private MemberRepository memberRepository;
@@ -154,8 +149,7 @@ public class MemberResourceTest {
                 .andExpect(jsonPath("$.[*].telephonNumber").value(hasItem(DEFAULT_TELEPHON_NUMBER.toString())))
                 .andExpect(jsonPath("$.[*].sickNoteEndDate").value(hasItem(DEFAULT_SICK_NOTE_END_DATE.toString())))
                 .andExpect(jsonPath("$.[*].membershipStartDate").value(hasItem(DEFAULT_MEMBERSHIP_START_DATE.toString())))
-                .andExpect(jsonPath("$.[*].membershipEndDate").value(hasItem(DEFAULT_MEMBERSHIP_END_DATE.toString())))
-                .andExpect(jsonPath("$.[*].level").value(hasItem(DEFAULT_LEVEL.toString())));
+                .andExpect(jsonPath("$.[*].membershipEndDate").value(hasItem(DEFAULT_MEMBERSHIP_END_DATE.toString())));
     }
 
     @Test
@@ -172,8 +166,7 @@ public class MemberResourceTest {
             .andExpect(jsonPath("$.telephonNumber").value(DEFAULT_TELEPHON_NUMBER.toString()))
             .andExpect(jsonPath("$.sickNoteEndDate").value(DEFAULT_SICK_NOTE_END_DATE.toString()))
             .andExpect(jsonPath("$.membershipStartDate").value(DEFAULT_MEMBERSHIP_START_DATE.toString()))
-            .andExpect(jsonPath("$.membershipEndDate").value(DEFAULT_MEMBERSHIP_END_DATE.toString()))
-            .andExpect(jsonPath("$.level").value(DEFAULT_LEVEL.toString()));
+            .andExpect(jsonPath("$.membershipEndDate").value(DEFAULT_MEMBERSHIP_END_DATE.toString()));
     }
 
     @Test

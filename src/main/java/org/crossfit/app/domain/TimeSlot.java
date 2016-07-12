@@ -16,7 +16,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.crossfit.app.domain.enumeration.Level;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
@@ -78,10 +77,8 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     @Column(name = "max_attendees")
     private Integer maxAttendees;
 
-    @NotNull        
-    @Enumerated(EnumType.STRING)
-    @Column(name = "required_level", nullable = false)
-    private Level requiredLevel;
+    @ManyToOne
+    private TimeSlotType type;
 
     @ManyToOne
     private CrossFitBox box;
@@ -134,15 +131,15 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
         this.maxAttendees = maxAttendees;
     }
 
-    public Level getRequiredLevel() {
-        return requiredLevel;
-    }
+    public TimeSlotType getType() {
+		return type;
+	}
 
-    public void setRequiredLevel(Level requiredLevel) {
-        this.requiredLevel = requiredLevel;
-    }
+	public void setType(TimeSlotType type) {
+		this.type = type;
+	}
 
-    public CrossFitBox getBox() {
+	public CrossFitBox getBox() {
         return box;
     }
 
@@ -196,7 +193,6 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
                 ", startTime='" + startTime + "'" +
                 ", endTime='" + endTime + "'" +
                 ", maxAttendees='" + maxAttendees + "'" +
-                ", requiredLevel='" + requiredLevel + "'" +
                 '}';
     }
     

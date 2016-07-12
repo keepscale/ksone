@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
-import org.crossfit.app.domain.enumeration.Level;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -121,7 +120,7 @@ public class BookingPlanningResource {
     	List<EventSourceDTO> eventSources =  
     			timeSlotService.findAllTimeSlotInstance(startAt, endAt).stream() //Les timeslot instance
 			.collect(
-				Collectors.groupingBy(TimeSlotInstanceDTO::getRequiredLevel)) //Groupé par level
+				Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType)) //Groupé par level
 			
 			.entrySet().stream() //pour chaque level
 			
@@ -134,7 +133,7 @@ public class BookingPlanningResource {
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
 	        	evt.setEditable(true);
 				evt.setEvents(events);
-	        	evt.setColor(getColor(entry.getKey()));
+	        	evt.setColor(entry.getKey().getColor());
 	        	return evt;
 			})
 			.collect(Collectors.toList()); 
@@ -153,27 +152,4 @@ public class BookingPlanningResource {
     	
     	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
     }
-
-    
-
-	private static String getColor(Level level) {
-		String color = "blue";
-		switch (level) {
-			case FOUNDATION:
-				color = "#0000FF";
-				break;
-			case NOVICE:
-				color = "#0174DF";
-				break;
-			case MIDDLE:
-				color = "#DF7401";
-				break;
-			case SKILLED:
-				color = "#FF4000";
-				break;
-
-		}
-		return color;
-	}
-
 }

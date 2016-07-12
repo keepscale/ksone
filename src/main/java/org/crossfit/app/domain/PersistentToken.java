@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @see org.crossfit.app.security.CustomPersistentRememberMeServices
  */
 @Entity
-@Table(name = "JHI_PERSISTENT_TOKEN")
+@Table(name = "PERSISTENT_TOKEN")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class PersistentToken implements Serializable {
 
