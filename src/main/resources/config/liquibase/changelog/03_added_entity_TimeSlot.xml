@@ -63,7 +63,7 @@
 			</column>
 			
             <column name="day_of_week" type="integer" />
-            <column name="date" type="timestamp" /
+            <column name="date" type="timestamp" />
             
             <column name="start_time" type="time"/>
             <column name="end_time" type="time"/>

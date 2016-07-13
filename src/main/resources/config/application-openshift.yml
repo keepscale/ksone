@@ -8,13 +8,17 @@ spring:
     profiles:
         active: openshift
     datasource:
-        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
-        url:
-        databaseName: ${OPENSHIFT_APP_NAME}
-        portNumber: ${OPENSHIFT_POSTGRESQL_DB_PORT}
-        serverName: ${OPENSHIFT_POSTGRESQL_DB_HOST}
+        driverClassName: org.postgresql.Driver        
+        url: jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/${OPENSHIFT_APP_NAME}
         username: ${OPENSHIFT_POSTGRESQL_DB_USERNAME}
         password: ${OPENSHIFT_POSTGRESQL_DB_PASSWORD}
+        test-on-borrow: true
+        test-on-return: true
+        test-while-idle: true
+        validation-query: SELECT 1;
+        validation-interval: 30000
+        remove-abandoned: true
+        remove-abandoned-timeout: 60
 
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQL82Dialect
@@ -43,3 +47,8 @@ cache:
     timeToLiveSeconds: 3600
     ehcache:
         maxBytesLocalHeap: 256M
+        
+mail:
+    username: ${SENDGRID_USERNAME}
+    password: ${SENDGRID_PASSWORD}
+    protocol: sendgrid

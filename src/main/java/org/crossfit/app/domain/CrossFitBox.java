@@ -1,15 +1,19 @@
 package org.crossfit.app.domain;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.URL;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import org.hibernate.validator.constraints.Email;
 
 
 /**
@@ -45,6 +49,11 @@ public class CrossFitBox implements Serializable {
     @Column(name = "rootwebsite", nullable = false)
     private String rootwebsite;
 
+    @Email
+    @NotNull        
+    @Column(name = "from_email", nullable = false)
+    private String fromEmail;
+    
     @NotNull        
     @Column(name = "logo_url", nullable = true)
     private String logoUrl;
@@ -108,8 +117,56 @@ public class CrossFitBox implements Serializable {
     public void setRootwebsite(String rootwebsite) {
         this.rootwebsite = rootwebsite;
     }
+    
+    public String getFromEmail() {
+		return fromEmail;
+	}
 
-    @Override
+	public void setFromEmail(String fromEmail) {
+		this.fromEmail = fromEmail;
+	}
+
+	public String getLogoUrl() {
+		return logoUrl;
+	}
+
+	public void setLogoUrl(String logoUrl) {
+		this.logoUrl = logoUrl;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public int getNbMaxDayBooking() {
+		return nbMaxDayBooking;
+	}
+
+	public void setNbMaxDayBooking(int nbMaxDayBooking) {
+		this.nbMaxDayBooking = nbMaxDayBooking;
+	}
+
+	public int getNbHoursAtLeastToBook() {
+		return nbHoursAtLeastToBook;
+	}
+
+	public void setNbHoursAtLeastToBook(int nbHoursAtLeastToBook) {
+		this.nbHoursAtLeastToBook = nbHoursAtLeastToBook;
+	}
+
+	public int getNbHoursAtLeastToCancel() {
+		return nbHoursAtLeastToCancel;
+	}
+
+	public void setNbHoursAtLeastToCancel(int nbHoursAtLeastToCancel) {
+		this.nbHoursAtLeastToCancel = nbHoursAtLeastToCancel;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

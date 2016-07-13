@@ -94,7 +94,7 @@ public class CrossFitBoxResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CrossFitBox> get(@PathVariable Long id) {
         log.debug("REST request to get CrossFitBox : {}", id);
-        return Optional.ofNullable(crossFitBoxRepository.findOneWithEagerRelationships(id))
+        return Optional.ofNullable(crossFitBoxRepository.findOne(id))
             .map(crossFitBox -> new ResponseEntity<>(
                 crossFitBox,
                 HttpStatus.OK))

@@ -2,17 +2,24 @@ server:
     port: 8080
 
 liquibase:
-    context: dev
+    change-log: classpath:config/liquibase/master.xml
+    
+    
+logback.loglevel: DEBUG
 
 spring:
     datasource:
-        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
-        url:
-        databaseName: crossfit2
-        serverName: localhost
-        username: crossfit
+        driverClassName: org.postgresql.Driver        
+        url: jdbc:postgresql://localhost:5432/crossfit2
+        username: postgres
         password: password
-
+        test-on-borrow: true
+        test-on-return: true
+        test-while-idle: true
+        validation-query: SELECT 1;
+        validation-interval: 30000
+        remove-abandoned: true
+        remove-abandoned-timeout: 60
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQL82Dialect
         database: POSTGRESQL
