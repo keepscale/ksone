@@ -54,10 +54,10 @@ public class CrossFitBoxSerivce {
 		
 		Optional<CrossFitBox> box = boxs.stream().filter(b->{
 			try{
-				return Pattern.matches(b.getWebsite(), serverName);
+				return Pattern.matches(b.getWebsitepattern(), serverName);
 			}
 			catch (Exception e) {
-				log.error("Erreur sur le pattern {} de la box {}: {}", b.getWebsite(), b.getId(), e.getMessage());
+				log.error("Erreur sur le pattern {} de la box {}: {}", b.getWebsitepattern(), b.getId(), e.getMessage());
 				return false;
 			}
 		}).findFirst();
@@ -71,7 +71,7 @@ public class CrossFitBoxSerivce {
 			}
 		}
 
-		log.debug("Current CorssFitBox: {}", box.isPresent() ? box.get().getName() + " ("+box.get().getWebsite()+")" : "null");
+		log.debug("Current CorssFitBox: {}", box.isPresent() ? box.get().getName() + " ("+box.get().getWebsitepattern()+")" : "null");
 		
 		
 		if (!box.isPresent()){
@@ -79,7 +79,7 @@ public class CrossFitBoxSerivce {
 			boolean matchKnowHost = KNOW_HOSTS.stream().anyMatch(knowHost->{return Pattern.matches(knowHost, serverName);});
 
 			if (matchKnowHost){
-				log.warn("Parmis {}, aucune box n'a ete trouve, par contre le serveur {} fait parti des serveurs de confiance {}, donc on laisse passer.", boxs.stream().map(CrossFitBox::getWebsite).collect(Collectors.toList()), serverName, KNOW_HOSTS);
+				log.warn("Parmis {}, aucune box n'a ete trouve, par contre le serveur {} fait parti des serveurs de confiance {}, donc on laisse passer.", boxs.stream().map(CrossFitBox::getWebsitepattern).collect(Collectors.toList()), serverName, KNOW_HOSTS);
 			}
 			else{
 				throw new CrossFitBoxConfiguration("Aucune box n'est recensée à l'adresse "+ request.getServerName());

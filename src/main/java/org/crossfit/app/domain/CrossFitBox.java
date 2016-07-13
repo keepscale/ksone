@@ -34,8 +34,8 @@ public class CrossFitBox implements Serializable {
     private String name;
 
     @NotNull        
-    @Column(name = "website", nullable = false)
-    private String website;
+    @Column(name = "website_pattern", nullable = false)
+    private String websitepattern;
 
     @NotNull        
     @Column(name = "adminwebsite", nullable = false)
@@ -51,8 +51,8 @@ public class CrossFitBox implements Serializable {
 
     @Email
     @NotNull        
-    @Column(name = "from_email", nullable = false)
-    private String fromEmail;
+    @Column(name = "email_from", nullable = false)
+    private String emailFrom;
     
     @NotNull        
     @Column(name = "logo_url", nullable = true)
@@ -86,12 +86,12 @@ public class CrossFitBox implements Serializable {
         this.name = name;
     }
 
-    public String getWebsite() {
-        return website;
+    public String getWebsitepattern() {
+        return websitepattern;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setWebsitepattern(String websitepattern) {
+        this.websitepattern = websitepattern;
     }
 
     public String getAdminwebsite() {
@@ -118,12 +118,14 @@ public class CrossFitBox implements Serializable {
         this.rootwebsite = rootwebsite;
     }
     
-    public String getFromEmail() {
-		return fromEmail;
+   
+
+	public String getEmailFrom() {
+		return emailFrom;
 	}
 
-	public void setFromEmail(String fromEmail) {
-		this.fromEmail = fromEmail;
+	public void setEmailFrom(String emailFrom) {
+		this.emailFrom = emailFrom;
 	}
 
 	public String getLogoUrl() {
@@ -192,7 +194,7 @@ public class CrossFitBox implements Serializable {
         return "CrossFitBox{" +
                 "id=" + id +
                 ", name='" + name + "'" +
-                ", website='" + website + "'" +
+                ", websitepattern='" + websitepattern + "'" +
                 ", adminwebsite='" + adminwebsite + "'" +
                 ", bookingwebsite='" + bookingwebsite + "'" +
                 ", rootwebsite='" + rootwebsite + "'" +

@@ -42,8 +42,8 @@ public class CrossFitBoxResourceTest {
 
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
-    private static final String DEFAULT_WEBSITE = "SAMPLE_TEXT";
-    private static final String UPDATED_WEBSITE = "UPDATED_TEXT";
+    private static final String DEFAULT_WEBSITE_PATTERN = "SAMPLE_TEXT";
+    private static final String UPDATED_WEBSITE_PATTERN = "UPDATED_TEXT";
     private static final String DEFAULT_ADMINWEBSITE = "SAMPLE_TEXT";
     private static final String UPDATED_ADMINWEBSITE = "UPDATED_TEXT";
     private static final String DEFAULT_BOOKINGWEBSITE = "SAMPLE_TEXT";
@@ -73,7 +73,7 @@ public class CrossFitBoxResourceTest {
     public void initTest() {
         crossFitBox = new CrossFitBox();
         crossFitBox.setName(DEFAULT_NAME);
-        crossFitBox.setWebsite(DEFAULT_WEBSITE);
+        crossFitBox.setWebsitepattern(DEFAULT_WEBSITE_PATTERN);
         crossFitBox.setAdminwebsite(DEFAULT_ADMINWEBSITE);
         crossFitBox.setBookingwebsite(DEFAULT_BOOKINGWEBSITE);
         crossFitBox.setRootwebsite(DEFAULT_ROOTWEBSITE);
@@ -96,7 +96,7 @@ public class CrossFitBoxResourceTest {
         assertThat(crossFitBoxs).hasSize(databaseSizeBeforeCreate + 1);
         CrossFitBox testCrossFitBox = crossFitBoxs.get(crossFitBoxs.size() - 1);
         assertThat(testCrossFitBox.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCrossFitBox.getWebsite()).isEqualTo(DEFAULT_WEBSITE);
+        assertThat(testCrossFitBox.getWebsitepattern()).isEqualTo(DEFAULT_WEBSITE_PATTERN);
         assertThat(testCrossFitBox.getAdminwebsite()).isEqualTo(DEFAULT_ADMINWEBSITE);
         assertThat(testCrossFitBox.getBookingwebsite()).isEqualTo(DEFAULT_BOOKINGWEBSITE);
         assertThat(testCrossFitBox.getRootwebsite()).isEqualTo(DEFAULT_ROOTWEBSITE);
@@ -125,7 +125,7 @@ public class CrossFitBoxResourceTest {
     public void checkWebsiteIsRequired() throws Exception {
         int databaseSizeBeforeTest = crossFitBoxRepository.findAll().size();
         // set the field null
-        crossFitBox.setWebsite(null);
+        crossFitBox.setWebsitepattern(null);
 
         // Create the CrossFitBox, which fails.
 
@@ -204,7 +204,7 @@ public class CrossFitBoxResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(crossFitBox.getId().intValue())))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].website").value(hasItem(DEFAULT_WEBSITE.toString())))
+                .andExpect(jsonPath("$.[*].website").value(hasItem(DEFAULT_WEBSITE_PATTERN.toString())))
                 .andExpect(jsonPath("$.[*].adminwebsite").value(hasItem(DEFAULT_ADMINWEBSITE.toString())))
                 .andExpect(jsonPath("$.[*].bookingwebsite").value(hasItem(DEFAULT_BOOKINGWEBSITE.toString())))
                 .andExpect(jsonPath("$.[*].rootwebsite").value(hasItem(DEFAULT_ROOTWEBSITE.toString())));
@@ -222,7 +222,7 @@ public class CrossFitBoxResourceTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(crossFitBox.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.website").value(DEFAULT_WEBSITE.toString()))
+            .andExpect(jsonPath("$.website").value(DEFAULT_WEBSITE_PATTERN.toString()))
             .andExpect(jsonPath("$.adminwebsite").value(DEFAULT_ADMINWEBSITE.toString()))
             .andExpect(jsonPath("$.bookingwebsite").value(DEFAULT_BOOKINGWEBSITE.toString()))
             .andExpect(jsonPath("$.rootwebsite").value(DEFAULT_ROOTWEBSITE.toString()));
@@ -246,7 +246,7 @@ public class CrossFitBoxResourceTest {
 
         // Update the crossFitBox
         crossFitBox.setName(UPDATED_NAME);
-        crossFitBox.setWebsite(UPDATED_WEBSITE);
+        crossFitBox.setWebsitepattern(UPDATED_WEBSITE_PATTERN);
         crossFitBox.setAdminwebsite(UPDATED_ADMINWEBSITE);
         crossFitBox.setBookingwebsite(UPDATED_BOOKINGWEBSITE);
         crossFitBox.setRootwebsite(UPDATED_ROOTWEBSITE);
@@ -262,7 +262,7 @@ public class CrossFitBoxResourceTest {
         assertThat(crossFitBoxs).hasSize(databaseSizeBeforeUpdate);
         CrossFitBox testCrossFitBox = crossFitBoxs.get(crossFitBoxs.size() - 1);
         assertThat(testCrossFitBox.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCrossFitBox.getWebsite()).isEqualTo(UPDATED_WEBSITE);
+        assertThat(testCrossFitBox.getWebsitepattern()).isEqualTo(UPDATED_WEBSITE_PATTERN);
         assertThat(testCrossFitBox.getAdminwebsite()).isEqualTo(UPDATED_ADMINWEBSITE);
         assertThat(testCrossFitBox.getBookingwebsite()).isEqualTo(UPDATED_BOOKINGWEBSITE);
         assertThat(testCrossFitBox.getRootwebsite()).isEqualTo(UPDATED_ROOTWEBSITE);

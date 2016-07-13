@@ -7,7 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Spring Data JPA repository for the CrossFitBox entity.
  */
 public interface CrossFitBoxRepository extends JpaRepository<CrossFitBox,Long> {
-
-	CrossFitBox findOneByWebsite(String website);
-
 }

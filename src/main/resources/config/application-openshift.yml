@@ -2,7 +2,8 @@ server:
     port: 8080
 
 liquibase:
-    context: prod
+    change-log: classpath:config/liquibase/master.xml
+    contexts: openshift
 
 spring:
     profiles:

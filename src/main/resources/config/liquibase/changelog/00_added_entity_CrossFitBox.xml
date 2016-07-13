@@ -25,7 +25,7 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="website" type="varchar(255)">
+            <column name="website_pattern" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
             <column name="adminwebsite" type="varchar(255)">

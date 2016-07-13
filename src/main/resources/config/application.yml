@@ -3,6 +3,7 @@ server:
 
 liquibase:
     change-log: classpath:config/liquibase/master.xml
+    contexts: dev
     
     
 logback.loglevel: DEBUG
@@ -36,6 +37,7 @@ spring:
             hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
     messages:
         cache-seconds: 1
+        basename: i18n/messages
     thymeleaf:
         mode: XHTML
         cache: false

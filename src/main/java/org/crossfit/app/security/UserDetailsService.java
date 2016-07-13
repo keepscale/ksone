@@ -35,7 +35,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	
-        log.debug("Authenticating {} for CrossFitBox {} ({})", login, box ==  null ? "null" : box.getName(), box ==  null ? "null" : box.getWebsite());
+        log.debug("Authenticating {} for CrossFitBox {} ({})", login, box ==  null ? "null" : box.getName(), box ==  null ? "null" : box.getWebsitepattern());
         String lowercaseLogin = login.toLowerCase();
         Optional<Member> userFromDatabase =  memberRepository.findOneByLogin(lowercaseLogin, box);
         

@@ -45,6 +45,6 @@ public class MailService {
         context.setVariable("box", member.getBox());
         String content = templateEngine.process("activationCompte", context);
         String subject = messageSource.getMessage("email.creation.title", new Object[]{member.getBox().getName()}, locale);
-        mailSender.sendEmail(member.getBox().getFromEmail(), member.getLogin(), subject, content, false, true);
+        mailSender.sendEmail(member.getBox().getEmailFrom(), member.getLogin(), subject, content, false, true);
     }
 }
