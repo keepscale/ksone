@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+	<property name="now" value="sysdate" dbms="oracle" />
+	 <!-- password -->
+	<property name="defaultpwd" value="$2a$10$tZe3DROebycirgLfdojLyOasTa/WnTuG4nIfrqa9DRapvYF9fGUf." />
+
+	<changeSet id="data-dev" author="lgangloff" context="dev">
+		<insert tableName="CROSSFITBOX">
+			<column name="name" value="Crossfit Local" />
+			<column name="website_pattern" value="(.*)" />
+			<column name="adminwebsite" value="localhost" />
+			<column name="bookingwebsite" value="localhost" />
+			<column name="rootwebsite" value="localhost" />
+			<column name="email_from" value="no-reply@crossfit-local.com" />
+			<column name="logo_url" value="NULL" />
+			<column name="time_zone" value="NULL" />
+			<column name="nb_max_day_booking" value="7" />
+			<column name="nb_hours_at_least_to_book" value="24" />
+			<column name="nb_hours_at_least_to_cancel" value="6" />
+		</insert>
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />			
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+
+			<column name="title" value="MS" />
+			<column name="first_name" value="webmaster" />
+			<column name="last_name" value="crossfit-local" />
+
+			<column name="login" value="webmaster@crossfit-local.com" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_ADMIN" />
+		</insert>
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />			
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+
+			<column name="title" value="MS" />
+			<column name="first_name" value="manager" />
+			<column name="last_name" value="crossfit-local" />
+
+			<column name="login" value="manager@crossfit-local.com" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+
+
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />	
+			<column name="authority_name" value="ROLE_MANAGER" />
+		</insert>
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />			
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+
+			<column name="title" value="MS" />
+			<column name="first_name" value="user1" />
+			<column name="last_name" value="crossfit-local" />
+
+			<column name="login" value="user1@crossfit-local.com" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />	
+			<column name="authority_name" value="ROLE_USER" />
+		</insert>
+
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />				
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+			
+			<column name="title" value="MS" />
+			<column name="first_name" value="user2" />
+			<column name="last_name" value="crossfit-local" />
+
+			<column name="login" value="user2@crossfit-local.com" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />	
+			<column name="authority_name" value="ROLE_USER" />
+		</insert>
+	</changeSet>
+	
+	<changeSet id="data-openshift" author="lgangloff" context="openshift">
+		<insert tableName="CROSSFITBOX">
+			<column name="name" value="Crossfit Nancy" />
+			<column name="website_pattern" value="(.*).crossfit-nancy.fr" />
+			<column name="adminwebsite" value="http://admin.crossfit-nancy.fr/" />
+			<column name="bookingwebsite" value="http://booking.crossfit-nancy.fr/" />
+			<column name="rootwebsite" value="http://www.crossfit-nancy.fr/" />
+			<column name="email_from" value="no-reply@crossfit-nancy.fr" />
+			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
+			<column name="time_zone" value="NULL" />
+			<column name="nb_max_day_booking" value="7" />
+			<column name="nb_hours_at_least_to_book" value="24" />
+			<column name="nb_hours_at_least_to_cancel" value="6" />
+		</insert>
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+
+			<column name="title" value="MS" />
+			<column name="first_name" value="webmaster" />
+			<column name="last_name" value="crossfit-nancy" />
+
+			<column name="login" value="webmasters@crossfit-nancy.fr" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_ADMIN" />
+		</insert>
+	</changeSet>
+</databaseChangeLog>
