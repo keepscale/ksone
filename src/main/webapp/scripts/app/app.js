@@ -61,12 +61,6 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         $urlRouterProvider.otherwise('/');
         $stateProvider.state('site', {
             'abstract': true,
-            views: {
-                'navbar@': {
-                    templateUrl: 'scripts/components/navbar/navbar.html',
-                    controller: 'NavbarController'
-                }
-            },
             resolve: {
                 authorize: ['Auth',
                     function (Auth) {

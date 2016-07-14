@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Register, Activate, Password, PasswordResetInit, PasswordResetFinish) {
+    .factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password) {
         return {
             login: function (credentials, callback) {
                 var cb = callback || angular.noop;

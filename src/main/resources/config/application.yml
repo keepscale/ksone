@@ -12,7 +12,7 @@ spring:
     datasource:
         driverClassName: org.postgresql.Driver        
         url: jdbc:postgresql://localhost:5432/crossfit2
-        username: postgres
+        username: crossfit
         password: password
         test-on-borrow: true
         test-on-return: true
