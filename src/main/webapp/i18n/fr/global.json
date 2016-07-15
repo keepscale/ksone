@@ -13,6 +13,9 @@
                 "logout": "Déconnexion",
                 "register": "Créer un compte"
             },
+            "members" : "Membres",
+            "planning" : "Créneaux",
+            "bookings" : "Réservations",
             "language": "Langue"
         },
         "form": {
