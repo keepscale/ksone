@@ -52,7 +52,7 @@ management.security.enabled: true
 security.basic.enabled: false
 
 # security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7
+security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7
 
 async:
     corePoolSize: 2

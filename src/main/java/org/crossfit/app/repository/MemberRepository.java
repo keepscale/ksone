@@ -19,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select m from Member m where m.box = :box order by m.enabled DESC, m.lastName, m.firstName")
 	Page<Member> findAll(@Param("box") CrossFitBox box, Pageable pageable);
 
-    @Query("select m from Member m where m.login = :login and m.box = :box")
+    @Query("select m from Member m left join fetch m.authorities where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);
 
     @Query("select m from Member m where m.box = :box and m.enabled = false")
