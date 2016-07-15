@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -21,9 +20,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A MembershipType.
  */
 @Entity
-@Table(name = "MEMBERSHIPTYPE")
+@Table(name = "MEMBERSHIP")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class MembershipType extends AbstractAuditingEntity implements Serializable {
+public class Membership extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,17 +36,9 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
     @Column(name = "price", nullable = false)
     private String price;
 
-    @Max(value = 100)        
-    @Column(name = "number_of_session")
-    private Integer numberOfSession;
-
-    @NotNull
-    @Max(value = 20)        
-    @Column(name = "number_of_session_per_month", nullable = false)
-    private Integer numberOfSessionPerMonth;
-
     @ManyToOne(optional=false)
     private CrossFitBox box;
+    
 
     public Long getId() {
         return id;
@@ -73,23 +64,6 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
         this.price = price;
     }
 
-
-    public Integer getNumberOfSession() {
-        return numberOfSession;
-    }
-
-    public void setNumberOfSession(Integer numberOfSession) {
-        this.numberOfSession = numberOfSession;
-    }
-
-    public Integer getNumberOfSessionPerMonth() {
-		return numberOfSessionPerMonth;
-	}
-
-	public void setNumberOfSessionPerMonth(Integer numberOfSessionPerMonth) {
-		this.numberOfSessionPerMonth = numberOfSessionPerMonth;
-	}
-
 	public CrossFitBox getBox() {
         return box;
     }
@@ -97,8 +71,8 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
     public void setBox(CrossFitBox crossFitBox) {
         this.box = crossFitBox;
     }
-
-    @Override
+    
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -107,7 +81,7 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
             return false;
         }
 
-        MembershipType membershipType = (MembershipType) o;
+        Membership membershipType = (Membership) o;
 
         if ( ! Objects.equals(id, membershipType.id)) return false;
 
@@ -121,12 +95,10 @@ public class MembershipType extends AbstractAuditingEntity implements Serializab
 
     @Override
     public String toString() {
-        return "MembershipType{" +
+        return "Membership{" +
                 "id=" + id +
                 ", name='" + name + "'" +
                 ", price='" + price + "'" +
-                ", numberOfSession='" + numberOfSession + "'" +
-                ", numberOfSessionPerMonth='" + numberOfSessionPerMonth + "'" +
                 '}';
     }
 }

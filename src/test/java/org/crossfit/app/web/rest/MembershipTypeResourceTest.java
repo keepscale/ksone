@@ -16,8 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.crossfit.app.Application;
-import org.crossfit.app.domain.MembershipType;
-import org.crossfit.app.repository.MembershipTypeRepository;
+import org.crossfit.app.domain.Membership;
+import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.web.rest.api.MembershipTypeResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,24 +51,16 @@ public class MembershipTypeResourceTest {
     private static final String DEFAULT_PRICE = "SAMPLE_TEXT";
     private static final String UPDATED_PRICE = "UPDATED_TEXT";
 
-    private static final Boolean DEFAULT_OPEN_ACCESS = false;
-    private static final Boolean UPDATED_OPEN_ACCESS = true;
-
-    private static final Integer DEFAULT_NUMBER_OF_SESSION = 100;
-    private static final Integer UPDATED_NUMBER_OF_SESSION = 99;
-
-    private static final Integer DEFAULT_NUMBER_OF_SESSION_PER_MONTH = 20;
-    private static final Integer UPDATED_NUMBER_OF_SESSION_PER_MONTH = 19;
 
     @Inject
-    private MembershipTypeRepository membershipTypeRepository;
+    private MembershipRepository membershipTypeRepository;
 
     @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     private MockMvc restMembershipTypeMockMvc;
 
-    private MembershipType membershipType;
+    private Membership membershipType;
 
     @PostConstruct
     public void setup() {
@@ -80,10 +72,9 @@ public class MembershipTypeResourceTest {
 
     @Before
     public void initTest() {
-        membershipType = new MembershipType();
+        membershipType = new Membership();
         membershipType.setName(DEFAULT_NAME);
         membershipType.setPrice(DEFAULT_PRICE);
-        membershipType.setNumberOfSession(DEFAULT_NUMBER_OF_SESSION);
     }
 
     @Test
@@ -99,13 +90,11 @@ public class MembershipTypeResourceTest {
                 .andExpect(status().isCreated());
 
         // Validate the MembershipType in the database
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
+        List<Membership> membershipTypes = membershipTypeRepository.findAll();
         assertThat(membershipTypes).hasSize(databaseSizeBeforeCreate + 1);
-        MembershipType testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
+        Membership testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
         assertThat(testMembershipType.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testMembershipType.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testMembershipType.getNumberOfSession()).isEqualTo(DEFAULT_NUMBER_OF_SESSION);
-        assertThat(testMembershipType.getNumberOfSessionPerMonth()).isEqualTo(DEFAULT_NUMBER_OF_SESSION_PER_MONTH);
     }
 
     @Test
@@ -122,7 +111,7 @@ public class MembershipTypeResourceTest {
                 .content(TestUtil.convertObjectToJsonBytes(membershipType)))
                 .andExpect(status().isBadRequest());
 
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
+        List<Membership> membershipTypes = membershipTypeRepository.findAll();
         assertThat(membershipTypes).hasSize(databaseSizeBeforeTest);
     }
 
@@ -140,25 +129,7 @@ public class MembershipTypeResourceTest {
                 .content(TestUtil.convertObjectToJsonBytes(membershipType)))
                 .andExpect(status().isBadRequest());
 
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
-        assertThat(membershipTypes).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkNumberOfSessionPerWeekIsRequired() throws Exception {
-        int databaseSizeBeforeTest = membershipTypeRepository.findAll().size();
-        // set the field null
-        membershipType.setNumberOfSessionPerMonth(null);
-
-        // Create the MembershipType, which fails.
-
-        restMembershipTypeMockMvc.perform(post("/api/membershipTypes")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(membershipType)))
-                .andExpect(status().isBadRequest());
-
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
+        List<Membership> membershipTypes = membershipTypeRepository.findAll();
         assertThat(membershipTypes).hasSize(databaseSizeBeforeTest);
     }
 
@@ -174,10 +145,7 @@ public class MembershipTypeResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(membershipType.getId().intValue())))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.toString())))
-                .andExpect(jsonPath("$.[*].openAccess").value(hasItem(DEFAULT_OPEN_ACCESS.booleanValue())))
-                .andExpect(jsonPath("$.[*].numberOfSession").value(hasItem(DEFAULT_NUMBER_OF_SESSION)))
-                .andExpect(jsonPath("$.[*].numberOfSessionPerMonth").value(hasItem(DEFAULT_NUMBER_OF_SESSION_PER_MONTH)));
+                .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.toString())));
     }
 
     @Test
@@ -192,10 +160,7 @@ public class MembershipTypeResourceTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(membershipType.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.toString()))
-            .andExpect(jsonPath("$.openAccess").value(DEFAULT_OPEN_ACCESS.booleanValue()))
-            .andExpect(jsonPath("$.numberOfSession").value(DEFAULT_NUMBER_OF_SESSION))
-            .andExpect(jsonPath("$.numberOfSessionPerMonth").value(DEFAULT_NUMBER_OF_SESSION_PER_MONTH));
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.toString()));
     }
 
     @Test
@@ -217,8 +182,6 @@ public class MembershipTypeResourceTest {
         // Update the membershipType
         membershipType.setName(UPDATED_NAME);
         membershipType.setPrice(UPDATED_PRICE);
-        membershipType.setNumberOfSession(UPDATED_NUMBER_OF_SESSION);
-        membershipType.setNumberOfSessionPerMonth(UPDATED_NUMBER_OF_SESSION_PER_MONTH);
         
 
         restMembershipTypeMockMvc.perform(put("/api/membershipTypes")
@@ -227,13 +190,11 @@ public class MembershipTypeResourceTest {
                 .andExpect(status().isOk());
 
         // Validate the MembershipType in the database
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
+        List<Membership> membershipTypes = membershipTypeRepository.findAll();
         assertThat(membershipTypes).hasSize(databaseSizeBeforeUpdate);
-        MembershipType testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
+        Membership testMembershipType = membershipTypes.get(membershipTypes.size() - 1);
         assertThat(testMembershipType.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testMembershipType.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testMembershipType.getNumberOfSession()).isEqualTo(UPDATED_NUMBER_OF_SESSION);
-        assertThat(testMembershipType.getNumberOfSessionPerMonth()).isEqualTo(UPDATED_NUMBER_OF_SESSION_PER_MONTH);
     }
 
     @Test
@@ -250,7 +211,7 @@ public class MembershipTypeResourceTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<MembershipType> membershipTypes = membershipTypeRepository.findAll();
+        List<Membership> membershipTypes = membershipTypeRepository.findAll();
         assertThat(membershipTypes).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

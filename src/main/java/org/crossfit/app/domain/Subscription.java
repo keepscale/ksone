@@ -46,7 +46,7 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @ManyToOne(optional=false)
-    private MembershipType membershipType;
+    private Membership membership;
     
     @NotNull        
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
@@ -61,12 +61,6 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "subscription_end_date", nullable = false)
     private LocalDate subscriptionEndDate;
 
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "SUBSCRIPTION_TIMESLOTTYPE",
-               joinColumns = @JoinColumn(name="souscription_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="timeslottype_id", referencedColumnName="ID"))
-    private Set<TimeSlotType> timeSlotTypes = new HashSet<>();
     
     public Long getId() {
         return id;
@@ -104,7 +98,7 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
         return "Subscription{" +
                 "id=" + id +
                 ", membre='" + member.getId()+ "'" +
-                ", membershipType='" + membershipType.getId()+ "'" +
+                ", membership='" + membership.getId()+ "'" +
                 ", startDate='" + subscriptionStartDate + "'" +
                 ", endDate='" + subscriptionEndDate + "'" +
                 '}';

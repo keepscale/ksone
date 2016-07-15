@@ -8,8 +8,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.crossfit.app.domain.MembershipType;
-import org.crossfit.app.repository.MembershipTypeRepository;
+import org.crossfit.app.domain.Membership;
+import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class MembershipTypeResource {
 	private final Logger log = LoggerFactory.getLogger(MembershipTypeResource.class);
 
 	@Inject
-	private MembershipTypeRepository membershipTypeRepository;
+	private MembershipRepository membershipTypeRepository;
 
     @Inject
     private CrossFitBoxSerivce boxService;
@@ -42,22 +42,22 @@ public class MembershipTypeResource {
 	 * POST /membershipTypes -> Create a new membershipType.
 	 */
 	@RequestMapping(value = "/membershipTypes", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MembershipType> create(@Valid @RequestBody MembershipType membershipType)
+	public ResponseEntity<Membership> create(@Valid @RequestBody Membership membershipType)
 			throws URISyntaxException {
 		log.debug("REST request to save MembershipType : {}", membershipType);
 		if (membershipType.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new membershipType cannot already have an ID")
 					.body(null);
 		}
-		MembershipType result = doSave(membershipType);
+		Membership result = doSave(membershipType);
 		return ResponseEntity.created(new URI("/api/membershipTypes/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("membershipType", result.getId().toString()))
 				.body(result);
 	}
 
-	protected MembershipType doSave(MembershipType membershipType) {
+	protected Membership doSave(Membership membershipType) {
         membershipType.setBox(boxService.findCurrentCrossFitBox());
-		MembershipType result = membershipTypeRepository.save(membershipType);
+		Membership result = membershipTypeRepository.save(membershipType);
 		return result;
 	}
 
@@ -65,13 +65,13 @@ public class MembershipTypeResource {
 	 * PUT /membershipTypes -> Updates an existing membershipType.
 	 */
 	@RequestMapping(value = "/membershipTypes", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MembershipType> update(@Valid @RequestBody MembershipType membershipType)
+	public ResponseEntity<Membership> update(@Valid @RequestBody Membership membershipType)
 			throws URISyntaxException {
 		log.debug("REST request to update MembershipType : {}", membershipType);
 		if (membershipType.getId() == null) {
 			return create(membershipType);
 		}
-		MembershipType result = doSave(membershipType);
+		Membership result = doSave(membershipType);
 		return ResponseEntity.ok()
 				.headers(HeaderUtil.createEntityUpdateAlert("membershipType", membershipType.getId().toString()))
 				.body(result);
@@ -81,12 +81,12 @@ public class MembershipTypeResource {
 	 * GET /membershipTypes -> get all the membershipTypes.
 	 */
 	@RequestMapping(value = "/membershipTypes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<MembershipType> getAll() {
+	public List<Membership> getAll() {
 		log.debug("REST request to get all MembershipTypes");
 		return doFindAll();
 	}
 
-	protected List<MembershipType> doFindAll() {
+	protected List<Membership> doFindAll() {
 		return membershipTypeRepository.findAll(boxService.findCurrentCrossFitBox());
 	}
 
@@ -94,13 +94,13 @@ public class MembershipTypeResource {
 	 * GET /membershipTypes/:id -> get the "id" membershipType.
 	 */
 	@RequestMapping(value = "/membershipTypes/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MembershipType> get(@PathVariable Long id) {
+	public ResponseEntity<Membership> get(@PathVariable Long id) {
 		log.debug("REST request to get MembershipType : {}", id);
 		return Optional.ofNullable(doGet(id)).map(membershipType -> new ResponseEntity<>(membershipType, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	protected MembershipType doGet(Long id) {
+	protected Membership doGet(Long id) {
 		return membershipTypeRepository.findOne(id, boxService.findCurrentCrossFitBox());
 	}
 
