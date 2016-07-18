@@ -25,7 +25,7 @@
             <column name="member_id" type="bigint">
             	<constraints nullable="false" />
             </column>
-            <column name="membershiptype_id" type="bigint">
+            <column name="membership_id" type="bigint">
             	<constraints nullable="false" />
             </column>
             <column name="subscription_start_date" type="date">
@@ -40,37 +40,14 @@
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
                                  
-		<addForeignKeyConstraint baseColumnNames="membershiptype_id"
+		<addForeignKeyConstraint baseColumnNames="membership_id"
                                  baseTableName="SUBSCRIPTION"
-                                 constraintName="fk_subscription_membershiptype_id"
+                                 constraintName="fk_subscription_membership_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="MEMBERSHIPTYPE"/>
+                                 referencedTableName="MEMBERSHIP"/>
 
 
 
-        <createTable tableName="SUBSCRIPTION_TIMESLOTTYPE">
-            <column name="souscription_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="timeslottype_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="souscription_id, timeslottype_id" tableName="SUBSCRIPTION_TIMESLOTTYPE"/>
-
-        <addForeignKeyConstraint baseColumnNames="souscription_id"
-                                 baseTableName="SUBSCRIPTION_TIMESLOTTYPE"
-                                 constraintName="fk_subscription_timeslottype_souscription_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="SUBSCRIPTION"/>
-
-        <addForeignKeyConstraint baseColumnNames="timeslottype_id"
-                                 baseTableName="SUBSCRIPTION_TIMESLOTTYPE"
-                                 constraintName="fk_subscription_timeslottype_timeslottype_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="TIMESLOTTYPE"/>
-        
 
     </changeSet>
 </databaseChangeLog>

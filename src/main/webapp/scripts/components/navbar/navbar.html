@@ -1,0 +1,43 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-switch="isAuthenticated()">
+	<ul class="nav navbar-nav navbar-right">
+
+
+		<li ng-class="{active: $state.includes('account')}"><a
+			ui-sref="account"> <span class="glyphicon glyphicon-user"
+				ui-sref-active="active" ng-switch-when="true"
+				title="{{account.firstName}} {{account.lastName}}"></span>
+		</a></li>
+
+		<li ui-sref-active="active" ng-switch-when="true"><a href=""
+			ng-click="logout()"> <span class="glyphicon glyphicon-log-out"
+				title="{{'global.menu.account.logout'|translate}}"></span>
+		</a></li>
+	</ul>
+	<ul class="nav navbar-nav navbar-left">
+		<li ng-class="{active: $state.includes('home')}">
+			<a ui-sref="home"> <span class="glyphicon glyphicon-home"
+				title="{{'global.menu.home'|translate}}"></span>
+		</a>
+		</li>
+
+		<li ng-class="{active: $state.includes('members')}"
+			ng-switch-when="true"><a ui-sref="members"> <span
+				class="glyphicon glyphicon-user"
+				title="{{'global.menu.members'|translate}}"></span>
+		</a></li>
+
+
+		<li ng-class="{active: $state.includes('planning')}"
+			ng-switch-when="true"><a ui-sref="planning"> <span
+				class="glyphicon glyphicon-calendar"
+				title="{{'global.menu.planning'|translate}}"></span>
+		</a></li>
+
+		<li ng-class="{active: $state.includes('bookings')}"
+			ng-switch-when="true"><a ui-sref="bookings"> <span
+				class="glyphicon glyphicon-time"
+				title="{{'global.menu.bookings'|translate}}"></span>
+		</a></li>
+
+	</ul>
+</nav>

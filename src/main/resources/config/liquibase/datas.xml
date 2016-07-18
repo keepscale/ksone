@@ -139,4 +139,284 @@
 			<column name="authority_name" value="ROLE_ADMIN" />
 		</insert>
 	</changeSet>
+	
+	<changeSet id="data-common" author="lgangloff">
+		
+		<insert tableName="TIMESLOTTYPE">			
+			<column name="id" value="1" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Fondation" />
+			<column name="description" value="Appréhension des bases du Crossfit" />
+			<column name="color" value="#0000FF" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="TIMESLOTTYPE">
+			<column name="id" value="2" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Découverte" />
+			<column name="description" value="Portes ouvertes, ouverture exceptionnelle" />
+			<column name="color" value="#0000FF" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="TIMESLOTTYPE">
+			<column name="id" value="3" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Normal" />
+			<column name="description" value="WOD" />
+			<column name="color" value="#0174DF" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		<insert tableName="TIMESLOTTYPE">
+			<column name="id" value="4" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Spécialisation" />
+			<column name="description" value="Travail de mouvements spécifiques" />
+			<column name="color" value="#DF7401" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="TIMESLOTTYPE">
+			<column name="id" value="5" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Accès libre" />
+			<column name="description" value="Séances libres" />
+			<column name="color" value="#FF4000" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		<insert tableName="TIMESLOTTYPE">
+			<column name="id" value="6" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Médical" />
+			<column name="description" value="Réservé à la rééducation" />
+			<column name="color" value="#DF7401" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		
+		
+		
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Fondations" />
+			<column name="price" value="50 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="3" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Drop in" />
+			<column name="price" value="15 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="1" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="4" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="5" />
+		</insert>
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Carte 10 séances" />
+			<column name="price" value="130 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="10" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="4" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="5" />
+		</insert>
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Double" />
+			<column name="price" value="55 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="2" />
+			<column name="type" value="SUM_PER_WEEK" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="4" />
+		</insert>
+		
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Triplet" />
+			<column name="price" value="70 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="3" />
+			<column name="type" value="SUM_PER_WEEK" />
+		</insert>
+		
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="4" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="-1" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="5" />
+		</insert>
+		
+		
+		
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Unlimited" />
+			<column name="price" value="85 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="-1" />
+			<column name="type" value="SUM" />
+		</insert>		
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="1" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="4" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="-1" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="5" />
+		</insert>
+	</changeSet>
 </databaseChangeLog>
