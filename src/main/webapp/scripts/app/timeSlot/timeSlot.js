@@ -7,7 +7,7 @@ angular.module('crossfitApp')
                 parent: 'site',
                 url: '/timeSlots/:startDate/:endDate',
                 data: {
-                    roles: ['ROLE_MANAGER'],
+                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                     pageTitle: 'crossfitApp.timeSlot.home.title'
                 },
                 views: {
@@ -28,7 +28,7 @@ angular.module('crossfitApp')
                 parent: 'timeSlot',
                 url: '/new/:dayOfWeek/:start/:end',
                 data: {
-                    roles: ['ROLE_MANAGER'],
+                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
                 onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
                     $modal.open({
@@ -54,7 +54,7 @@ angular.module('crossfitApp')
                 parent: 'timeSlot',
                 url: '/{id}/edit',
                 data: {
-                    roles: ['ROLE_MANAGER'],
+                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
                 onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
                     $modal.open({
@@ -76,7 +76,7 @@ angular.module('crossfitApp')
                 parent: 'timeSlot',
                 url: '/{id}/delete',
                 data: {
-                    roles: ['ROLE_MANAGER'],
+                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
                 onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
                     $modal.open({
