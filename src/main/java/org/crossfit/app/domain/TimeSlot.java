@@ -78,7 +78,7 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     private Integer maxAttendees;
 
     @ManyToOne
-    private TimeSlotType type;
+    private TimeSlotType timeSlotType;
 
     @ManyToOne
     private CrossFitBox box;
@@ -131,12 +131,12 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
         this.maxAttendees = maxAttendees;
     }
 
-    public TimeSlotType getType() {
-		return type;
+	public TimeSlotType getTimeSlotType() {
+		return timeSlotType;
 	}
 
-	public void setType(TimeSlotType type) {
-		this.type = type;
+	public void setTimeSlotType(TimeSlotType timeSlotType) {
+		this.timeSlotType = timeSlotType;
 	}
 
 	public CrossFitBox getBox() {

@@ -1,0 +1,26 @@
+{
+    "crossfitApp": {
+        "timeSlot" : {
+            "home": {
+                "title": "Créneaux",
+                "createLabel": "Créer un nouveau créneau",
+                "createOrEditLabel": "Créer ou éditer un créneau"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le créneau {{ id }} ?"
+            },
+            "detail": {
+                "title": "Créneau horaire"
+            },
+            "created": "Un nouveau créneau a été créé avec l'identifiant {{ param }}",
+            "updated": "Créneau avec l'identifiant {{ param }} mis à jour",
+            "deleted": "Créneau avec l'identifiant {{ param }} supprimé.",
+            "dayOfWeek": "Jour de la semaine",
+            "name": "Libellé",
+            "startTime": "Heure de début",
+            "endTime": "Heure de fin",
+            "maxAttendees": "MaxAttendees"
+        }
+    }
+}
+

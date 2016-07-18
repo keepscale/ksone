@@ -1,0 +1,58 @@
+<div ng-cloak>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div ng-switch="isAuthenticated()">
+
+                <div class="alert alert-warning" ng-switch-when="false" translate="global.messages.info.authenticated">
+                    If you want to <a href="#/login">authenticate</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").
+                </div>
+                
+                
+                <div class="planning" ng-switch-when="true">
+                	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
+                	</div>
+					<table class="table" cellspacing="0" cellpadding="0">
+						<tbody ng-repeat="day in planning">
+							<tr ng-repeat="slot in day.slots">
+								<th ng-if="!($index%day.slots.length)" rowspan="{{day.slots.length}}" width="30px">
+									{{day.date | date:'dd MMM'}}
+								</th>
+								<td  width="40px">
+									{{slot.start | date:'HH:mm'}}
+									{{slot.end   | date:'HH:mm'}}</td>
+								<td>
+									<div class="panel panel-default collapsed in">
+										<div class="panel-heading">
+										
+											<a href="#/" ng-if="slot.validatedBookings.length" ng-click="slot.open = !slot.open" class="pull-left glyphicon" ng-class="{'glyphicon-plus': !slot.open, 'glyphicon-minus': slot.open}">
+											</a> &nbsp
+										
+											{{slot.requiredLevel}}. Inscrits: {{slot.validatedBookings.length}}/{{slot.maxAttendees}}. En liste d'attente: {{slot.waitingBookings.length}}
+										</div>
+										<ul collapse="!slot.open" class="list-group" >
+										
+											<li class="list-group-item "
+												ng-repeat="booking in slot.validatedBookings">
+												{{booking.owner.user.firstName}}
+												{{booking.owner.user.lastName}} 
+												<span class="badge">{{booking.owner.level}}</span></li>
+												
+											<li class="list-group-item list-group-item-warning"
+												ng-repeat="booking in slot.waitingBookings">
+												{{booking.owner.user.firstName}}
+												{{booking.owner.user.lastName}} 
+												<span class="badge">{{booking.owner.level}}</span></li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+</div>

@@ -3,6 +3,9 @@
         "title": "Bienvenue !",
         "logged": {
             "message": "Vous êtes connecté en tant que \"{{username}}\"."
+        },
+        "planning": {
+            "no.timeslot": "Aucun créneau de configuré"
         }
     }
 }

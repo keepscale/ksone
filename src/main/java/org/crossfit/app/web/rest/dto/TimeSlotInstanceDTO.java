@@ -63,7 +63,7 @@ public class TimeSlotInstanceDTO {
 	}
 
 	public TimeSlotType getTimeSlotType() {
-		return slot.getType();
+		return slot.getTimeSlotType();
 	}
 
 	public List<Booking> getValidatedBookings() {
