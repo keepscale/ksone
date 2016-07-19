@@ -3,7 +3,6 @@
 angular.module('crossfitApp')
     .controller('TimeSlotController', function ($scope, $state, $stateParams, TimeSlot, TimeSlotEvent, DateUtils) {
     	$scope.eventSources = [];
-    	var parts = $stateParams.startDate.split('-');
     	  
         $scope.uiConfig = {
 			calendar:{
@@ -13,7 +12,7 @@ angular.module('crossfitApp')
 					left: '', center: '', right: 'today prev,next'
 				},
 				firstDay: 1,
-				defaultDate: $stateParams.startDate ? new Date(parts[0], parts[1]-1, parts[2]) : new Date(),
+				defaultDate: $stateParams.startDate ? DateUtils.parseDateAsDate($stateParams.startDate) : new Date(),
 				defaultView: 'agendaWeek',
 				allDaySlot: false,
 				columnFormat: 'ddd D MMM',
@@ -32,8 +31,9 @@ angular.module('crossfitApp')
 					if (dayOfWeek == 0){
 						dayOfWeek = 7;
 					}
-					var startTime = startD.getUTCHours() + ":" + startD.getUTCMinutes() + ":" + startD.getUTCSeconds();
-					var endTime = endD.getUTCHours() + ":" + endD.getUTCMinutes() + ":" + endD.getUTCSeconds();
+					var startTime =  DateUtils.formatDateAsTime(startD);
+					var endTime = DateUtils.formatDateAsTime(endD);
+					
 		            $state.go('timeSlot.new', {dayOfWeek:dayOfWeek,start:startTime, end:endTime});
 				},
 				eventClick: function(calEvent, jsEvent, view) {
@@ -51,8 +51,8 @@ angular.module('crossfitApp')
 						dayOfWeek = 7;
 					}
 
-					var startTime = startD.getUTCHours() + ":" + startD.getUTCMinutes() + ":" + startD.getUTCSeconds();
-					var endTime = endD.getUTCHours() + ":" + endD.getUTCMinutes() + ":" + endD.getUTCSeconds();
+					var startTime =  DateUtils.formatDateAsTime(startD);
+					var endTime = DateUtils.formatDateAsTime(endD);
 					TimeSlot.get({id : event.id}, function(result) {
 						result.startTime = startTime;
 						result.endTime = endTime;
@@ -70,8 +70,8 @@ angular.module('crossfitApp')
 					if (dayOfWeek == 0){
 						dayOfWeek = 7;
 					}
-					var startTime = startD.getUTCHours() + ":" + startD.getUTCMinutes() + ":" + startD.getUTCSeconds();
-					var endTime = endD.getUTCHours() + ":" + endD.getUTCMinutes() + ":" + endD.getUTCSeconds();
+					var startTime =  DateUtils.formatDateAsTime(startD);
+					var endTime = DateUtils.formatDateAsTime(endD);
 					TimeSlot.get({id : event.id}, function(result) {
 						result.startTime = startTime;
 						result.endTime = endTime;
@@ -108,5 +108,6 @@ angular.module('crossfitApp')
         $scope.clear = function () {
             $scope.timeSlot = {dayOfWeek: null, startTime: null, endTime: null, maxAttendees: null, requiredLevel: null, id: null};
         };
+        
         
     });

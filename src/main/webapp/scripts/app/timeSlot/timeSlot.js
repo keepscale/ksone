@@ -30,7 +30,7 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
                     $modal.open({
                         templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
                         controller: 'TimeSlotDialogController',
@@ -39,8 +39,12 @@ angular.module('crossfitApp')
                             entity: function () {
                             	var d = new Date($stateParams.startDate);
                                 d.setDate(d.getDate() + ($stateParams.dayOfWeek - 1));
-                                return {recurrent:'DAY_OF_WEEK', date: d, dayOfWeek: parseInt($stateParams.dayOfWeek), 
-                                	startTime: $stateParams.start, endTime: $stateParams.end, maxAttendees: 12, requiredLevel: 'NOVICE', id: null};
+                                return {
+                                	recurrent:'DAY_OF_WEEK', date: d, dayOfWeek: parseInt($stateParams.dayOfWeek), 
+                                	startTime: DateUtils.parseDateAsTime($stateParams.start), 
+                                	endTime: DateUtils.parseDateAsTime($stateParams.end), 
+                                	maxAttendees: 12, 
+                                	id: null};
                             }
                         }
                     }).result.then(function(result) {

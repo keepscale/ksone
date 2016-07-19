@@ -23,23 +23,23 @@
 
             <label translate="crossfitApp.timeSlot.startTime" for="field_startTime">startTime</label>
        
-       		<input id="field_startTime" hidden-date="true"
-       			ng-model-options="{timezone: 'UTC'}" ng-model="timeSlot.startTime" how-weeks="false" minute-step="30" 
-       			show-meridian="false" date-format="dd/MM/yyyy" readonly-time="false"></input>
+       		<datetimepicker id="field_startTime" hidden-date="true"
+       			ng-model-options="{timezone: 'UTC'}" ng-model="timeSlot.startTime"
+       			show-meridian="false"></datetimepicker>
        			
             <label translate="crossfitApp.timeSlot.endTime" for="field_endTime">endTime</label>
        
-       		<input id="field_endTime" hidden-date="true"
-       			ng-model-options="{timezone: 'UTC'}" ng-model="timeSlot.endTime" how-weeks="false" minute-step="30" 
-       			show-meridian="false" date-format="dd/MM/yyyy" readonly-time="false"></input>
+       		<datetimepicker id="field_endTime" hidden-date="true"
+       			ng-model-options="{timezone: 'UTC'}" ng-model="timeSlot.endTime" 
+       			show-meridian="false" readonly-time="false"></datetimepicker>
 
-            <div ng-show="editForm.date.$invalid">
+            <div ng-show="editForm.time.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.date.$error.required" translate="entity.validation.required">
+                    ng-show="editForm.time.$error.required" translate="entity.validation.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.date.$error.datetimelocal" translate="entity.validation.datetimelocal">
+                    ng-show="editForm.time.$error.datetimelocal" translate="entity.validation.datetimelocal">
                     This field should be a date and time.
                 </p>
             </div>
@@ -50,12 +50,8 @@
             Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}
 			<br/>
 			<input type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
-			Uniquement le
-			
-			<datetimepicker id="field_date" hidden-time="true"
-      			ng-model-options="{timezone: 'UTC'}" ng-model="timeSlot.date" how-weeks="false" minute-step="30" 
-      			show-meridian="false" date-format="EEE dd MMM yyyy" readonly-time="false"></datetimepicker>
-			
+			Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}
+		
         </div>
         
         <div class="form-group">
@@ -76,15 +72,13 @@
         </div>
         
         <div class="form-group">
-            <label translate="crossfitApp.timeSlot.requiredLevel" for="field_requiredLevel">RequiredLevel</label>
-            <select class="form-control" name="requiredLevel" ng-model="timeSlot.requiredLevel" id="field_requiredLevel" required>
-                <option value="FOUNDATION" translate="crossfitApp.Level.FOUNDATION">FOUNDATION</option>
-                <option value="NOVICE" translate="crossfitApp.Level.NOVICE">NOVICE</option>
-                <option value="MIDDLE" translate="crossfitApp.Level.MIDDLE">MIDDLE</option>
-                <option value="SKILLED" translate="crossfitApp.Level.SKILLED">SKILLED</option>
+            <label translate="crossfitApp.timeSlot.timeSlotType" for="field_timeSlotType">timeSlotType</label>
+            
+            <select class="form-control" id="field_timeSlotType" name="timeSlotType" ng-model="timeSlot.timeSlotType" ng-options="timeSlotType as timeSlotType.name for timeSlotType in timeSlotTypes track by timeSlotType.id">
+                <option value=""></option>
             </select>
-
-            <div ng-show="editForm.requiredLevel.$invalid">
+            
+            <div ng-show="editForm.timeSlotType.$invalid">
                 <p class="help-block"
                     ng-show="editForm.requiredLevel.$error.required" translate="entity.validation.required">
                     This field is required.

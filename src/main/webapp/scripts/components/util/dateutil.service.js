@@ -38,5 +38,26 @@ angular.module('crossfitApp')
         } else {
           return null;
         }
-      }
+      };
+      this.formatDateAsTime = function(date){
+        	return (date.getUTCHours()) + ":" + (date.getUTCMinutes()) + ":" + date.getUTCSeconds();
+      };
+      this.parseDateAsTime = function(timestr){
+		var parts = timestr.split(':');
+		var utcDate = new Date();
+		utcDate.setHours(parts[0]);
+		utcDate.setMinutes(parts[1]);
+		utcDate.setSeconds(parts[2]);
+		utcDate.setMilliseconds(0);
+		return utcDate;
+       };
+	this.parseDateAsDate = function(datestr){
+		var parts = datestr.split('-');
+        var utcDate = new Date();
+        utcDate.setUTCFullYear(parts[0]);
+        utcDate.setUTCMonth(parts[1]-1);
+        utcDate.setUTCDate(parts[2]);
+		return utcDate;
+	}
+      
     });
