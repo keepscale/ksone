@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp').controller('TimeSlotDialogController',
-    ['$scope', '$stateParams', '$state', '$modalInstance', 'entity', 'TimeSlot',
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'TimeSlot',
         function($scope, $stateParams, $state, $modalInstance, entity, TimeSlot) {
 
         $scope.timeSlot = entity;

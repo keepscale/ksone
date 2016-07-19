@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 
+angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 'ui.calendar',
                'ui.bootstrap', // for modal dialogs
     'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker'])
 
@@ -97,4 +97,23 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
         
-    });
+    })
+    .filter('dayOfWeek', function($filter) {
+		return function(input) {
+			var d = new Date();
+			var currentDay = d.getDay();
+			var distance = input - currentDay;
+			d.setDate(d.getDate() + distance);
+		    return $filter('date')(d, 'EEEE');
+		};
+	})
+    .filter('hour', function($filter) {
+		return function(input) {
+			if (!input)
+				return;
+			var parts = input.split(':');
+			var d = new Date();
+			d.setHours(parts[0], parts[1]);
+		    return $filter('date')(d, 'H:mm');
+		};
+	});

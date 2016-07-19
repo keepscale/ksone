@@ -30,7 +30,7 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
                         templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
                         controller: 'TimeSlotDialogController',
@@ -56,7 +56,7 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
                         templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
                         controller: 'TimeSlotDialogController',
@@ -78,7 +78,7 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$modal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
                         templateUrl: 'scripts/app/timeSlot/timeSlot-dialog-suppr.html',
                         controller: 'TimeSlotDialogSupprController',
