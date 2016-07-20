@@ -40,6 +40,10 @@ angular.module('crossfitApp')
         }
       };
       this.formatDateAsTime = function(date){
+        	return (date.getHours()) + ":" + (date.getMinutes()) + ":" + date.getSeconds();
+      };
+
+      this.formatDateAsTimeUTC = function(date){
         	return (date.getUTCHours()) + ":" + (date.getUTCMinutes()) + ":" + date.getUTCSeconds();
       };
       this.parseDateAsTime = function(timestr){

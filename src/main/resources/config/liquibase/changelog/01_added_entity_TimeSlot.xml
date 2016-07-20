@@ -35,13 +35,13 @@
             <column name="box_id" type="bigint">
                 <constraints nullable="false" />
             </column>
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_by" type="varchar(100)"/>
             <column name="last_modified_date" type="timestamp"/>
  
         </createTable>
@@ -73,13 +73,13 @@
             <column name="timeslottype_id" type="bigint"/>
             <column name="box_id" type="bigint"/>
             
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_by" type="varchar(100)"/>
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
         <sql>

@@ -31,7 +31,7 @@
             <column name="box_id" type="bigint">
                 <constraints nullable="false" />
             </column>
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}">

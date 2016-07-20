@@ -111,9 +111,6 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
 		return function(input) {
 			if (!input)
 				return;
-			var parts = input.split(':');
-			var d = new Date();
-			d.setHours(parts[0], parts[1]);
-		    return $filter('date')(d, 'H:mm');
+		    return $filter('date')(input, 'H:mm');
 		};
 	});

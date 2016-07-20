@@ -54,19 +54,22 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     @Max(value = 7)        
     @Column(name = "day_of_week", nullable = false)
     private Integer dayOfWeek;
-          
+    
+    
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     @Column(name = "date", nullable = true)
     private DateTime date;
     
+    @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsTimestamp")
     @JsonSerialize(using = CustomLocalTimeSerializer.class)
     @JsonDeserialize(using = CustomLocalTimeDeserializer.class)
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
     
+    @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsTimestamp")
     @JsonSerialize(using = CustomLocalTimeSerializer.class)
     @JsonDeserialize(using = CustomLocalTimeDeserializer.class)
@@ -77,6 +80,7 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     @Column(name = "max_attendees")
     private Integer maxAttendees;
 
+    @NotNull
     @ManyToOne
     private TimeSlotType timeSlotType;
 

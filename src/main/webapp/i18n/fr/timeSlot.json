@@ -16,10 +16,11 @@
             "updated": "Créneau avec l'identifiant {{ param }} mis à jour",
             "deleted": "Créneau avec l'identifiant {{ param }} supprimé.",
             "dayOfWeek": "Jour de la semaine",
-            "name": "Libellé",
+            "name": "Nom du WOD",
             "startTime": "A lieu de",
             "endTime": "à",
-            "maxAttendees": "Nombre maximum de participants"
+            "maxAttendees": "Nombre maximum de participants",
+            "timeSlotType": "Type de séance"
         }
     }
 }

@@ -31,8 +31,8 @@ angular.module('crossfitApp')
 					if (dayOfWeek == 0){
 						dayOfWeek = 7;
 					}
-					var startTime =  DateUtils.formatDateAsTime(startD);
-					var endTime = DateUtils.formatDateAsTime(endD);
+					var startTime =  DateUtils.formatDateAsTimeUTC(startD);
+					var endTime = DateUtils.formatDateAsTimeUTC(endD);
 					
 		            $state.go('timeSlot.new', {dayOfWeek:dayOfWeek,start:startTime, end:endTime});
 				},
@@ -51,12 +51,17 @@ angular.module('crossfitApp')
 						dayOfWeek = 7;
 					}
 
-					var startTime =  DateUtils.formatDateAsTime(startD);
-					var endTime = DateUtils.formatDateAsTime(endD);
+					var startTime =  DateUtils.formatDateAsTimeUTC(startD);
+					var endTime = DateUtils.formatDateAsTimeUTC(endD);
 					TimeSlot.get({id : event.id}, function(result) {
 						result.startTime = startTime;
 						result.endTime = endTime;
-						result.dayOfWeek = dayOfWeek;
+						if (result.recurrent == 'DAY_OF_WEEK'){
+							result.dayOfWeek = dayOfWeek;
+						}
+						else{
+							result.date = startD;
+						}
 		                TimeSlot.update(result);
 					});
 					 
@@ -66,16 +71,11 @@ angular.module('crossfitApp')
 					var startD = new Date(event.start);
 					var endD = new Date(event.end);
 
-					var dayOfWeek = startD.getDay();
-					if (dayOfWeek == 0){
-						dayOfWeek = 7;
-					}
-					var startTime =  DateUtils.formatDateAsTime(startD);
-					var endTime = DateUtils.formatDateAsTime(endD);
+					var startTime =  DateUtils.formatDateAsTimeUTC(startD);
+					var endTime = DateUtils.formatDateAsTimeUTC(endD);
 					TimeSlot.get({id : event.id}, function(result) {
 						result.startTime = startTime;
 						result.endTime = endTime;
-						result.dayOfWeek = dayOfWeek;
 		                TimeSlot.update(result);
 					});
 			    }, 
