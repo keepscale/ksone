@@ -54,8 +54,8 @@ angular.module('crossfitApp')
 					var startTime =  DateUtils.formatDateAsTimeUTC(startD);
 					var endTime = DateUtils.formatDateAsTimeUTC(endD);
 					TimeSlot.get({id : event.id}, function(result) {
-						result.startTime = startTime;
-						result.endTime = endTime;
+						result.startTime = DateUtils.parseDateAsTime(startTime);
+						result.endTime = DateUtils.parseDateAsTime(endTime);
 						if (result.recurrent == 'DAY_OF_WEEK'){
 							result.dayOfWeek = dayOfWeek;
 						}
@@ -74,8 +74,8 @@ angular.module('crossfitApp')
 					var startTime =  DateUtils.formatDateAsTimeUTC(startD);
 					var endTime = DateUtils.formatDateAsTimeUTC(endD);
 					TimeSlot.get({id : event.id}, function(result) {
-						result.startTime = startTime;
-						result.endTime = endTime;
+						result.startTime = DateUtils.parseDateAsTime(startTime);
+						result.endTime = DateUtils.parseDateAsTime(endTime);
 		                TimeSlot.update(result);
 					});
 			    }, 

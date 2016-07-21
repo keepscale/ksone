@@ -17,12 +17,16 @@ angular.module('crossfitApp')
             'update': {
                 method: 'PUT',
                 transformRequest: function (data) {
+                    data.startTime = DateUtils.formatDateAsTime(data.startTime);
+                    data.endTime = DateUtils.formatDateAsTime(data.endTime);
                     return angular.toJson(data);
                 }
             },
             'save': {
                 method: 'POST',
                 transformRequest: function (data) {
+                    data.startTime = DateUtils.formatDateAsTime(data.startTime);
+                    data.endTime = DateUtils.formatDateAsTime(data.endTime);
                     return angular.toJson(data);
                 }
             }

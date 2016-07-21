@@ -23,6 +23,8 @@ import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -96,6 +98,12 @@ public class TimeSlotResource {
 		}		
 		if (timeSlot.getDayOfWeek() == null && timeSlot.getDate() == null){
 			throw new BadRequestException("A new timeslot must have a date or a day of week");
+		}
+		
+		LocalTime startAt = timeSlot.getStartTime();
+		LocalTime endAt = timeSlot.getEndTime();
+		if (startAt.isAfter(endAt)){
+			timeSlot.setEndTime(startAt.plus(Period.fieldDifference(endAt, startAt)));
 		}
 		
 		TimeSlot result = timeSlotRepository.save(timeSlot);
