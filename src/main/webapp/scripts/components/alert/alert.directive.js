@@ -5,7 +5,7 @@ angular.module('crossfitApp')
 		return {
             restrict: 'E',
             template: '<div class="alerts" ng-cloak="">' +
-			                '<alert ng-cloak="" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><pre>{{ alert.msg }}</pre></alert>' +
+			                '<div ng-cloak="" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><pre>{{ alert.msg }}</pre></div>' +
 			            '</div>',
 			controller: ['$scope', 
 	            function($scope) {
@@ -21,7 +21,7 @@ angular.module('crossfitApp')
 		return {
             restrict: 'E',
             template: '<div class="alerts" ng-cloak="">' +
-			                '<alert ng-cloak="" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><pre>{{ alert.msg }}</pre></alert>' +
+			                '<div ng-cloak="" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"><pre>{{ alert.msg }}</pre></div>' +
 			            '</div>',
 			controller: ['$scope', 
 	            function($scope) {

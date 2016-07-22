@@ -91,5 +91,9 @@
             "datetimelocal": "Ce champs doit être une date et une heure."
         }
     },
-    "footer": "Ceci est votre pied de page"
+    "footer": "Ceci est votre pied de page",
+    "error" : {
+        "serverNotReachable" : "Server inaccessible",
+        "NotNull" : "Le {{fieldName}} est obligatoire !"
+    }
 }

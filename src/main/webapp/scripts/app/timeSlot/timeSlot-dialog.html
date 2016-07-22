@@ -23,54 +23,54 @@
 
             <label translate="crossfitApp.timeSlot.startTime" for="field_startTime">startTime</label>
        
-       		<datetimepicker id="field_startTime" hidden-date="true" ng-model="timeSlot.startTime"
+       		<datetimepicker id="field_startTime" name="startTime" hidden-date="true" ng-model="timeSlot.startTime"
        			show-meridian="false"></datetimepicker>
        			
             <label translate="crossfitApp.timeSlot.endTime" for="field_endTime">endTime</label>
        
-       		<datetimepicker id="field_endTime" hidden-date="true" ng-model="timeSlot.endTime" 
+       		<datetimepicker id="field_endTime" name="endTime" hidden-date="true" ng-model="timeSlot.endTime" 
        			show-meridian="false" readonly-time="false"></datetimepicker>
 
-            <div ng-show="editForm.time.$invalid">
+            <div ng-show="editForm.startTime.$invalid || editForm.endTime.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.time.$error.required" translate="entity.validation.required">
+                    ng-show="editForm.startTime.$error.required || editForm.endTime.$error.required " translate="entity.validation.required">
                     This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.time.$error.datetimelocal" translate="entity.validation.datetimelocal">
-                    This field should be a date and time.
                 </p>
             </div>
         </div>
         
         <div class="form-group"  ng-show="timeSlot.id == null">
-           <input type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DAY_OF_WEEK"> 
-            Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}
+           <input id="field_recurrent_week" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DAY_OF_WEEK"> 
+            <label for="field_recurrent_week">Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}</label>
 			<br/>
-			<input type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
-			Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}
+			<input id="field_recurrent_date" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
+			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}</label>
 		
         </div>
         <div class="form-group" ng-show="timeSlot.id != null">
-            <label transladte="crossfitApp.timeSlot.recurrent" ng-show="timeSlot.recurrent == 'DATE'">
+            <label ng-show="timeSlot.recurrent == 'DATE'">
             	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
-            <label transladte="crossfitApp.timeSlot.recurrent" ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
+            <label ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
             	Tous les {{timeSlot.dayOfWeek | dayOfWeek}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
         </div>
         
         <div class="form-group">
             <label translate="crossfitApp.timeSlot.maxAttendees" for="field_maxAttendees">MaxAttendees</label>
             <input type="number" class="form-control" name="maxAttendees" id="field_maxAttendees"
-                    ng-model="timeSlot.maxAttendees" min="0">
+                    ng-model="timeSlot.maxAttendees" min="0" required>
 
             <div ng-show="editForm.maxAttendees.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.maxAttendees.$error.min" translate="entity.validation.min" translate-value-min="0">
+                    ng-show="editForm.maxAttendees.$error.min" translate="entity.validation.max" translate-value-min="0">
                     This field should be more than 0.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.maxAttendees.$error.number" translate="entity.validation.number">
                     This field should be a number.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.maxAttendees.$error.required" translate="entity.validation.required">
+                    This field is required.
                 </p>
             </div>
         </div>
@@ -78,12 +78,14 @@
         <div class="form-group">
             <label translate="crossfitApp.timeSlot.timeSlotType" for="field_timeSlotType">timeSlotType</label>
             
-            <select class="form-control" id="field_timeSlotType" name="timeSlotType" ng-model="timeSlot.timeSlotType" ng-options="timeSlotType as timeSlotType.name for timeSlotType in timeSlotTypes track by timeSlotType.id">
+            <select class="form-control" id="field_timeSlotType" name="timeSlotType" ng-model="timeSlot.timeSlotType" 
+            	ng-options="timeSlotType as timeSlotType.name for timeSlotType in timeSlotTypes track by timeSlotType.id" required>
+            	<option></option>
             </select>
             
             <div ng-show="editForm.timeSlotType.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.requiredLevel.$error.required" translate="entity.validation.required">
+                    ng-show="editForm.timeSlotType.$error.required" translate="entity.validation.required">
                     This field is required.
                 </p>
             </div>
@@ -99,7 +101,7 @@
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || editForm.$submitted" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm.$invalid" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
         </button>
     </div>
