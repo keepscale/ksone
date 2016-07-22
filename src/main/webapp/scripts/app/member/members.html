@@ -1,0 +1,167 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header" translate="crossfitApp.member.home.title" 
+			translate-values="{size: '{{members.length}}', totalCount: '{{totalMember}}'}">Members</h1>
+    	
+    	<jh-alert></jh-alert>
+    </div>
+    </div>
+    
+    
+    
+        <div class="row">
+            <div class="col-md-4">
+                <div class="btn-group">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Actions <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#" ui-sref="member.new">
+		                    <span class="glyphicon glyphicon-flash"></span> 
+		                    <span translate="crossfitApp.member.home.createLabel">Create a new Member</span>
+                  			</a></li>
+						
+						
+						<li><a href="#" ng-click="massActivation()" class="label-warning"> 
+		                    <span class="glyphicon glyphicon-flash"></span> 
+		                    <span translate="crossfitApp.member.home.massActivationLabel">Mass Activation</span>
+						</a></li>
+					</ul>
+            	</div>
+            </div>
+            <div class="col-md-4">
+	    		<span class="label alert-success">Actif</span>
+	    		<span class="label alert-warning">En attente</span>
+	    		<span class="label alert-danger">Bloque</span>
+            </div>
+                
+        </div>
+
+
+    <div class="modal fade" id="deleteMemberConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="deleteForm" ng-submit="confirmDelete(member.id)">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p translate="crossfitApp.member.delete.question" translate-values="{id: '{{member.id}}'}">Are you sure you want to delete this Member?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="deleteForm.$invalid" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <div class="modal fade" id="resetAccountMemberConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="resetAccountForm" ng-submit="confirmResetAccount(member.id)">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" translate="crossfitApp.member.reset.title">Confirm reset operation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p translate="crossfitApp.member.reset.question" translate-values="{id: '{{member.id}}'}">Are you sure you want to reset this Member?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="resetAccountForm.$invalid" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.member.action.reset">Reset</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="modal fade" id="massActivationConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="massActivationForm" ng-submit="confirmMassActivation()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" translate="crossfitApp.member.massActivation.title">Confirm Mass Activation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p translate="crossfitApp.member.massActivation.question">Are you sure you want to send activation mail to all members ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit"class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.member.action.sendMassActivation">Send</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th translate="crossfitApp.member.firstNameLastName">Membre</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll="loadPage(page + 1)" infinite-scroll-disabled="links['last'] == page">
+                <tr ng-repeat="member in members" ng-class="{
+                'danger': member.locked, 
+                'warning': !member.enabled, 
+                'success': member.enabled && !member.locked}">
+                    <td>{{member.lastName}} {{member.firstName}}</td>
+                    <td>
+	                    <div class="btn-group">
+							<button type="button" class="btn btn-default dropdown-toggle"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Actions <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-right">
+								<li><a href="#" ui-sref="member.edit({id:member.id})"><span
+										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
+										translate="crossfitApp.member.action.edit"> Edit</span></a></li>
+								<li><a href="#"
+									ui-sref="member.editMembership({id:member.id})"><span
+										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
+										translate="crossfitApp.member.action.editMembership">
+											EditMembership</span></a></li>
+																			
+								<li><a href="#" ng-click="resetAccount(member.id)"
+									class="label-warning"> <span
+										class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
+										translate="crossfitApp.member.action.reset"> Reset</span>
+								</a></li>
+								
+								<li><a href="#" ng-click="delete(member.id)" class="label-danger"> <span
+										class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
+										translate="crossfitApp.member.action.delete"> Delete</span>
+								</a></li>
+							</ul>
+						</div>
+				</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+

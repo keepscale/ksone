@@ -1,0 +1,89 @@
+{
+    "crossfitApp": {
+        "member" : {
+            "home": {
+                "title": "Gestion des {{ size }}/{{ totalCount }} adhérents",
+                "createLabel": "Créer un nouvel adhérent",
+                "massActivationLabel": "Activer tous les utilisateurs",
+                "createOrEditLabel": "Créer ou éditer un adhérent"
+            },
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer",
+            	"editMembership" : "Abonnement",
+            	"reset" : "Réinitialiser",
+            	"sendMassActivation" : "Envoyer le mail à tout le monde",
+            	"date.reinittoday" : "Réinitialiser",
+            	"date.addonemonth" : "+ 1 mois"
+        	},
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer l'adhérent {{ id }} ?"
+            },
+            "reset": {
+                "title": "Confirmer la réinitialisation du compte",
+                "question": "Etes-vous certain de vouloir réinitialiser le compte de l'adhérent {{ id }} ? (Un mail & un nouveau mot de passe lui seront envoyés)"
+                
+            },
+            "massActivation": {
+                "title": "Confirmer l'envoi du mail d'activation à tout le monde",
+                "question": "Etes-vous certain de vouloir envoyer le mail à TOUS les membres qui n'ont pas encore activé leur compte (également ceux en attente) ?"
+                
+            },
+            "detail": {
+                "title": "Adhérent"
+            },
+            "user": {
+            	"firstname" : "Prénom",
+            	"firstname.placeholder" : "Prénom",
+            	"lastname" : "Nom",
+            	"lastname.placeholder" : "Nom",
+            	"email" : "Email",
+            	"email.placeholder": "nom.prenom@crossfit.com",
+            	"language" : "Langue",
+            	"login" : "Login"
+            },
+            "telephonNumber": "Numéro de téléphone",
+            "sickNoteEndDate": "Date de fin de validité de l'ordonnance",
+            "membershipStartDate": "Date début d'adhésion",
+            "membershipEndDate": "Date de fin d'adhésion",
+            "level": "Niveau",
+            "sickNote": "Ordonnance",
+            "membershipType": "Type d'abonnement",
+            "messages": {
+	            "error": {
+	                "fail": "<strong>Une erreur est survenue!</strong> L'adhérent n'a pas été sauvegardé.",
+	                "emailexists": "<strong>Cet E-mail est déjà utilisé!</strong> Veuillez en choisir un autre."
+	            },
+	            "success": "<strong>L'adhérent a été sauvegardé!</strong>",
+	            "validate": {
+	                "firstname": {
+	                    "required": "Le prénom est requis.",
+	                    "minlength": "Le prénom doit comporter au moins un caractère",
+	                    "maxlength": "Le prénom ne doit pas comporter plus de 50 caractères"
+	                },
+	                "lastname": {
+	                    "required": "Le nom est requis.",
+	                    "minlength": "Le nom doit comporter au moins un caractère",
+	                    "maxlength": "Le nom ne doit pas comporter plus de 50 caractères"
+	                },
+	                "email": {
+	                    "required": "L'email est requis.",
+	                    "invalid": "L'email n'est pas valide.",
+	                    "minlength": "L'email doit comporter au moins 5 caractères",
+	                    "maxlength": "L'email ne doit pas comporter plus de 100 caractères"
+	                }
+	            }
+	        },
+	        "firstNameLastName": "Membre",
+	        "updated" : "Vos modifications ont bien été prises en compte",
+	        "settings":{
+	        	"title": "Mon compte",
+	        	"form": {
+	        		"button": {
+	        			"save": "Sauvegarder"}
+	        			}
+	        		}
+        }
+    }
+}
+
