@@ -1,45 +1,66 @@
 <div class="row">
 	<div class="col-lg-12">
-		<h1 class="page-header" translate="crossfitApp.member.home.title" 
-			translate-values="{size: '{{members.length}}', totalCount: '{{totalMember}}'}">Members</h1>
-    	
-    	<jh-alert></jh-alert>
+	   	<jh-alert></jh-alert>
     </div>
-    </div>
-    
-    
-    
-        <div class="row">
-            <div class="col-md-4">
-                <div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Actions <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a href="#" ui-sref="member.new">
-		                    <span class="glyphicon glyphicon-flash"></span> 
-		                    <span translate="crossfitApp.member.home.createLabel">Create a new Member</span>
-                  			</a></li>
-						
-						
-						<li><a href="#" ng-click="massActivation()" class="label-warning"> 
-		                    <span class="glyphicon glyphicon-flash"></span> 
-		                    <span translate="crossfitApp.member.home.massActivationLabel">Mass Activation</span>
-						</a></li>
-					</ul>
-            	</div>
-            </div>
-            <div class="col-md-4">
-	    		<span class="label alert-success">Actif</span>
-	    		<span class="label alert-warning">En attente</span>
-	    		<span class="label alert-danger">Bloque</span>
-            </div>
-                
-        </div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+ 		<div class="form-group">
+			<input type="search" class="form-control" placeholder="Rechercher"/>
+		</div>
+  		<div class="form-group">
+  			<div class="row">
+  				<div class="col-xs-6">
+					<label class="checkbox-inline alert-success">
+						<input type="checkbox" id="include_actif"> Actif
+					</label> 
+					<label class="checkbox-inline alert-warning">
+						<input type="checkbox" id="include_not_ennabled"> Jamais connecté
+					</label> 
+					<label class="checkbox-inline alert-danger">
+						<input type="checkbox" id="include_bloque"> Bloqué
+					</label> 
+  				</div>
+  				<div class="col-xs-6">
+					<div class="pull-right form-inline">
+						<input type="number" class="form-control" style="width: 70px;"/> <label>/ {{totalMember}} membres.</label>
+					</div>
+				</div>
+  			</div>
+		</div>
+		
+         <div class="form-group pull-right">
+		    <button type="button" class="btn btn-primary" ng-click="search()">
+		        <span translate="entity.action.search">Search</span>
+		    </button>
+		    
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Actions <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#" ui-sref="member.new"> <span
+							class="glyphicon glyphicon-flash"></span> <span
+							translate="crossfitApp.member.home.createLabel">Create a
+								new Member</span>
+					</a></li>
+	
+	
+					<li><a href="#" ng-click="massActivation()"
+						class="label-warning"> <span class="glyphicon glyphicon-flash"></span>
+							<span translate="crossfitApp.member.home.massActivationLabel">Mass
+								Activation</span>
+					</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</div>
 
 
-    <div class="modal fade" id="deleteMemberConfirmation">
+<div class="modal fade" id="deleteMemberConfirmation">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form name="deleteForm" ng-submit="confirmDelete(member.id)">
@@ -122,15 +143,21 @@
             <thead>
                 <tr>
                     <th translate="crossfitApp.member.firstNameLastName">Membre</th>
+                    <th translate="crossfitApp.member.abonnements">Abonnement</th>
+                    <th translate="crossfitApp.member.Statut">Statut</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody infinite-scroll="loadPage(page + 1)" infinite-scroll-disabled="links['last'] == page">
+            <tbody>
                 <tr ng-repeat="member in members" ng-class="{
                 'danger': member.locked, 
                 'warning': !member.enabled, 
                 'success': member.enabled && !member.locked}">
                     <td>{{member.lastName}} {{member.firstName}}</td>
+                    <td>{{member.lastName}} {{member.firstName}}</td>
+                    <td>{{member.lastName}} {{member.firstName}}</td>
+                    
+                    
                     <td>
 	                    <div class="btn-group">
 							<button type="button" class="btn btn-default dropdown-toggle"
