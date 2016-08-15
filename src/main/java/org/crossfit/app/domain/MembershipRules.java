@@ -24,6 +24,8 @@ import org.crossfit.app.domain.enumeration.MembershipRulesType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * A MembershipType.
@@ -56,7 +58,9 @@ public class MembershipRules implements Serializable {
     private Set<TimeSlotType> applyForTimeSlotTypes = new HashSet<>();
 
     
+    @JsonIgnore
     @ManyToOne(optional=false)
+    @JoinColumn(name="membership_id")
     private Membership membership;
 
     public Long getId() {

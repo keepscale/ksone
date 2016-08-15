@@ -2,20 +2,30 @@ package org.crossfit.app.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.crossfit.app.domain.Authority;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.repository.AuthorityRepository;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
+import org.crossfit.app.service.util.RandomUtil;
+import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,53 +43,22 @@ public class MemberService {
     private PasswordEncoder passwordEncoder;
 
     @Inject
-    private MemberRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Inject
     private PersistentTokenRepository persistentTokenRepository;
 
     @Inject
+    private CrossFitBoxSerivce boxService;
+    @Inject
     private AuthorityRepository authorityRepository;
+    @Inject
+	private MailService mailService;
+	
+	@Autowired
+	private BookingRepository bookingRepository;
 
-    public Member createUserInformation(String login, String password, String firstName, String lastName, String langKey) {
-
-    	Member newMember = new Member();
-        String encryptedPassword = passwordEncoder.encode(password);
-        newMember.setLogin(login);
-        // new user gets initially a generated password
-        newMember.setPassword(encryptedPassword);
-        newMember.setFirstName(firstName);
-        newMember.setLastName(lastName);
-        newMember.setLangKey(langKey);
-        
-        newMember.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
-        userRepository.save(newMember);
-        log.debug("Created Information for Member: {}", newMember);
-        return newMember;
-    }
-
-    public void updateUserInformation(String firstName, String lastName, String langKey, String telephonNumber) {
-        Member currentMember = SecurityUtils.getCurrentMember();
-		userRepository.findOneByLogin(currentMember.getLogin(), currentMember.getBox()).ifPresent(u -> {
-            u.setFirstName(firstName);
-            u.setLastName(lastName);
-            u.setLangKey(langKey);
-            u.setTelephonNumber(telephonNumber);
-            userRepository.save(u);
-            log.debug("Changed Information for User: {}", u);
-        });
-    }
-
-    public void changePassword(String password) {        
-    	Member currentMember = SecurityUtils.getCurrentMember();
-    	userRepository.findOneByLogin(currentMember.getLogin(), currentMember.getBox()).ifPresent(u-> {
-            String encryptedPassword = passwordEncoder.encode(password);
-            u.setPassword(encryptedPassword);
-            userRepository.save(u);
-            log.debug("Changed password for User: {}", u);
-        });
-    }
-
+  
     /**
      * Persistent Token are used for providing automatic authentication, they should be automatically deleted after
      * 30 days.
@@ -98,4 +77,83 @@ public class MemberService {
             persistentTokenRepository.delete(token);
         });
     }
+    
+    
+    public Member doSave(MemberDTO memberdto) {
+    	Member member;
+		if (memberdto.getId() == null){
+			
+			member = new Member();
+			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
+			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			member.setCreatedDate(DateTime.now());			
+
+		}
+		else{
+			
+			member = memberRepository.findOne(memberdto.getId());
+
+			
+			
+		}
+		member.setTitle(memberdto.getTitle());
+		member.setFirstName(memberdto.getFirstName());
+		member.setLastName(memberdto.getLastName());
+		member.setAddress(memberdto.getAddress());
+		member.setZipCode(memberdto.getZipCode());
+		member.setCity(memberdto.getCity());
+		member.setLangKey(memberdto.getLangKey());
+		member.setTelephonNumber(memberdto.getTelephonNumber());
+		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+		member.setLastModifiedDate(DateTime.now());
+		member.setBox(boxService.findCurrentCrossFitBox());
+
+		//L'email a changé ? on repasse par une validation d'email
+		if (!memberdto.getEmail().equals(member.getLogin())){
+			member.setLogin(memberdto.getEmail().toLowerCase());
+			initAccountAndSendMail(member);
+		}
+		member.getSubscriptions().clear();
+		for (Subscription s : memberdto.getSubscriptions()) {
+        	s.setMember(member);
+			member.getSubscriptions().add(s);
+		}
+		member = memberRepository.save(member);
+		return member;
+	}
+
+	public void initAccountAndSendMail(Member member) {
+		String generatePassword = RandomUtil.generatePassword();
+		member.setLogin(member.getLogin().toLowerCase());
+		member.setPassword(passwordEncoder.encode(generatePassword));
+		member.setEnabled(false);
+		member.setLocked(false);
+	
+		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+		member.setLastModifiedDate(DateTime.now());
+	
+		mailService.sendActivationEmail(member, generatePassword);
+		memberRepository.save(member);
+	}
+
+   public void changePassword(String password) {
+	   Optional.of(SecurityUtils.getCurrentMember()).ifPresent(u-> {
+            String encryptedPassword = passwordEncoder.encode(password);
+            u.setPassword(encryptedPassword);
+            memberRepository.save(u);
+            log.debug("Changed password for User: {}", u);
+        });
+    }
+   
+
+
+	public void deleteMember(Long id) {
+		Member memberToDelete = memberRepository.findOne(id);
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		if (memberToDelete.getBox().equals(currentCrossFitBox)){
+			bookingRepository.deleteAllByMember(memberToDelete);
+			memberRepository.delete(memberToDelete);
+		}
+	}
+
 }

@@ -6,19 +6,28 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Membership;
 import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.repository.MembershipRepository;
+import org.crossfit.app.repository.SearchMemberCriteria;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MailService;
+import org.crossfit.app.service.MemberService;
 import org.crossfit.app.service.util.RandomUtil;
+import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.dto.MembershipDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
@@ -48,91 +57,43 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberResource {
 
 	private final Logger log = LoggerFactory.getLogger(MemberResource.class);
-
+	@Inject
+	private CrossFitBoxSerivce boxService;
+	@Inject
+	private MemberService memberService;
 	@Inject
 	private MemberRepository memberRepository;
+    
     @Inject
-    private CrossFitBoxSerivce boxService;
-    @Inject
-    private PasswordEncoder passwordEncoder;
-    @Inject
-    private AuthorityRepository authorityRepository;
-    @Inject
-	private MailService mailService;
+    private SubscriptionRepository subscriptionRepository;
     
     
 	/**
 	 * POST /members -> Create a new member.
 	 */
 	@RequestMapping(value = "/members", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Member> create(@Valid @RequestBody Member member) throws URISyntaxException {
+	public ResponseEntity<Member> create(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
 		log.debug("REST request to save Member : {}", member);
 		if (member.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new member cannot already have an ID").body(null);
 		}
-		Member result = doSave(member);
+		Member result = memberService.doSave(member);
 		return ResponseEntity.created(new URI("/api/members/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("member", result.getId().toString())).body(result);
 	}
 
-	protected Member doSave(Member member) {
-		if (member.getId() == null){
-			
-			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
-			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.setCreatedDate(DateTime.now());			
-			member.setBox(boxService.findCurrentCrossFitBox());
-			
-
-			initAccountAndSendMail(member);
-		}
-		else{
-			//Les seuls champs modifiable de user, c'est le nom, le prénom & l'email
-			String firstName = member.getFirstName();
-			String lastName = member.getLastName();
-			String telephonNumber = member.getTelephonNumber();
-			String login = member.getLogin();
-			
-			Member actualMember = memberRepository.findOne(member.getId());
-			actualMember.setFirstName(firstName);
-			actualMember.setLastName(lastName);
-			actualMember.setTelephonNumber(telephonNumber);
-			actualMember.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			actualMember.setLastModifiedDate(DateTime.now());
-			
-			
-			//L'email a changé ? on repasse par une validation d'email
-			if (!login.equals(actualMember.getLogin())){
-				actualMember.setLogin(login.toLowerCase());
-				initAccountAndSendMail(member);
-			}
-		}
-
-		
-		return memberRepository.save(member);
-	}
-
-	protected void initAccountAndSendMail(Member member) {
-		String generatePassword = RandomUtil.generatePassword();
-		member.setLogin(member.getLogin().toLowerCase());
-		member.setPassword(passwordEncoder.encode(generatePassword));
-		member.setEnabled(false);
-		member.setLocked(false);
-
-		mailService.sendActivationEmail(member, generatePassword);
-	}
-
+	
 	/**
 	 * PUT /members -> Updates an existing member.
 	 */
 
 	@RequestMapping(value = "/members", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Member> update(@Valid @RequestBody Member member) throws URISyntaxException {
+	public ResponseEntity<Member> update(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
 		log.debug("REST request to update Member : {}", member);
 		if (member.getId() == null) {
 			return create(member);
 		}
-		Member result = doSave(member);
+		Member result = memberService.doSave(member);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("member", member.getId().toString()))
 				.body(result);
 	}
@@ -140,18 +101,27 @@ public class MemberResource {
 	/**
 	 * GET /members -> get all the members.
 	 */
-
 	@RequestMapping(value = "/members", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Member>> getAll(@RequestParam(value = "page", required = false) Integer offset,
-			@RequestParam(value = "per_page", required = false) Integer limit) throws URISyntaxException {
+	public ResponseEntity<List<MemberDTO>> getAll(
+			@RequestParam(value = "page", required = false) Integer offset,
+			@RequestParam(value = "per_page", required = false) Integer limit,
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "include_actif", required = false) boolean includeActif,
+			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
+			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
-		Page<Member> page = doFindAll(generatePageRequest);
-		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
-		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+		
+		List<MemberDTO> page = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
+//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
+		return new ResponseEntity<>(page, HttpStatus.OK);
 	}
 
-	protected Page<Member> doFindAll(Pageable generatePageRequest) {
-		return memberRepository.findAll(boxService.findCurrentCrossFitBox(), generatePageRequest);
+	protected List<MemberDTO> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+		search = search == null ? "" :search;
+		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+		return memberRepository.findAll(
+				boxService.findCurrentCrossFitBox(), customSearch, 
+				includeActif, includeNotEnabled, includeBloque, generatePageRequest).stream().map(convert()).collect(Collectors.toList());
 	}
 
 	/**
@@ -159,15 +129,20 @@ public class MemberResource {
 	 */
 
 	@RequestMapping(value = "/members/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Member> get(@PathVariable Long id) {
+	public ResponseEntity<MemberDTO> get(@PathVariable Long id) {
 		log.debug("REST request to get Member : {}", id);
 		return Optional.ofNullable(doGet(id))
 				.map(member -> new ResponseEntity<>(member, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	protected Member doGet(Long id) {
-		return memberRepository.findOne(id);
+	protected MemberDTO doGet(Long id) {
+		Member member = memberRepository.findOne(id);		
+		MemberDTO memberDTO = convert().apply(member);
+		
+		memberDTO.setSubscriptions(subscriptionRepository.findAllByMember(member));
+		
+		return memberDTO;
 	}
 
 	/**
@@ -182,25 +157,18 @@ public class MemberResource {
 	}
 
 	protected void doDelete(Long id) {
-		boxService.deleteMember(id);
+		memberService.deleteMember(id);
 	}
 	
 
 	@RequestMapping(value = "/members/{id}/resetaccount", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> reset(@PathVariable Long id) {
 		log.debug("REST request to reset Member : {}", id);
-		Member member = doGet(id);
+		Member member = memberRepository.findOne(id);
 		if (member != null){
-			member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.setLastModifiedDate(DateTime.now());
-		
-			initAccountAndSendMail(member);
 
-			try {
-				memberRepository.save(member);
-			} catch (Exception e) {
-				log.warn("Impossible d'envoyer le mail a {}", member.getLogin());
-			}
+			memberService.initAccountAndSendMail(member);
+
 		}
 		return ResponseEntity.ok().build();
 	}
@@ -215,14 +183,36 @@ public class MemberResource {
 			member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 			member.setLastModifiedDate(DateTime.now());
 			
-			initAccountAndSendMail(member);
 			
 			try {
-				memberRepository.save(member);
+				memberService.initAccountAndSendMail(member);
 			} catch (Exception e) {
 				log.warn("Impossible d'envoyer le mail a {}", member.getLogin());
 			}
 		}
 		return ResponseEntity.ok().build();
+	}
+	
+	
+
+	private Function<Member, MemberDTO> convert() {
+		return (member)->{
+			MemberDTO result = new MemberDTO();
+			result.setId(member.getId());
+			result.setFirstName(member.getFirstName());
+			result.setLastName(member.getLastName());
+			result.setTitle(member.getTitle());
+			result.setAddress(member.getAddress());
+			result.setZipCode(member.getZipCode());
+			result.setCity(member.getCity());
+			
+			result.setEnabled(member.isEnabled());
+			result.setLangKey(member.getLangKey());
+			result.setLocked(member.isLocked());
+			result.setEmail(member.getLogin());
+			result.setTelephonNumber(member.getTelephonNumber());
+			
+			return result;
+		};
 	}
 }

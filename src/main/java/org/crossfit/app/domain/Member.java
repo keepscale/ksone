@@ -1,7 +1,9 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -118,6 +120,9 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     private Set<PersistentToken> persistentTokens = new HashSet<>();
 
 
+    @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Subscription> subscriptions = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -126,7 +131,39 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
         this.id = id;
     }
 
-    public String getTelephonNumber() {
+    public Title getTitle() {
+		return title;
+	}
+
+	public void setTitle(Title title) {
+		this.title = title;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getTelephonNumber() {
         return telephonNumber;
     }
 
@@ -209,6 +246,15 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
         this.persistentTokens = persistentTokens;
     }
+    
+
+	public List<Subscription> getSubscriptions() {
+		return subscriptions;
+	}
+
+	public void setSubscriptions(List<Subscription> subscriptions) {
+		this.subscriptions = subscriptions;
+	}
 
 	@Override
 	public int hashCode() {
@@ -273,5 +319,7 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 	public boolean isEnabled() {
 		return enabled;
 	}
+	
+	
     
 }

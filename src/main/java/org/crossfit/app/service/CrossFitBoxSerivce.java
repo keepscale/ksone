@@ -35,12 +35,6 @@ public class CrossFitBoxSerivce {
 	
 	@Autowired
 	private HttpServletRequest request;
-
-	@Autowired
-	private MemberRepository memberRepository;
-	
-	@Autowired
-	private BookingRepository bookingRepository;
 	
 	public CrossFitBox findCurrentCrossFitBox(){
 		if (request.getAttribute("currentBox") != null){
@@ -94,15 +88,6 @@ public class CrossFitBoxSerivce {
 		}
 		else{
 			return null;
-		}
-	}
-
-	public void deleteMember(Long id) {
-		Member memberToDelete = memberRepository.findOne(id);
-		CrossFitBox currentCrossFitBox = findCurrentCrossFitBox();
-		if (memberToDelete.getBox().equals(currentCrossFitBox)){
-			bookingRepository.deleteAllByMember(memberToDelete);
-			memberRepository.delete(memberToDelete);
 		}
 	}
 }

@@ -1,0 +1,25 @@
+{
+    "crossfitApp": {
+        "membership" : {
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer"
+        	},
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer l'abonnement ' {{ id }} ?"
+            },
+            "detail": {
+                "title": "Abonnements"
+            }
+        },
+        
+        "membershiprules" : {
+            "type" : {
+            	"SUM" : "séance(s)",
+            	"SUM_PER_WEEK" : "séance(s) par semaine",
+            	"SUM_PER_MONTH" : "séance(s) par mois"
+            }
+        }
+    }
+}
+

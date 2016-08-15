@@ -6,58 +6,51 @@
 <div class="row">
 	<div class="col-lg-12">
  		<div class="form-group">
-			<input type="search" class="form-control" placeholder="Rechercher"/>
+			<input type="search" ng-model="searchLike" class="form-control" placeholder="Rechercher"/>
 		</div>
-  		<div class="form-group">
-  			<div class="row">
-  				<div class="col-xs-6">
-					<label class="checkbox-inline alert-success">
-						<input type="checkbox" id="include_actif"> Actif
-					</label> 
-					<label class="checkbox-inline alert-warning">
-						<input type="checkbox" id="include_not_ennabled"> Jamais connecté
-					</label> 
-					<label class="checkbox-inline alert-danger">
-						<input type="checkbox" id="include_bloque"> Bloqué
-					</label> 
-  				</div>
-  				<div class="col-xs-6">
-					<div class="pull-right form-inline">
-						<input type="number" class="form-control" style="width: 70px;"/> <label>/ {{totalMember}} membres.</label>
-					</div>
-				</div>
-  			</div>
-		</div>
+	</div>
+</div>
 		
+<div class="row">
+	<div class="col-xs-6">
+		<div class="form-group pull-left">
+			<label class="checkbox-inline alert-success"> <input
+				type="checkbox" id="include_actif" ng-model="include_actif"> Actif
+			</label> <label class="checkbox-inline alert-warning"> <input
+				type="checkbox" id="include_not_ennabled" ng-model="include_not_ennabled"> Jamais connecté
+			</label> <label class="checkbox-inline alert-danger"> <input
+				type="checkbox" id="include_bloque" ng-model="include_bloque"> Bloqué
+			</label>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<div class="form-group pull-right form-inline">
+			<input type="number" ng-model="per_page" class="form-control" style="width: 70px;" /> <label>/
+				{{totalMember}} membres.</label>
+		</div>
+	</div>
+</div>
+<div class="row">	
+	<div class="col-xs-12">	
          <div class="form-group pull-right">
 		    <button type="button" class="btn btn-primary" ng-click="search()">
 		        <span translate="entity.action.search">Search</span>
 		    </button>
-		    
-			<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle"
-					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Actions <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="#" ui-sref="member.new"> <span
+		</div>
+	</div>
+</div>
+<div class="row">	
+	<div class="col-xs-12">	
+         <div class="form-group pull-right">
+			<a href="#" ui-sref="member.new"> <span
 							class="glyphicon glyphicon-flash"></span> <span
 							translate="crossfitApp.member.home.createLabel">Create a
 								new Member</span>
-					</a></li>
-	
-	
-					<li><a href="#" ng-click="massActivation()"
-						class="label-warning"> <span class="glyphicon glyphicon-flash"></span>
-							<span translate="crossfitApp.member.home.massActivationLabel">Mass
-								Activation</span>
-					</a></li>
-				</ul>
-			</div>
+			</a>
 		</div>
 	</div>
-
 </div>
+		
 
 
 <div class="modal fade" id="deleteMemberConfirmation">
@@ -143,8 +136,8 @@
             <thead>
                 <tr>
                     <th translate="crossfitApp.member.firstNameLastName">Membre</th>
-                    <th translate="crossfitApp.member.abonnements">Abonnement</th>
-                    <th translate="crossfitApp.member.Statut">Statut</th>
+                    <th translate="crossfitApp.member.email">Email</th>
+                    <th translate="crossfitApp.member.telephonNumber">Tel.</th>
                     <th></th>
                 </tr>
             </thead>
@@ -154,8 +147,8 @@
                 'warning': !member.enabled, 
                 'success': member.enabled && !member.locked}">
                     <td>{{member.lastName}} {{member.firstName}}</td>
-                    <td>{{member.lastName}} {{member.firstName}}</td>
-                    <td>{{member.lastName}} {{member.firstName}}</td>
+                    <td><a href="mailto:{{member.login}}">{{member.login}}</a></td>
+                    <td> <a href="tel:{{member.telephonNumber}}">{{member.telephonNumber}}</a></td>
                     
                     
                     <td>

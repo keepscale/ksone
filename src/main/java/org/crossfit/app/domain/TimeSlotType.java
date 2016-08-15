@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * A MembershipType.
@@ -42,7 +44,8 @@ public class TimeSlotType extends AbstractAuditingEntity implements Serializable
     @Size(max = 255)     
     @Column(name = "description", nullable = false)
     private String description;
-
+    
+    @JsonIgnore
     @ManyToOne(optional=false)
     private CrossFitBox box;
 

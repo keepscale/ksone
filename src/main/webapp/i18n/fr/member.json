@@ -32,23 +32,21 @@
             "detail": {
                 "title": "Adhérent"
             },
-            "user": {
-            	"firstname" : "Prénom",
-            	"firstname.placeholder" : "Prénom",
-            	"lastname" : "Nom",
-            	"lastname.placeholder" : "Nom",
-            	"email" : "Email",
-            	"email.placeholder": "nom.prenom@crossfit.com",
-            	"language" : "Langue",
-            	"login" : "Login"
+            "title" :{
+            	"MS" : "Mme",
+            	"MR" : "M."
             },
-            "telephonNumber": "Numéro de téléphone",
-            "sickNoteEndDate": "Date de fin de validité de l'ordonnance",
-            "membershipStartDate": "Date début d'adhésion",
-            "membershipEndDate": "Date de fin d'adhésion",
-            "level": "Niveau",
-            "sickNote": "Ordonnance",
-            "membershipType": "Type d'abonnement",
+        	"firstname" : "Prénom",
+        	"firstname.placeholder" : "Prénom",
+        	"lastname" : "Nom",
+        	"lastname.placeholder" : "Nom",
+        	"email.placeholder": "nom.prenom@crossfit.com",
+        	"email" : "Email",
+            "telephonNumber": "Tél.",
+            "telephonNumber.placeholder": "Tél.",
+			"address.placeholder" : "Adresse",
+			"zipCode.placeholder" : "Code postal",
+			"city.placeholder" : "Ville",
             "messages": {
 	            "error": {
 	                "fail": "<strong>Une erreur est survenue!</strong> L'adhérent n'a pas été sauvegardé.",
@@ -71,6 +69,12 @@
 	                    "invalid": "L'email n'est pas valide.",
 	                    "minlength": "L'email doit comporter au moins 5 caractères",
 	                    "maxlength": "L'email ne doit pas comporter plus de 100 caractères"
+	                },
+	                "membership": {
+	                    "required": "L'abonnement est obligatoire."
+	                },
+	                "subscriptionEndDate": {
+	                    "required": "La date de souscription est obligatoire."
 	                }
 	            }
 	        },

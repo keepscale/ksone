@@ -1,0 +1,221 @@
+
+<form name="form" role="form" novalidate ng-submit="save()">
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true" ng-click="clear()">&times;</button>
+		<h4 class="modal-title" id="myMemberLabel"
+			translate="crossfitApp.member.home.createOrEditLabel">Create or
+			edit a Member</h4>
+	</div>
+	
+	<div class="modal-body">
+		<jh-alert-error></jh-alert-error>
+		<div class="form-group">
+			<label for="id" translate="global.field.id">ID</label> <input
+				type="text" class="form-control" id="id" name="id"
+				ng-model="member.id" readonly>
+		</div>
+		
+		
+		<div class="row ">
+		  <div class="col-xs-12">
+		    <div class="row form-group">
+		  		<div class="col-xs-12">
+			    	<div class="row"> 
+				        <div class="col-xs-2">
+				            <select class="form-control" name="title" ng-model="member.title"
+							id="field_title" required>
+								<option value="MS" translate="crossfitApp.member.title.MS">Mme</option>
+								<option value="MR" translate="crossfitApp.member.title.MR">Mr</option>
+							</select>
+				        </div>
+				        <div class="col-xs-5">			        
+							<input type="text" class="form-control" id="firstName" name="firstName"
+								placeholder="{{'crossfitApp.member.firstname.placeholder' | translate}}"
+								ng-model="member.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
+				        </div>
+				        <div class="col-xs-5">
+					        <input type="text" class="form-control" id="lastName"
+								name="lastName"
+								placeholder="{{'crossfitApp.member.lastname.placeholder' | translate}}"
+								ng-model="member.lastName" ng-minlength=1 ng-maxlength=50
+								required maxlength="50">
+				        </div>
+			        </div>
+			    	<div class="row"> 
+				        <div class="col-xs-12">
+				    	  	<div ng-show="form.firstName.$invalid">
+								<p class="help-block" ng-show="form.firstName.$error.required"
+									translate="crossfitApp.member.messages.validate.firstname.required">Your first name is required.</p>
+								<p class="help-block" ng-show="form.firstName.$error.minlength"
+									translate="crossfitApp.member.messages.validate.firstname.minlength"> Your first name is required to be at least 1 character.</p>
+								<p class="help-block" ng-show="form.firstName.$error.maxlength"
+									translate="crossfitApp.member.messages.validate.firstname.maxlength"> Your first name cannot be longer than 50 characters.</p>
+							</div>
+				    	
+				    	
+							<div ng-show="form.lastName.$invalid">
+								<p class="help-block" ng-show="form.lastName.$error.required"
+									translate="crossfitApp.member.messages.validate.lastname.required">Your
+									last name is required.</p>
+								<p class="help-block" ng-show="form.lastName.$error.minlength"
+									translate="crossfitApp.member.messages.validate.lastname.minlength">Your
+									last name is required to be at least 1 character.</p>
+								<p class="help-block" ng-show="form.lastName.$error.maxlength"
+									translate="crossfitApp.member.messages.validate.lastname.maxlength">Your
+									last name cannot be longer than 50 characters.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+		    </div>
+		    
+		    <div class="row">
+		    	<div class="col-xs-12">
+		    	</div>
+		    </div>
+		    
+		    
+		    <div class="row form-group">
+		    	<div class="col-xs-12">
+		    		<input type="text" class="form-control" id="address" name="address"
+						placeholder="{{'crossfitApp.member.address.placeholder' | translate}}"
+						ng-model="member.address" ng-maxlength=255 maxlength="255">
+		    	</div>
+	    	</div>
+		    <div class="row form-group">
+		    	<div class="col-xs-4">
+		    		<input type="text" class="form-control" id="zipCode" name="zipCode"
+						placeholder="{{'crossfitApp.member.zipCode.placeholder' | translate}}"
+						ng-model="member.zipCode" ng-maxlength=20 maxlength="20">
+		    	</div>
+		    	<div class="col-xs-6">
+		    		<input type="text" class="form-control" id="city" name="city"
+						placeholder="{{'crossfitApp.member.city.placeholder' | translate}}"
+						ng-model="member.city" ng-maxlength=100 maxlength="100">
+		    	</div>
+		    	
+		        <div class="col-xs-2">
+					<select id="langKey" name="langKey" class="form-control"
+						ng-model="member.langKey" ng-controller="LanguageController"
+						ng-options="code as (code | findLanguageFromKey) for code in languages"></select>
+				</div>
+	    	</div>
+	    	
+		    <div class="row form-group">
+		  		<div class="col-xs-12">
+			    	<div class="row"> 
+				    	<div class="col-xs-8">
+				    		<input type="email" class="form-control" id="email" name="email"
+							placeholder="{{'crossfitApp.member.email.placeholder' | translate}}"
+							ng-model="member.email" ng-minlength=5 ng-maxlength=100
+							required maxlength="100">
+					  	</div>
+				    	<div class="col-xs-4">
+				    		 <input type="text" class="form-control" name="telephonNumber" id="field_telephonNumber"
+				    		 placeholder="{{'crossfitApp.member.telephonNumber.placeholder' | translate}}"
+								ng-model="member.telephonNumber">
+				    	</div>
+				    </div>
+			    	<div class="row"> 
+				    	<div class="col-xs-12">		    	
+				    		<div ng-show="form.email.$invalid">
+								<p class="help-block" ng-show="form.email.$error.required"
+									translate="crossfitApp.member.messages.validate.email.required">Your e-mail
+									is required.</p>
+								<p class="help-block" ng-show="form.email.$error.email"
+									translate="crossfitApp.member.messages.validate.email.invalid">Your e-mail
+									is invalid.</p>
+								<p class="help-block" ng-show="form.email.$error.minlength"
+									translate="crossfitApp.member.messages.validate.email.minlength">Your
+									e-mail is required to be at least 5 characters.</p>
+								<p class="help-block" ng-show="form.email.$error.maxlength"
+									translate="crossfitApp.member.messages.validate.email.maxlength">Your
+									e-mail cannot be longer than 100 characters.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+	    	</div>
+		  </div>
+		</div>
+		
+		
+		<div class="row form-group">
+  			<div class="col-xs-12">
+	  			<fieldset>
+	  				<legend>
+	  					Abonnements 
+		  				
+		  				<button type="button" class="btn btn-primary" ng-click="addSubscription()">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button>
+					
+	  				</legend>
+	  				
+	  				<div class="row"> 
+				        <div class="col-xs-5">			        
+							<label>Abonnement</label>
+				        </div>
+				        <div class="col-xs-3">
+				        	<label>Date de début souscription</label>
+				        </div>
+				        <div class="col-xs-3">
+				        	<label>Date de fin souscription</label>
+				        </div>
+				        <div class="col-xs-1">
+				        </div>
+			        </div>
+			        
+			    	<div class="row form-group" ng-repeat="subscription in member.subscriptions"> 
+				        <div class="col-xs-5"> 
+							<select
+								class="form-control" id="field_membership" name="membership"
+								ng-model="subscription.membership" required
+								ng-options='membership as (membership.name + " - " + membership.price) for membership in memberships track by membership.id'>
+							</select>
+						</div>
+						<div class="col-xs-3"> 
+							<input type="date" class="form-control" name="subscriptionStartDate"
+									id="field_subscriptionStartDate" ng-model="subscription.subscriptionStartDate"
+									required>
+						</div>
+						<div class="col-xs-3"> 
+							<input type="date" class="form-control" name="subscriptionEndDate"
+									id="field_subscriptionEndDate" ng-model="subscription.subscriptionEndDate">
+						</div>
+				        <div class="col-xs-1">
+				        
+			  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						
+				        </div>
+			        </div>
+			        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.membership.$invalid">
+				        <div class="col-xs-12"> 
+							<p class="help-block" ng-show="form.subscriptionStartDate.$error.required"
+								translate="crossfitApp.member.messages.validate.subscriptionStartDate.required">subscriptionStartDate is required.</p>
+							<p class="help-block" ng-show="form.membership.$error.required"
+								translate="crossfitApp.member.messages.validate.membership.required">field_membership is required.</p>
+						</div>
+					</div>
+			</fieldset>
+		</div>
+    </div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal"
+			ng-click="clear()">
+			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+				translate="entity.action.cancel">Cancel</span>
+		</button>
+		<button type="submit"
+			ng-disabled="form.$invalid"
+			class="btn btn-primary">
+			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+				translate="entity.action.save">Save</span>
+		</button>
+	</div>
+</form>

@@ -16,7 +16,8 @@
             "members" : "Membres",
             "timeslots" : "Créneaux",
             "bookings" : "Réservations",
-            "language": "Langue"
+            "language": "Langue",
+            "memberships" : "Abonnements"
         },
         "form": {
             "username": "Nom d'utilisateur",

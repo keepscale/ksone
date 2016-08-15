@@ -1,5 +1,7 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
+
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.springframework.data.domain.Page;
@@ -14,7 +16,7 @@ import org.springframework.data.repository.query.Param;
 public interface SubscriptionRepository extends JpaRepository<Subscription,Long> {
 
     @Query("select s from Subscription s where s.member = :member")
-	Page<Subscription> findAllByMember(@Param("member") Member member, Pageable pageable);
+	List<Subscription> findAllByMember(@Param("member") Member member);
 
     @Query("select s from Subscription s where s.member = :member and s.subscriptionEndDate is null")
 	Subscription findActiveByMember(@Param("member") Member member);

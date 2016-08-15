@@ -18,10 +18,10 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
 	static final String BY_ID = " ms.id = :id ";
 	static final String BY_BOX = " ms.box = :box ";
 	
-	@Query("select ms from Membership ms where" + BY_BOX)
+	@Query("select ms from Membership ms where" + BY_BOX + " order by ms.name")
 	List<Membership> findAll(@Param("box") CrossFitBox box);
 
-	@Query("select ms from Membership ms where" + BY_ID + " and " + BY_BOX)
+	@Query("select ms from Membership ms left join fetch ms.membershipRules msr left join fetch msr.applyForTimeSlotTypes where" + BY_ID + " and " + BY_BOX)
 	Membership findOne(@Param("id") Long id, @Param("box") CrossFitBox currentCrossFitBox);
 
 	@Modifying

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,11 +42,11 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     private Long id;
     
     @NotNull
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false, cascade = {})
     private Member member;
 
     @NotNull
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false, cascade = {})
     private Membership membership;
     
     @NotNull        
@@ -103,4 +104,38 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
                 ", endDate='" + subscriptionEndDate + "'" +
                 '}';
     }
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public Membership getMembership() {
+		return membership;
+	}
+
+	public void setMembership(Membership membership) {
+		this.membership = membership;
+	}
+
+	public LocalDate getSubscriptionStartDate() {
+		return subscriptionStartDate;
+	}
+
+	public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+		this.subscriptionStartDate = subscriptionStartDate;
+	}
+
+	public LocalDate getSubscriptionEndDate() {
+		return subscriptionEndDate;
+	}
+
+	public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
+		this.subscriptionEndDate = subscriptionEndDate;
+	}
+    
+    
 }

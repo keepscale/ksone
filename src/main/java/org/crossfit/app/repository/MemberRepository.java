@@ -16,8 +16,22 @@ import org.springframework.data.repository.query.Param;
  */
 public interface MemberRepository extends JpaRepository<Member,Long> {
 
-    @Query("select m from Member m where m.box = :box order by m.enabled DESC, m.lastName, m.firstName")
-	Page<Member> findAll(@Param("box") CrossFitBox box, Pageable pageable);
+    @Query("select m from Member m where m.box = :box "
+    		+ "and ( "
+    		+ "	lower(m.firstName) like :search "
+    		+ "	or lower(m.lastName) like :search "
+    		+ "	or lower(m.telephonNumber) like :search "
+    		+ "	or lower(m.login) like :search "
+    		+ ") "
+    		+ "and ( "
+    		+ "( true = :includeActif AND m.enabled = true and m.locked = false ) "
+    		+ "or ( true = :includeNotEnabled and m.enabled = false ) "
+    		+ "or ( true = :includeBloque and m.locked = true ) "
+    		+ ") "
+    		+ "order by m.enabled DESC, m.lastName, m.firstName")
+	List<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
+			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
+			Pageable pageable);
 
     @Query("select m from Member m left join fetch m.authorities where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);

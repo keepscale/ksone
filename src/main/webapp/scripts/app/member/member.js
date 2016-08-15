@@ -61,7 +61,17 @@ angular.module('crossfitApp')
                         size: 'lg',
                         resolve: {
                             entity: function () {
-                                return {telephonNumber: null, sickNoteEndDate: null, membershipStartDate: null, membershipEndDate: null, level: null, id: null};
+                                return {
+                                	title: 'MR', langKey: 'fr',
+                                	telephonNumber: null, sickNoteEndDate: null, 
+                                	membershipStartDate: null, membershipEndDate: null, 
+                                	level: null, id: null,
+                                	subscriptions : [
+                                		{
+                                    		subscriptionStartDate : new Date()
+                                		}
+                                	]
+                            	};
                             }
                         }
                     }).result.then(function(result) {

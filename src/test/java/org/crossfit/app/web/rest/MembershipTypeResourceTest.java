@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.repository.MembershipRepository;
-import org.crossfit.app.web.rest.api.MembershipTypeResource;
+import org.crossfit.app.web.rest.api.MembershipResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Test class for the MembershipTypeResource REST controller.
  *
- * @see MembershipTypeResource
+ * @see MembershipResource
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -65,7 +65,7 @@ public class MembershipTypeResourceTest {
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MembershipTypeResource membershipTypeResource = new MembershipTypeResource();
+        MembershipResource membershipTypeResource = new MembershipResource();
         ReflectionTestUtils.setField(membershipTypeResource, "membershipTypeRepository", membershipTypeRepository);
         this.restMembershipTypeMockMvc = MockMvcBuilders.standaloneSetup(membershipTypeResource).setMessageConverters(jacksonMessageConverter).build();
     }

@@ -13,6 +13,7 @@
 				title="{{'global.menu.account.logout'|translate}}"></span>
 		</a></li>
 	</ul>
+	
 	<ul class="nav navbar-nav navbar-left">
 		<li ng-class="{active: $state.includes('home')}">
 			<a ui-sref="home"> <span class="glyphicon glyphicon-home"
@@ -37,6 +38,13 @@
 			ng-switch-when="true"><a ui-sref="bookings"> <span
 				class="glyphicon glyphicon-time"
 				title="{{'global.menu.bookings'|translate}}"></span>
+		</a></li>
+		
+
+		<li ng-class="{active: $state.includes('membership')}"
+			ng-switch-when="true"><a ui-sref="membership"> <span
+				class="glyphicon glyphicon-cog"
+				title="{{'global.menu.memberships'|translate}}"></span>
 		</a></li>
 
 	</ul>
