@@ -4,6 +4,7 @@ angular.module('crossfitApp')
     .controller('MainManagerController', function ($scope, Principal, Planning) {
     	$scope.planning = [];
         $scope.page = 0;
+        $scope.selectedIndex = 0;
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -17,6 +18,11 @@ angular.module('crossfitApp')
                     $scope.planning.push(result.days[i]);
                 }
             });
+        };
+        
+
+        $scope.select = function(index) {
+            $scope.selectedIndex = index;
         };
     })
     .controller('MainUserController', function ($scope, Principal, Planning) {

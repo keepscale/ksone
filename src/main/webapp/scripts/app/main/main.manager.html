@@ -11,6 +11,13 @@
                 <div class="planning" ng-switch-when="true">
                 	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
                 	</div>
+                	
+                	<ul class="nav nav-tabs">
+					  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
+					  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
+					  </li>
+					</ul>
+
 					<table class="table" cellspacing="0" cellpadding="0">
 						<tbody ng-repeat="day in planning">
 							<tr ng-repeat="slot in day.slots">

@@ -9,10 +9,12 @@ import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -44,6 +46,7 @@ public class TimeSlotInstanceDTO {
 		return slot.getName();
 	}
 
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
 	public LocalDate getDate() {
 		return date.toLocalDate();
 	}
