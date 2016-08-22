@@ -2,8 +2,10 @@ package org.crossfit.app.web.rest.errors;
 
 import java.util.List;
 
+import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -20,6 +22,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ExceptionTranslator {
 
+    @ExceptionHandler(EmailAlreadyUseException.class)
+    public ResponseEntity<String> processEmailAlreadyUseError(MethodArgumentNotValidException ex) {
+		return ResponseEntity.badRequest().header("Failure", "Cet email est deja attribué a quelqu'un d'autre.").body(null);
+    }
+    
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody

@@ -10,6 +10,7 @@ import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
@@ -23,12 +24,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.MethodParameter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * Service class for managing users.
@@ -79,7 +82,8 @@ public class MemberService {
     }
     
     
-    public Member doSave(MemberDTO memberdto) {
+    public Member doSave(MemberDTO memberdto) throws EmailAlreadyUseException {
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	Member member;
 		if (memberdto.getId() == null){
 			
@@ -87,15 +91,18 @@ public class MemberService {
 			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
 			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 			member.setCreatedDate(DateTime.now());			
-
 		}
 		else{
 			
 			member = memberRepository.findOne(memberdto.getId());
-
-			
-			
 		}
+
+		Optional<Member> findOneByLogin = memberRepository.findOneByLogin(memberdto.getEmail(), currentCrossFitBox);
+		
+		if (findOneByLogin.isPresent() && !findOneByLogin.equals(Optional.of(member))){
+			throw new EmailAlreadyUseException(memberdto.getEmail());
+		}
+		
 		member.setTitle(memberdto.getTitle());
 		member.setFirstName(memberdto.getFirstName());
 		member.setLastName(memberdto.getLastName());
@@ -106,7 +113,7 @@ public class MemberService {
 		member.setTelephonNumber(memberdto.getTelephonNumber());
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		member.setLastModifiedDate(DateTime.now());
-		member.setBox(boxService.findCurrentCrossFitBox());
+		member.setBox(currentCrossFitBox);
 
 		//L'email a changé ? on repasse par une validation d'email
 		if (!memberdto.getEmail().equals(member.getLogin())){
@@ -135,6 +142,18 @@ public class MemberService {
 		mailService.sendActivationEmail(member, generatePassword);
 		memberRepository.save(member);
 	}
+	
+
+
+	public void lockUser(Member member) {
+		member.setEnabled(false);
+		member.setLocked(true);
+	
+		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+		member.setLastModifiedDate(DateTime.now());
+
+		memberRepository.save(member);
+	}
 
    public void changePassword(String password) {
 	   Optional.of(SecurityUtils.getCurrentMember()).ifPresent(u-> {
@@ -155,5 +174,6 @@ public class MemberService {
 			memberRepository.delete(memberToDelete);
 		}
 	}
+
 
 }

@@ -14,10 +14,11 @@
             	"reset" : "Réinitialiser",
             	"sendMassActivation" : "Envoyer le mail à tout le monde",
             	"date.reinittoday" : "Réinitialiser",
-            	"date.addonemonth" : "+ 1 mois"
+            	"date.addonemonth" : "+ 1 mois",
+            	"lock": "Bloquer"
         	},
-            "delete": {
-                "question": "Etes-vous certain de vouloir supprimer l'adhérent {{ id }} ?"
+            "lock": {
+                "question": "Etes-vous certain de vouloir bloquer l'adhérent {{ id }} ?"
             },
             "reset": {
                 "title": "Confirmer la réinitialisation du compte",

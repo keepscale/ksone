@@ -2,6 +2,13 @@
 	<ul class="nav navbar-nav navbar-right">
 
 
+		<li ng-class="{active: $state.includes('member.new')}">
+			<a ui-sref="member.new">
+				<span class="glyphicon glyphicon-flash"
+					ui-sref-active="active" ng-switch-when="true"></span>
+			</a></li>
+		
+		
 		<li ng-class="{active: $state.includes('account')}"><a
 			ui-sref="account"> <span class="glyphicon glyphicon-user"
 				ui-sref-active="active" ng-switch-when="true"

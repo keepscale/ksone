@@ -7,30 +7,50 @@ angular.module('crossfitApp')
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {
-                    data = angular.fromJson(data);
-                    data.sickNoteEndDate = DateUtils.convertLocaleDateFromServer(data.sickNoteEndDate);
-                    data.membershipStartDate = DateUtils.convertLocaleDateFromServer(data.membershipStartDate);
-                    data.membershipEndDate = DateUtils.convertLocaleDateFromServer(data.membershipEndDate);
+                    data = angular.fromJson(data);                    
+                    for (var i = 0; i < data.subscriptions.length; i++) {
+						var sub = data.subscriptions[i];
+						sub.subscriptionStartDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionStartDate);
+						sub.subscriptionEndDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionEndDate);
+					}
                     return data;
                 }
             },
             'update': {
                 method: 'PUT',
                 transformRequest: function (data) {
-                    data.sickNoteEndDate = DateUtils.convertLocaleDateToServer(data.sickNoteEndDate);
-                    data.membershipStartDate = DateUtils.convertLocaleDateToServer(data.membershipStartDate);
-                    data.membershipEndDate = DateUtils.convertLocaleDateToServer(data.membershipEndDate);
+                    
+                    for (var i = 0; i < data.subscriptions.length; i++) {
+						var sub = data.subscriptions[i];
+						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
+						sub.subscriptionEndDate = DateUtils.convertLocaleDateToServer(sub.subscriptionEndDate);
+					}
+                    
                     return angular.toJson(data);
                 }
             },
             'save': {
                 method: 'POST',
                 transformRequest: function (data) {
-                    data.sickNoteEndDate = DateUtils.convertLocaleDateToServer(data.sickNoteEndDate);
-                    data.membershipStartDate = DateUtils.convertLocaleDateToServer(data.membershipStartDate);
-                    data.membershipEndDate = DateUtils.convertLocaleDateToServer(data.membershipEndDate);
+
+                    for (var i = 0; i < data.subscriptions.length; i++) {
+						var sub = data.subscriptions[i];
+						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
+						sub.subscriptionEndDate = DateUtils.convertLocaleDateToServer(sub.subscriptionEndDate);
+					}
+                    
                     return angular.toJson(data);
                 }
+            },
+            'resetaccount': {
+                method: 'PUT',
+                url: 'api/members/:id/resetaccount', 
+                params : {id: '@id'}
+            },
+            'lock': {
+                method: 'PUT',
+                url: 'api/members/:id/lock', 
+                params : {id: '@id'}
             }
         });
     });

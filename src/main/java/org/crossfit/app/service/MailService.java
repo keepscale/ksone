@@ -38,7 +38,7 @@ public class MailService {
     @Async
     public void sendActivationEmail(Member member, String clearPassword) {
         log.debug("Sending activation e-mail to '{}'", member.getLogin());
-        Locale locale = Locale.forLanguageTag(member.getLangKey());
+        Locale locale = Locale.forLanguageTag(member.getLangKey() == null ? "fr" : member.getLangKey());
         Context context = new Context(locale);
         context.setVariable("user", member);
         context.setVariable("clearPassword", clearPassword);

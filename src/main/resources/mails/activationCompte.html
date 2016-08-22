@@ -5,19 +5,27 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <p th:text="#{email.creation.greeting(${user.firstName}, ${user.lastName})}">
+        <p th:text="#{email.creation.hello(${user.firstName}, ${user.lastName})}">
             Dear
         </p>
         <p th:text="#{email.creation.text1(${box.name})}">
             Your CrossFit account has been created
         </p>
+        
         <p>
             <span th:text="#{email.creation.text2}">Regards, </span>
             <ul>
             	<li th:text="#{email.creation.login(${user.login})}"></li>
             	<li th:text="#{email.creation.password(${clearPassword})}"></li>
             </ul>
-            <br/>
+        </p>
+        
+        <p>
+            <a th:href="@{${box.bookingwebsite}|}"
+               th:text="#{email.creation.link}">Activation Link</a>
+        </p>
+        
+        <p>
             <em th:text="#{email.signature(${box.name})}">JHipster.</em>
         </p>
     </body>

@@ -52,25 +52,24 @@
 </div>
 		
 
-
-<div class="modal fade" id="deleteMemberConfirmation">
+	<div class="modal fade" id="lockMemberConfirmation">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="deleteForm" ng-submit="confirmDelete(member.id)">
+                <form name="lockForm" ng-submit="confirmLock(member.id)">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
+                        <h4 class="modal-title" translate="entity.lock.title">Confirm lock operation</h4>
                     </div>
                     <div class="modal-body">
-                        <p translate="crossfitApp.member.delete.question" translate-values="{id: '{{member.id}}'}">Are you sure you want to delete this Member?</p>
+                        <p translate="crossfitApp.member.lock.question" translate-values="{id: '{{member.id}}'}">Are you sure you want to lock this Member?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
                             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
                         </button>
-                        <button type="submit" ng-disabled="deleteForm.$invalid" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete">Delete</span>
+                        <button type="submit" ng-disabled="lockForm.$invalid" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.lock">lock</span>
                         </button>
                     </div>
                 </form>
@@ -106,31 +105,6 @@
     </div>
     
     
-    <div class="modal fade" id="massActivationConfirmation">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="massActivationForm" ng-submit="confirmMassActivation()">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" translate="crossfitApp.member.massActivation.title">Confirm Mass Activation</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p translate="crossfitApp.member.massActivation.question">Are you sure you want to send activation mail to all members ?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
-                        </button>
-                        <button type="submit"class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.member.action.sendMassActivation">Send</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -146,39 +120,21 @@
                 'danger': member.locked, 
                 'warning': !member.enabled, 
                 'success': member.enabled && !member.locked}">
-                    <td>{{member.lastName}} {{member.firstName}}</td>
-                    <td><a href="mailto:{{member.login}}">{{member.login}}</a></td>
+                    <td> <a href="#" ui-sref="member.edit({id:member.id})"> {{member.lastName}} {{member.firstName}} </a></td>
+                    <td> <a href="mailto:{{member.email}}">{{member.email}}</a></td>
                     <td> <a href="tel:{{member.telephonNumber}}">{{member.telephonNumber}}</a></td>
                     
                     
                     <td>
-	                    <div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle"
-								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Actions <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu dropdown-menu-right">
-								<li><a href="#" ui-sref="member.edit({id:member.id})"><span
-										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
-										translate="crossfitApp.member.action.edit"> Edit</span></a></li>
-								<li><a href="#"
-									ui-sref="member.editMembership({id:member.id})"><span
-										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
-										translate="crossfitApp.member.action.editMembership">
-											EditMembership</span></a></li>
-																			
-								<li><a href="#" ng-click="resetAccount(member.id)"
-									class="label-warning"> <span
-										class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
-										translate="crossfitApp.member.action.reset"> Reset</span>
-								</a></li>
-								
-								<li><a href="#" ng-click="delete(member.id)" class="label-danger"> <span
-										class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
-										translate="crossfitApp.member.action.delete"> Delete</span>
-								</a></li>
-							</ul>
-						</div>
+	                    
+		  				<button type="button" class="btn btn-warning btn-primary" ng-click="resetAccount(member.id)">
+							<span translate="crossfitApp.member.action.reset"> Reset</span>
+						</button>
+		  				<button type="button" class="btn btn-danger btn-primary" ng-click="lock(member.id)">
+							<span class="glyphicon glyphicon-remove-circle">
+							</span>
+						</button>
+						
 				</td>
                 </tr>
             </tbody>

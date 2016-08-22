@@ -5,7 +5,7 @@ angular.module('crossfitApp')
         $scope.members = [];
         $scope.per_page = 20;
         $scope.include_actif = true;
-        $scope.include_not_ennabled = false;
+        $scope.include_not_ennabled = true;
         $scope.include_bloque = false;
         $scope.loadAll = function() {
             Member.query({
@@ -34,18 +34,18 @@ angular.module('crossfitApp')
         };
         $scope.loadAll();
 
-        $scope.delete = function (id) {
+        $scope.lock = function (id) {
             Member.get({id: id}, function(result) {
                 $scope.member = result;
-                $('#deleteMemberConfirmation').modal('show');
+                $('#lockMemberConfirmation').modal('show');
             });
         };
 
-        $scope.confirmDelete = function (id) {
-            Member.delete({id: id},
+        $scope.confirmLock = function (id) {
+            Member.lock({id: id},
                 function () {
                     $scope.reset();
-                    $('#deleteMemberConfirmation').modal('hide');
+                    $('#lockMemberConfirmation').modal('hide');
                     $scope.clear();
                 });
         };
@@ -62,18 +62,6 @@ angular.module('crossfitApp')
                 function () {
                     $scope.reset();
                     $('#resetAccountMemberConfirmation').modal('hide');
-                    $scope.clear();
-                });
-        };
-        $scope.massActivation = function (){
-            $('#massActivationConfirmation').modal('show');
-        };
-        
-        $scope.confirmMassActivation = function () {
-            Member.massActivation({},
-                function () {
-                    $scope.reset();
-                    $('#massActivationConfirmation').modal('hide');
                     $scope.clear();
                 });
         };

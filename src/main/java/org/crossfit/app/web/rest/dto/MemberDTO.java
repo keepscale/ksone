@@ -184,11 +184,14 @@ public class MemberDTO {
 
 	@Override
 	public String toString() {
-		return "MemberDTO [id=" + id + ", title=" + title + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", address=" + address + ", zipCode=" + zipCode + ", city=" + city + ", telephonNumber="
-				+ telephonNumber + ", email=" + email + ", locked=" + locked + ", enabled=" + enabled + ", langKey="
-				+ langKey + "]";
+		return "MemberDTO [id=" + id + ", title=" + title + ", firstName="
+				+ firstName + ", lastName=" + lastName + ", address=" + address
+				+ ", zipCode=" + zipCode + ", city=" + city
+				+ ", telephonNumber=" + telephonNumber + ", email=" + email
+				+ ", locked=" + locked + ", enabled=" + enabled + ", langKey="
+				+ langKey + ", subscriptions=" + subscriptions + "]";
 	}
+
 	
 	
 }

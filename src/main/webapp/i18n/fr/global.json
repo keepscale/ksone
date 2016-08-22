@@ -71,7 +71,8 @@
             "edit": "",
             "delete": "Suppr.",
             "save": "Sauvegarder",
-            "view": "Voir"
+            "view": "Voir",
+            "lock": "Bloquer"
         },
         "detail": {
             "field": "Champs",
@@ -79,6 +80,9 @@
         },
         "delete": {
             "title": "Confirmation de suppression"
+        },
+        "lock": {
+            "title": "Confirmation de verouillage"
         },
         "validation": {
             "required": "Ce champs est obligatoire.",

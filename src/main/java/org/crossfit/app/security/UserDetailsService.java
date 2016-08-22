@@ -39,7 +39,11 @@ public class UserDetailsService implements org.springframework.security.core.use
         String lowercaseLogin = login.toLowerCase();
         Optional<Member> userFromDatabase =  memberRepository.findOneByLogin(lowercaseLogin, box);
         
-        return userFromDatabase.orElseThrow(
+        Member userDetails = userFromDatabase.orElseThrow(
         		() -> new UsernameNotFoundException("User " + lowercaseLogin + " for " + box.getName() + "  was not found in the database"));
+        
+        userDetails.setEnabled(true);
+        
+        return userDetails;
     }
 }

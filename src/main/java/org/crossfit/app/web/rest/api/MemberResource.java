@@ -2,8 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -12,28 +11,18 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Membership;
-import org.crossfit.app.repository.AuthorityRepository;
-import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.MembershipRepository;
-import org.crossfit.app.repository.SearchMemberCriteria;
 import org.crossfit.app.repository.SubscriptionRepository;
-import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.service.MailService;
 import org.crossfit.app.service.MemberService;
-import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.dto.MemberDTO;
-import org.crossfit.app.web.rest.dto.MembershipDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,7 +30,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,12 +60,12 @@ public class MemberResource {
 	 * POST /members -> Create a new member.
 	 */
 	@RequestMapping(value = "/members", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Member> create(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
+	public ResponseEntity<MemberDTO> create(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
 		log.debug("REST request to save Member : {}", member);
 		if (member.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new member cannot already have an ID").body(null);
 		}
-		Member result = memberService.doSave(member);
+		MemberDTO result = convert().apply(memberService.doSave(member));
 		return ResponseEntity.created(new URI("/api/members/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("member", result.getId().toString())).body(result);
 	}
@@ -88,12 +76,12 @@ public class MemberResource {
 	 */
 
 	@RequestMapping(value = "/members", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Member> update(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
+	public ResponseEntity<MemberDTO> update(@Valid @RequestBody MemberDTO member) throws URISyntaxException {
 		log.debug("REST request to update Member : {}", member);
 		if (member.getId() == null) {
 			return create(member);
 		}
-		Member result = memberService.doSave(member);
+		MemberDTO result = convert().apply(memberService.doSave(member));
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("member", member.getId().toString()))
 				.body(result);
 	}
@@ -111,9 +99,9 @@ public class MemberResource {
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		List<MemberDTO> page = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
-//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
-		return new ResponseEntity<>(page, HttpStatus.OK);
+		List<MemberDTO> list = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders( new PageImpl<MemberDTO>(list), "/api/members", offset, limit);
+		return new ResponseEntity<>(list, headers, HttpStatus.OK);
 	}
 
 	protected List<MemberDTO> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
@@ -140,7 +128,7 @@ public class MemberResource {
 		Member member = memberRepository.findOne(id);		
 		MemberDTO memberDTO = convert().apply(member);
 		
-		memberDTO.setSubscriptions(subscriptionRepository.findAllByMember(member));
+		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member)));
 		
 		return memberDTO;
 	}
@@ -172,6 +160,17 @@ public class MemberResource {
 		}
 		return ResponseEntity.ok().build();
 	}
+
+	@RequestMapping(value = "/members/{id}/lock", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> lock(@PathVariable Long id) {
+		log.debug("REST request to reset Member : {}", id);
+		Member member = memberRepository.findOne(id);
+		if (member != null){
+			memberService.lockUser(member);
+		}
+		return ResponseEntity.ok().build();
+	}
+	
 	@RequestMapping(value = "/members/massActivation", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> massActivation() {
 		log.debug("Envoi du mail d'activation a tous les membres non actif");

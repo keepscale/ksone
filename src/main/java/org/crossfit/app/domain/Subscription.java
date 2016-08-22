@@ -25,6 +25,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -40,7 +41,8 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
+    @JsonIgnore
     @NotNull
     @ManyToOne(optional=false, cascade = {})
     private Member member;
@@ -98,8 +100,8 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "Subscription{" +
                 "id=" + id +
-                ", membre='" + member.getId()+ "'" +
-                ", membership='" + membership.getId()+ "'" +
+                ", membre='" + (member == null ? "null" : member.getId() )+ "'" +
+                ", membership='" + (membership == null ? "null" : membership.getId()) + "'" +
                 ", startDate='" + subscriptionStartDate + "'" +
                 ", endDate='" + subscriptionEndDate + "'" +
                 '}';
