@@ -19,11 +19,14 @@ angular.module('crossfitApp')
                 }
             });
         };
-        
 
         $scope.select = function(index) {
             $scope.selectedIndex = index;
         };
+        
+        $scope.getLength = function(obj) {
+            return Object.keys(obj).length;
+        }
     })
     .controller('MainUserController', function ($scope, Principal, Planning) {
         Principal.identity().then(function(account) {

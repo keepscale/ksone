@@ -1,6 +1,6 @@
 <div ng-cloak>
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-12">
             <div ng-switch="isAuthenticated()">
 
                 <div class="alert alert-warning" ng-switch-when="false" translate="global.messages.info.authenticated">
@@ -17,6 +17,21 @@
 					  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
 					  </li>
 					</ul>
+					
+					<div class="row">
+        				<div class="col-md-12">
+							<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
+		        				<div class="col-md-12">
+									<div class="row"><div class="col-md-12">{{interval.start | date:'HH:mm'}} - {{interval.end   | date:'HH:mm'}}</div></div>
+									<div class="row">
+										<div ng-class="{{'col-md-' +  (12 / getLength(interval.slotsByType)) }}" ng-repeat="(type, slots) in interval.slotsByType">
+											{{type.name}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
 					<table class="table" cellspacing="0" cellpadding="0">
 						<tbody ng-repeat="day in planning">
