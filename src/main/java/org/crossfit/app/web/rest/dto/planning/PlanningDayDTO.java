@@ -30,17 +30,25 @@ public class PlanningDayDTO{
 		this.slots = slots;
 		this.slotsByInterval = new ArrayList<IntervalDTO>();
 		
-		Set<Interval> intervals = slots.stream()
+		List<Interval> intervals = slots.stream()
 				.map(instance -> { return new Interval(instance.getStart(), instance.getEnd());})
+				.collect(Collectors.toSet())
+				.stream()
 				.sorted((i1,i2)->i1.getStart().compareTo(i2.getStart()))
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 
 		for (Interval interval : intervals) {
-			Map<TimeSlotType, List<TimeSlotInstanceDTO>> slotsByType = slots.stream()
+			List<TimeSlotInstanceDTO> slotsOfInterval = slots.stream()
 					.filter(slot -> interval.contains(slot.getStart()))
-					.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType));
+					.sorted((s1,s2) -> s1.getTimeSlotType().getName().compareTo(s2.getTimeSlotType().getName()))
+					.collect(Collectors.toList());
 			
-			slotsByInterval.add(new IntervalDTO(interval.getStart(), interval.getEnd(), slotsByType));
+			slots.removeAll(slotsOfInterval);
+			
+			if (slotsOfInterval.isEmpty())
+				continue;
+			
+			slotsByInterval.add(new IntervalDTO(interval.getStart(), interval.getEnd(), slotsOfInterval));
 		}
 	}
 

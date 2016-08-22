@@ -19,62 +19,98 @@
 					</ul>
 					
 					<div class="row">
-        				<div class="col-md-12">
+        				<div class="col-md-12  col-lg-10 col-lg-offset-1">
 							<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
 		        				<div class="col-md-12">
-									<div class="row"><div class="col-md-12">{{interval.start | date:'HH:mm'}} - {{interval.end   | date:'HH:mm'}}</div></div>
+									<div class="row"><div class="col-md-12 text-center">{{interval.start | date:'HH:mm'}} - {{interval.end   | date:'HH:mm'}}</div></div>
 									<div class="row">
-										<div ng-class="{{'col-md-' +  (12 / getLength(interval.slotsByType)) }}" ng-repeat="(type, slots) in interval.slotsByType">
-											{{type.name}}
+										<div class="{{'col-md-' +  (12 / interval.slots.length) }}" ng-repeat="slot in interval.slots">
+											<div style="border: 1px solid #ddd" >
+												<div class="row">
+													<div class="col-xs-2"></div>
+													<div class="col-xs-8">
+														<h5 class="text-center">
+														{{slot.timeSlotType.name}} - {{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
+														inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}</h5>
+													</div>
+													<div class="col-xs-2 text-right">
+														<a href="#" ng-click="showQuickAddBooking(slot)">
+															<span class="glyphicon glyphicon-plus"></span>
+														</a>
+													</div>
+												</div>
+												<div class="row">
+													<div class="{{'col-md-' +  (slot.waitingBookings.length > 0 ? 6 : 12) }}">
+														<ul>
+															<li class="list-group-item "
+																ng-repeat="booking in slot.validatedBookings">
+																{{booking.owner.firstName}} {{booking.owner.lastName}}
+															</li>
+														</ul>
+													</div>
+													
+													<div class="col-md-6" ng-if="slot.waitingBookings.length > 0">
+														<ul>
+															<li class="list-group-item "
+																ng-repeat="booking in slot.waitingBookings">
+																{{booking.owner.firstName}} {{booking.owner.lastName}}
+															</li>
+														</ul>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<table class="table" cellspacing="0" cellpadding="0">
-						<tbody ng-repeat="day in planning">
-							<tr ng-repeat="slot in day.slots">
-								<th ng-if="!($index%day.slots.length)" rowspan="{{day.slots.length}}" width="30px">
-									{{day.date | date:'dd MMM'}}
-								</th>
-								<td  width="40px">
-									{{slot.start | date:'HH:mm'}}
-									{{slot.end   | date:'HH:mm'}}</td>
-								<td>
-									<div class="panel panel-default collapsed in">
-										<div class="panel-heading">
-										
-											<a href="#/" ng-if="slot.validatedBookings.length" ng-click="slot.open = !slot.open" class="pull-left glyphicon" ng-class="{'glyphicon-plus': !slot.open, 'glyphicon-minus': slot.open}">
-											</a> &nbsp
-										
-											{{slot.requiredLevel}}. Inscrits: {{slot.validatedBookings.length}}/{{slot.maxAttendees}}. En liste d'attente: {{slot.waitingBookings.length}}
-										</div>
-										<ul collapse="!slot.open" class="list-group" >
-										
-											<li class="list-group-item "
-												ng-repeat="booking in slot.validatedBookings">
-												{{booking.owner.user.firstName}}
-												{{booking.owner.user.lastName}} 
-												<span class="badge">{{booking.owner.level}}</span></li>
-												
-											<li class="list-group-item list-group-item-warning"
-												ng-repeat="booking in slot.waitingBookings">
-												{{booking.owner.user.firstName}}
-												{{booking.owner.user.lastName}} 
-												<span class="badge">{{booking.owner.level}}</span></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
                 </div>
             </div>
-            
-            
-            
+        </div>
+    </div>
+    
+    
+   	<div class="modal fade" id="quickAddBooking">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="lockForm" ng-submit="quickAddBooking()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" translate="entity.add.title">Confirm Quick Add operation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ajouter une réservation pour la séance "{{quickbooking.timeSlot.timeSlotType.name}}"
+                         du {{quickbooking.date | date:'EEEE dd/MM'}} 
+                         de {{quickbooking.timeSlot.start | date:'HH:mm'}} à {{quickbooking.timeSlot.end | date:'HH:mm'}}</p>
+                        
+                         <div class="form-group">
+							<input type="text" class="form-control" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUser()"
+								placeholder="Rechercher un utilisateur" />
+						</div>
+                         <div class="form-group">						       
+					        <div class="radio" ng-repeat="u in quickbookingUsers">
+					       		<label >
+					       			<input type="radio" name="selectUser"
+									    value="{{u.id}}"
+									    ng-click="selectUser(u)">{{u.firstName}} {{u.lastName}}
+					       		</label>
+				       		</div>
+				       		
+				       		<p ng-if="quickbookingUsers.length == 0">Aucun résultat</p>
+       					</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="lockForm.$invalid" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-add"></span>&nbsp;<span translate="entity.action.add">Add</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

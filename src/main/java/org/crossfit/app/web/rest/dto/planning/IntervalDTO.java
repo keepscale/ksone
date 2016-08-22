@@ -15,14 +15,13 @@ public class IntervalDTO {
 
 	private final DateTime start;
     private final DateTime end;
-    private final Map<TimeSlotType, List<TimeSlotInstanceDTO>> slotsByType;
+    private final List<TimeSlotInstanceDTO> slots;
     
-	public IntervalDTO(DateTime start, DateTime end,
-			Map<TimeSlotType, List<TimeSlotInstanceDTO>> slotsByType) {
+	public IntervalDTO(DateTime start, DateTime end, List<TimeSlotInstanceDTO> slots) {
 		super();
 		this.start = start;
 		this.end = end;
-		this.slotsByType = slotsByType;
+		this.slots = slots;
 	}
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
@@ -35,9 +34,11 @@ public class IntervalDTO {
 		return end;
 	}
 
-	public Map<TimeSlotType, List<TimeSlotInstanceDTO>> getSlotsByType() {
-		return slotsByType;
+	public List<TimeSlotInstanceDTO> getSlots() {
+		return slots;
 	}
+
+	
     
     
 }

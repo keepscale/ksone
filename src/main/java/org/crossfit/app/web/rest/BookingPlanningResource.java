@@ -66,7 +66,7 @@ public class BookingPlanningResource {
     	DateTime start = timeService.now().plusDays((offset < 0 ? 0 : offset) * limit);
     	DateTime end = start.plusDays(limit <= 0 ? 1 : limit);
     	
-    	if (Days.daysBetween(start, end).getDays() > 7){
+    	if (Days.daysBetween(start, end).getDays() > 14){
     		log.warn("Le nombre de jour recherche est trop important: " + Days.daysBetween(start, end).getDays());
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
