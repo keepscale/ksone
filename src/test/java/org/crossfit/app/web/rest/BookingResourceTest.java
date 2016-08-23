@@ -57,7 +57,7 @@ public class BookingResourceTest {
     private static final String DEFAULT_END_AT_STR = dateTimeFormatter.print(DEFAULT_END_AT);
 
     private static final BookingStatus DEFAULT_STATUS = BookingStatus.VALIDATED;
-    private static final BookingStatus UPDATED_STATUS = BookingStatus.ON_WAINTING_LIST;
+    private static final BookingStatus UPDATED_STATUS = BookingStatus.VALIDATED;
 
     private static final DateTime DEFAULT_CREATED_DATE = new DateTime(0L, DateTimeZone.UTC);
     private static final DateTime UPDATED_CREATED_DATE = new DateTime(DateTimeZone.UTC).withMillisOfSecond(0);

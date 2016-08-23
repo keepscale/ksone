@@ -56,7 +56,7 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
     private CrossFitBox box;
 
     @ManyToOne
-    private TimeSlot timeSlot;
+    private TimeSlotType timeSlotType;
 
     public Long getId() {
         return id;
@@ -106,13 +106,13 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
 	public void setBox(CrossFitBox box) {
 		this.box = box;
 	}
-	
-	public TimeSlot getTimeSlot() {
-		return timeSlot;
+
+	public TimeSlotType getTimeSlotType() {
+		return timeSlotType;
 	}
 
-	public void setTimeSlot(TimeSlot timeSlot) {
-		this.timeSlot = timeSlot;
+	public void setTimeSlotType(TimeSlotType timeSlotType) {
+		this.timeSlotType = timeSlotType;
 	}
 
 	@Override

@@ -28,7 +28,7 @@
             <column name="box_id" type="bigint">
             	<constraints nullable="false" />
             </column>
-            <column name="timeslot_id" type="bigint">
+            <column name="timeslottype_id" type="bigint">
             	<constraints nullable="false" />
             </column>
             <column name="start_at" type="timestamp">
@@ -61,5 +61,10 @@
                                  constraintName="fk_booking_owner_id"
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
+        <addForeignKeyConstraint baseColumnNames="timeslottype_id"
+                                 baseTableName="BOOKING"
+                                 constraintName="fk_booking_timeslottype_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="TIMESLOTTYPE"/>
     </changeSet>
 </databaseChangeLog>

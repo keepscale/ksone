@@ -257,12 +257,12 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 		this.subscriptions = subscriptions;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((box == null) ? 0 : box.hashCode());
-		result = prime * result + ((login == null) ? 0 : login.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -275,15 +275,10 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 		if (getClass() != obj.getClass())
 			return false;
 		Member other = (Member) obj;
-		if (box == null) {
-			if (other.box != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!box.equals(other.box))
-			return false;
-		if (login == null) {
-			if (other.login != null)
-				return false;
-		} else if (!login.equals(other.login))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

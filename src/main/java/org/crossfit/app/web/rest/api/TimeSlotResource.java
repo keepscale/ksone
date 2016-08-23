@@ -8,21 +8,16 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.TimeSlot;
-import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
-import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.exception.BadRequestException;
-import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
-import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -32,8 +27,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -189,63 +182,5 @@ public class TimeSlotResource {
 		if (timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())) {
 			timeSlotRepository.delete(timeSlot);
 		}
-	}
-	
-	
-	
-	/**
-     * POST /timeSlots/:id/booking -> save the booking for timeslot
-     */
-    @RequestMapping(value = "/timeSlots/{id}/booking",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Booking> createBooking(@PathVariable Long id, @RequestBody(required = true) String date) throws URISyntaxException {
-    	
-    	TimeSlot timeSlot = timeSlotRepository.findOne(id);
-    	
-    	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
-    	if(timeSlot == null){
-            return ResponseEntity.badRequest().header("Failure", "TimeSlot introuvable").body(null);
-        } else if(!timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
-            return ResponseEntity.badRequest().header("Failure", "Le timeSlot n'appartient pas à la box").body(null);
-        }
-    	
-    	DateTime dateDispo = timeService.parseDateAsUTC("yyyy-MM-dd", date);
-    	
-    	// On ajoute l'heure à la date
-    	DateTime startAt = dateDispo.withTime(timeSlot.getStartTime().getHourOfDay(), timeSlot.getStartTime().getMinuteOfHour(), 0, 0);
-    	DateTime endAt = dateDispo.withTime(timeSlot.getEndTime().getHourOfDay(), timeSlot.getEndTime().getMinuteOfHour(), 0, 0);
-    	
-    	// Si il y a déjà une réservation pour ce créneau
-    	List<Booking> bookings = bookingRepository.findAllByMemberAndDate(SecurityUtils.getCurrentMember(), startAt, endAt);
-    	if(bookings == null || !bookings.isEmpty()){
-    		return ResponseEntity.badRequest().header("Failure", "Une réservation existe déjà pour ce créneau").body(null);
-    	}
-    	Booking booking  = new Booking();
-        
-    	booking.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        booking.setCreatedDate(DateTime.now());
-        booking.setOwner(SecurityUtils.getCurrentMember());
-        booking.setStartAt(startAt);
-        booking.setEndAt(endAt);
-    	
-        if(isAvailable(booking)){
-        	booking.setStatus(BookingStatus.VALIDATED);
-        }else{
-        	booking.setStatus(BookingStatus.ON_WAINTING_LIST);
-        }
-        
-        Booking result = bookingRepository.save(booking);
-        return new ResponseEntity<Booking>(result, HttpStatus.OK);
-    }
-
-    protected boolean isAvailable(Booking booking){
-		List<Booking> memberBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), booking.getStartAt(), booking.getEndAt());
-		List<TimeSlotInstanceDTO> timeSlots = timeSlotService.findAllTimeSlotInstance(booking.getStartAt(), booking.getEndAt());
-		if(!timeSlots.isEmpty()){
-			return (timeSlots.get(0).getMaxAttendees() - memberBookings.size())>0;
-		}
-		
-		return false;
 	}
 }

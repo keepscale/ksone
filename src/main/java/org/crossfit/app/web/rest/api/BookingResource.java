@@ -9,9 +9,11 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
@@ -54,6 +56,8 @@ public class BookingResource {
 
     @Inject
     private TimeSlotRepository timeSlotRepository;
+    @Inject
+    private MemberRepository memberRepository;
 
     /**
      * GET  /bookings -> get all the bookings.
@@ -83,13 +87,36 @@ public class BookingResource {
 
     	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
     		if(booking == null || !booking.getOwner().equals( SecurityUtils.getCurrentMember())){
-    			return ResponseEntity.status(HttpStatus.FORBIDDEN).header("Failure", "Vous n'êtes pas le propiétaire de cette réservation").body(null);
+    			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
     		}
     	}
     	
 		
         bookingRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("booking", id.toString())).build();
+    }
+    
+    
+
+    /**
+     * PUT  /bookings/:id/validate -> validate the "id" booking.
+     */
+    @RequestMapping(value = "/bookings/{id}/validate",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> validate(@PathVariable Long id) {
+        log.debug("REST request to validate Booking : {}", id);
+
+    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'avez pas les droits necessaires", "")).body(null);
+    	}
+    	
+		Booking booking = bookingRepository.findOne(id);
+		booking.setStatus(BookingStatus.VALIDATED);    	
+		
+        bookingRepository.save(booking);
+
+		return ResponseEntity.ok().build();
     }
     
     /**
@@ -102,12 +129,13 @@ public class BookingResource {
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
     	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
+    	Member owner = memberRepository.findOne(bookingdto.getOwner().getId());
     	
     	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
     	if(timeSlot == null){
-            return ResponseEntity.badRequest().header("Failure", "TimeSlot introuvable").body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("TimeSlot introuvable", "")).body(null);
         } else if(!timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
-            return ResponseEntity.badRequest().header("Failure", "Le timeSlot n'appartient pas à la box").body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
         }
     	
     	// On ajoute l'heure à la date
@@ -118,31 +146,54 @@ public class BookingResource {
     	Member currentMember = SecurityUtils.getCurrentMember();
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
-    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
-    		if (!currentMember.equals(bookingdto.getOwner())){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).header("Failure", "Vous n'avez pas le droit de reserver pour quelqu'un d'autre").body(null);
-    		}
+    	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
+		if (!isSuperUser && !currentMember.equals(owner)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            		.headers(HeaderUtil.createAlert("Vous n'avez pas le droit de reserver pour quelqu'un d'autre", String.valueOf(timeSlot.getId())))
+            		.body(null);
     	}
     	
     	// Si il y a déjà une réservation pour ce créneau
 		List<Booking> currentBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
-    	if(currentBookings.stream().anyMatch(b->b.getOwner().equals(bookingdto.getOwner()))){
-    		return ResponseEntity.badRequest().header("Failure", "Une réservation existe déjà pour ce créneau").body(null);
+    	if(currentBookings.stream().anyMatch(b->b.getOwner().equals(owner))){
+    		return ResponseEntity.badRequest()
+            		.headers(HeaderUtil.createAlert("Une réservation existe déjà pour ce créneau", String.valueOf(timeSlot.getId())))
+            		.body(null);
     	}
+    	
+    	if (!isSuperUser && currentBookings.size() >= timeSlot.getMaxAttendees()){
+    		return ResponseEntity.badRequest()
+            		.headers(HeaderUtil.createAlert("Il n'y a plus de place disponible pour ce créneau", String.valueOf(timeSlot.getId())))
+            		.body(null);
+    	}
+    	
+    	if (!isSuperUser && !canUserBook(owner, timeSlot)){
+    		return ResponseEntity.badRequest()
+            		.headers(HeaderUtil.createAlert("Votre abonnement ne vous permet pas de réserver ce créneau", String.valueOf(timeSlot.getId())))
+            		.body(null);
+    	}
+    	
     	Booking b  = new Booking();
         
     	b.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         b.setCreatedDate(DateTime.now());
-        b.setOwner(bookingdto.getOwner());
+        b.setOwner(owner);
         b.setBox(currentCrossFitBox);
-        b.setTimeSlot(timeSlot);
+        b.setTimeSlotType(timeSlot.getTimeSlotType());
         b.setStartAt(startAt);
         b.setEndAt(endAt);
-    	b.setStatus(currentBookings.size() > timeSlot.getMaxAttendees() ? BookingStatus.ON_WAINTING_LIST : BookingStatus.VALIDATED);
+    	b.setStatus(BookingStatus.VALIDATED);
     	
         Booking result = bookingRepository.save(b);
         
-        return new ResponseEntity<Booking>(result, HttpStatus.OK);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(result);
+
     }
+
+
+	private boolean canUserBook(Member owner, TimeSlot timeSlot) {
+		//Verifier qu'au moins une de ses souscription lui permet de reserver ce slot
+		return true;
+	}
     
 }

@@ -11,7 +11,11 @@
                 <div class="planning" ng-switch-when="true">
                 	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
                 	</div>
-                	
+                	<div class="row">
+					<div class="col-lg-12">
+					   	<jh-alert></jh-alert>
+				    </div>
+				</div>
                 	<ul class="nav nav-tabs">
 					  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
 					  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
@@ -29,7 +33,7 @@
 													<div class="col-xs-2"></div>
 													<div class="col-xs-8">
 														<h6 class="text-center">
-														{{slot.start | date:'HH:mm'}} - {{slot.end   | date:'HH:mm'}}</h6>
+														{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}}</h6>
 														<h6 class="text-center">
 														{{slot.timeSlotType.name}} - {{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
 														inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}</h6>
@@ -41,23 +45,10 @@
 													</div>
 												</div>
 												<div class="row">
-													<div class="{{'col-sm-' +  (slot.waitingBookings.length > 0 ? 6 : 12) }}">
+													<div class="col-sm-12">
 														<ul class="list-group">
 															<li class="list-group-item list-group-item-success"
 																ng-repeat="booking in slot.validatedBookings">
-																{{booking.owner.firstName}} {{booking.owner.lastName}}
-																
-																<a href="#" ng-click="quickDeleteBooking(booking)">
-																	<span style="float: right; color: red;" class="glyphicon glyphicon-remove"></span>
-																</a>
-															</li>
-														</ul>
-													</div>
-													
-													<div class="col-sm-6" ng-if="slot.waitingBookings.length > 0">
-														<ul class="list-group">
-															<li class="list-group-item list-group-item-warning"
-																ng-repeat="booking in slot.waitingBookings">
 																{{booking.owner.firstName}} {{booking.owner.lastName}}
 																
 																<a href="#" ng-click="quickDeleteBooking(booking)">
@@ -90,6 +81,8 @@
                         <h4 class="modal-title" translate="entity.add.title">Confirm Quick Add operation</h4>
                     </div>
                     <div class="modal-body">
+                    	<jhAlertError></jhAlertError>
+                    
                         <p>Ajouter une réservation pour la séance "{{quickbooking.timeslot.timeSlotType.name}}"
                          du {{quickbooking.date | date:'EEEE dd/MM'}} 
                          de {{quickbooking.timeslot.start | date:'HH:mm'}} à {{quickbooking.timeslot.end | date:'HH:mm'}}</p>

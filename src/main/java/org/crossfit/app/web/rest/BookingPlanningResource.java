@@ -79,7 +79,7 @@ public class BookingPlanningResource {
 	    		slot.setBookings(
 	    				bookings.stream()
 	    				.filter(b -> {return 
-	    					slot.getId().equals(b.getTimeSlot().getId()) 
+	    					slot.getTimeSlotType().getId().equals(b.getTimeSlotType().getId())
 	    						&& slot.getStart().compareTo(b.getStartAt()) == 0
 	    							&& slot.getEnd().compareTo(b.getEndAt())  == 0;
 	    				})

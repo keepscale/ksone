@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.repository.CrossFitBoxRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class CrossFitBoxResource {
     @Inject
     private CrossFitBoxRepository crossFitBoxRepository;
 
+    @Inject
+    private CrossFitBoxSerivce boxService;
+    
     /**
      * POST  /boxs -> Create a new crossFitBox.
      */
@@ -111,5 +115,20 @@ public class CrossFitBoxResource {
         log.debug("REST request to delete CrossFitBox : {}", id);
         crossFitBoxRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("crossFitBox", id.toString())).build();
+    }
+    
+    /**
+     * GET  /boxs/:id -> get the "id" crossFitBox.
+     */
+    @RequestMapping(value = "/boxs/current",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CrossFitBox> current() {
+        log.debug("REST request to get Current CrossFitBox");
+        return Optional.ofNullable(boxService.findCurrentCrossFitBox())
+            .map(crossFitBox -> new ResponseEntity<>(
+                crossFitBox,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

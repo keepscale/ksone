@@ -8,6 +8,12 @@
 					ui-sref-active="active" ng-switch-when="true"></span>
 			</a></li>
 		
+
+		<li ng-class="{active: $state.includes('config')}"
+			ng-switch-when="true"><a ui-sref="config"> <span
+				class="glyphicon glyphicon-time"
+				title="{{'global.menu.config'|translate}}"></span>
+			</a></li>
 		
 		<li ng-class="{active: $state.includes('account')}"><a
 			ui-sref="account"> <span class="glyphicon glyphicon-user"
@@ -40,13 +46,6 @@
 				class="glyphicon glyphicon-calendar"
 				title="{{'global.menu.timeslots'|translate}}"></span>
 		</a></li>
-
-		<li ng-class="{active: $state.includes('bookings')}"
-			ng-switch-when="true"><a ui-sref="bookings"> <span
-				class="glyphicon glyphicon-time"
-				title="{{'global.menu.bookings'|translate}}"></span>
-		</a></li>
-		
 
 		<li ng-class="{active: $state.includes('membership')}"
 			ng-switch-when="true"><a ui-sref="membership"> <span

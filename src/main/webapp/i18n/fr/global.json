@@ -15,7 +15,7 @@
             },
             "members" : "Membres",
             "timeslots" : "Créneaux",
-            "bookings" : "Réservations",
+            "config" : "Configuration",
             "language": "Langue",
             "memberships" : "Abonnements"
         },

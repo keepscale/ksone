@@ -73,9 +73,6 @@ public class TimeSlotInstanceDTO {
 	public List<Booking> getValidatedBookings() {
 		return bookings.stream().filter(b->{return b.getStatus() == BookingStatus.VALIDATED;}).collect(Collectors.toList());
 	}
-	public List<Booking> getWaitingBookings() {
-		return bookings.stream().filter(b->{return b.getStatus() == BookingStatus.ON_WAINTING_LIST;}).collect(Collectors.toList());
-	}
 
 	public void setBookings(List<Booking> bookings) {
 		this.bookings = new ArrayList<>(bookings);
