@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MainManagerController', function ($scope, Principal, Planning, Member) {
+    .controller('MainManagerController', function ($scope, Principal, Planning, Member, Booking) {
     	$scope.planning = [];
         $scope.page = 0;
         $scope.selectedIndex = 0;
         $scope.quickbooking = {};
+        $scope.quickbookingUsers = [];
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -14,6 +15,9 @@ angular.module('crossfitApp')
         
         
         $scope.loadAll = function() {
+        	$scope.planning = [];
+            $scope.quickbooking = {};
+            $scope.quickbookingUsers = [];
             Planning.query({page: $scope.page, per_page: 14}, function(result, headers) {
                 for (var i = 0; i < result.days.length; i++) {
                     $scope.planning.push(result.days[i]);
@@ -24,16 +28,19 @@ angular.module('crossfitApp')
         $scope.select = function(index) {
             $scope.selectedIndex = index;
         };
-
         $scope.showQuickAddBooking = function(slot){
             $scope.quickbooking = {
-            	timeSlot: slot,
+            	timeslot: slot,
+            	timeslotId: slot.id,
             	date: $scope.planning[$scope.selectedIndex].date
             };
               
             $('#quickAddBooking').modal('show');
         }
-        $scope.searchUser = function(){
+        $scope.selectUserForQuickBooking = function(user){
+			$scope.quickbooking.owner = user;
+        }
+        $scope.searchUserForQuickBooking = function(){
         	if ($scope.quickbookingLike.length >= 3)
         	Member.query({
               	page: 1, per_page: 5, 
@@ -50,8 +57,17 @@ angular.module('crossfitApp')
               	});
         }
         $scope.quickAddBooking = function(){
-        	alert("quickAddBooking" + $scope.quickbooking.date)        	
-            $('#quickAddBooking').modal('hide');  	
+        	Booking.save($scope.quickbooking, function(){
+        		$scope.loadAll();
+                $('#quickAddBooking').modal('hide'); 
+        	});
+        }
+
+
+        $scope.quickDeleteBooking = function(booking){
+        	Booking.delete({id : booking.id}, function(){
+        		$scope.loadAll();
+        	});
         }
     })
     .controller('MainUserController', function ($scope, Principal, Planning) {

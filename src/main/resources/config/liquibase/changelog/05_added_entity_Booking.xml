@@ -22,7 +22,15 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="owner_id" type="bigint"/>
+            <column name="owner_id" type="bigint">
+            	<constraints nullable="false" />
+            </column>
+            <column name="box_id" type="bigint">
+            	<constraints nullable="false" />
+            </column>
+            <column name="timeslot_id" type="bigint">
+            	<constraints nullable="false" />
+            </column>
             <column name="start_at" type="timestamp">
                 <constraints nullable="false" />
             </column>
@@ -42,11 +50,16 @@
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
     
+        <addForeignKeyConstraint baseColumnNames="box_id"
+                                 baseTableName="BOOKING"
+                                 constraintName="fk_booking_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="CROSSFITBOX"/>
+
         <addForeignKeyConstraint baseColumnNames="owner_id"
                                  baseTableName="BOOKING"
                                  constraintName="fk_booking_owner_id"
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
-
     </changeSet>
 </databaseChangeLog>

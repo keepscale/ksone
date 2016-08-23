@@ -11,6 +11,7 @@ import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
@@ -53,12 +54,12 @@ public class TimeSlotInstanceDTO {
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public DateTime getStart() {
-		return date.withTime(slot.getStartTime().getHourOfDay(), slot.getStartTime().getMinuteOfHour(), 0, 0);
+		return date.withTime(slot.getStartTime().getHourOfDay(), slot.getStartTime().getMinuteOfHour(), 0, 0).toDateTime(DateTimeZone.UTC);
 	}
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public DateTime getEnd() {
-		return date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0);
+		return date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0).toDateTime(DateTimeZone.UTC);
 	}
 
 	public Integer getMaxAttendees() {
@@ -90,12 +91,7 @@ public class TimeSlotInstanceDTO {
 	}
 
 
-	public boolean contains(DateTime start, DateTime end) {
-		return this.toInterval().contains(new Interval(start, end));
+	public boolean equalsDate(DateTime start, DateTime end) {
+		return this.getStart().equals(start) && this.getEnd().equals(end);
 	}
-
-	protected Interval toInterval() {
-		return new Interval(this.getStart(), this.getEnd());
-	}
-
 }

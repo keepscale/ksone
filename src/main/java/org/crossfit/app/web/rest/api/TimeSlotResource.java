@@ -240,7 +240,7 @@ public class TimeSlotResource {
     }
 
     protected boolean isAvailable(Booking booking){
-		List<Booking> memberBookings = bookingRepository.findAll(boxService.findCurrentCrossFitBox(), booking.getStartAt(), booking.getEndAt());
+		List<Booking> memberBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), booking.getStartAt(), booking.getEndAt());
 		List<TimeSlotInstanceDTO> timeSlots = timeSlotService.findAllTimeSlotInstance(booking.getStartAt(), booking.getEndAt());
 		if(!timeSlots.isEmpty()){
 			return (timeSlots.get(0).getMaxAttendees() - memberBookings.size())>0;

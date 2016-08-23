@@ -13,9 +13,9 @@
 		<insert tableName="CROSSFITBOX">
 			<column name="name" value="Crossfit Local" />
 			<column name="website_pattern" value="(.*)" />
-			<column name="adminwebsite" value="localhost" />
-			<column name="bookingwebsite" value="localhost" />
-			<column name="rootwebsite" value="localhost" />
+			<column name="adminwebsite" value="http://localhost:8080" />
+			<column name="bookingwebsite" value="http://localhost:8080" />
+			<column name="rootwebsite" value="http://localhost:8080" />
 			<column name="email_from" value="no-reply@crossfit-local.com" />
 			<column name="logo_url" value="NULL" />
 			<column name="time_zone" value="NULL" />

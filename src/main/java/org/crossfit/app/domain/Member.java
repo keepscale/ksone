@@ -120,6 +120,7 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     private Set<PersistentToken> persistentTokens = new HashSet<>();
 
 
+    @JsonIgnore
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Subscription> subscriptions = new ArrayList<>();
 
@@ -292,7 +293,7 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 		return "Member [id=" + id + ", login=" + login + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", locked="
 				+ locked + ", enabled="	+ enabled + ", langKey=" + langKey + ", authorities="
-				+ authorities + ", box=" + box == null ? null : box.getName() + "]";
+				+ (authorities == null ? null : authorities) + ", box=" + (box == null ? null : box.getName()) + "]";
 	}
 
 	@Override

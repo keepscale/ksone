@@ -19,19 +19,20 @@
 					</ul>
 					
 					<div class="row">
-        				<div class="col-md-12  col-lg-10 col-lg-offset-1">
+        				<div class="col-md-12">
 							<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
 		        				<div class="col-md-12">
-									<div class="row"><div class="col-md-12 text-center">{{interval.start | date:'HH:mm'}} - {{interval.end   | date:'HH:mm'}}</div></div>
 									<div class="row">
 										<div class="{{'col-md-' +  (12 / interval.slots.length) }}" ng-repeat="slot in interval.slots">
-											<div style="border: 1px solid #ddd" >
+											<div style="border: 1px solid #ddd; margin: 5px;" >
 												<div class="row">
 													<div class="col-xs-2"></div>
 													<div class="col-xs-8">
-														<h5 class="text-center">
+														<h6 class="text-center">
+														{{slot.start | date:'HH:mm'}} - {{slot.end   | date:'HH:mm'}}</h6>
+														<h6 class="text-center">
 														{{slot.timeSlotType.name}} - {{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
-														inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}</h5>
+														inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}</h6>
 													</div>
 													<div class="col-xs-2 text-right">
 														<a href="#" ng-click="showQuickAddBooking(slot)">
@@ -40,20 +41,28 @@
 													</div>
 												</div>
 												<div class="row">
-													<div class="{{'col-md-' +  (slot.waitingBookings.length > 0 ? 6 : 12) }}">
-														<ul>
-															<li class="list-group-item "
+													<div class="{{'col-sm-' +  (slot.waitingBookings.length > 0 ? 6 : 12) }}">
+														<ul class="list-group">
+															<li class="list-group-item list-group-item-success"
 																ng-repeat="booking in slot.validatedBookings">
 																{{booking.owner.firstName}} {{booking.owner.lastName}}
+																
+																<a href="#" ng-click="quickDeleteBooking(booking)">
+																	<span style="float: right; color: red;" class="glyphicon glyphicon-remove"></span>
+																</a>
 															</li>
 														</ul>
 													</div>
 													
-													<div class="col-md-6" ng-if="slot.waitingBookings.length > 0">
-														<ul>
-															<li class="list-group-item "
+													<div class="col-sm-6" ng-if="slot.waitingBookings.length > 0">
+														<ul class="list-group">
+															<li class="list-group-item list-group-item-warning"
 																ng-repeat="booking in slot.waitingBookings">
 																{{booking.owner.firstName}} {{booking.owner.lastName}}
+																
+																<a href="#" ng-click="quickDeleteBooking(booking)">
+																	<span style="float: right; color: red;" class="glyphicon glyphicon-remove"></span>
+																</a>
 															</li>
 														</ul>
 													</div>
@@ -81,12 +90,12 @@
                         <h4 class="modal-title" translate="entity.add.title">Confirm Quick Add operation</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Ajouter une réservation pour la séance "{{quickbooking.timeSlot.timeSlotType.name}}"
+                        <p>Ajouter une réservation pour la séance "{{quickbooking.timeslot.timeSlotType.name}}"
                          du {{quickbooking.date | date:'EEEE dd/MM'}} 
-                         de {{quickbooking.timeSlot.start | date:'HH:mm'}} à {{quickbooking.timeSlot.end | date:'HH:mm'}}</p>
+                         de {{quickbooking.timeslot.start | date:'HH:mm'}} à {{quickbooking.timeslot.end | date:'HH:mm'}}</p>
                         
                          <div class="form-group">
-							<input type="text" class="form-control" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUser()"
+							<input type="text" class="form-control" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUserForQuickBooking()"
 								placeholder="Rechercher un utilisateur" />
 						</div>
                          <div class="form-group">						       
@@ -94,7 +103,7 @@
 					       		<label >
 					       			<input type="radio" name="selectUser"
 									    value="{{u.id}}"
-									    ng-click="selectUser(u)">{{u.firstName}} {{u.lastName}}
+									    ng-click="selectUserForQuickBooking(u)">{{u.firstName}} {{u.lastName}}
 					       		</label>
 				       		</div>
 				       		

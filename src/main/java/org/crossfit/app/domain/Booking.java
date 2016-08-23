@@ -2,6 +2,7 @@ package org.crossfit.app.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
@@ -12,6 +13,7 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -49,6 +51,12 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     private Member owner;
+
+    @ManyToOne
+    private CrossFitBox box;
+
+    @ManyToOne
+    private TimeSlot timeSlot;
 
     public Long getId() {
         return id;
@@ -90,7 +98,24 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
         this.owner = member;
     }
     
-    @Override
+    
+    public CrossFitBox getBox() {
+		return box;
+	}
+
+	public void setBox(CrossFitBox box) {
+		this.box = box;
+	}
+	
+	public TimeSlot getTimeSlot() {
+		return timeSlot;
+	}
+
+	public void setTimeSlot(TimeSlot timeSlot) {
+		this.timeSlot = timeSlot;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

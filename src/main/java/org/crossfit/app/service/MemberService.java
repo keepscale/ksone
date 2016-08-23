@@ -154,7 +154,7 @@ public class MemberService {
 
 		memberRepository.save(member);
 	}
-
+	
    public void changePassword(String password) {
 	   Optional.of(SecurityUtils.getCurrentMember()).ifPresent(u-> {
             String encryptedPassword = passwordEncoder.encode(password);

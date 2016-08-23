@@ -71,14 +71,18 @@ public class BookingPlanningResource {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 
-    	List<Booking> bookings = bookingRepository.findAll(boxService.findCurrentCrossFitBox(), start, end);
+    	List<Booking> bookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), start, end);
     	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end);
     	
     	List<PlanningDayDTO> days = 
 			slotInstances.stream().map(slot ->{
 	    		slot.setBookings(
 	    				bookings.stream()
-	    				.filter(b -> {return slot.contains(b.getStartAt(), b.getEndAt());})
+	    				.filter(b -> {return 
+	    					slot.getId().equals(b.getTimeSlot().getId()) 
+	    						&& slot.getStart().compareTo(b.getStartAt()) == 0
+	    							&& slot.getEnd().compareTo(b.getEndAt())  == 0;
+	    				})
 	    	    		.sorted( (b1, b2) -> { return b1.getCreatedDate().compareTo(b2.getCreatedDate());} )
 	    				.collect(Collectors.toList()));
 	    		return slot;

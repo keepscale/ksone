@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Utility class for Spring Security.
@@ -52,13 +53,14 @@ public final class SecurityUtils {
     /**
      * If the current user has a specific security role.
      */
-    public static boolean isUserInRole(String role) {
+    public static boolean isUserInAnyRole(String... roles) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
         if(authentication != null) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-                return springSecurityUser.getAuthorities().contains(new SimpleGrantedAuthority(role));
+                return springSecurityUser.getAuthorities().stream().anyMatch(
+                		a->Stream.of(roles).anyMatch(r->r.equals(a.getAuthority())));
             }
         }
         return false;
