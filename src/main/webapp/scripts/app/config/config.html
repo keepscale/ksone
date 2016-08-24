@@ -1,20 +1,16 @@
-<div class="row">
-	<div class="col-lg-12">
-	   	<jh-alert></jh-alert>
-    </div>
-</div>
-
-
 <form name="form" role="form" novalidate ng-submit="update()">
 
 	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true" ng-click="clear()">&times;</button>
 		<h4 class="modal-title" id="myMemberLabel"
 			translate="crossfitApp.config.home.title">Configuration</h4>
 	</div>
 	
 	<div class="modal-body">	
+		<div class="row">
+			<div class="col-md-12">
+               	<jh-alert-error></jh-alert-error>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-md-6">
 		        <div class="form-group">

@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
@@ -155,22 +157,17 @@ public class BookingResource {
     	
     	// Si il y a déjà une réservation pour ce créneau
 		List<Booking> currentBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
-    	if(currentBookings.stream().anyMatch(b->b.getOwner().equals(owner))){
-    		return ResponseEntity.badRequest()
-            		.headers(HeaderUtil.createAlert("Une réservation existe déjà pour ce créneau", String.valueOf(timeSlot.getId())))
-            		.body(null);
+		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getOwner().equals(owner)).findAny();
+    	if(alreadyBooked.isPresent()){
+    		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
     	}
     	
     	if (!isSuperUser && currentBookings.size() >= timeSlot.getMaxAttendees()){
-    		return ResponseEntity.badRequest()
-            		.headers(HeaderUtil.createAlert("Il n'y a plus de place disponible pour ce créneau", String.valueOf(timeSlot.getId())))
-            		.body(null);
+    		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
     	if (!isSuperUser && !canUserBook(owner, timeSlot)){
-    		return ResponseEntity.badRequest()
-            		.headers(HeaderUtil.createAlert("Votre abonnement ne vous permet pas de réserver ce créneau", String.valueOf(timeSlot.getId())))
-            		.body(null);
+    		throw new CustomParameterizedException("Votre abonnement ne vous permet pas de réserver ce créneau");
     	}
     	
     	Booking b  = new Booking();

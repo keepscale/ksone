@@ -81,15 +81,20 @@
                         <h4 class="modal-title" translate="entity.add.title">Confirm Quick Add operation</h4>
                     </div>
                     <div class="modal-body">
-                    	<jhAlertError></jhAlertError>
+                    	<jh-alert-error></jh-alert-error>
                     
                         <p>Ajouter une réservation pour la séance "{{quickbooking.timeslot.timeSlotType.name}}"
                          du {{quickbooking.date | date:'EEEE dd/MM'}} 
                          de {{quickbooking.timeslot.start | date:'HH:mm'}} à {{quickbooking.timeslot.end | date:'HH:mm'}}</p>
                         
-                         <div class="form-group">
-							<input type="text" class="form-control" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUserForQuickBooking()"
-								placeholder="Rechercher un utilisateur" />
+                         <div class="form-group">								
+						    <div class="input-group">
+						      <input type="text" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUserForQuickBooking()"
+						      	class="form-control" placeholder="Rechercher un utilisateur..." autocomplete="false" autofocus="autofocus">
+						      <span class="input-group-btn">
+						        <button class="btn btn-default" type="button" ng-click="searchUserForQuickBooking()">Go!</button>
+						      </span>
+						    </div>
 						</div>
                          <div class="form-group">						       
 					        <div class="radio" ng-repeat="u in quickbookingUsers">

@@ -1,6 +1,9 @@
 {
     "crossfitApp": {
         "membership" : {
+            "home": {
+                "title": "Gestion des abonnements"
+            },
             "action" : {
             	"edit" : "Modifier",
             	"delete" : "Supprimer"

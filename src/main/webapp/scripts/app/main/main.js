@@ -13,7 +13,7 @@ angular.module('crossfitApp')
                     'content@': {
 
                         templateProvider: function(Principal, $stateParams, $templateFactory){
-        	                if(Principal.isInAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')){
+                       	 if(Principal.isInAnyRole(['ROLE_MANAGER', 'ROLE_ADMIN'])){
         	                	return $templateFactory.fromUrl('scripts/app/main/main.manager.html', $stateParams);
         	                } 
         	                else {
@@ -21,7 +21,7 @@ angular.module('crossfitApp')
         	                }
                         },
                         controllerProvider: function(Principal){
-                        	 if(Principal.isInAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')){
+                        	 if(Principal.isInAnyRole(['ROLE_MANAGER', 'ROLE_ADMIN'])){
                             	 return 'MainManagerController';
          	                } 
          	                else {

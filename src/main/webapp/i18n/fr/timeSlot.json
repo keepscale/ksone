@@ -2,7 +2,7 @@
     "crossfitApp": {
         "timeSlot" : {
             "home": {
-                "title": "Créneaux",
+                "title": "Gestion des créneaux",
                 "createLabel": "Créer un nouveau créneau",
                 "createOrEditLabel": "Créer ou éditer un créneau"
             },

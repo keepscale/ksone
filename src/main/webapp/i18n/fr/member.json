@@ -2,7 +2,7 @@
     "crossfitApp": {
         "member" : {
             "home": {
-                "title": "Gestion des {{ size }}/{{ totalCount }} adhérents",
+                "title": "Gestion des adhérents",
                 "createLabel": "Créer un nouvel adhérent",
                 "massActivationLabel": "Activer tous les utilisateurs",
                 "createOrEditLabel": "Créer ou éditer un adhérent"

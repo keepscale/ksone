@@ -16,7 +16,6 @@ angular.module('crossfitApp')
                 if (!_authenticated) {
                    return false;
                }
-
                return this.identity().then(function(_id) {
                    return _id.roles && _id.roles.indexOf(role) !== -1;
                }, function(err){
@@ -27,9 +26,8 @@ angular.module('crossfitApp')
                 if (!_authenticated || !_identity || !_identity.roles) {
                     return false;
                 }
-
                 for (var i = 0; i < roles.length; i++) {
-                    if (this.isInRole(roles[i])) {
+                	if (_identity.roles.indexOf(roles[i]) !== -1) {
                         return true;
                     }
                 }
