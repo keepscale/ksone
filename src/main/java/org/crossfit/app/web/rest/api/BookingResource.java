@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.repository.BookingRepository;
@@ -70,12 +69,40 @@ public class BookingResource {
     public ResponseEntity<List<Booking>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
-        Page<Booking> page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+    	
+    	Page<Booking> page = null; 
+    	
+    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+    		page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+    	}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 
+    /**
+     * GET  /bookings/:id -> get the "id" booking.
+     */
+    @RequestMapping(value = "/bookings/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Booking> get(@PathVariable Long id) {
+        log.debug("REST request to get Booking : {}", id);
+		Booking booking = bookingRepository.findOne(id);
+		
+		if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+    		if(booking == null || !booking.getOwner().equals( SecurityUtils.getCurrentMember())){
+    			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
+    		}
+    	}
+    	
+    	return Optional.ofNullable(booking)
+                .map(book -> new ResponseEntity<>(
+                    book,
+                    HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
     /**
      * DELETE  /bookings/:id -> delete the "id" booking.
      */

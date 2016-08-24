@@ -1,15 +1,26 @@
-<div ng-cloak>
+<div ng-cloak  ng-switch="isAuthenticated()">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div ng-switch="isAuthenticated()">
-                <div class="alert alert-success" ng-switch-when="true" translate="main.logged.message" translate-values="{username: '{{account.login}}'}">
-                    You are logged in as user "{{account.login}}".
-                </div>
-
-                <div class="alert alert-warning" ng-switch-when="false" translate="global.messages.info.authenticated">
-                    If you want to <a href="#/login">authenticate</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").
+            <div>
+                <div class="alert alert-info" ng-switch-when="true" translate="main.logged.message" translate-values="{username: '{{account.lastName}}'}">
+                    Welcome "{{account.lastName}}".
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row">
+    	<div class="col-lg-6" ng-switch-when="true">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<span class="glyphicon glyphicon-bullhorn"></span>
+						Informations
+					</h3>
+				</div>
+				<div class="panel-body">
+					<div class="alert alert-success" role="alert">Vous pouvez encore reserver <strong>{{nbBookingPossible}} wod(s)</strong> cette semaine.</div>
+				</div>
+			</div>
+		</div>
     </div>
 </div>

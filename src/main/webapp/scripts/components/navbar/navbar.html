@@ -57,6 +57,11 @@
 				class="glyphicon glyphicon-calendar"
 				title="{{'global.menu.memberships'|translate}}"></span>
 		</a></li>
+		<li ng-class="{active: $state.includes('booking')}"  has-any-role="ROLE_USER"
+			ng-switch-when="true"><a ui-sref="booking"> <span
+				class="glyphicon glyphicon-time"
+				title="{{'global.menu.bookings'|translate}}"></span>
+		</a></li>
 
 	</ul>
 </nav>
