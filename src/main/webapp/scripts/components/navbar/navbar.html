@@ -2,7 +2,8 @@
 	<ul class="nav navbar-nav navbar-right">
 
 
-		<li ng-class="{active: $state.includes('member.new')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN">
+		<li ng-class="{active: $state.includes('member.new')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
+		ng-switch-when="true">
 			<a ui-sref="member.new">
 				<span class="glyphicon glyphicon-flash"
 					ui-sref-active="active" ng-switch-when="true"></span>
@@ -33,12 +34,6 @@
 				title="{{'global.menu.home'|translate}}"></span>
 		</a>
 		</li>
-
-		<li ng-class="{active: $state.includes('bookings')}" has-any-role="ROLE_USER"
-			ng-switch-when="true"><a ui-sref="booking"> <span
-				class="glyphicon glyphicon-calendar"
-				title="{{'global.menu.bookings'|translate}}"></span>
-		</a></li>
 		
 		<li ng-class="{active: $state.includes('members')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="member"> <span

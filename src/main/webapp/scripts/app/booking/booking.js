@@ -5,7 +5,7 @@ angular.module('crossfitApp')
         $stateProvider
             .state('booking', {
                 parent: 'site',
-                url: '/bookings/:startDate/:endDate',
+                url: '/bookings',
                 data: {
                     roles: ['ROLE_USER'],
                     pageTitle: 'crossfitApp.booking.home.title'
