@@ -1,0 +1,14 @@
+{
+    "crossfitApp": {
+        "booking" : {
+            "home": {
+                "title": "Mes reservations"
+            },
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer"
+        	}
+        }
+    }
+}
+

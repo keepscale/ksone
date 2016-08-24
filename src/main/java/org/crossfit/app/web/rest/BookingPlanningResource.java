@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
+import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -105,7 +106,7 @@ public class BookingPlanningResource {
     /**
      * GET  /event -> get all event (timeslot & closedday.
      */
-    @RequestMapping(value = "/event",
+    @RequestMapping(value = "/myplanning",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EventSourceDTO>> getAll(
@@ -129,7 +130,10 @@ public class BookingPlanningResource {
 			.entrySet().stream() //pour chaque level
 			
 			.map(entry -> {
-	        	List<EventDTO> events = entry.getValue().stream() //On créé la liste d'evenement
+	        	TimeSlotType slotType = entry.getKey();
+	        	List<TimeSlotInstanceDTO> slots = entry.getValue();
+	        	
+				List<EventDTO> events = slots.stream() //On créé la liste d'evenement
 	    			.map(slotInstance ->{
 						return new EventDTO(slotInstance);
 	    			}).collect(Collectors.toList());
@@ -137,7 +141,7 @@ public class BookingPlanningResource {
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
 	        	evt.setEditable(true);
 				evt.setEvents(events);
-	        	evt.setColor(entry.getKey().getColor());
+				evt.setColor(slotType.getColor());
 	        	return evt;
 			})
 			.collect(Collectors.toList()); 

@@ -14,6 +14,7 @@
                 "register": "Créer un compte"
             },
             "members" : "Membres",
+            "bookings" : "Mes réservations",
             "timeslots" : "Créneaux",
             "config" : "Configuration",
             "language": "Langue",
