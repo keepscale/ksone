@@ -1,0 +1,30 @@
+
+<form name="editForm" role="form" novalidate ng-submit="save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="clear()">&times;</button>
+        <h4 class="modal-title" id="myTimeSlotLabel" translate="crossfitApp.booking.title">Create or edit a TimeSlot</h4>
+    </div>
+    <div class="modal-body">
+    	<div ng-if="isReservable">
+    		{{isReservable}}
+    	</div>
+    	<div ng-if="!isReservable">
+    		Il reste {{availability.maxAttendees-availability.nbValidatedBookings}} place(s) sur {{availability.maxAttendees}}<br/>
+    	</div>
+    </div>
+    <div class="modal-footer">
+	    <div class="btn-group" role="group">
+	        <button type="button" class="btn btn-default btn-block" data-dismiss="modal" ng-click="clear()">
+	            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+	        </button>
+	        <button type="button" ng-show="!isReservable" class="btn btn-default btn-block" data-dismiss="modal" ng-click="subscribe()">
+	            <span class="glyphicon glyphicon-ok"></span>&nbsp;<span translate="crossfitApp.booking.action.subscribe">Réserver</span>
+	        </button>
+	        <button type="button" ng-show="!isReservable" ng-disabled="isReservable" class="btn btn-default btn-block" data-dismiss="modal" ng-click="unSubscribe()">
+	            <span class="glyphicon glyphicon-remove"></span>&nbsp;<span translate="crossfitApp.booking.action.unSubscribe">Annuler la reservation</span>
+	        </button>
+        </div>
+    </div>
+</form>

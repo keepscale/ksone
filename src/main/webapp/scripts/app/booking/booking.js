@@ -23,5 +23,57 @@ angular.module('crossfitApp')
                         return $translate.refresh();
                     }]
                 }
+            })
+            .state('booking.new', {
+                parent: 'home',
+                url: '/new/:id/:date',
+                data: {
+                    roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
+                    $modal.open({
+                        templateUrl: 'scripts/app/booking/booking-dialog.html',
+                        controller: 'BookingDialogController',
+                        size: 'sm',
+                        resolve: {
+                            entity: function () {
+                            	
+                                return {
+                                	timeslotId:$stateParams.id,
+                                	date: $stateParams.date,
+                                	owner: null};
+                            }
+                        }
+                    }).result.then(function(result) {
+                        $state.go('home', null, { reload: true });
+                    }, function() {
+                        $state.go('home');
+                    })
+                }]
+            })
+            .state('booking.impossible', {
+                parent: 'home',
+                url: '/:message',
+                data: {
+                    roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
+                    $modal.open({
+                        templateUrl: 'scripts/app/booking/booking-dialog.html',
+                        controller: 'BookingDialogController',
+                        size: 'sm',
+                        resolve: {
+                            entity: function () {
+                            	
+                                return {
+                                	message : $stateParams.message};
+                            }
+                        }
+                    }).result.then(function(result) {
+                        $state.go('home', null, { reload: true });
+                    }, function() {
+                        $state.go('home');
+                    })
+                }]
             });
     });

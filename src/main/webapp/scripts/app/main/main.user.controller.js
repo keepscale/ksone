@@ -20,8 +20,11 @@ angular.module('crossfitApp')
     	var viewName = $rootScope.viewName == null ? 'agendaWeek' : $rootScope.viewName;
     	
     	var uiConfigDesktop = { calendar:{
+    		
 				height: 865,
 				editable: false,
+				eventDurationEditable: false,
+				eventStartEditable: false,
 				header:{
 					left: 'prev,today,next', center: 'title', right: 'agendaDay,agendaWeek,month'
 				},
@@ -39,12 +42,11 @@ angular.module('crossfitApp')
 				minTime: "06:00:00",
 				selectable: false,
 				selectHelper: true,
+				eventClick: function(calEvent, jsEvent, view) {
+					$scope.eventClick(calEvent, jsEvent, view);
+			    },
 			    viewRender : function(view, element){
-
-			    	$scope.startDateCalendar = new Date(view.start).toISOString().slice(0, 10);
-			    	$scope.endDateCalendar = new Date(view.end).toISOString().slice(0, 10);
-		            $state.go('home', {startDate:$scope.startDateCalendar, endDate:$scope.endDateCalendar},{notify:false});
-		            $scope.loadAll();
+			    	$scope.viewRender(view, element);
 			    }
 			}
     	};
@@ -61,12 +63,11 @@ angular.module('crossfitApp')
 				timeFormat: 'H:mm',
 				selectable: false,
 				selectHelper: true,
-				
+				eventClick: function(calEvent, jsEvent, view) {
+					$scope.eventClick(calEvent, jsEvent, view);
+			    },
 			    viewRender : function(view, element){
-			    	$scope.startDateCalendar = new Date(view.start).toISOString().slice(0, 10);
-			    	$scope.endDateCalendar = new Date(view.end).toISOString().slice(0, 10);
-		            $state.go('home', {startDate:$scope.startDateCalendar, endDate:$scope.endDateCalendar},{notify:false});
-		            $scope.loadAll();
+			    	$scope.viewRender(view, element);
 			    },
 			    
 			    eventAfterRender : function(event, element){
@@ -85,14 +86,34 @@ angular.module('crossfitApp')
     	};
     	
     	$scope.loadAll = function() {
+    		$scope.isReservable = false;
         	$scope.eventSources.length = 0;
         	TimeSlotEvent.query({end:$scope.endDateCalendar,start:$scope.startDateCalendar}, function(result, headers) {
+        		
                 for (var i = 0; i < result.length; i++) {
                 	 $scope.eventSources.push(result[i]);
                 }
             });
         };
     	
+        
+        $scope.viewRender = function(view, element){
+	    	$scope.startDateCalendar = new Date(view.start).toISOString().slice(0, 10);
+	    	$scope.endDateCalendar = new Date(view.end).toISOString().slice(0, 10);
+            $state.go('home', {startDate:$scope.startDateCalendar, endDate:$scope.endDateCalendar},{notify:false});
+            $scope.loadAll();
+	    };
+	    
+        $scope.eventClick = function(calEvent, jsEvent, view) {
+        	if(calEvent.source.color == "#FF4000"){
+        		$state.go('booking.impossible', {message:"Réservation impossible !"});
+        	}else
+			if (calEvent.id){
+	            $state.go('booking.new', {id:calEvent.id, date:(new Date(calEvent.start)).toISOString().slice(0, 10)});
+			}
+	    }
+        
+        
 
         var w = angular.element($window);
         $scope.getWindowDimensions = function () {
