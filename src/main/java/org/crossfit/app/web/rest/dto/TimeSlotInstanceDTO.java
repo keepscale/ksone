@@ -32,7 +32,11 @@ public class TimeSlotInstanceDTO {
 	private TimeSlot slot;
 
 	private List<Booking> bookings = new ArrayList<>();
-
+	
+	private TimeSlotInstanceStatus timeSlotStatus;
+	
+	private int totalBooking;
+	
 	public TimeSlotInstanceDTO(DateTime date, TimeSlot slot) {
 		super();
 		this.date = date;
@@ -76,8 +80,26 @@ public class TimeSlotInstanceDTO {
 
 	public void setBookings(List<Booking> bookings) {
 		this.bookings = new ArrayList<>(bookings);
+		this.totalBooking = this.bookings.size();
 	}
 	
+	
+	public TimeSlotInstanceStatus getTimeSlotStatus() {
+		return timeSlotStatus;
+	}
+
+	public void setTimeSlotStatus(TimeSlotInstanceStatus timeSlotStatus) {
+		this.timeSlotStatus = timeSlotStatus;
+	}
+
+	public int getTotalBooking() {
+		return totalBooking;
+	}
+
+	public void setTotalBooking(int totalBooking) {
+		this.totalBooking = totalBooking;
+	}
+
 	public boolean isPast(){
 		return getStart().isBeforeNow();
 	}

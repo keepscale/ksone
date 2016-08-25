@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('TimeSlotController', function ($scope, $state, $stateParams, TimeSlot, TimeSlotEvent, DateUtils) {
+    .controller('TimeSlotController', function ($scope, $state, $stateParams, TimeSlot, DateUtils) {
     	$scope.eventSources = [];
     	  
         $scope.uiConfig = {
@@ -90,7 +90,7 @@ angular.module('crossfitApp')
         
         $scope.loadAll = function() {
         	$scope.eventSources.length = 0;
-        	TimeSlotEvent.query({end:$scope.endDateCalendar,start:$scope.startDateCalendar}, function(result, headers) {
+        	TimeSlot.queryAsEvent({end:$scope.endDateCalendar,start:$scope.startDateCalendar}, function(result, headers) {
                 for (var i = 0; i < result.length; i++) {
                 	 $scope.eventSources.push(result[i]);
                 }
