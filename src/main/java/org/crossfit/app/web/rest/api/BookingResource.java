@@ -3,6 +3,10 @@ package org.crossfit.app.web.rest.api;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -10,11 +14,15 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Membership;
+import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
@@ -25,6 +33,7 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -70,12 +79,40 @@ public class BookingResource {
     public ResponseEntity<List<Booking>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
-        Page<Booking> page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+    	
+    	Page<Booking> page = null; 
+    	
+    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+    		page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+    	}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 
+    /**
+     * GET  /bookings/:id -> get the "id" booking.
+     */
+    @RequestMapping(value = "/bookings/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Booking> get(@PathVariable Long id) {
+        log.debug("REST request to get Booking : {}", id);
+		Booking booking = bookingRepository.findOne(id);
+		
+		if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+    		if(booking == null || !booking.getSubscription().getMember().equals( SecurityUtils.getCurrentMember())){
+    			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
+    		}
+    	}
+    	
+    	return Optional.ofNullable(booking)
+                .map(book -> new ResponseEntity<>(
+                    book,
+                    HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
     /**
      * DELETE  /bookings/:id -> delete the "id" booking.
      */
@@ -88,7 +125,7 @@ public class BookingResource {
 		
 
     	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
-    		if(booking == null || !booking.getOwner().equals( SecurityUtils.getCurrentMember())){
+    		if(booking == null || !booking.getSubscription().getMember().equals( SecurityUtils.getCurrentMember())){
     			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
     		}
     	}
@@ -157,7 +194,7 @@ public class BookingResource {
     	
     	// Si il y a déjà une réservation pour ce créneau
 		List<Booking> currentBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
-		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getOwner().equals(owner)).findAny();
+		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getSubscription().getMember().equals(owner)).findAny();
     	if(alreadyBooked.isPresent()){
     		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
     	}
@@ -166,7 +203,7 @@ public class BookingResource {
     		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
-    	if (!isSuperUser && !canUserBook(owner, timeSlot)){
+    	if (!isSuperUser /*&& !canUserBook(owner, timeSlot)*/){
     		throw new CustomParameterizedException("Votre abonnement ne vous permet pas de réserver ce créneau");
     	}
     	
@@ -174,7 +211,7 @@ public class BookingResource {
         
     	b.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         b.setCreatedDate(DateTime.now());
-        b.setOwner(owner);
+        //b.setOwner(owner);
         b.setBox(currentCrossFitBox);
         b.setTimeSlotType(timeSlot.getTimeSlotType());
         b.setStartAt(startAt);
@@ -187,10 +224,6 @@ public class BookingResource {
 
     }
 
+	private SubscriptionRepository subscriptionRepository;
 
-	private boolean canUserBook(Member owner, TimeSlot timeSlot) {
-		//Verifier qu'au moins une de ses souscription lui permet de reserver ce slot
-		return true;
-	}
-    
 }

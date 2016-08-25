@@ -1,0 +1,108 @@
+
+<form name="editForm" role="form" novalidate ng-submit="save()" show-validation>
+	BOOKING
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="clear()">&times;</button>
+        <h4 class="modal-title" id="myTimeSlotLabel" translate="crossfitApp.timeSlot.home.createOrEditLabel">Create or edit a TimeSlot</h4>
+    </div>
+    <div class="modal-body">
+        <jh-alert-error></jh-alert-error>
+            <input type="hidden" class="form-control" id="id" name="id"
+                    ng-model="timeSlot.id" readonly>
+                    
+        <div class="form-group">
+            <label translate="crossfitApp.timeSlot.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="timeSlot.name">
+
+        </div>
+        
+        
+        <div class="form-group">       	
+
+            <label translate="crossfitApp.timeSlot.startTime" for="field_startTime">startTime</label>
+       
+       		<datetimepicker id="field_startTime" name="startTime" hidden-date="true" ng-model="timeSlot.startTime"
+       			show-meridian="false"></datetimepicker>
+       			
+            <label translate="crossfitApp.timeSlot.endTime" for="field_endTime">endTime</label>
+       
+       		<datetimepicker id="field_endTime" name="endTime" hidden-date="true" ng-model="timeSlot.endTime" 
+       			show-meridian="false" readonly-time="false"></datetimepicker>
+
+            <div ng-show="editForm.startTime.$invalid || editForm.endTime.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.startTime.$error.required || editForm.endTime.$error.required " translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        
+        <div class="form-group"  ng-show="timeSlot.id == null">
+           <input id="field_recurrent_week" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DAY_OF_WEEK"> 
+            <label for="field_recurrent_week">Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}</label>
+			<br/>
+			<input id="field_recurrent_date" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
+			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}</label>
+		
+        </div>
+        <div class="form-group" ng-show="timeSlot.id != null">
+            <label ng-show="timeSlot.recurrent == 'DATE'">
+            	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
+            <label ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
+            	Tous les {{timeSlot.dayOfWeek | dayOfWeek}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
+        </div>
+        
+        <div class="form-group">
+            <label translate="crossfitApp.timeSlot.maxAttendees" for="field_maxAttendees">MaxAttendees</label>
+            <input type="number" class="form-control" name="maxAttendees" id="field_maxAttendees"
+                    ng-model="timeSlot.maxAttendees" min="0" required>
+
+            <div ng-show="editForm.maxAttendees.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.maxAttendees.$error.min" translate="entity.validation.max" translate-value-min="0">
+                    This field should be more than 0.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.maxAttendees.$error.number" translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.maxAttendees.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label translate="crossfitApp.timeSlot.timeSlotType" for="field_timeSlotType">timeSlotType</label>
+            
+            <select class="form-control" id="field_timeSlotType" name="timeSlotType" ng-model="timeSlot.timeSlotType" 
+            	ng-options="timeSlotType as timeSlotType.name for timeSlotType in timeSlotTypes track by timeSlotType.id" required>
+            	<option></option>
+            </select>
+            
+            <div ng-show="editForm.timeSlotType.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.timeSlotType.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        
+    </div>
+    <div class="modal-footer">    
+        <button type="button"  ng-show="timeSlot.id != null" 
+                ng-click="delete(timeSlot.id)"
+                class="btn btn-danger btn-sm">
+            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete"> Delete</span>
+        </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

@@ -17,17 +17,21 @@ import java.util.List;
  */
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 
-    @Query("select b from Booking b left join fetch b.owner where b.box =:box AND b.startAt between :start and :end")
+    @Query("select b from Booking b left join fetch b.subscription where b.box =:box AND b.startAt between :start and :end")
 	List<Booking> findAllBetween(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
     
-    @Query("select b from Booking b where b.owner = :member AND b.startAt = :start and b.endAt = :end order by b.startAt desc")
+    @Query("select b from Booking b where b.subscription.member = :member AND b.startAt = :start and b.endAt = :end order by b.startAt desc")
 	List<Booking> findAllByMemberAndDate(@Param("member") Member member, @Param("start") DateTime start, @Param("end") DateTime end);
+
+    @Query("select b from Booking b where b.subscription.member = :member order by b.startAt desc")
+	List<Booking> findAllByMember(@Param("member") Member owner);
     
-    @Query("select b from Booking b where b.owner = :member order by b.startAt desc")
+    @Query("select b from Booking b where b.subscription.member = :member order by b.startAt desc")
 	Page<Booking> findAllByMember(@Param("member") Member member, Pageable pageable);
     
     @Modifying
 	@Transactional
-	@Query("delete from Booking b where b.owner = :member")
+	@Query("delete from Booking b where b.susbscription.member = :member")
 	void deleteAllByMember(@Param("member") Member member);
+
 }

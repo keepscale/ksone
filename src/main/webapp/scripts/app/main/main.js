@@ -17,6 +17,7 @@ angular.module('crossfitApp')
         	                	return $templateFactory.fromUrl('scripts/app/main/main.manager.html', $stateParams);
         	                } 
         	                else {
+        	                	
         	                	return $templateFactory.fromUrl('scripts/app/main/main.user.html', $stateParams);
         	                }
                         },

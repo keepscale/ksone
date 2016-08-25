@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.LocalDate;

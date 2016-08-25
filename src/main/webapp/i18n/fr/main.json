@@ -2,7 +2,7 @@
     "main": {
         "title": "Bienvenue !",
         "logged": {
-            "message": "Vous êtes connecté en tant que \"{{username}}\"."
+            "message": "Bienvenue {{username}} !"
         },
         "planning": {
             "no.timeslot": "Aucun créneau de configuré"

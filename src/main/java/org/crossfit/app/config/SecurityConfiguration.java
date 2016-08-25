@@ -11,6 +11,7 @@ import org.crossfit.app.web.filter.CsrfCookieGeneratorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -109,6 +110,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/**").authenticated()
             .antMatchers("/api/boxs/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/membershipTypes/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers(HttpMethod.GET, "/api/bookings/**").authenticated()
+            .antMatchers(HttpMethod.POST, "/api/bookings/**").authenticated()
+            .antMatchers(HttpMethod.DELETE, "/api/bookings/**").authenticated()
             .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers("/protected/**").authenticated();
 

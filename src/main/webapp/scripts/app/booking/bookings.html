@@ -4,14 +4,29 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-lg-12">
-	   	<jh-alert></jh-alert>
-    </div>
-</div>
 
-<div class="row">
-	<div class="col-lg-12">
-		<div ui-calendar="uiConfig.calendar" ng-model="eventSources" ></div>
-	</div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th translate="crossfitApp.booking.date">date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll="loadPage(page + 1)" infinite-scroll-disabled="links['last'] == page">
+                <tr ng-repeat="booking in bookings">
+                    <td>Le {{booking.startAt | date:'dd MMM yyyy'}} à {{booking.startAt | date:'HH:mm'}}</td>
+                    <td>
+                        <button type="submit"
+                        		ng-disabled="booking.past"
+                                ng-click="delete(booking.id)"
+                                class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.booking.action.delete"> Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

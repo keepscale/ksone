@@ -50,7 +50,7 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
     private BookingStatus status;
 
     @ManyToOne
-    private Member owner;
+    private Subscription subscription;
 
     @ManyToOne
     private CrossFitBox box;
@@ -90,16 +90,16 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
-    public Member getOwner() {
-        return owner;
-    }
+    
+    public Subscription getSubscription() {
+		return subscription;
+	}
 
-    public void setOwner(Member member) {
-        this.owner = member;
-    }
-    
-    
-    public CrossFitBox getBox() {
+	public void setSubscription(Subscription subscription) {
+		this.subscription = subscription;
+	}
+
+	public CrossFitBox getBox() {
 		return box;
 	}
 
