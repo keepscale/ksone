@@ -2,7 +2,8 @@
 
 angular.module('crossfitApp')
 	.controller('MainUserController', function ($rootScope, $scope, $state, $stateParams, $window, TimeSlot, TimeSlotEvent, DateUtils, Principal) {
-        Principal.identity().then(function(account) {
+        
+		Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
