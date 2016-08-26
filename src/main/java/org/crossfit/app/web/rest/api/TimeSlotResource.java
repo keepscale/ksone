@@ -4,11 +4,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
@@ -16,8 +19,12 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.exception.BadRequestException;
+import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -183,4 +190,65 @@ public class TimeSlotResource {
 			timeSlotRepository.delete(timeSlot);
 		}
 	}
+	
+	
+	
+	/**
+     * GET  /event -> get all event (timeslot & closedday.
+     */
+    @RequestMapping(value = "/timeSlots",
+    		params = {"view=event"},
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EventSourceDTO>> getAll(
+    		@RequestParam(value = "start", required = false) String startStr,
+    		@RequestParam(value = "end", required = false) String endStr) {
+    	
+
+    	DateTime startAt = timeService.parseDateAsUTC("yyyy-MM-dd", startStr);
+    	DateTime endAt = timeService.parseDateAsUTC("yyyy-MM-dd", endStr);
+    	
+    	if (startAt == null || endAt == null){
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	
+    	List<EventSourceDTO> eventSources =  
+    			timeSlotService.findAllTimeSlotInstance(startAt, endAt).stream() //Les timeslot instance
+			.collect(
+				Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType)) //Groupé par level
+			
+			.entrySet().stream() //pour chaque level
+			
+			.map(entry -> {
+	        	TimeSlotType slotType = entry.getKey();
+	        	List<TimeSlotInstanceDTO> slots = entry.getValue();
+	        	
+				List<EventDTO> events = slots.stream() //On créé la liste d'evenement
+	    			.map(slotInstance ->{
+						return new EventDTO(slotInstance);
+	    			}).collect(Collectors.toList());
+				
+				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
+	        	evt.setEditable(true);
+				evt.setEvents(events);
+				evt.setColor(slotType.getColor());
+	        	return evt;
+			})
+			.collect(Collectors.toList()); 
+    	
+    	//Pareil pour les jours fériés
+    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
+		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
+			return new EventDTO(closeDay);
+
+		}).collect(Collectors.toList());
+		EventSourceDTO evt = new EventSourceDTO();
+    	evt.setEditable(false);
+    	evt.setEvents(closedDaysAsDTO);
+    	evt.setColor("#A0A0A0");
+    	eventSources.add(evt);
+    	
+    	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
+    }
 }
