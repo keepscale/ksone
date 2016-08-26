@@ -1,6 +1,7 @@
 {
     "crossfitApp": {
         "booking" : {
+        	"title": "Réservation",
             "home": {
                 "title": "Mes réservations"
             },
@@ -12,7 +13,9 @@
             },
             "action" : {
             	"edit" : "Modifier",
-            	"delete": "Se désinscrire"
+            	"delete": "Supprimer",
+            	"unSubscribe": "Annuler la réservation",
+            	"subscribe": "Réserver"
             },
             "date": "Date"
         }
