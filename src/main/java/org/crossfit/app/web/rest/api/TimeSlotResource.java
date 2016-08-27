@@ -14,6 +14,7 @@ import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
@@ -62,7 +63,7 @@ public class TimeSlotResource {
     private TimeService timeService;
 
     @Inject
-    private BookingRepository bookingRepository;
+    private ClosedDayRepository closedDayRepository;
     /**
      * POST  /timeSlots -> Create a new timeSlot.
      */
@@ -226,7 +227,7 @@ public class TimeSlotResource {
 	        	
 				List<EventDTO> events = slots.stream() //On créé la liste d'evenement
 	    			.map(slotInstance ->{
-						return new EventDTO(slotInstance);
+						return new EventDTO(slotInstance.getName(), slotInstance.getStart(), slotInstance.getEnd());
 	    			}).collect(Collectors.toList());
 				
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
@@ -240,7 +241,7 @@ public class TimeSlotResource {
     	//Pareil pour les jours fériés
     	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay);
+			return new EventDTO(closeDay.getName(), closeDay.getStartAt(), closeDay.getEndAt());
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO();

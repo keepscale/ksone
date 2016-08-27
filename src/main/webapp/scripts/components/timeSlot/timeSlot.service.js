@@ -5,7 +5,7 @@ angular.module('crossfitApp')
     .factory('TimeSlot', function ($resource, DateUtils) {
         return $resource('api/timeSlots/:id', {}, {
             'query': { method: 'GET', isArray: true},
-            'queryAsEvent': { method: 'GET', isArray: true, params:{view:event}},
+            'queryAsEvent': { method: 'GET', isArray: true, params:{"view":"event"}},
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {

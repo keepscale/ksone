@@ -31,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     
     @Modifying
 	@Transactional
-	@Query("delete from Booking b where b.susbscription.member = :member")
+	@Query("delete from Booking b where b.subscription.member = :member")
 	void deleteAllByMember(@Param("member") Member member);
 
 }

@@ -11,9 +11,9 @@ logback.loglevel: DEBUG
 spring:
     datasource:
         driverClassName: org.postgresql.Driver        
-        url: jdbc:postgresql://localhost:1521/crossfit2
+        url: jdbc:postgresql://localhost:5432/crossfit3
         username: crossfit
-        password: crossfit
+        password: password
         test-on-borrow: true
         test-on-return: true
         test-while-idle: true

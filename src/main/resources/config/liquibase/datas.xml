@@ -9,7 +9,7 @@
 	 <!-- password -->
 	<property name="defaultpwd" value="$2a$10$tZe3DROebycirgLfdojLyOasTa/WnTuG4nIfrqa9DRapvYF9fGUf." />
 
-	<changeSet id="data-dev" author="lgangloff" context="dev">
+	<changeSet id="data-dev-1" author="lgangloff" context="dev">
 		<insert tableName="CROSSFITBOX">
 			<column name="name" value="Crossfit Local" />
 			<column name="website_pattern" value="(.*)" />
@@ -203,6 +203,26 @@
 		
 		
 		
+		<insert tableName="MEMBERSHIP">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="name" value="Séance découverte" />
+			<column name="price" value="0 €" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="membership_id" valueComputed="currval('membership_id_seq')" />		
+			<column name="number_of_session" value="1" />
+			<column name="type" value="SUM" />
+		</insert>
+		
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
+			<column name="timeslottype_id" value="2" />
+		</insert>
+		
+		
 		
 		
 		<insert tableName="MEMBERSHIP">
@@ -238,15 +258,6 @@
 			<column name="number_of_session" value="1" />
 			<column name="type" value="SUM" />
 		</insert>
-		
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="1" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="2" />
-		</insert>
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="3" />
@@ -277,14 +288,6 @@
 		
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="1" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="2" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="3" />
 		</insert>
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
@@ -313,14 +316,6 @@
 		
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="1" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="2" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="3" />
 		</insert>
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
@@ -345,14 +340,6 @@
 		</insert>
 		
 		
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="1" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="2" />
-		</insert>
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="3" />
@@ -390,15 +377,6 @@
 			<column name="number_of_session" value="-1" />
 			<column name="type" value="SUM" />
 		</insert>		
-		
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="1" />
-		</insert>
-		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
-			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
-			<column name="timeslottype_id" value="2" />
-		</insert>
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="3" />
@@ -418,5 +396,118 @@
 			<column name="membership_rules_id" valueComputed="currval('membership_rules_id_seq')" />		
 			<column name="timeslottype_id" value="5" />
 		</insert>
+	</changeSet>
+	
+	
+	
+	<changeSet id="data-dev-timeslot" author="lgangloff"  context="dev">
+	
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="1" />	
+			<column name="start_time" value="09:00:00" />
+			<column name="end_time" value="10:00:00" />
+			<column name="max_attendees" value="6" />
+			<column name="timeslottype_id" value="1" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="1" />	
+			<column name="start_time" value="09:00:00" />
+			<column name="end_time" value="10:00:00" />
+			<column name="max_attendees" value="4" />
+			<column name="timeslottype_id" value="5" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="1" />	
+			<column name="start_time" value="10:00:00" />
+			<column name="end_time" value="11:00:00" />
+			<column name="max_attendees" value="12" />
+			<column name="timeslottype_id" value="3" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="1" />	
+			<column name="start_time" value="11:30:00" />
+			<column name="end_time" value="12:30:00" />
+			<column name="max_attendees" value="12" />
+			<column name="timeslottype_id" value="3" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="1" />	
+			<column name="start_time" value="13:00:00" />
+			<column name="end_time" value="14:00:00" />
+			<column name="max_attendees" value="6" />
+			<column name="timeslottype_id" value="5" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="4" />	
+			<column name="start_time" value="09:00:00" />
+			<column name="end_time" value="10:00:00" />
+			<column name="max_attendees" value="6" />
+			<column name="timeslottype_id" value="1" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="4" />	
+			<column name="start_time" value="09:00:00" />
+			<column name="end_time" value="10:00:00" />
+			<column name="max_attendees" value="4" />
+			<column name="timeslottype_id" value="5" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="4" />	
+			<column name="start_time" value="10:00:00" />
+			<column name="end_time" value="11:00:00" />
+			<column name="max_attendees" value="12" />
+			<column name="timeslottype_id" value="3" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="4" />	
+			<column name="start_time" value="11:30:00" />
+			<column name="end_time" value="12:30:00" />
+			<column name="max_attendees" value="12" />
+			<column name="timeslottype_id" value="3" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		
+		
+		<insert tableName="TIMESLOT">
+			<column name="day_of_week" value="4" />	
+			<column name="start_time" value="13:00:00" />
+			<column name="end_time" value="14:00:00" />
+			<column name="max_attendees" value="6" />
+			<column name="timeslottype_id" value="5" />
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
+			<column name="created_by" value="system" />
+		</insert>
+		
 	</changeSet>
 </databaseChangeLog>

@@ -1,6 +1,8 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -19,8 +21,10 @@ import javax.validation.constraints.NotNull;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
+import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.CustomLocalTimeDeserializer;
 import org.crossfit.app.domain.util.CustomLocalTimeSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -86,6 +90,21 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     private CrossFitBox box;
+    
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "visible_after", nullable = true)
+    private LocalDate visibleAfter;
+
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "visible_before", nullable = false)
+    private LocalDate visibleBefore;
+       
 
     public Long getId() {
         return id;
@@ -166,6 +185,22 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
 
 	public void setDate(DateTime date) {
 		this.date = date;
+	}
+	
+	public LocalDate getVisibleAfter() {
+		return visibleAfter;
+	}
+
+	public void setVisibleAfter(LocalDate visibleAfter) {
+		this.visibleAfter = visibleAfter;
+	}
+
+	public LocalDate getVisibleBefore() {
+		return visibleBefore;
+	}
+
+	public void setVisibleBefore(LocalDate visibleBefore) {
+		this.visibleBefore = visibleBefore;
 	}
 
 	@Override
