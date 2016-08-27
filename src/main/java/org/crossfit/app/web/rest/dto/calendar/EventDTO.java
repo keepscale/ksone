@@ -1,6 +1,5 @@
 package org.crossfit.app.web.rest.dto.calendar;
 
-import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO.Rendering;
 import org.joda.time.DateTime;
 
 public class EventDTO {
@@ -10,7 +9,7 @@ public class EventDTO {
 	private final DateTime start;
 	private final DateTime end;
 	
-	
+	/*
 
 	private String color;
 	private String backgroundColor;
@@ -24,7 +23,7 @@ public class EventDTO {
 	private boolean durationEditable = true;
 	private Rendering rendering;
 
-	
+	*/
 
 	public EventDTO(String title, DateTime start, DateTime end) {
 		this(null, title, start, end);
@@ -53,7 +52,7 @@ public class EventDTO {
 	public DateTime getEnd() {
 		return end;
 	}
-
+/*
 	public String getColor() {
 		return color;
 	}
@@ -126,6 +125,6 @@ public class EventDTO {
 		this.rendering = rendering;
 	}
 	
-	
+	*/
 
 }

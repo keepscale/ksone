@@ -32,8 +32,13 @@ angular.module('crossfitApp').controller('MemberDialogController',
 
 
         $scope.addSubscription = function() {
+        	//TODO: Recupere les membership par defaut
+        	var subscriptionEndDate = new Date();
+        	subscriptionEndDate.setFullYear( subscriptionEndDate.getFullYear() + 1 );
+
         	$scope.member.subscriptions.push({
-        		subscriptionStartDate : new Date()
+        		subscriptionStartDate : new Date(),
+        		subscriptionEndDate : subscriptionEndDate
         	});
         };
         

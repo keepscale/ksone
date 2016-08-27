@@ -45,6 +45,10 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
     @Column(name = "price", nullable = false)
     private String price;
 
+    @NotNull        
+    @Column(name = "add_by_default", nullable = false)
+    private boolean addByDefault = false;
+
     @ManyToOne(optional=false)
     private CrossFitBox box;
     
@@ -90,6 +94,15 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
 
 	public void setMembershipRules(Set<MembershipRules> membershipRules) {
 		this.membershipRules = membershipRules;
+	}
+	
+
+	public boolean isAddByDefault() {
+		return addByDefault;
+	}
+
+	public void setAddByDefault(boolean addByDefault) {
+		this.addByDefault = addByDefault;
 	}
 
 	@Override

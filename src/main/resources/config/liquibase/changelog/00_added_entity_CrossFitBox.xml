@@ -42,13 +42,13 @@
             </column>
             <column name="logo_url" type="varchar(255)"/>
 			<column name="time_zone" type="varchar(255)"/>
-			
+						
+			<column name="nb_max_booking" type="int"/>
 			<column name="nb_max_day_booking" type="int"/>
 			<column name="nb_hours_at_least_to_book" type="int"/>
 			<column name="nb_hours_at_least_to_cancel" type="int"/>
 			
         </createTable>
 
-        
     </changeSet>
 </databaseChangeLog>

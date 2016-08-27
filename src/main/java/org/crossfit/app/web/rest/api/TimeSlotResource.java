@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
-import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -227,7 +227,13 @@ public class TimeSlotResource {
 	        	
 				List<EventDTO> events = slots.stream() //On créé la liste d'evenement
 	    			.map(slotInstance ->{
-						return new EventDTO(slotInstance.getName(), slotInstance.getStart(), slotInstance.getEnd());
+	    				String title = 
+	    						(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName() )
+	    								
+	    						+ " ("+ slotInstance.getMaxAttendees() + ")";
+
+	    				
+						return new EventDTO( slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
 	    			}).collect(Collectors.toList());
 				
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource

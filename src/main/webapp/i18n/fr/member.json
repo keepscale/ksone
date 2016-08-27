@@ -74,8 +74,11 @@
 	                "membership": {
 	                    "required": "L'abonnement est obligatoire."
 	                },
+	                "subscriptionStartDate": {
+	                    "required": "La date de début souscription est obligatoire."
+	                },
 	                "subscriptionEndDate": {
-	                    "required": "La date de souscription est obligatoire."
+	                    "required": "La date de fin souscription est obligatoire."
 	                }
 	            }
 	        },

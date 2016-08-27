@@ -36,6 +36,20 @@
 								required maxlength="255">
 				        </div>
 			        </div>
+			        <div class="row"> 
+				        <div class="col-xs-12">			        
+					
+			        		<label class="checkbox-inline">
+				       			<input type="checkbox"
+								    name="addByDefault"
+								    ng-model="membership.addByDefault" >
+								    
+								 {{ 'crossfitApp.membership.addByDefault' | translate }}
+					       			
+				       		</label>
+					       		
+			       		</div>
+		       		</div>
 			    	<div class="row"> 
 				        <div class="col-xs-12">
 				    	  	<div ng-show="form.name.$invalid">

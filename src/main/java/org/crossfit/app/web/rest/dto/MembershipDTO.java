@@ -23,7 +23,12 @@ public class MembershipDTO implements Serializable {
 
     @NotNull        
     private String price;
-
+    
+    @NotNull        
+    private boolean addByDefault;
+    
+    
+    
     private Set<MembershipRules> membershipRules = new HashSet<>();
 
 
@@ -51,6 +56,14 @@ public class MembershipDTO implements Serializable {
         this.price = price;
     }
         
+	public boolean isAddByDefault() {
+		return addByDefault;
+	}
+
+	public void setAddByDefault(boolean addByDefault) {
+		this.addByDefault = addByDefault;
+	}
+
 	public Set<MembershipRules> getMembershipRules() {
 		return membershipRules;
 	}

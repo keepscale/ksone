@@ -28,6 +28,9 @@
             <column name="price" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+			<column name="add_by_default" type="boolean" defaultValue="false">
+                <constraints nullable="false" />
+            </column>
             <column name="box_id" type="bigint">
                 <constraints nullable="false" />
             </column>

@@ -19,6 +19,7 @@
 			<column name="email_from" value="no-reply@crossfit-local.com" />
 			<column name="logo_url" value="NULL" />
 			<column name="time_zone" value="NULL" />
+			<column name="nb_max_booking" value="2" />
 			<column name="nb_max_day_booking" value="7" />
 			<column name="nb_hours_at_least_to_book" value="24" />
 			<column name="nb_hours_at_least_to_cancel" value="6" />
@@ -115,6 +116,7 @@
 			<column name="email_from" value="no-reply@crossfit-nancy.fr" />
 			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
 			<column name="time_zone" value="NULL" />
+			<column name="nb_max_booking" value="4" />
 			<column name="nb_max_day_booking" value="7" />
 			<column name="nb_hours_at_least_to_book" value="24" />
 			<column name="nb_hours_at_least_to_cancel" value="6" />
@@ -206,6 +208,7 @@
 		<insert tableName="MEMBERSHIP">
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
 			<column name="name" value="Séance découverte" />
+			<column name="add_by_default" value="true" />
 			<column name="price" value="0 €" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -457,29 +460,26 @@
 		
 		
 		
+		
+		
+		
+		
+		
+		
 		<insert tableName="TIMESLOT">
 			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="09:00:00" />
-			<column name="end_time" value="10:00:00" />
+			<column name="start_time" value="11:00:00" />
+			<column name="end_time" value="12:00:00" />
 			<column name="max_attendees" value="6" />
 			<column name="timeslottype_id" value="1" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
 			<column name="created_by" value="system" />
 		</insert>
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="09:00:00" />
-			<column name="end_time" value="10:00:00" />
-			<column name="max_attendees" value="4" />
-			<column name="timeslottype_id" value="5" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
 		
 		<insert tableName="TIMESLOT">
 			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="10:00:00" />
-			<column name="end_time" value="11:00:00" />
+			<column name="start_time" value="16:00:00" />
+			<column name="end_time" value="17:00:00" />
 			<column name="max_attendees" value="12" />
 			<column name="timeslottype_id" value="3" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
@@ -489,8 +489,8 @@
 		
 		<insert tableName="TIMESLOT">
 			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="11:30:00" />
-			<column name="end_time" value="12:30:00" />
+			<column name="start_time" value="17:30:00" />
+			<column name="end_time" value="18:30:00" />
 			<column name="max_attendees" value="12" />
 			<column name="timeslottype_id" value="3" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
@@ -501,8 +501,8 @@
 		
 		<insert tableName="TIMESLOT">
 			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="13:00:00" />
-			<column name="end_time" value="14:00:00" />
+			<column name="start_time" value="19:00:00" />
+			<column name="end_time" value="20:00:00" />
 			<column name="max_attendees" value="6" />
 			<column name="timeslottype_id" value="5" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />

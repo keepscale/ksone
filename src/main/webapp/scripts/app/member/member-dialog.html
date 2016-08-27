@@ -183,7 +183,7 @@
 						</div>
 						<div class="col-xs-3"> 
 							<input type="date" class="form-control" name="subscriptionEndDate"
-									id="field_subscriptionEndDate" ng-model="subscription.subscriptionEndDate">
+									id="field_subscriptionEndDate" ng-model="subscription.subscriptionEndDate" required>
 						</div>
 				        <div class="col-xs-1">
 				        
@@ -193,10 +193,12 @@
 						
 				        </div>
 			        </div>
-			        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.membership.$invalid">
+			        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
 				        <div class="col-xs-12"> 
 							<p class="help-block" ng-show="form.subscriptionStartDate.$error.required"
 								translate="crossfitApp.member.messages.validate.subscriptionStartDate.required">subscriptionStartDate is required.</p>
+							<p class="help-block" ng-show="form.subscriptionEndDate.$error.required"
+									translate="crossfitApp.member.messages.validate.subscriptionEndDate.required">subscriptionEndDate is required.</p>
 							<p class="help-block" ng-show="form.membership.$error.required"
 								translate="crossfitApp.member.messages.validate.membership.required">field_membership is required.</p>
 						</div>

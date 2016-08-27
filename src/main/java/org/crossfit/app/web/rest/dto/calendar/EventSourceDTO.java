@@ -8,18 +8,20 @@ public class EventSourceDTO {
 
 
 	private String color;
+	
+	/*
 	private String backgroundColor;
 	private String borderColor;
 	private String textColor;
 	
 	private String className = "";
-
-	private boolean editable = true;
+*/
+	private boolean editable = true;/*
 	private boolean startEditable = true;
 	private boolean durationEditable = true;
 	private Rendering rendering;
 	
-	private boolean overlap = false;
+	private boolean overlap = false;*/
 
 	public List<EventDTO> getEvents() {
 		return events;
@@ -36,7 +38,7 @@ public class EventSourceDTO {
 	public void setColor(String color) {
 		this.color = color;
 	}
-
+/*
 	public String getBackgroundColor() {
 		return backgroundColor;
 	}
@@ -68,7 +70,7 @@ public class EventSourceDTO {
 	public void setClassName(String className) {
 		this.className = className;
 	}
-
+*/
 	public boolean isEditable() {
 		return editable;
 	}
@@ -76,7 +78,7 @@ public class EventSourceDTO {
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
-
+/*
 	public boolean isStartEditable() {
 		return startEditable;
 	}
@@ -119,5 +121,5 @@ public class EventSourceDTO {
 			this.value = value;
 		}
 	}
-
+*/
 }

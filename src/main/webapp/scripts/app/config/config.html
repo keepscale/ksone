@@ -50,6 +50,10 @@
 		            <input type="text" class="form-control" name="logoUrl" id="field_logoUrl" ng-model="box.logoUrl">
 		        </div>		        
 		        <div class="form-group">
+		            <label for="field_nbMaxBooking">{{ 'crossfitApp.config.nbMaxBooking' | translate:{nbMaxBooking: box.nbMaxBooking} }}</label>
+		            <input type="number" class="form-control" name="nbMaxBooking" id="field_nbMaxBooking" ng-model="box.nbMaxBooking">
+		        </div>	        
+		        <div class="form-group">
 		            <label for="field_nbMaxDayBooking">{{ 'crossfitApp.config.nbMaxDayBooking' | translate:{nbMaxDayBooking: box.nbMaxDayBooking} }}</label>
 		            <input type="number" class="form-control" name="nbMaxDayBooking" id="field_nbMaxDayBooking" ng-model="box.nbMaxDayBooking">
 		        </div>		        

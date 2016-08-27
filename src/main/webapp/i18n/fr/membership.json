@@ -13,7 +13,8 @@
             },
             "detail": {
                 "title": "Abonnements"
-            }
+            },
+            "addByDefault" : "Ajouter l'abonnement automatiquement à la création d'un membre"
         },
         
         "membershiprules" : {

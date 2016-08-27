@@ -60,6 +60,9 @@ public class CrossFitBox implements Serializable {
     
     @Column(name = "time_zone", nullable = true)
     private String timeZone;
+
+    @Column(name = "nb_max_booking", nullable = true)
+    private int nbMaxBooking = 4;
     
     @Column(name = "nb_max_day_booking", nullable = true)
     private int nbMaxDayBooking = 7;
@@ -166,6 +169,16 @@ public class CrossFitBox implements Serializable {
 
 	public void setNbHoursAtLeastToCancel(int nbHoursAtLeastToCancel) {
 		this.nbHoursAtLeastToCancel = nbHoursAtLeastToCancel;
+	}
+	
+	
+
+	public int getNbMaxBooking() {
+		return nbMaxBooking;
+	}
+
+	public void setNbMaxBooking(int nbMaxBooking) {
+		this.nbMaxBooking = nbMaxBooking;
 	}
 
 	@Override

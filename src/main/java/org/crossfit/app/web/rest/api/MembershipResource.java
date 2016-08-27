@@ -100,6 +100,7 @@ public class MembershipResource {
 			result.setId(membership.getId());
 			result.setName(membership.getName());
 			result.setPrice(membership.getPrice());
+			result.setAddByDefault(membership.isAddByDefault());
 			if (withrelation){
 				result.setMembershipRules(membership.getMembershipRules());
 			}
