@@ -65,7 +65,7 @@ angular.module('crossfitApp')
 
 
         $scope.quickDeleteBooking = function(booking){
-        	if (confirm("Supprimer la réservation de "+booking.owner.firstName+" ?")){
+        	if (confirm("Supprimer la réservation de "+booking.subscription.member.firstName+" ?")){
             	Booking.delete({id : booking.id}, function(){
             		$scope.loadAll();
             	});
@@ -73,7 +73,7 @@ angular.module('crossfitApp')
         }
         
         $scope.quickValidateBooking = function(booking){
-        	if (confirm("Valider la réservation de "+booking.owner.firstName+" ?")){
+        	if (confirm("Valider la réservation de "+booking.subscription.member.firstName+" ?")){
 	        	Booking.validate({id : booking.id}, function(){
 	        		$scope.loadAll();
 	        	});

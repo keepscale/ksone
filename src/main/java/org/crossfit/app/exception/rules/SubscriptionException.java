@@ -6,8 +6,8 @@ public class SubscriptionException extends Exception {
 
 	private final Subscription subscription;
 
-	public SubscriptionException(Subscription subscription) {
-		super();
+	public SubscriptionException(Subscription subscription, String message) {
+		super(message);
 		this.subscription = subscription;
 	}
 

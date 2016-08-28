@@ -42,7 +42,6 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonIgnore
     @NotNull
     @ManyToOne(optional=false, cascade = {})
     private Member member;

@@ -31,6 +31,10 @@
 			<column name="add_by_default" type="boolean" defaultValue="false">
                 <constraints nullable="false" />
             </column>
+   			<column name="nb_month_validity" type="int">
+                <constraints nullable="false" />
+            </column>
+            
             <column name="box_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -73,6 +77,11 @@
             <column name="membership_id" type="bigint">
                 <constraints nullable="false" />
             </column> 
+            
+			<column name="nb_max_booking" type="int"/>
+			<column name="nb_max_day_booking" type="int"/>
+			<column name="nb_hours_at_least_to_book" type="int"/>
+			<column name="nb_hours_at_least_to_cancel" type="int"/>
         </createTable>
         
         <addForeignKeyConstraint baseColumnNames="membership_id"

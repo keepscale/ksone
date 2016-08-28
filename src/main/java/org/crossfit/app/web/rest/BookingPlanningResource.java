@@ -1,6 +1,7 @@
 package org.crossfit.app.web.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,8 @@ public class BookingPlanningResource {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 
-    	List<Booking> bookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), start, end);
+    	List<Booking> bookings = new ArrayList<>(
+    			bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), start, end));
     	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end);
     	
     	List<PlanningDayDTO> days = 

@@ -22,12 +22,16 @@ import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingExcepti
 import org.crossfit.app.exception.rules.SubscriptionException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class BookingRulesChecker {
 
+    private final Logger log = LoggerFactory.getLogger(BookingRulesChecker.class);
+	
 	private final Map<Subscription, List<Booking>> bookingsBySubscriptions;
 	private final Set<Subscription> subscriptions;
-
 
 
 	public BookingRulesChecker(List<Booking> bookings, Set<Subscription> subscriptions) {
@@ -38,8 +42,10 @@ public class BookingRulesChecker {
 
 
 	public Subscription findSubscription(Member owner, TimeSlotType timeSlotType, DateTime startAt) throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
-		//Verifier qu'au moins une de ses souscription lui permet de reserver ce slot
-		
+
+		log.debug("Recherche d'une souscription valide pour {} {} pour un creneau {} le {} parmis ses souscription {}",
+				owner.getFirstName(), owner.getLastName(), timeSlotType.getName(), startAt, subscriptions);
+
 		Booking booking = new Booking();
         booking.setTimeSlotType(timeSlotType);
         booking.setStartAt(startAt);
@@ -58,7 +64,10 @@ public class BookingRulesChecker {
 
 							
 				//On ajoute à toute les resa passée, celle en cours de préparation
-				List<Booking> subscriptionBookings = new ArrayList(bookingsBySubscriptions.get(subscription));		
+				List<Booking> subscriptionBookings = new ArrayList<>();
+				if (bookingsBySubscriptions.get(subscription) != null){
+					subscriptionBookings.addAll(bookingsBySubscriptions.get(subscription));
+				}
 				booking.setSubscription(subscription);
 				subscriptionBookings.add(booking);
 				
@@ -69,6 +78,7 @@ public class BookingRulesChecker {
 				List<MembershipRules> breakingRules = rules.stream().filter(isRuleBreaking(subscriptionBookings)).collect(Collectors.toList());
 				
 				if (breakingRules.isEmpty()){ //Aucune regle violee ?
+					log.debug("La resa {} peut se faire via la souscription {}", booking, subscription);
 					possibleSubscriptionsToUse.add(subscription);
 				}
 				else{
@@ -77,17 +87,23 @@ public class BookingRulesChecker {
 			} catch (SubscriptionDateExpiredException
 					| SubscriptionDateExpiredForBookingException
 					| MembershipRulesException e) {				
+				
+				log.debug("Souscrpition {} invalide: {}", subscription, e.getMessage());
+				
 				subscriptionsInvalid.add(e);
 			}
 		}
 		
 		if (possibleSubscriptionsToUse.isEmpty()){
+			log.debug("Aucune souscription valide pour la resa {]", booking);
 			throw new NoSubscriptionAvailableException(subscriptionsInvalid);
 		}
 		else if (possibleSubscriptionsToUse.size() == 1){
+			log.debug("Une seul souscription possible pour cette résa");
 			return possibleSubscriptionsToUse.get(0);
 		}
 		else{
+			log.debug("Plusieurs souscription possible pour cette résa");
 			throw new ManySubscriptionsAvailableException(possibleSubscriptionsToUse);
 		}
 		

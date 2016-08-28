@@ -23,30 +23,48 @@
 		    <div class="row form-group">
 		  		<div class="col-xs-12">
 			    	<div class="row"> 
-				        <div class="col-xs-8">			        
-							<input type="text" class="form-control" id="name" name="name"
-								placeholder="{{'crossfitApp.membership.name.placeholder' | translate}}"
-								ng-model="membership.name" ng-maxlength=255 required maxlength="255">
+				        <div class="col-xs-6">			
+				        	<div class="form-group">            
+								<input type="text" class="form-control" id="name" name="name"
+									placeholder="{{'crossfitApp.membership.name.placeholder' | translate}}"
+									ng-model="membership.name" ng-maxlength=255 required maxlength="255">
+							</div>
 				        </div>
-				        <div class="col-xs-4">
-					        <input type="text" class="form-control" id="price"
-								name="price"
-								placeholder="{{'crossfitApp.membership.price.placeholder' | translate}}"
-								ng-model="membership.price" ng-maxlength=255
-								required maxlength="255">
+				        <div class="col-xs-6 form-inline">
+					  		<div class="form-group">
+								<label for="field_nbMonthValidity">Valable</label>
+					     		<input type="number" class="form-control" 
+					     			name="nbMonthValidity" id="field_nbMonthValidity" ng-model="membership.nbMonthValidity">
+	
+								<label for="field_nbMonthValidity">
+									{{ 'crossfitApp.membership.nbMonthValidity' | translate }}</label>
+					        </div>
+							
 				        </div>
 			        </div>
 			        <div class="row"> 
-				        <div class="col-xs-12">			        
-					
-			        		<label class="checkbox-inline">
-				       			<input type="checkbox"
-								    name="addByDefault"
-								    ng-model="membership.addByDefault" >
-								    
-								 {{ 'crossfitApp.membership.addByDefault' | translate }}
-					       			
-				       		</label>
+				        
+				        <div class="col-xs-2">	
+				        	<div class="form-group">    
+						        <input type="text" class="form-control" id="price"
+									name="price"
+									placeholder="{{'crossfitApp.membership.price.placeholder' | translate}}"
+									ng-model="membership.price" ng-maxlength=255
+									required maxlength="255">
+							</div>		        
+						</div>
+						
+				        <div class="col-xs-10">				        
+					  		<div class="form-group">
+				        		<label class="checkbox">
+					       			<input type="checkbox"
+									    name="addByDefault"
+									    ng-model="membership.addByDefault" >
+									    
+									 {{ 'crossfitApp.membership.addByDefault' | translate }}
+						       			
+					       		</label>
+				       		</div>
 					       		
 			       		</div>
 		       		</div>
@@ -73,67 +91,95 @@
 		    </div>				
 		    <div class="row form-group">
 		  		<div class="col-xs-12">
-		  			<fieldset>
-		  				<legend>
+		  			<div class="panel panel-primary">
+						<div class="panel-heading">
 		  					Règles 
 			  				
 			  				<button type="button" class="btn btn-primary" ng-click="addRules()">
 								<span class="glyphicon glyphicon-plus"></span>
-							</button>
-						
-		  				</legend>
-		  				
-		  				<div class="row"> 
-					        <div class="col-xs-6">			        
-								<label>Nombre de séance autorisé</label>
-					        </div>
-					        <div class="col-xs-6">
-					        	<label>Accès autorisé aux créneaux de type</label>
-					        </div>
-				        </div>
+							</button></div>
+						<div class="panel-body">
 				        
-				    	<div class="row" ng-repeat="rule in membership.membershipRules"> 
-					        <div class="col-xs-5"> 
-					        	<div class="row">
-					        		<div class="col-xs-5">
-							        	<div class="form-group">      
-									        <input type="number" class="form-control" id="numberOfSession" name="numberOfSession"
-											placeholder="{{'crossfitApp.membershiprules.numberOfSession.placeholder' | translate}}"
-											ng-model="rule.numberOfSession" required">
-								        </div>
-							        </div>
-					        		<div class="col-xs-7">
-							          	<div class="form-group">
-									         <select class="form-control" name="type" ng-model="rule.type" id="field_type" required>
-												<option value="SUM" translate="crossfitApp.membershiprules.type.SUM">Au Total</option>
-												<option value="SUM_PER_WEEK" translate="crossfitApp.membershiprules.type.SUM_PER_WEEK">Par semaine</option>
-												<option value="SUM_PER_MONTH" translate="crossfitApp.membershiprules.type.SUM_PER_MONTH">Par mois</option>
-											</select>
+					    	<div ng-repeat="rule in membership.membershipRules"> 
+						    	<div class="panel panel-info">
+	  								<div class="panel-body">
+							    		<div class="row">
+									        <div class="col-xs-9"> 
+									        	<div class="row">
+									        		<div class="col-xs-5">
+											        	<div class="form-group">      
+													        <input type="number" class="form-control" id="numberOfSession" name="numberOfSession"
+															placeholder="{{'crossfitApp.membershiprules.numberOfSession.placeholder' | translate}}"
+															ng-model="rule.numberOfSession" required">
+												        </div>
+											        </div>
+									        		<div class="col-xs-7">
+											          	<div class="form-group">
+													         <select class="form-control" name="type" ng-model="rule.type" id="field_type" required>
+																<option value="SUM" translate="crossfitApp.membershiprules.type.SUM">Au Total</option>
+																<option value="SUM_PER_WEEK" translate="crossfitApp.membershiprules.type.SUM_PER_WEEK">Par semaine</option>
+																<option value="SUM_PER_MONTH" translate="crossfitApp.membershiprules.type.SUM_PER_MONTH">Par mois</option>
+															</select>
+														</div>
+											        </div>
+												</div>
+												
+												
+												<div class="row">
+											        <div class="col-xs-12 form-horizontal">
+												        <div class="form-group">
+												            <label for="field_nbMaxBooking" class="col-sm-10 control-label">{{ 'crossfitApp.membership.nbMaxBooking' | translate:{nbMaxBooking: rule.nbMaxBooking} }}</label>
+												           	<div class="col-sm-2">
+												            	<input type="number" class="form-control" name="nbMaxBooking" id="field_nbMaxBooking" ng-model="rule.nbMaxBooking">
+												            </div>
+												        </div>	        
+												        <div class="form-group">
+												            <label for="field_nbMaxDayBooking" class="col-sm-10 control-label">{{ 'crossfitApp.membership.nbMaxDayBooking' | translate:{nbMaxDayBooking: rule.nbMaxDayBooking} }}</label>
+												            <div class="col-sm-2">
+												            	<input type="number" class="form-control" name="nbMaxDayBooking" id="field_nbMaxDayBooking" ng-model="rule.nbMaxDayBooking">
+												        	</div>
+												        </div>		   
+											       
+												        <div class="form-group">
+												            <label for="field_nbHoursAtLeastToBook" class="col-sm-10 control-label">{{ 'crossfitApp.membership.nbHoursAtLeastToBook' | translate:{nbHoursAtLeastToBook: rule.nbHoursAtLeastToBook} }}</label>
+												            <div class="col-sm-2">
+												            	<input type="number" class="form-control" name="nbHoursAtLeastToBook" id="field_nbHoursAtLeastToBook" ng-model="rule.nbHoursAtLeastToBook">
+												        	</div>
+												        </div>        
+												        <div class="form-group">
+												            <label for="field_nbHoursAtLeastToCancel" class="col-sm-10 control-label">{{ 'crossfitApp.membership.nbHoursAtLeastToCancel' | translate:{nbHoursAtLeastToCancel: rule.nbHoursAtLeastToCancel} }}</label>
+												            <div class="col-sm-2">
+												            	<input type="number" class="form-control" name="nbHoursAtLeastToCancel" id="field_nbHoursAtLeastToCancel" ng-model="rule.nbHoursAtLeastToCancel">
+												        	</div>
+												        </div>
+											        </div>
+												
+												</div>
+											</div>
+									        <div class="col-xs-2">
+									       		<label class="checkbox" ng-repeat="timeSlotType in timeSlotTypes">
+									       		
+									       			<input type="checkbox"
+													    name="applyForTimeSlotTypes[]"
+													    value="{{timeSlotType.id}}"
+													    ng-checked="containsTimeSlotType(rule, timeSlotType)"
+													    ng-click="toggleSelection(rule, timeSlotType)"
+													  >{{timeSlotType.name}} 
+									       			
+									       		</label>
+									        </div>
+									        <div class="col-xs-1">
+									        
+								  				<button type="button" class="btn btn-danger" ng-click="deleteRulesAtIndex($index)">
+													<span class="glyphicon glyphicon-remove"></span>
+												</button>
+											
+									        </div>
 										</div>
-							        </div>
-								</div>
+									</div>
+						        </div>
 							</div>
-					        <div class="col-xs-6">
-					       		<label class="checkbox-inline" ng-repeat="timeSlotType in timeSlotTypes">
-					       		
-					       			<input type="checkbox"
-									    name="applyForTimeSlotTypes[]"
-									    value="{{timeSlotType.id}}"
-									    ng-checked="containsTimeSlotType(rule, timeSlotType)"
-									    ng-click="toggleSelection(rule, timeSlotType)"
-									  >{{timeSlotType.name}} 
-					       			
-					       		</label>
-					        </div>
-					        <div class="col-xs-1">
-					        
-				  				<button type="button" class="btn btn-danger" ng-click="deleteRulesAtIndex($index)">
-									<span class="glyphicon glyphicon-remove"></span>
-								</button>
-							
-					        </div>
-				        </div>
-		  			</fieldset>
+					</div>		
 				</div>
 		    </div>				
     	</div>

@@ -61,17 +61,6 @@ public class CrossFitBox implements Serializable {
     @Column(name = "time_zone", nullable = true)
     private String timeZone;
 
-    @Column(name = "nb_max_booking", nullable = true)
-    private int nbMaxBooking = 4;
-    
-    @Column(name = "nb_max_day_booking", nullable = true)
-    private int nbMaxDayBooking = 7;
-
-    @Column(name = "nb_hours_at_least_to_book", nullable = true)
-    private int nbHoursAtLeastToBook = 24;
-    
-    @Column(name = "nb_hours_at_least_to_cancel", nullable = true)
-    private int nbHoursAtLeastToCancel = 6;
 
     public Long getId() {
         return id;
@@ -146,41 +135,7 @@ public class CrossFitBox implements Serializable {
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
 	}
-
-	public int getNbMaxDayBooking() {
-		return nbMaxDayBooking;
-	}
-
-	public void setNbMaxDayBooking(int nbMaxDayBooking) {
-		this.nbMaxDayBooking = nbMaxDayBooking;
-	}
-
-	public int getNbHoursAtLeastToBook() {
-		return nbHoursAtLeastToBook;
-	}
-
-	public void setNbHoursAtLeastToBook(int nbHoursAtLeastToBook) {
-		this.nbHoursAtLeastToBook = nbHoursAtLeastToBook;
-	}
-
-	public int getNbHoursAtLeastToCancel() {
-		return nbHoursAtLeastToCancel;
-	}
-
-	public void setNbHoursAtLeastToCancel(int nbHoursAtLeastToCancel) {
-		this.nbHoursAtLeastToCancel = nbHoursAtLeastToCancel;
-	}
 	
-	
-
-	public int getNbMaxBooking() {
-		return nbMaxBooking;
-	}
-
-	public void setNbMaxBooking(int nbMaxBooking) {
-		this.nbMaxBooking = nbMaxBooking;
-	}
-
 	@Override
     public boolean equals(Object o) {
         if (this == o) {

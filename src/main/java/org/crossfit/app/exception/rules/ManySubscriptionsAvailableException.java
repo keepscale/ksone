@@ -12,5 +12,8 @@ public class ManySubscriptionsAvailableException extends Exception {
 		super();
 		this.subscriptions = subscriptions;
 	}
-	
+
+	public List<Subscription> getSubscriptions() {
+		return subscriptions;
+	}
 }

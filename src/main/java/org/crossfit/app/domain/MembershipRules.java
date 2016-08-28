@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,14 +50,25 @@ public class MembershipRules implements Serializable {
     @Column(name = "type", nullable = false)
     private MembershipRulesType type;
 
-    
-    @ManyToMany
+    //TODO: Enleveer ce eager !!!
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "MEMBERSHIP_RULES_TIMESLOTTYPE",
                joinColumns = @JoinColumn(name="membership_rules_id", referencedColumnName="ID"),
                inverseJoinColumns = @JoinColumn(name="timeslottype_id", referencedColumnName="ID"))
     private Set<TimeSlotType> applyForTimeSlotTypes = new HashSet<>();
 
+    @Column(name = "nb_max_booking", nullable = false)
+    private int nbMaxBooking = 3;
+    
+    @Column(name = "nb_max_day_booking", nullable = false)
+    private int nbMaxDayBooking = 14;
+
+    @Column(name = "nb_hours_at_least_to_book", nullable = false)
+    private int nbHoursAtLeastToBook = 6;
+    
+    @Column(name = "nb_hours_at_least_to_cancel", nullable = false)
+    private int nbHoursAtLeastToCancel = 6;
     
     @JsonIgnore
     @ManyToOne(optional=false)
@@ -101,6 +113,38 @@ public class MembershipRules implements Serializable {
 
 	public void setApplyForTimeSlotTypes(Set<TimeSlotType> applyForTimeSlotTypes) {
 		this.applyForTimeSlotTypes = applyForTimeSlotTypes;
+	}
+
+	public int getNbMaxDayBooking() {
+		return nbMaxDayBooking;
+	}
+
+	public void setNbMaxDayBooking(int nbMaxDayBooking) {
+		this.nbMaxDayBooking = nbMaxDayBooking;
+	}
+
+	public int getNbHoursAtLeastToBook() {
+		return nbHoursAtLeastToBook;
+	}
+
+	public void setNbHoursAtLeastToBook(int nbHoursAtLeastToBook) {
+		this.nbHoursAtLeastToBook = nbHoursAtLeastToBook;
+	}
+
+	public int getNbHoursAtLeastToCancel() {
+		return nbHoursAtLeastToCancel;
+	}
+
+	public void setNbHoursAtLeastToCancel(int nbHoursAtLeastToCancel) {
+		this.nbHoursAtLeastToCancel = nbHoursAtLeastToCancel;
+	}
+
+	public int getNbMaxBooking() {
+		return nbMaxBooking;
+	}
+
+	public void setNbMaxBooking(int nbMaxBooking) {
+		this.nbMaxBooking = nbMaxBooking;
 	}
 
 	@Override

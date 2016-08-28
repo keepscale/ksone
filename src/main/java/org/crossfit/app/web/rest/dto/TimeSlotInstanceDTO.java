@@ -36,7 +36,7 @@ public class TimeSlotInstanceDTO {
 	private TimeSlotInstanceStatus timeSlotStatus;
 	
 	private int totalBooking;
-	
+		
 	public TimeSlotInstanceDTO(DateTime date, TimeSlot slot) {
 		super();
 		this.date = date;

@@ -1,6 +1,7 @@
 package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,13 +21,17 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
+import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -69,6 +74,11 @@ public class BookingResource {
     private TimeSlotRepository timeSlotRepository;
     @Inject
     private MemberRepository memberRepository;
+    @Inject
+    private MembershipRepository membershipRepository;
+    @Inject
+	private SubscriptionRepository subscriptionRepository;
+
 
     /**
      * GET  /bookings -> get all the bookings.
@@ -160,10 +170,11 @@ public class BookingResource {
     
     /**
      * POST /timeSlots/:id/booking -> save the booking for timeslot
+     * @throws NoSubscriptionAvailableException 
      */
 
 	@RequestMapping(value = "/bookings", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Booking> create(@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException {
+	public ResponseEntity<Booking> create(@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
@@ -193,7 +204,8 @@ public class BookingResource {
     	}
     	
     	// Si il y a déjà une réservation pour ce créneau
-		List<Booking> currentBookings = bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
+		List<Booking> currentBookings = new ArrayList<>(
+				bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt));
 		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getSubscription().getMember().equals(owner)).findAny();
     	if(alreadyBooked.isPresent()){
     		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
@@ -211,7 +223,36 @@ public class BookingResource {
         
     	b.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         b.setCreatedDate(DateTime.now());
-        //b.setOwner(owner);
+        BookingRulesChecker rules = new BookingRulesChecker(
+        		bookingRepository.findAllByMember(owner), 
+        		subscriptionRepository.findAllByMember(owner));
+
+        Subscription subscription = null;
+        
+        try {
+        	
+        	subscription = rules.findSubscription(owner, timeSlot.getTimeSlotType(), startAt);
+			
+		} catch (ManySubscriptionsAvailableException e) {
+			subscription = e.getSubscriptions().get(0);
+		} catch (NoSubscriptionAvailableException e) {
+			if (isSuperUser){
+				List<Membership> findAllByDefault = membershipRepository.findAllByDefault(currentCrossFitBox);
+				for (Membership membership : findAllByDefault) {
+					Subscription s = new Subscription();
+					s.setMember(owner);
+					s.setMembership(membership);
+					s.setSubscriptionStartDate(startAt.toLocalDate());
+					s.setSubscriptionEndDate(startAt.toLocalDate().plusYears(1));
+					subscription = subscriptionRepository.save(s);
+				}
+			}
+			else{
+				throw e;
+			}
+		}
+        
+		b.setSubscription(subscription);
         b.setBox(currentCrossFitBox);
         b.setTimeSlotType(timeSlot.getTimeSlotType());
         b.setStartAt(startAt);
@@ -223,7 +264,5 @@ public class BookingResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(result);
 
     }
-
-	private SubscriptionRepository subscriptionRepository;
 
 }

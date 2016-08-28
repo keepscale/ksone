@@ -14,7 +14,12 @@
             "detail": {
                 "title": "Abonnements"
             },
-            "addByDefault" : "Ajouter l'abonnement automatiquement à la création d'un membre"
+            "addByDefault" : "Ajouter l'abonnement automatiquement à la création d'un membre",
+            "nbMonthValidity" : "mois",
+            "nbMaxBooking": "Jusqu'à {{ nbMaxBooking }} réservation à l'avance",
+            "nbMaxDayBooking": "Réserver jusqu'à {{ nbMaxDayBooking }} jour(s) à l'avance",
+            "nbHoursAtLeastToBook": "Réserver jusqu'à {{nbHoursAtLeastToBook}} heure(s) à l'avance une séance vide",
+            "nbHoursAtLeastToCancel": "Annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance."
         },
         
         "membershiprules" : {

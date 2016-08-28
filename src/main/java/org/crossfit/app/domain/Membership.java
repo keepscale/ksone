@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,8 +52,13 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional=false)
     private CrossFitBox box;
+
+    @NotNull        
+    @Column(name = "nb_month_validity", nullable = false)
+    private int nbMonthValidity;
     
-    @OneToMany(mappedBy="membership", cascade=CascadeType.ALL, orphanRemoval=true)
+    //TODO: Enlever ça le fetch !
+    @OneToMany(mappedBy="membership", cascade=CascadeType.ALL, orphanRemoval=true, fetch =FetchType.EAGER)
     private Set<MembershipRules> membershipRules = new HashSet<>();
 
 
@@ -79,6 +85,14 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
     public void setPrice(String price) {
         this.price = price;
     }
+
+	public int getNbMonthValidity() {
+		return nbMonthValidity;
+	}
+
+	public void setNbMonthValidity(int nbMonthValidity) {
+		this.nbMonthValidity = nbMonthValidity;
+	}
 
 	public CrossFitBox getBox() {
         return box;

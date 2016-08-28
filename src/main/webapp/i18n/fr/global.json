@@ -16,9 +16,11 @@
             "members" : "Membres",
             "bookings" : "Mes réservations",
             "timeslots" : "Créneaux",
+            "timeslottype" : "Type de créneaux",
             "config" : "Configuration",
             "language": "Langue",
-            "memberships" : "Abonnements"
+            "memberships" : "Abonnements",
+            "config" : "Configuration"
         },
         "form": {
             "username": "Nom d'utilisateur",

@@ -15,11 +15,7 @@
         	"rootwebsite" : "Racine du site",
         	
             "emailFrom": "Email d'envoi des mails",
-        	"logoUrl" : "Url du logo",
-            "nbMaxBooking": "Possibilité de faire jusqu'à {{ nbMaxBooking }} réservation à l'avance",
-            "nbMaxDayBooking": "Possibilité de réserver jusqu'à {{ nbMaxDayBooking }} jour(s) à l'avance",
-            "nbHoursAtLeastToBook": "Possibilité de réserver jusqu'à {{nbHoursAtLeastToBook}} heure(s) à l'avance.",
-            "nbHoursAtLeastToCancel": "Possibilité d'annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance."
+        	"logoUrl" : "Url du logo"
         }
     }
 }

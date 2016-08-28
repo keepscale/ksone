@@ -13,7 +13,7 @@ public class MembershipRulesException extends SubscriptionException {
 	
 	public MembershipRulesException(Subscription subscription, Booking booking,
 			List<MembershipRules> breakingRules) {
-		super(subscription);
+		super(subscription, "La réservation viole une ou plusieurs regles");
 		this.booking = booking;
 		this.breakingRules = breakingRules;
 	}

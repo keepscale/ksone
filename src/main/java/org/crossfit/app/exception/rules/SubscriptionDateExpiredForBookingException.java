@@ -9,7 +9,7 @@ public class SubscriptionDateExpiredForBookingException extends
 	private final Booking booking;
 	
 	public SubscriptionDateExpiredForBookingException(Subscription subscription, Booking booking) {
-		super(subscription);
+		super(subscription, "La réservation est pour le "+booking.getStartAt()+" alors que la souscription est valable jusqu'au " + subscription.getSubscriptionEndDate());
 		this.booking = booking;
 	}
 
