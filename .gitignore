@@ -19,3 +19,4 @@ hs_err_pid*
 .settings/org.eclipse.m2e.core.prefs
 .settings/org.sonar.ide.eclipse.core.prefs
 /bin/
+src/main/resources/config/application.yml
