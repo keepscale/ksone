@@ -182,8 +182,20 @@
 									required>
 						</div>
 						<div class="col-xs-3"> 
-							<input type="date" class="form-control" name="subscriptionEndDate"
+							<div class="input-group">
+								<input type="date" class="form-control" name="subscriptionEndDate"
 									id="field_subscriptionEndDate" ng-model="subscription.subscriptionEndDate" required>
+													
+				
+				   				<span class="input-group-btn">
+									<button type="button" class="btn" ng-click="addMonthToSubscriptionEndDate(subscription)">
+										<span class="glyphicon"></span>&nbsp;
+										<span>
+										{{ 'crossfitApp.member.action.date.addmonth' | translate:{total: subscription.membership.nbMonthValidity} }}
+										</span>
+									</button>
+								</span>
+							</div>
 						</div>
 				        <div class="col-xs-1">
 				        

@@ -14,7 +14,7 @@
             	"reset" : "Réinitialiser",
             	"sendMassActivation" : "Envoyer le mail à tout le monde",
             	"date.reinittoday" : "Réinitialiser",
-            	"date.addonemonth" : "+ 1 mois",
+            	"date.addmonth" : "+ {{ total }} mois",
             	"lock": "Bloquer"
         	},
             "lock": {

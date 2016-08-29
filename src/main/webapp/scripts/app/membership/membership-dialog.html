@@ -32,11 +32,11 @@
 				        </div>
 				        <div class="col-xs-6 form-inline">
 					  		<div class="form-group">
-								<label for="field_nbMonthValidity">Valable</label>
-					     		<input type="number" class="form-control" 
-					     			name="nbMonthValidity" id="field_nbMonthValidity" ng-model="membership.nbMonthValidity">
+								<label for="nbMonthValidity">Valable</label>
+					     		<input type="number" class="form-control" required
+					     			name="nbMonthValidity" id="nbMonthValidity" ng-model="membership.nbMonthValidity">
 	
-								<label for="field_nbMonthValidity">
+								<label for="nbMonthValidity">
 									{{ 'crossfitApp.membership.nbMonthValidity' | translate }}</label>
 					        </div>
 							
@@ -82,6 +82,11 @@
 									translate="crossfitApp.membership.messages.validate.price.required">The price is required.</p>
 								<p class="help-block" ng-show="form.price.$error.maxlength"
 									translate="crossfitApp.membership.messages.validate.price.maxlength"> The price cannot be longer than 255 characters.</p>
+							</div>
+				    	
+				    	  	<div ng-show="form.nbMonthValidity.$invalid">
+								<p class="help-block" ng-show="form.nbMonthValidity.$error.required"
+									translate="crossfitApp.membership.messages.validate.nbMonthValidity.required">The nbMonthValidity is required.</p>
 							</div>
 				    	
 				    	

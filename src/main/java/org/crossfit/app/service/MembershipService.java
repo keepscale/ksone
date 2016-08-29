@@ -40,6 +40,7 @@ public class MembershipService {
 		membership.setPrice(membershipDto.getPrice());
         membership.setBox(currentCrossFitBox);
         membership.setAddByDefault(membershipDto.isAddByDefault());
+        membership.setNbMonthValidity(membershipDto.getNbMonthValidity());
         membership.getMembershipRules().clear();
         for (MembershipRules r : membershipDto.getMembershipRules()) {
         	r.setMembership(membership);

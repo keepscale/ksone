@@ -24,29 +24,15 @@
 		</div>
 	</div>
 	<div class="col-xs-6">
-		<div class="form-group pull-right form-inline">
-			<input type="number" ng-model="per_page" class="form-control" style="width: 70px;" /> <label>/
-				{{totalMember}} membres.</label>
-		</div>
-	</div>
-</div>
-<div class="row">	
-	<div class="col-xs-12">	
-         <div class="form-group pull-right">
+        <div class="form-group pull-right" style="margin-left: 5px;">
 		    <button type="button" class="btn btn-primary" ng-click="search()">
 		        <span translate="entity.action.search">Search</span>
 		    </button>
 		</div>
-	</div>
-</div>
-<div class="row">	
-	<div class="col-xs-12">	
-         <div class="form-group pull-right">
-			<a href="#" ui-sref="member.new"> <span
-							class="glyphicon glyphicon-flash"></span> <span
-							translate="crossfitApp.member.home.createLabel">Create a
-								new Member</span>
-			</a>
+		
+		<div class="form-group pull-right form-inline">
+			<input type="number" ng-model="per_page" class="form-control" style="width: 70px;" /> <label>/
+				{{totalMember}} membres</label>
 		</div>
 	</div>
 </div>

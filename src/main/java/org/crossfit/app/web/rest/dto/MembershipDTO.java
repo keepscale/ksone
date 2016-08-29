@@ -23,9 +23,12 @@ public class MembershipDTO implements Serializable {
 
     @NotNull        
     private String price;
-    
+
     @NotNull        
     private boolean addByDefault;
+    
+    @NotNull        
+    private int nbMonthValidity;
     
     
     
@@ -62,6 +65,14 @@ public class MembershipDTO implements Serializable {
 
 	public void setAddByDefault(boolean addByDefault) {
 		this.addByDefault = addByDefault;
+	}
+
+	public int getNbMonthValidity() {
+		return nbMonthValidity;
+	}
+
+	public void setNbMonthValidity(int nbMonthValidity) {
+		this.nbMonthValidity = nbMonthValidity;
 	}
 
 	public Set<MembershipRules> getMembershipRules() {

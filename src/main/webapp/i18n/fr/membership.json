@@ -2,7 +2,8 @@
     "crossfitApp": {
         "membership" : {
             "home": {
-                "title": "Gestion des abonnements"
+                "title": "Gestion des abonnements",
+                "createLabel" : "Ajouter un abonnement"
             },
             "action" : {
             	"edit" : "Modifier",
@@ -14,12 +15,29 @@
             "detail": {
                 "title": "Abonnements"
             },
+            "name": "Nom",
+            "name.placeholder": "Nom de l'abonnement",
+            "price": "Prix",
+            "price.placeholder": "Prix",
             "addByDefault" : "Ajouter l'abonnement automatiquement à la création d'un membre",
             "nbMonthValidity" : "mois",
             "nbMaxBooking": "Jusqu'à {{ nbMaxBooking }} réservation à l'avance",
             "nbMaxDayBooking": "Réserver jusqu'à {{ nbMaxDayBooking }} jour(s) à l'avance",
             "nbHoursAtLeastToBook": "Réserver jusqu'à {{nbHoursAtLeastToBook}} heure(s) à l'avance une séance vide",
-            "nbHoursAtLeastToCancel": "Annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance."
+            "nbHoursAtLeastToCancel": "Annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance.",
+	        "messages" : {
+	        	"validate" : {
+		        	"name" : {
+			        	"required": "Le nom est obligatoire"
+			    	},
+		        	"price" : {
+			        	"required": "Le prix est obligatoire"
+			    	},
+		        	"nbMonthValidity" : {
+			        	"required": "Le nombre de mois valable est obligatoire"
+			    	}
+		    	}
+	    	}
         },
         "membershiprules" : {
             "type" : {

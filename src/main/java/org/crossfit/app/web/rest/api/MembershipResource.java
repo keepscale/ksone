@@ -108,6 +108,7 @@ public class MembershipResource {
 			result.setName(membership.getName());
 			result.setPrice(membership.getPrice());
 			result.setAddByDefault(membership.isAddByDefault());
+			result.setNbMonthValidity(membership.getNbMonthValidity());
 			if (withrelation){
 				result.setMembershipRules(membership.getMembershipRules());
 			}
