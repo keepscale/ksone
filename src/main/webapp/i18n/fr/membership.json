@@ -21,13 +21,13 @@
             "nbHoursAtLeastToBook": "Réserver jusqu'à {{nbHoursAtLeastToBook}} heure(s) à l'avance une séance vide",
             "nbHoursAtLeastToCancel": "Annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance."
         },
-        
         "membershiprules" : {
             "type" : {
             	"SUM" : "séance(s)",
             	"SUM_PER_WEEK" : "séance(s) par semaine",
             	"SUM_PER_MONTH" : "séance(s) par mois"
-            }
+            },
+            "numberOfSession.placeholder": "Nb de session (-1=illimité)"
         }
     }
 }

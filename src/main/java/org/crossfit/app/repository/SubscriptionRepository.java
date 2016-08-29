@@ -1,8 +1,10 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
 import java.util.Set;
 
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +20,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 
     @Query("select s from Subscription s where s.member = :member and s.subscriptionEndDate is null")
 	Subscription findActiveByMember(@Param("member") Member member);
+
+	List<Subscription> findAllByMembership(Membership membership);
    
 
 }

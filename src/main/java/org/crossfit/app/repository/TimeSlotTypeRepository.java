@@ -1,9 +1,9 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
+
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlotType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface TimeSlotTypeRepository extends JpaRepository<TimeSlotType,Long> {
 
-	Page<TimeSlotType> findAllByBox(CrossFitBox box, Pageable page);
+	List<TimeSlotType> findAllByBox(CrossFitBox box);
 
 }

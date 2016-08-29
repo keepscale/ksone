@@ -25,11 +25,6 @@ angular.module('crossfitApp')
                     data.date = DateUtils.convertLocaleDateToServer(data.date);
                     return angular.toJson(data);
                 }
-            },
-            'validate': {
-                method: 'PUT',
-                url: 'api/bookings/:id/validate', 
-                params : {id: '@id'}
             }
         });
     });

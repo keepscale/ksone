@@ -13,10 +13,15 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.MembershipRules;
+import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.repository.MembershipRepository;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MembershipService;
 import org.crossfit.app.web.rest.dto.MembershipDTO;
+import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,8 @@ public class MembershipResource {
     private CrossFitBoxSerivce boxService;
     @Inject
     private MembershipService membershipService;
+    @Inject
+    private SubscriptionRepository subscriptionRepository;
 
 	/**
 	 * POST /memberships -> Create a new membershipType.
@@ -129,7 +136,23 @@ public class MembershipResource {
 	@RequestMapping(value = "/memberships/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		log.debug("REST request to delete MembershipType : {}", id);
-		doDelete(id);
+
+		
+		Membership membership = doGet(id);
+		if (membership.getBox().equals(boxService.findCurrentCrossFitBox())){
+			List<Subscription> subscriptions = subscriptionRepository.findAllByMembership(membership);
+			if (subscriptions.isEmpty()){
+				membershipRepository.delete(id);
+			}
+			else{
+	    		throw new CustomParameterizedException("Il existe des adhésions à cet abonnement");
+			}
+		}
+		else{
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+		}
+		
+				
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("membershipType", id.toString()))
 				.build();
 	}

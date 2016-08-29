@@ -1,0 +1,28 @@
+{
+    "crossfitApp": {
+        "timeSlotType" : {
+            "home": {
+                "title": "Gestion des types de créneau",
+                "createLabel": "Créer un nouveau type de créneau",
+                "createOrEditLabel": "Créer ou éditer un type de créneau"
+            },
+            "action" : {
+            	"edit": "Modifier",
+            	"delete": "Supprimer"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le type de créneau {{ id }} ?"
+            },
+            "detail": {
+                "title": "Type de créneau"
+            },
+            "created": "Un nouveau type de créneau a été créé avec l'identifiant {{ param }}",
+            "updated": "Type de créneau avec l'identifiant {{ param }} mis à jour",
+            "deleted": "Type de créneau avec l'identifiant {{ param }} supprimé.",
+            "name": "Nom du type de créneau",
+            "color": "Couleur",
+            "description": "Description"
+        }
+    }
+}
+

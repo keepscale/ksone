@@ -1,0 +1,71 @@
+
+<form name="form" role="form" novalidate ng-submit="save()" show-validation>
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true" ng-click="clear()">&times;</button>
+		<h4 class="modal-title" id="myTimeSlotTypeLabel"
+			translate="crossfitApp.membership.home.createOrEditLabel">Create or
+			edit a TimeSlotType</h4>
+	</div>
+	
+	<div class="modal-body">
+		<jh-alert-error></jh-alert-error>
+		<div class="form-group">
+			<label for="id" translate="global.field.id">ID</label> <input
+				type="text" class="form-control" id="id" name="id"
+				ng-model="timeSlotType.id" readonly>
+		</div>
+		
+		
+       	<div class="form-group">            
+            <label translate="crossfitApp.timeSlotType.name" for="name">Name</label>
+			<input type="text" class="form-control" id="name" name="name"
+				ng-model="timeSlotType.name" ng-maxlength=255 required maxlength="255">
+		</div>
+       	<div class="form-group">            
+            <label translate="crossfitApp.timeSlotType.description" for="description">Description</label>
+			<input type="text" class="form-control" id="description" name="description"
+				ng-model="timeSlotType.description" ng-maxlength=255 required maxlength="255">
+		</div>
+       	<div class="form-group">            
+            <label translate="crossfitApp.timeSlotType.color" for="color">Color</label>
+			<input type="color" class="form-control" id="color" name="color"
+				ng-model="timeSlotType.color">
+		</div>
+			
+			
+	   	<div class="row"> 
+	        <div class="col-xs-12">
+	    	  	<div ng-show="form.name.$invalid">
+					<p class="help-block" ng-show="form.name.$error.required"
+						translate="crossfitApp.membership.messages.validate.name.required">The name is required.</p>
+					<p class="help-block" ng-show="form.name.$error.maxlength"
+						translate="crossfitApp.membership.messages.validate.name.maxlength"> The name cannot be longer than 255 characters.</p>
+				</div>
+	    	
+	    	  	<div ng-show="form.description.$invalid">
+					<p class="help-block" ng-show="form.description.$error.required"
+						translate="crossfitApp.membership.messages.validate.description.required">The description is required.</p>
+					<p class="help-block" ng-show="form.description.$error.maxlength"
+						translate="crossfitApp.membership.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
+				</div>
+			</div>
+		</div>
+			
+					
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal"
+				ng-click="clear()">
+				<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+					translate="entity.action.cancel">Cancel</span>
+			</button>
+			<button type="submit"
+				ng-disabled="form.$invalid || form.$submitted"
+				class="btn btn-primary">
+				<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+					translate="entity.action.save">Save</span>
+			</button>
+		</div>
+	</div>
+</form>
