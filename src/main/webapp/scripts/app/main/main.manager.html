@@ -12,55 +12,52 @@
                 	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
                 	</div>
                 	<div class="row">
-					<div class="col-lg-12">
-					   	<jh-alert></jh-alert>
-				    </div>
-				</div>
-                	<ul class="nav nav-tabs">
-					  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
-					  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
-					  </li>
-					</ul>
+						<div class="col-lg-12">
+						   	<jh-alert></jh-alert>
+					    </div>
+					</div>
 					
-					<div class="row">
-        				<div class="col-md-12">
-							<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
-		        				<div class="col-md-12">
-									<div class="row">
-										<div class="{{'col-md-' +  (12 / interval.slots.length) }}" ng-repeat="slot in interval.slots">
-											<div style="border: 1px solid #ddd; margin: 5px; background-color: {{slot.timeSlotType.color}}; color: #FFF" >
-												
+					<div class="panel with-nav-tabs panel-default">
+                		<div class="panel-heading">
+		                	<ul class="nav nav-tabs">
+							  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
+							  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
+							  </li>
+							</ul>
+						</div>
+						<div class="panel-body">
+                    		<div class="tab-content">
+					
+								<div class="row">
+			        				<div class="col-md-12">
+										<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
+					        				<div class="col-md-12">
 												<div class="row">
-													<div class="col-xs-2"></div>
-													<div class="col-xs-8">
-														<h6 class="text-center">
+													<div class="{{'col-md-' +  (12 / interval.slots.length) }}" ng-repeat="slot in interval.slots">
 														
-															<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
-															{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-															{{slot.timeSlotType.name}} |
-															{{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
-															inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
-															</a>
-														</h6>
-													</div>
-													<div class="col-xs-2 text-right">
-														<a href="#" ng-click="showQuickAddBooking(slot)" style="margin: 5px;">
-															<span class="glyphicon glyphicon-plus"></span>
-														</a>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-sm-12">
-														<ul class="list-group" style="margin: 5px;">
-															<li class="list-group-item list-group-item-success"
-																ng-repeat="booking in slot.validatedBookings">
-																{{booking.subscription.member.firstName}} {{booking.subscription.member.lastName}} - {{booking.subscription.membership.name}}
-																
-																<a href="#" ng-click="quickDeleteBooking(booking)">
-																	<span style="float: right; color: red;" class="glyphicon glyphicon-remove"></span>
+														<div class="panel panel-default">
+														  <div style="background-color: {{slot.timeSlotType.color}}; color: #FFF" class="panel-heading">
+															<h5 class="pull-left text-center" style="width:75%;">
+																<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
+																	{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
+																	{{slot.timeSlotType.name}} |
+																	{{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
+																	inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
 																</a>
-															</li>
-														</ul>
+															</h5>
+															<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span> Ajouter</button>
+															<div class="clearfix"></div>
+														  </div>														
+														  	<ul class="list-group">
+																<li class="list-group-item" ng-repeat="booking in slot.validatedBookings">
+																	<span class="glyphicon glyphicon-user"></span> 
+																	{{booking.subscription.member.firstName}} {{booking.subscription.member.lastName}} - {{booking.subscription.membership.name}}
+																	<span class="pull-right">
+        																<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Supprimer</button>
+        															</span>
+																</li>
+															</ul>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -69,7 +66,6 @@
 								</div>
 							</div>
 						</div>
-					</div>
                 </div>
             </div>
         </div>

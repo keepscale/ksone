@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('BookingDialogController',
-    ['$scope', '$stateParams', '$uibModalInstance', 'entity', 'Booking', 'DateUtils',
-        function($scope, $stateParams, $modalInstance, entity, Booking, DateUtils) {
+    ['$scope', '$stateParams','$window', '$uibModalInstance', 'entity', 'Booking', 'DateUtils',
+        function($scope, $stateParams, $window, $modalInstance, entity, Booking, DateUtils) {
 
   
 //    	Availability.availability({id : entity.id, date : entity.date}, function(result) {
@@ -13,13 +13,25 @@ angular.module('crossfitApp').controller('BookingDialogController',
     	
 
         var onSaveFinished = function (result) {
+        	console.log(result);
         	$scope.isReservable = false;
             $scope.$emit('crossfitApp:timeSlotUpdate', result);
             $modalInstance.close(result);
         };
+        
+        var erreur = function(result){
+        	$window.alert(result.data.message);
+        };
 
         $scope.subscribe = function () {
-        	Booking.save({id: entity.id, date : entity.date}, onSaveFinished);
+        	console.log(entity);
+        	$scope.booking = {
+                	timeslot: null,
+                	timeslotId: entity.timeslotId,
+                	date: new Date(entity.date),
+                	owner: {}
+                };
+        	Booking.save($scope.booking , onSaveFinished, erreur);
         };
         
         $scope.unSubscribe = function (id) {

@@ -57,6 +57,8 @@ angular.module('crossfitApp')
               	});
         }
         $scope.quickAddBooking = function(){
+        	console.log($scope.quickbooking);
+        	
         	Booking.save($scope.quickbooking, function(){
         		$scope.loadAll();
                 $('#quickAddBooking').modal('hide'); 

@@ -179,7 +179,15 @@ public class BookingResource {
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
     	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
-    	Member owner = memberRepository.findOne(bookingdto.getOwner().getId());
+    	
+    	// Si owner est null alors on prend l'utilisateur courant
+    	Member owner;
+    	if(bookingdto.getOwner() != null && bookingdto.getOwner().getId() != null){
+    		owner = memberRepository.findOne(bookingdto.getOwner().getId());
+    	}else{
+    		owner = SecurityUtils.getCurrentMember();
+    	}
+    	 
     	
     	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
     	if(timeSlot == null){
@@ -187,6 +195,8 @@ public class BookingResource {
         } else if(!timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
         }
+    	
+    	
     	
     	// On ajoute l'heure à la date
     	DateTime startAt = bookingdto.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC);
@@ -196,6 +206,7 @@ public class BookingResource {
     	Member currentMember = SecurityUtils.getCurrentMember();
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
+    	    	
     	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
 		if (!isSuperUser && !currentMember.equals(owner)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)

@@ -109,7 +109,7 @@ angular.module('crossfitApp')
         		$state.go('booking.impossible', {message:"Réservation impossible !"});
         	}else
 			if (calEvent.id){
-	            $state.go('booking.new', {id:calEvent.id, date:(new Date(calEvent.start)).toISOString().slice(0, 10)});
+	            $state.go('booking.new', {id:calEvent.id, date:calEvent.start});
 			}
 	    }
         

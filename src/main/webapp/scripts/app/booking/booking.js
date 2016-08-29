@@ -26,7 +26,7 @@ angular.module('crossfitApp')
             })
             .state('booking.new', {
                 parent: 'home',
-                url: '/new/:id/:date',
+                url: '/new/{id:int}/:date',
                 data: {
                     roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
@@ -39,6 +39,7 @@ angular.module('crossfitApp')
                             entity: function () {
                             	
                                 return {
+                                	timeslot:null,
                                 	timeslotId:$stateParams.id,
                                 	date: $stateParams.date,
                                 	owner: null};
