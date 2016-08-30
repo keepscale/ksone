@@ -171,23 +171,19 @@ public class BookingResource {
     /**
      * POST /timeSlots/:id/booking -> save the booking for timeslot
      * @throws NoSubscriptionAvailableException 
+     * @throws ManySubscriptionsAvailableException 
      */
 
 	@RequestMapping(value = "/bookings", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Booking> create(@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException {
+	public ResponseEntity<Booking> create(@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException, ManySubscriptionsAvailableException {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
-    	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
+    	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeSlot().getId());
     	
     	// Si owner est null alors on prend l'utilisateur courant
-    	Member owner;
-    	if(bookingdto.getOwner() != null && bookingdto.getOwner().getId() != null){
-    		owner = memberRepository.findOne(bookingdto.getOwner().getId());
-    	}else{
-    		owner = SecurityUtils.getCurrentMember();
-    	}
-    	 
+    	Subscription selectedSubscription = bookingdto.getSubscription() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscription().getId());
+    	Member selectedMember = selectedSubscription == null ? SecurityUtils.getCurrentMember() : selectedSubscription.getMember();
     	
     	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
     	if(timeSlot == null){
@@ -197,27 +193,29 @@ public class BookingResource {
         }
     	
     	
+    	if()
+    	
     	
     	// On ajoute l'heure à la date
     	DateTime startAt = bookingdto.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC);
     	DateTime endAt = bookingdto.getDate().toDateTime(timeSlot.getEndTime(), DateTimeZone.UTC);
     	
     	
-    	Member currentMember = SecurityUtils.getCurrentMember();
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
     	    	
     	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
-		if (!isSuperUser && !currentMember.equals(owner)){
+		if (!isSuperUser && !SecurityUtils.getCurrentMember().equals(selectedMember)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
             		.headers(HeaderUtil.createAlert("Vous n'avez pas le droit de reserver pour quelqu'un d'autre", String.valueOf(timeSlot.getId())))
             		.body(null);
     	}
     	
     	// Si il y a déjà une réservation pour ce créneau
+		//TODO: Verifier si "exclusif"
 		List<Booking> currentBookings = new ArrayList<>(
 				bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt));
-		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getSubscription().getMember().equals(owner)).findAny();
+		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getSubscription().getMember().equals(selectedMember)).findAny();
     	if(alreadyBooked.isPresent()){
     		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
     	}
@@ -226,44 +224,43 @@ public class BookingResource {
     		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
-    	if (!isSuperUser /*&& !canUserBook(owner, timeSlot)*/){
-    		throw new CustomParameterizedException("Votre abonnement ne vous permet pas de réserver ce créneau");
-    	}
-    	
     	Booking b  = new Booking();
         
     	b.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        b.setCreatedDate(DateTime.now());
-        BookingRulesChecker rules = new BookingRulesChecker(
-        		bookingRepository.findAllByMember(owner), 
-        		subscriptionRepository.findAllByMember(owner));
-
-        Subscription subscription = null;
+        b.setCreatedDate(tu);
         
+        
+        BookingRulesChecker rules = new BookingRulesChecker(
+        		bookingRepository.findAllByMember(selectedMember), 
+        		subscriptionRepository.findAllByMember(selectedMember));
+
+        Subscription possibleSubscription = null;        
         try {
         	
-        	subscription = rules.findSubscription(owner, timeSlot.getTimeSlotType(), startAt);
+        	possibleSubscription = rules.findSubscription(selectedMember, timeSlot.getTimeSlotType(), startAt);
+        	
+        	if (!isSuperUser && selectedSubscription != null && !possibleSubscription.equals(selectedSubscription)){
+        		throw new CustomParameterizedException("Vous ne pouvez pas réserver avec cet abonnement ("+selectedSubscription.getMembership().getName()+")");
+        	}
 			
+        	selectedSubscription = possibleSubscription;
+        	
 		} catch (ManySubscriptionsAvailableException e) {
-			subscription = e.getSubscriptions().get(0);
-		} catch (NoSubscriptionAvailableException e) {
-			if (isSuperUser){
-				List<Membership> findAllByDefault = membershipRepository.findAllByDefault(currentCrossFitBox);
-				for (Membership membership : findAllByDefault) {
-					Subscription s = new Subscription();
-					s.setMember(owner);
-					s.setMembership(membership);
-					s.setSubscriptionStartDate(startAt.toLocalDate());
-					s.setSubscriptionEndDate(startAt.toLocalDate().plusYears(1));
-					subscription = subscriptionRepository.save(s);
-				}
-			}
-			else{
+			//Plusieurs souscription possibles
+			if (selectedSubscription == null || !e.getSubscriptions().contains(selectedSubscription)){
 				throw e;
-			}
+			}	
+
+		} catch (NoSubscriptionAvailableException e) {
+			if (!isSuperUser)
+				throw e;
+			else if (selectedSubscription == null)
+				throw e;
 		}
         
-		b.setSubscription(subscription);
+        
+        
+		b.setSubscription(selectedSubscription);
         b.setBox(currentCrossFitBox);
         b.setTimeSlotType(timeSlot.getTimeSlotType());
         b.setStartAt(startAt);

@@ -57,8 +57,7 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
     @Column(name = "nb_month_validity", nullable = false)
     private int nbMonthValidity;
     
-    //TODO: Enlever ça le fetch !
-    @OneToMany(mappedBy="membership", cascade=CascadeType.ALL, orphanRemoval=true, fetch =FetchType.EAGER)
+    @OneToMany(mappedBy="membership", cascade=CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
     private Set<MembershipRules> membershipRules = new HashSet<>();
 
 

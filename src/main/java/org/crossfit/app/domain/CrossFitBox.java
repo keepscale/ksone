@@ -1,7 +1,9 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -168,4 +170,8 @@ public class CrossFitBox implements Serializable {
                 ", rootwebsite='" + rootwebsite + "'" +
                 '}';
     }
+
+	public String getTimeZoneId() {
+		return TimeZone.getTimeZone("fr").getID();
+	}
 }

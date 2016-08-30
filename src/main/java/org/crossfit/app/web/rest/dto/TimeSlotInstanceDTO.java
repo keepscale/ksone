@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
@@ -14,6 +16,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -31,7 +34,7 @@ public class TimeSlotInstanceDTO {
 
 	private TimeSlot slot;
 
-	private List<Booking> bookings = new ArrayList<>();
+	private List<BookingDTO> bookings = new ArrayList<>();
 	
 	private TimeSlotInstanceStatus timeSlotStatus;
 	
@@ -74,12 +77,19 @@ public class TimeSlotInstanceDTO {
 		return slot.getTimeSlotType();
 	}
 
-	public List<Booking> getValidatedBookings() {
+	public List<BookingDTO> getValidatedBookings() {
 		return bookings.stream().filter(b->{return b.getStatus() == BookingStatus.VALIDATED;}).collect(Collectors.toList());
 	}
 
 	public void setBookings(List<Booking> bookings) {
-		this.bookings = new ArrayList<>(bookings);
+		this.bookings = bookings.stream().map(b->{
+			Subscription s = new Subscription();
+			s.setId(b.getSubscription().getId());
+			s.setMember(b.getSubscription().getMember());
+			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), b.getStatus(), slot, s);
+			return dto;
+		}).collect(Collectors.toList());
+		
 		this.totalBooking = this.bookings.size();
 	}
 	

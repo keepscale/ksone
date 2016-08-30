@@ -21,7 +21,17 @@
             "deleted": "Type de créneau avec l'identifiant {{ param }} supprimé.",
             "name": "Nom du type de créneau",
             "color": "Couleur",
-            "description": "Description"
+            "description": "Description",
+            "messages" : {
+	        	"validate" : {
+		        	"name" : {
+			        	"required": "Le nom est obligatoire"
+			    	},
+		        	"description" : {
+			        	"required": "La description est obligatoire"
+			    	}
+		    	}
+	    	}
         }
     }
 }

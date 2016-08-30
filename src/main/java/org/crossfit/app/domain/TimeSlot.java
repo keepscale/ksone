@@ -31,6 +31,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -88,6 +89,7 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private TimeSlotType timeSlotType;
 
+    @JsonIgnore
     @ManyToOne
     private CrossFitBox box;
     

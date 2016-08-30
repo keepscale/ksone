@@ -50,8 +50,7 @@ public class MembershipRules implements Serializable {
     @Column(name = "type", nullable = false)
     private MembershipRulesType type;
 
-    //TODO: Enleveer ce eager !!!
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "MEMBERSHIP_RULES_TIMESLOTTYPE",
                joinColumns = @JoinColumn(name="membership_rules_id", referencedColumnName="ID"),
