@@ -37,19 +37,25 @@
 														
 														<div class="panel panel-default">
 														  <div style="background-color: {{slot.timeSlotType.color}}; color: #FFF" class="panel-heading">
-															<h5 class="pull-left text-center" style="width:75%;">
-																<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
-																	{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-																	{{slot.timeSlotType.name}} |
-																	{{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
-																	inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
-																</a>
-															</h5>
-															<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span> Ajouter</button>
-															<div class="clearfix"></div>
+														  	<div class="row">
+															  	<div class="col-xs-9"> 
+																	<h5 class="text-center three-points-overflow">
+																		<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
+																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
+																			{{slot.timeSlotType.name}} |
+																			{{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
+																			inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
+																		</a>
+																	</h5>
+																</div>
+																<div class="col-xs-3">
+																	<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span> Ajouter</button>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
 														  </div>														
 														  	<ul class="list-group">
-																<li class="list-group-item" ng-repeat="booking in slot.validatedBookings">
+																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.validatedBookings">
 																	<span class="glyphicon glyphicon-user"></span> 
 																	{{booking.subscription.member.firstName}} {{booking.subscription.member.lastName}} - {{booking.subscription.membership.name}}
 																	<span class="pull-right">

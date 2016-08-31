@@ -196,6 +196,7 @@ h1{
 
 .panel.with-nav-tabs .panel-heading{
     padding: 5px 5px 0 5px;
+    text-overflow: ellipsis;
 }
 .panel.with-nav-tabs .nav-tabs{
 	border-bottom: none;
@@ -207,4 +208,10 @@ h1{
 .panel.with-nav-tabs .panel-heading.with-button{
 	padding-top: 5px;
 	padding-bottom: 5px;	
+}
+
+.three-points-overflow{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
