@@ -1,8 +1,10 @@
 package org.crossfit.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -32,7 +34,7 @@ public abstract class AbstractAuditingEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "created_date", nullable = false)
     @JsonIgnore
-    private DateTime createdDate = DateTime.now();
+    private DateTime createdDate = DateTime.now(DateTimeZone.UTC);
 
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 100)
@@ -43,7 +45,7 @@ public abstract class AbstractAuditingEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "last_modified_date")
     @JsonIgnore
-    private DateTime lastModifiedDate = DateTime.now();
+    private DateTime lastModifiedDate = DateTime.now(DateTimeZone.UTC);
 
     public String getCreatedBy() {
         return createdBy;

@@ -1,8 +1,6 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -29,6 +27,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

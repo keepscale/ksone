@@ -6,8 +6,10 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import org.crossfit.app.domain.CrossFitBox;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +30,18 @@ public class TimeService {
     	return Arrays.asList(TimeZone.getAvailableIDs());
     }
     
-    public TimeZone getCurrentTimeZome(){
-    	String boxTimeZoneID = boxService.findCurrentCrossFitBox().getTimeZoneId();
+    public TimeZone getCurrentTimeZome(CrossFitBox box){
+    	String boxTimeZoneID = box.getTimeZoneId();
     	TimeZone res = boxTimeZoneID != null ? TimeZone.getTimeZone(boxTimeZoneID) : UTC.toTimeZone();
     	log.debug("Using TimeZone " + res.getDisplayName());
     	return res;
     }
 
-    public DateTime now(){
-    	return DateTime.now(DateTimeZone.forTimeZone(getCurrentTimeZome()));
+    public DateTime nowAsDateTime(CrossFitBox box){
+    	return DateTime.now(DateTimeZone.forTimeZone(getCurrentTimeZome(box)));
+    }
+    public LocalDate nowAsLocalDate(CrossFitBox box){
+    	return LocalDate.now(DateTimeZone.forTimeZone(getCurrentTimeZome(box)));
     }
 
 	public DateTime parseDateAsUTC(String pattern, String value) {

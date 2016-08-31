@@ -31,6 +31,7 @@ import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
@@ -69,13 +70,13 @@ public class BookingResource {
 
     @Inject
     private CrossFitBoxSerivce boxService;
+    
+    @Inject
+    private TimeService timeService;
 
     @Inject
     private TimeSlotRepository timeSlotRepository;
-    @Inject
-    private MemberRepository memberRepository;
-    @Inject
-    private MembershipRepository membershipRepository;
+    
     @Inject
 	private SubscriptionRepository subscriptionRepository;
 
@@ -185,6 +186,11 @@ public class BookingResource {
     	Subscription selectedSubscription = bookingdto.getSubscription() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscription().getId());
     	Member selectedMember = selectedSubscription == null ? SecurityUtils.getCurrentMember() : selectedSubscription.getMember();
     	
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	
+    	DateTime now = timeService.nowAsDateTime(currentCrossFitBox);
+
+    	
     	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
     	if(timeSlot == null){
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("TimeSlot introuvable", "")).body(null);
@@ -192,18 +198,22 @@ public class BookingResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
         }
     	
-    	
-    	if()
-    	
-    	
     	// On ajoute l'heure à la date
     	DateTime startAt = bookingdto.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC);
     	DateTime endAt = bookingdto.getDate().toDateTime(timeSlot.getEndTime(), DateTimeZone.UTC);
+
+    	if (timeSlot.getVisibleAfter() != null && startAt.toLocalDate().isBefore(timeSlot.getVisibleAfter())){
+    		 return ResponseEntity.status(HttpStatus.FORBIDDEN)
+             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'à partir du " + timeSlot.getVisibleAfter(), String.valueOf(timeSlot.getId())))
+             		.body(null);
+    	}
+
+    	if (timeSlot.getVisibleBefore() != null && startAt.toLocalDate().isAfter(timeSlot.getVisibleBefore())){
+    		 return ResponseEntity.status(HttpStatus.FORBIDDEN)
+             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'avant le " + timeSlot.getVisibleBefore(), String.valueOf(timeSlot.getId())))
+             		.body(null);
+    	}
     	
-    	
-    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-    	
-    	    	
     	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
 		if (!isSuperUser && !SecurityUtils.getCurrentMember().equals(selectedMember)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -211,34 +221,44 @@ public class BookingResource {
             		.body(null);
     	}
     	
-    	// Si il y a déjà une réservation pour ce créneau
-		//TODO: Verifier si "exclusif"
-		List<Booking> currentBookings = new ArrayList<>(
+    	// Si il y a déjà une réservation entre les date de ce créneau
+		List<Booking> currentBookingsBetweenStartAndEnd = new ArrayList<>(
 				bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt));
-		Optional<Booking> alreadyBooked = currentBookings.stream().filter(b->b.getSubscription().getMember().equals(selectedMember)).findAny();
+		
+		Optional<Booking> alreadyBooked = currentBookingsBetweenStartAndEnd.stream()
+				.filter(b-> b.getSubscription().getMember().equals(selectedMember)).findAny();
+		
     	if(alreadyBooked.isPresent()){
     		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
     	}
     	
-    	if (!isSuperUser && currentBookings.size() >= timeSlot.getMaxAttendees()){
+    	List<Booking> currentBookingsForTimeSlot = currentBookingsBetweenStartAndEnd.stream()
+    		.filter(b->{
+    			 return
+    				b.getTimeSlotType().equals(timeSlot.getTimeSlotType()) &&
+					b.getStartAt().getMillis() == startAt.getMillis() && 
+					b.getEndAt().getMillis() == endAt.getMillis();
+    		}).collect(Collectors.toList());
+    	
+    	if (!isSuperUser && currentBookingsForTimeSlot.size() >= timeSlot.getMaxAttendees()){
     		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
-    	Booking b  = new Booking();
-        
+    	Booking b  = new Booking();        
     	b.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        b.setCreatedDate(tu);
+        b.setCreatedDate(now);
         
-        
-        BookingRulesChecker rules = new BookingRulesChecker(
+        BookingRulesChecker rules = new BookingRulesChecker(now,
         		bookingRepository.findAllByMember(selectedMember), 
         		subscriptionRepository.findAllByMember(selectedMember));
 
         Subscription possibleSubscription = null;        
         try {
         	
-        	possibleSubscription = rules.findSubscription(selectedMember, timeSlot.getTimeSlotType(), startAt);
+        	possibleSubscription = rules.findSubscription(selectedMember, timeSlot.getTimeSlotType(), startAt, currentBookingsForTimeSlot.size());
         	
+        	//Si on est pas admin, qu'on souhaite forcer une souscription, qui n'est pas possible => erreur
+        	//(Si on est admin, on laisse passer)
         	if (!isSuperUser && selectedSubscription != null && !possibleSubscription.equals(selectedSubscription)){
         		throw new CustomParameterizedException("Vous ne pouvez pas réserver avec cet abonnement ("+selectedSubscription.getMembership().getName()+")");
         	}
@@ -246,18 +266,20 @@ public class BookingResource {
         	selectedSubscription = possibleSubscription;
         	
 		} catch (ManySubscriptionsAvailableException e) {
-			//Plusieurs souscription possibles
+			//Plusieurs souscription possibles et celle souhaite n'est pas dans la liste => erreur
 			if (selectedSubscription == null || !e.getSubscriptions().contains(selectedSubscription)){
 				throw e;
 			}	
 
 		} catch (NoSubscriptionAvailableException e) {
+			//Pas de souscription disponible
+			//on est pas admin ? => erreur
 			if (!isSuperUser)
 				throw e;
+			//Sinon, il faut forcer une souscription
 			else if (selectedSubscription == null)
 				throw e;
 		}
-        
         
         
 		b.setSubscription(selectedSubscription);

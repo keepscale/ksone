@@ -12,9 +12,11 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.ClosedDayRepository;
+import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
@@ -64,6 +66,9 @@ public class TimeSlotResource {
 
     @Inject
     private ClosedDayRepository closedDayRepository;
+    
+    @Inject
+    private TimeSlotExclusionRepository timeSlotExclusionRepository;
     /**
      * POST  /timeSlots -> Create a new timeSlot.
      */
@@ -212,10 +217,12 @@ public class TimeSlotResource {
     	if (startAt == null || endAt == null){
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
-    	
+
+    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
+		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	
     	List<EventSourceDTO> eventSources =  
-    			timeSlotService.findAllTimeSlotInstance(startAt, endAt).stream() //Les timeslot instance
+    			timeSlotService.findAllTimeSlotInstance(startAt, endAt, closedDays, timeSlotExclusions).stream() //Les timeslot instance
 			.collect(
 				Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType)) //Groupé par level
 			
@@ -245,16 +252,36 @@ public class TimeSlotResource {
 			.collect(Collectors.toList()); 
     	
     	//Pareil pour les jours fériés
-    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
-		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay.getName(), closeDay.getStartAt(), closeDay.getEndAt());
+		List<EventDTO> timeSlotExclusionsAsDTO = timeSlotExclusions.stream().map(timeSlotExclusion -> {
+
+			TimeSlot timeSlot = timeSlotExclusion.getTimeSlot();
+			
+			String title = 
+					(StringUtils.isBlank(timeSlot.getName()) ? timeSlot.getTimeSlotType().getName() : timeSlot.getName() )
+							
+					+ " ("+ timeSlot.getMaxAttendees() + ")";
+			
+			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO();
     	evt.setEditable(false);
-    	evt.setEvents(closedDaysAsDTO);
+    	evt.setEvents(timeSlotExclusionsAsDTO);
     	evt.setColor("#A0A0A0");
     	eventSources.add(evt);
+    	
+    	
+
+    	//Pareil pour les jours d'exclusions
+		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
+			return new EventDTO(closeDay.getName(), closeDay.getStartAt(), closeDay.getEndAt());
+
+		}).collect(Collectors.toList());
+		EventSourceDTO evtCloseDay = new EventSourceDTO();
+    	evtCloseDay.setEditable(false);
+    	evtCloseDay.setEvents(closedDaysAsDTO);
+    	evtCloseDay.setColor("#A0A0A0");
+    	eventSources.add(evtCloseDay);
     	
     	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
     }

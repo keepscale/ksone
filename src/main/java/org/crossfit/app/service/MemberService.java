@@ -20,6 +20,7 @@ import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +91,6 @@ public class MemberService {
 			member = new Member();
 			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
 			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.setCreatedDate(DateTime.now());			
 		}
 		else{
 			
@@ -112,7 +112,7 @@ public class MemberService {
 		member.setLangKey(memberdto.getLangKey());
 		member.setTelephonNumber(memberdto.getTelephonNumber());
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-		member.setLastModifiedDate(DateTime.now());
+		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 		member.setBox(currentCrossFitBox);
 
 		//L'email a changé ? on repasse par une validation d'email
@@ -137,7 +137,7 @@ public class MemberService {
 		member.setLocked(false);
 	
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-		member.setLastModifiedDate(DateTime.now());
+		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 	
 		mailService.sendActivationEmail(member, generatePassword);
 		memberRepository.save(member);
@@ -150,7 +150,7 @@ public class MemberService {
 		member.setLocked(true);
 	
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-		member.setLastModifiedDate(DateTime.now());
+		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 
 		memberRepository.save(member);
 	}

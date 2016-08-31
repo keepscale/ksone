@@ -59,7 +59,7 @@ public class CustomPersistentRememberMeServices extends
     private final Logger log = LoggerFactory.getLogger(CustomPersistentRememberMeServices.class);
 
     // Token is valid for one month
-    private static final int TOKEN_VALIDITY_DAYS = 31;
+    private static final int TOKEN_VALIDITY_DAYS = 365;
 
     private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * TOKEN_VALIDITY_DAYS;
 

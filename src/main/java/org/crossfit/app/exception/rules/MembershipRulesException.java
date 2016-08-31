@@ -7,14 +7,39 @@ import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 
 public class MembershipRulesException extends SubscriptionException {
+	
+	public enum MembershipRulesExceptionType {
+		CountPreviousBooking, NbHoursAtLeastToBook, NbMaxBooking, NbMaxDayBooking
+		
+	}
+
+
+	private final MembershipRulesExceptionType type;
 	private final Booking booking;
 	private final List<MembershipRules> breakingRules;
 	
 	
-	public MembershipRulesException(Subscription subscription, Booking booking,
+	public MembershipRulesException(MembershipRulesExceptionType type, Subscription subscription, Booking booking,
 			List<MembershipRules> breakingRules) {
-		super(subscription, "La réservation viole une ou plusieurs regles");
+		super(subscription, "La réservation viole une ou plusieurs regles " + type);
+		this.type = type;
 		this.booking = booking;
 		this.breakingRules = breakingRules;
 	}
+
+
+	public MembershipRulesExceptionType getType() {
+		return type;
+	}
+
+
+	public Booking getBooking() {
+		return booking;
+	}
+
+
+	public List<MembershipRules> getBreakingRules() {
+		return breakingRules;
+	}
+	
 }

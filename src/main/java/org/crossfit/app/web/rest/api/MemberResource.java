@@ -20,6 +20,7 @@ import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
@@ -180,7 +181,7 @@ public class MemberResource {
 		for (Member member : allMembersNotActivated) {
 			
 			member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			member.setLastModifiedDate(DateTime.now());
+			member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 			
 			
 			try {

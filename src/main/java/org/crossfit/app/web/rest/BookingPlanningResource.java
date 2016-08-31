@@ -9,15 +9,15 @@ import javax.inject.Inject;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
-import org.crossfit.app.domain.TimeSlotType;
+import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
+import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
-import org.crossfit.app.web.rest.dto.calendar.EventDTO;
-import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDayDTO;
 import org.joda.time.DateTime;
@@ -54,6 +54,9 @@ public class BookingPlanningResource {
 
     @Inject
     private ClosedDayRepository closedDayRepository;
+    
+    @Inject
+    private TimeSlotExclusionRepository timeSlotExclusionRepository;
 
     /**
      * GET  /bookings -> get all the bookings.
@@ -64,8 +67,10 @@ public class BookingPlanningResource {
     public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer offset,
                                   @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer limit)
         throws URISyntaxException {
+    	
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
         
-    	DateTime start = timeService.now().plusDays((offset < 0 ? 0 : offset) * limit);
+    	DateTime start = timeService.nowAsDateTime(currentCrossFitBox).plusDays((offset < 0 ? 0 : offset) * limit);
     	DateTime end = start.plusDays(limit <= 0 ? 1 : limit);
     	
     	if (Days.daysBetween(start, end).getDays() > 14){
@@ -73,9 +78,12 @@ public class BookingPlanningResource {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 
-    	List<Booking> bookings = new ArrayList<>(
-    			bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), start, end));
-    	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end);
+
+    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), start, end);
+		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
+		List<Booking> bookings = new ArrayList<>(
+    			bookingRepository.findAllBetween(currentCrossFitBox, start, end));
+    	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions);
     	
     	List<PlanningDayDTO> days = 
 			slotInstances.stream().map(slot ->{
