@@ -1,0 +1,25 @@
+{
+    "crossfitApp": {
+        "closedDay" : {
+            "home": {
+                "title": "Jour de fermeture",
+                "createLabel": "Nouveau jour de fermeture",
+                "createOrEditLabel": "Créer ou éditer un jour de fermeture"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le ClosedDay {{ id }} ?"
+            },
+            "created": "Un nouveau jour de fermeture a été créé avec l'idenfiant {{ param }}.",
+            "updated": "Le jour de fermeture {{ param }} à été mis à jour.",
+            "deleted": "Le jour de fermeture {{ param }} à été supprimé.",
+            "detail": {
+                "title": "ClosedDay"
+            },
+            "name": "Raison de la fermeture",
+            "startAt": "Début",
+            "endAt": "Fin",
+            "date" : "Date"
+        }
+    }
+}
+

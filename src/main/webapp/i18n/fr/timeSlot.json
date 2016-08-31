@@ -20,7 +20,8 @@
             "startTime": "A lieu de",
             "endTime": "à",
             "maxAttendees": "Nombre maximum de participants",
-            "timeSlotType": "Type de séance"
+            "timeSlotType": "Type de séance",
+            "closedDays" : "Jour de fermeture"
         }
     }
 }

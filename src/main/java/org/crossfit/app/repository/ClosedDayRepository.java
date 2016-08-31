@@ -22,7 +22,7 @@ public interface ClosedDayRepository extends JpaRepository<ClosedDay,Long> {
 	static final String BY_ID = " cd.id = :id ";
 	static final String BY_BOX = " cd.box = :box ";
 	
-	@Query("select cd from ClosedDay cd where" + BY_BOX + " order by cd.startAt asc")
+	@Query("select cd from ClosedDay cd where" + BY_BOX + " order by cd.startAt desc")
 	List<ClosedDay> findAll(@Param("box") CrossFitBox box);
 
 	@Query("select cd from ClosedDay cd where" + BY_ID + " and " + BY_BOX)
