@@ -1,6 +1,8 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -106,6 +109,9 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
     @Column(name = "visible_before", nullable = false)
     private LocalDate visibleBefore;
        
+    @Transient
+    private List<TimeSlotExclusion> exclusions = new ArrayList<TimeSlotExclusion>();
+    
 
     public Long getId() {
         return id;
@@ -202,6 +208,14 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
 
 	public void setVisibleBefore(LocalDate visibleBefore) {
 		this.visibleBefore = visibleBefore;
+	}
+	
+	public List<TimeSlotExclusion> getExclusions() {
+		return exclusions;
+	}
+
+	public void setExclusions(List<TimeSlotExclusion> exclusions) {
+		this.exclusions = exclusions;
 	}
 
 	@Override

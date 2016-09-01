@@ -43,7 +43,7 @@ angular.module('crossfitApp')
                                 	recurrent:'DAY_OF_WEEK', date: d, dayOfWeek: parseInt($stateParams.dayOfWeek), 
                                 	startTime: DateUtils.parseDateAsTime($stateParams.start), 
                                 	endTime: DateUtils.parseDateAsTime($stateParams.end), 
-                                	maxAttendees: 12, 
+                                	maxAttendees: 12, exclusions: [],
                                 	id: null};
                             }
                         }

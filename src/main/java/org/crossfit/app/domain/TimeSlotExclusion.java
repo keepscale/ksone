@@ -18,6 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -33,6 +34,7 @@ public class TimeSlotExclusion extends AbstractAuditingEntity implements Seriali
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;    
     
+    @JsonIgnore
     @NotNull
     @ManyToOne
     private TimeSlot timeSlot;   
@@ -66,6 +68,38 @@ public class TimeSlotExclusion extends AbstractAuditingEntity implements Seriali
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((timeSlot == null) ? 0 : timeSlot.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TimeSlotExclusion other = (TimeSlotExclusion) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (timeSlot == null) {
+			if (other.timeSlot != null)
+				return false;
+		} else if (!timeSlot.equals(other.timeSlot))
+			return false;
+		return true;
 	}
        
     

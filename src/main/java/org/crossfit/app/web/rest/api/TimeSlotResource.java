@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -98,9 +100,13 @@ public class TimeSlotResource {
 
 		if (timeSlot.getRecurrent() == TimeSlotRecurrent.DATE){
 			timeSlot.setDayOfWeek(null);
+			timeSlot.getExclusions().clear();
+			timeSlot.setVisibleAfter(null);
+			timeSlot.setVisibleBefore(null);
 		}
 		else if (timeSlot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK){
 			timeSlot.setDate(null);
+			timeSlot.getExclusions().removeIf(ex->ex.getDate() == null || ex.getDate().getDayOfWeek() != timeSlot.getDayOfWeek());
 		}		
 		if (timeSlot.getDayOfWeek() == null && timeSlot.getDate() == null){
 			throw new BadRequestException("A new timeslot must have a date or a day of week");
@@ -112,7 +118,22 @@ public class TimeSlotResource {
 			timeSlot.setEndTime(startAt.plus(Period.fieldDifference(endAt, startAt)));
 		}
 		
+
+		
 		TimeSlot result = timeSlotRepository.save(timeSlot);
+
+		timeSlotExclusionRepository.delete(timeSlotExclusionRepository.findAllByTimeSlot(timeSlot));
+						
+		for (TimeSlotExclusion timeSlotExclusion : timeSlot.getExclusions()) {
+			timeSlotExclusion.setTimeSlot(result);		
+		}
+		HashSet<TimeSlotExclusion> exptectedExclusions = new HashSet<TimeSlotExclusion>(timeSlot.getExclusions());
+		
+		for (TimeSlotExclusion timeSlotExclusion : exptectedExclusions) {
+			timeSlotExclusionRepository.save(timeSlotExclusion);
+		}
+		
+		
 		return result;
 	}
 
@@ -175,7 +196,10 @@ public class TimeSlotResource {
 
 	protected TimeSlot doGet(Long id) {
 		// TODO: Filtrer par box
-		return timeSlotRepository.findOne(id);
+		TimeSlot t = timeSlotRepository.findOne(id);
+		t.setExclusions(timeSlotExclusionRepository.findAllByTimeSlot(t));
+		
+		return t;
 	}
 
     /**
@@ -193,6 +217,7 @@ public class TimeSlotResource {
 	protected void doDelete(Long id) {
 		TimeSlot timeSlot = timeSlotRepository.findOne(id);
 		if (timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())) {
+			timeSlotExclusionRepository.delete(timeSlotExclusionRepository.findAllByTimeSlot(timeSlot));
 			timeSlotRepository.delete(timeSlot);
 		}
 	}
@@ -261,7 +286,7 @@ public class TimeSlotResource {
 							
 					+ " ("+ timeSlot.getMaxAttendees() + ")";
 			
-			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
+			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime(), DateTimeZone.UTC));
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO();

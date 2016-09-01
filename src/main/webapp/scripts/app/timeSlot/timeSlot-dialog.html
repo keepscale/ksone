@@ -18,42 +18,6 @@
 
         </div>
         
-        
-        <div class="form-group">       	
-
-            <label translate="crossfitApp.timeSlot.startTime" for="field_startTime">startTime</label>
-       
-       		<datetimepicker id="field_startTime" name="startTime" hidden-date="true" ng-model="timeSlot.startTime"
-       			show-meridian="false"></datetimepicker>
-       			
-            <label translate="crossfitApp.timeSlot.endTime" for="field_endTime">endTime</label>
-       
-       		<datetimepicker id="field_endTime" name="endTime" hidden-date="true" ng-model="timeSlot.endTime" 
-       			show-meridian="false" readonly-time="false"></datetimepicker>
-
-            <div ng-show="editForm.startTime.$invalid || editForm.endTime.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.startTime.$error.required || editForm.endTime.$error.required " translate="entity.validation.required">
-                    This field is required.
-                </p>
-            </div>
-        </div>
-        
-        <div class="form-group"  ng-show="timeSlot.id == null">
-           <input id="field_recurrent_week" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DAY_OF_WEEK"> 
-            <label for="field_recurrent_week">Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}</label>
-			<br/>
-			<input id="field_recurrent_date" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
-			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}</label>
-		
-        </div>
-        <div class="form-group" ng-show="timeSlot.id != null">
-            <label ng-show="timeSlot.recurrent == 'DATE'">
-            	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
-            <label ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
-            	Tous les {{timeSlot.dayOfWeek | dayOfWeek}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
-        </div>
-        
         <div class="form-group">
             <label translate="crossfitApp.timeSlot.maxAttendees" for="field_maxAttendees">MaxAttendees</label>
             <input type="number" class="form-control" name="maxAttendees" id="field_maxAttendees"
@@ -90,6 +54,94 @@
                 </p>
             </div>
         </div>
+        
+        <div class="form-group">       	
+
+            <label translate="crossfitApp.timeSlot.startTime" for="field_startTime">startTime</label>
+       
+       		<datetimepicker id="field_startTime" name="startTime" hidden-date="true" ng-model="timeSlot.startTime"
+       			show-meridian="false"></datetimepicker>
+       			
+            <label translate="crossfitApp.timeSlot.endTime" for="field_endTime">endTime</label>
+       
+       		<datetimepicker id="field_endTime" name="endTime" hidden-date="true" ng-model="timeSlot.endTime" 
+       			show-meridian="false" readonly-time="false"></datetimepicker>
+
+            <div ng-show="editForm.startTime.$invalid || editForm.endTime.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.startTime.$error.required || editForm.endTime.$error.required " translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        
+        <div class="form-group"  ng-show="timeSlot.id == null">
+           <input id="field_recurrent_week" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DAY_OF_WEEK"> 
+            <label for="field_recurrent_week">Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}</label>
+			<br/>
+			<input id="field_recurrent_date" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
+			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}</label>
+		
+        </div>
+        <div class="form-group" ng-show="timeSlot.id != null">
+            <label ng-show="timeSlot.recurrent == 'DATE'">
+            	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
+            <label ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
+            	Tous les {{timeSlot.dayOfWeek | dayOfWeek}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
+        </div>
+                
+        <div ng-if="timeSlot.recurrent == 'DAY_OF_WEEK'">
+	        <div class="form-group">
+	            <label translate="crossfitApp.timeSlot.visibleAfter" for="field_visibleAfter">visibleAfter</label>
+	                      
+	            <datetimepicker hidden-time="true" id="field_visibleAfter"
+					ng-model="timeSlot.visibleAfter" how-weeks="false" minute-step="30" show-meridian="false" 
+			       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+	        </div>
+	        
+	        <div class="form-group">
+	            <label translate="crossfitApp.timeSlot.visibleBefore" for="field_visibleBefore">visibleBefore</label>
+	                      
+	                      
+	            <datetimepicker hidden-time="true" id="field_visibleBefore"
+					ng-model="timeSlot.visibleBefore" how-weeks="false" minute-step="30" show-meridian="false" 
+			       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+			       	
+	        </div>
+	        
+	        
+	   		<div class="row form-group">
+	  			<div class="col-xs-12">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+		  					Sauf les jours suivants:
+			  				
+			  				<button type="button" class="btn btn-primary" ng-click="addExclusion()">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						</div>
+						<div class="panel-body">
+					        
+					    	<div class="row form-group" ng-repeat="exclusion in timeSlot.exclusions"> 
+						        <div class="col-xs-11">										
+						            <datetimepicker hidden-time="true"
+										ng-model="exclusion.date" how-weeks="false" minute-step="30" show-meridian="false" 
+								       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+								       	
+								</div>
+						        <div class="col-xs-1">
+						        
+					  				<button type="button" class="btn btn-danger" ng-click="deleteExclusionAtIndex($index)">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								
+						        </div>
+					        </div>
+						</div>
+					</div>
+				</div>
+		    </div>
+	    </div>
         
     </div>
     <div class="modal-footer">    

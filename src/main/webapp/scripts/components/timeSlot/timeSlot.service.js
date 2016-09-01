@@ -12,6 +12,13 @@ angular.module('crossfitApp')
                     data = angular.fromJson(data);
                     data.startTime = DateUtils.parseDateAsTime(data.startTime);
                     data.endTime = DateUtils.parseDateAsTime(data.endTime);
+                    data.visibleAfter = DateUtils.convertLocaleDateFromServer(data.visibleAfter);
+                    data.visibleBefore = DateUtils.convertLocaleDateFromServer(data.visibleBefore);
+
+                    for (var i = 0; i < data.exclusions.length; i++) {
+                    	data.exclusions[i].date = DateUtils.convertLocaleDateFromServer(data.exclusions[i].date);
+					}
+                    
                     return data;
                 }
             },
@@ -20,6 +27,11 @@ angular.module('crossfitApp')
                 transformRequest: function (data) {
                     data.startTime = DateUtils.formatDateAsTime(data.startTime);
                     data.endTime = DateUtils.formatDateAsTime(data.endTime);
+                    
+//                    for (var i = 0; i < data.exclusions.length; i++) {
+//                    	data.exclusions[i] = DateUtils.convertLocaleDateToServer(data.exclusions[i]);
+//					}
+                    
                     return angular.toJson(data);
                 }
             },
@@ -28,6 +40,12 @@ angular.module('crossfitApp')
                 transformRequest: function (data) {
                     data.startTime = DateUtils.formatDateAsTime(data.startTime);
                     data.endTime = DateUtils.formatDateAsTime(data.endTime);
+                    
+//                    for (var i = 0; i < data.exclusions.length; i++) {
+//                    	data.exclusions[i] = DateUtils.convertLocaleDateToServer(data.exclusions[i]);
+//					}
+//                    
+                    
                     return angular.toJson(data);
                 }
             }

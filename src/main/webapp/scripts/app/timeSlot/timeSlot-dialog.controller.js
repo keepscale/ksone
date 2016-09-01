@@ -33,4 +33,12 @@ angular.module('crossfitApp').controller('TimeSlotDialogController',
             $modalInstance.dismiss('cancel');
         	$state.go('timeSlot.delete', {id:$scope.timeSlot.id});
         };
+        
+        $scope.addExclusion = function(){
+        	$scope.timeSlot.exclusions.unshift({date:new Date()}); //ajout en debut
+        }
+
+        $scope.deleteExclusionAtIndex = function(idx) {
+        	$scope.timeSlot.exclusions.splice(idx, 1);
+        };
 }]);

@@ -97,9 +97,11 @@ public class TimeSlotService {
 	
 
 	protected Predicate<? super TimeSlot> isSlotNotInAnTimeSlotExclusion(final DateTime startF, Map<TimeSlot, List<TimeSlotExclusion>> timeSlotExclusions) {
-		return slot -> { return  !
-				timeSlotExclusions.get(slot).stream()
-				.anyMatch( e -> e.getDate().isEqual(startF.toLocalDate()));
+		return slot -> { 
+			
+			List<TimeSlotExclusion> list = timeSlotExclusions.get(slot);
+			if (list == null) return true;
+			return ! list.stream().anyMatch( e -> e.getDate().isEqual(startF.toLocalDate()));
 		};
 	}
 	

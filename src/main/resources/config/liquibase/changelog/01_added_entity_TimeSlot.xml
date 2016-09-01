@@ -132,6 +132,11 @@
         </createTable>
         <addUniqueConstraint columnNames="timeslot_id, date" tableName="TIMESLOT_EXCLUSION"/>		
         
+        <addForeignKeyConstraint baseColumnNames="timeslot_id"
+                                 baseTableName="TIMESLOT_EXCLUSION"
+                                 constraintName="fk_timeslot_exclusion_timeslot_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="TIMESLOT"/>
         
     </changeSet>
 </databaseChangeLog>

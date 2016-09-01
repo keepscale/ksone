@@ -21,7 +21,9 @@
             "endTime": "à",
             "maxAttendees": "Nombre maximum de participants",
             "timeSlotType": "Type de séance",
-            "closedDays" : "Jour de fermeture"
+            "closedDays" : "Jour de fermeture",
+            "visibleAfter" : "Disponible à partir du",
+            "visibleBefore" : "Disponible jusqu'au"
         }
     }
 }

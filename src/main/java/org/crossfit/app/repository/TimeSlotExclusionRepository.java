@@ -2,6 +2,7 @@ package org.crossfit.app.repository;
 
 import java.util.List;
 
+import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface TimeSlotExclusionRepository extends JpaRepository<TimeSlotExclu
 
 	@Query("select tse from TimeSlotExclusion tse where tse.date between :start and :end")
 	List<TimeSlotExclusion> findAllBetween(@Param("start") LocalDate start, @Param("end") LocalDate end);
+	
+	List<TimeSlotExclusion> findAllByTimeSlot(TimeSlot timeSlot);
 }
