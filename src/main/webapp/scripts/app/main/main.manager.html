@@ -96,23 +96,23 @@
                         
                          <div class="form-group">								
 						    <div class="input-group">
-						      <input type="text" id="like" name="like" ng-model="quickbookingLike" ng-change="searchUserForQuickBooking()"
+						      <input type="text" id="like" name="like" ng-model="quickbookingLike" ng-change="searchSubscriptionForQuickBooking()"
 						      	class="form-control" placeholder="Rechercher un utilisateur..." autocomplete="false" autofocus="autofocus">
 						      <span class="input-group-btn">
-						        <button class="btn btn-default" type="button" ng-click="searchUserForQuickBooking()">Go!</button>
+						        <button class="btn btn-default" type="button" ng-click="searchSubscriptionForQuickBooking()">Go!</button>
 						      </span>
 						    </div>
 						</div>
                          <div class="form-group">						       
-					        <div class="radio" ng-repeat="u in quickbookingUsers">
+					        <div class="radio" ng-repeat="s in quickbookingSubscriptions">
 					       		<label >
-					       			<input type="radio" name="selectUser"
-									    value="{{u.id}}"
-									    ng-click="selectUserForQuickBooking(u)">{{u.firstName}} {{u.lastName}}
+					       			<input type="radio" name="selectSubscription"
+									    value="{{s.id}}"
+									    ng-click="selectSubscriptionForQuickBooking(s)">{{s.member.firstName}} {{s.member.lastName}} - {{s.membership.name}}
 					       		</label>
 				       		</div>
 				       		
-				       		<p ng-if="quickbookingUsers.length == 0">Aucun résultat</p>
+				       		<p ng-if="quickbookingSubscriptions.length == 0">Aucun résultat</p>
        					</div>
                     </div>
                     <div class="modal-footer">

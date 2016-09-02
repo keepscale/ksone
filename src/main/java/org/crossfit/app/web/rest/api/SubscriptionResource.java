@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -38,6 +39,8 @@ public class SubscriptionResource {
 
 	@Inject
 	private SubscriptionRepository subscriptionRepository;
+	@Inject
+	private CrossFitBoxSerivce boxService;
 
 	/**
 	 * POST /subscriptions -> Create a new subscription.
@@ -79,16 +82,24 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Subscription>> getAll(@RequestParam(value = "page", required = false) Integer offset,
+	public ResponseEntity<List<Subscription>> getAll(
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "page", required = false) Integer offset,
 			@RequestParam(value = "per_page", required = false) Integer limit) throws URISyntaxException {
+		
+		
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
-		Page<Subscription> page = doFindAll(generatePageRequest);
+		Page<Subscription> page = doFindAll(search, generatePageRequest);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/subscriptions", offset, limit);
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
 
-	protected Page<Subscription> doFindAll(Pageable generatePageRequest) {
-		Page<Subscription> page = subscriptionRepository.findAll(generatePageRequest);
+	protected Page<Subscription> doFindAll(String search, Pageable generatePageRequest) {
+		
+		search = search == null ? "" :search;
+		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+		
+		Page<Subscription> page = subscriptionRepository.findAllSubscriptionOfMemberLike(boxService.findCurrentCrossFitBox(), customSearch, generatePageRequest);
 		return page;
 	}
 
