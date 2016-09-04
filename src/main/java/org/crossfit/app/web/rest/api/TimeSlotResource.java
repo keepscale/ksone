@@ -247,7 +247,7 @@ public class TimeSlotResource {
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	
     	List<EventSourceDTO> eventSources =  
-    			timeSlotService.findAllTimeSlotInstance(startAt, endAt, closedDays, timeSlotExclusions).stream() //Les timeslot instance
+    			timeSlotService.findAllTimeSlotInstance(startAt, endAt, closedDays, timeSlotExclusions) //Les timeslot instance
 			.collect(
 				Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType)) //Groupé par level
 			

@@ -2,9 +2,10 @@
 
 angular.module('crossfitApp')
     .factory('Planning', function ($resource, DateUtils) {
-        return $resource('planning', {}, {
-            'query': { 
+        return $resource('', {}, {
+            'boxPlanning': { 
             	method: 'GET', isArray: false,
+                url: 'private/planning', 
                 transformResponse: function (data) {
                     data = angular.fromJson(data);
                     for (var i = 0; i < data.days.length; i++) {
@@ -13,6 +14,11 @@ angular.module('crossfitApp')
 					}
                     return data;
                 }
+            },
+
+            'myPlanning': { 
+            	method: 'GET', isArray: true,
+                url: 'protected/planning'
             }
         });
     });

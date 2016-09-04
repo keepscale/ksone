@@ -3,10 +3,14 @@ package org.crossfit.app.web.rest;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
@@ -14,10 +18,14 @@ import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotExclusionRepository;
+import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
+import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDayDTO;
 import org.joda.time.DateTime;
@@ -61,7 +69,7 @@ public class BookingPlanningResource {
     /**
      * GET  /bookings -> get all the bookings.
      */
-    @RequestMapping(value = "/planning",
+    @RequestMapping(value = "/private/planning",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer offset,
@@ -83,22 +91,11 @@ public class BookingPlanningResource {
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
 		List<Booking> bookings = new ArrayList<>(
     			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
-    	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions);
+		
+    	Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
+    			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper);
     	
-    	List<PlanningDayDTO> days = 
-			slotInstances.stream().map(slot ->{
-	    		slot.setBookings(
-	    				bookings.stream()
-	    				.filter(b -> {return 
-	    					slot.getTimeSlotType().getId().equals(b.getTimeSlotType().getId())
-	    						&& slot.getStart().compareTo(b.getStartAt()) == 0
-	    							&& slot.getEnd().compareTo(b.getEndAt())  == 0;
-	    				})
-	    	    		.sorted( (b1, b2) -> { return b1.getCreatedDate().compareTo(b2.getCreatedDate());} )
-	    				.collect(Collectors.toList()));
-	    		return slot;
-	    	})
-    		.sorted( (s1, s2) -> { return s1.getStart().compareTo(s2.getStart());} )
+    	List<PlanningDayDTO> days = slotInstancesStream
     		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
     		.entrySet().stream()
     		.map(entry -> {
@@ -112,6 +109,82 @@ public class BookingPlanningResource {
     	return new ResponseEntity<>(new PlanningDTO(days) , HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/protected/planning",
+    		params = {"start","view"},
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EventSourceDTO>> planningProtected(
+    		@RequestParam(value = "start" , required = true) String startStr,
+    		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
+ 
+    	DateTime startAt = timeService.parseDateAsUTC("yyyy-MM-dd", startStr);
+    	DateTime endAt = "day".equals(viewStr) ? startAt.plusDays(1) : "week".equals(viewStr) ? startAt.plusDays(7) : null;
+    	
+    	if (startAt == null || endAt == null){
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(currentCrossFitBox, startAt, endAt);
+		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
+    	
+		List<Booking> bookings = new ArrayList<>(
+    			bookingRepository.findAllStartBetween(currentCrossFitBox, startAt, endAt));
+		
+		Map<Long, Booking> bookingsById = bookings.stream().collect(Collectors.toMap(Booking::getId, Function.identity()));
+		
+		
+    	List<EventSourceDTO> eventSources = timeSlotService.findAllTimeSlotInstance(
+    			startAt, endAt, closedDays, timeSlotExclusions, bookings, BookingDTO.publicMapper)
+    	.collect(Collectors.groupingBy(slotInstance ->{
+    		Integer max = slotInstance.getMaxAttendees();
+    		Integer count = slotInstance.getTotalBooking();
+    		boolean booked = slotInstance.getBookings().stream().anyMatch(bDto->{
+    			return bookingsById.get(bDto.getId()).getSubscription().getMember().equals(SecurityUtils.getCurrentMember());
+    		});
+
+    		return booked ? TimeSlotStatus.BOOKED : count >= max ? TimeSlotStatus.FULL : TimeSlotStatus.FREE;
+    	}))
+		.entrySet().stream() //pour chaque level
+    	.map(entry -> {
+    		TimeSlotStatus status = entry.getKey();
+        	List<TimeSlotInstanceDTO> slots = entry.getValue();
+        	
+			List<EventDTO> events = slots.stream() //On créé la liste d'evenement
+    			.map(slotInstance ->{
+    				String title = 
+    						(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName() )
+    								
+    						+ " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
+
+    				
+					return new EventDTO( slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
+    			}).collect(Collectors.toList());
+			
+			EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
+        	evt.setEditable(true);
+			evt.setEvents(events);
+			evt.setColor(status.color);
+        	return evt;
+		})
+    	.collect(Collectors.toList()); 
+    	
+    	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
+    		
+	}
     
-    
+
+	enum TimeSlotStatus{
+		BOOKED("#337ab7"),
+		FULL("#d9534f"),
+		FREE("#5cb85c");
+		
+		String color;
+		
+		TimeSlotStatus(String color){
+			this.color = color;
+		}
+		
+	}
+	
 }

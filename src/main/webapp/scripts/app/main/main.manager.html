@@ -43,7 +43,7 @@
 																		<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
 																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
 																			{{slot.timeSlotType.name}} |
-																			{{slot.validatedBookings.length}}/{{slot.maxAttendees}} 
+																			{{slot.bookings.length}}/{{slot.maxAttendees}} 
 																			inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
 																		</a>
 																	</h5>
@@ -55,9 +55,9 @@
 															</div>
 														  </div>														
 														  	<ul class="list-group">
-																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.validatedBookings">
+																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
 																	<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
-																	{{booking.subscription.member.firstName}} {{booking.subscription.member.lastName}} - {{booking.subscription.membership.name}}
+																	{{booking.title}}
 																</li>
 															</ul>
 														</div>
@@ -87,9 +87,9 @@
                     <div class="modal-body">
                     	<jh-alert-error></jh-alert-error>
                     
-                        <p>Ajouter une réservation pour la séance "{{quickbooking.timeslot.timeSlotType.name}}"
+                        <p>Ajouter une réservation pour la séance "{{quickbookingSlot.timeSlotType.name}}"
                          du {{quickbooking.date | date:'EEEE dd/MM'}} 
-                         de {{quickbooking.timeslot.start | date:'HH:mm'}} à {{quickbooking.timeslot.end | date:'HH:mm'}}</p>
+                         de {{quickbookingSlot.start | date:'HH:mm'}} à {{quickbookingSlot.end | date:'HH:mm'}}</p>
                         
                          <div class="form-group">								
 						    <div class="input-group">

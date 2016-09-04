@@ -2,22 +2,14 @@ package org.crossfit.app.web.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-
-import org.crossfit.app.domain.Booking;
-import org.crossfit.app.domain.Membership;
-import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
-import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -78,10 +70,17 @@ public class TimeSlotInstanceDTO {
 		return slot.getTimeSlotType();
 	}
 
-	public List<BookingDTO> getValidatedBookings() {
-		return bookings.stream().filter(b->{return b.getStatus() == BookingStatus.VALIDATED;}).collect(Collectors.toList());
+	public List<BookingDTO> getBookings() {
+		return bookings;
 	}
 
+
+	public void setBookings(List<BookingDTO> bookings) {
+		this.bookings = bookings;
+		this.totalBooking = this.bookings.size();
+	}
+	
+/*
 	public void setBookings(List<Booking> bookings) {
 		this.bookings = bookings.stream().map(b->{
 			Subscription s = new Subscription();
@@ -96,7 +95,7 @@ public class TimeSlotInstanceDTO {
 		
 		this.totalBooking = this.bookings.size();
 	}
-	
+	*/
 	
 	public TimeSlotInstanceStatus getTimeSlotStatus() {
 		return timeSlotStatus;

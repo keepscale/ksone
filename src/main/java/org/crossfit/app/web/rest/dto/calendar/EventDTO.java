@@ -9,9 +9,10 @@ public class EventDTO {
 	private final DateTime start;
 	private final DateTime end;
 	
-	/*
+	
 
 	private String color;
+	/*
 	private String backgroundColor;
 	private String borderColor;
 	private String textColor;
@@ -52,7 +53,7 @@ public class EventDTO {
 	public DateTime getEnd() {
 		return end;
 	}
-/*
+
 	public String getColor() {
 		return color;
 	}
@@ -60,7 +61,7 @@ public class EventDTO {
 	public void setColor(String color) {
 		this.color = color;
 	}
-
+	/*
 	public String getBackgroundColor() {
 		return backgroundColor;
 	}

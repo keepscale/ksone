@@ -183,7 +183,7 @@ public class BookingResource {
     	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
     	
     	// Si owner est null alors on prend l'utilisateur courant
-    	Subscription selectedSubscription = bookingdto.getSubscription() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscription().getId());
+    	Subscription selectedSubscription = bookingdto.getSubscriptionId() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscriptionId());
     	Member selectedMember = selectedSubscription == null ? SecurityUtils.getCurrentMember() : selectedSubscription.getMember();
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();

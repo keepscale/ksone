@@ -5,18 +5,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
-import org.crossfit.app.repository.ClosedDayRepository;
-import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
+import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -37,20 +39,31 @@ public class TimeSlotService {
     @Inject
     private TimeSlotRepository timeSlotRepository;
     
+
+	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
+			DateTime start, DateTime end, 
+			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions){
+		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), b->{return null;});
+	}
+    
 	/**
 	 * Renvoie toutes les créneau horaire entre start et end, en tenant compte des jours de fermeture
 	 * @param start
 	 * @param end
 	 * @param closedDays 
 	 * @param timeSlotExclusions 
+	 * @param bookingMapper 
 	 * @return
 	 */
-	public List<TimeSlotInstanceDTO> findAllTimeSlotInstance(DateTime start, DateTime end, List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions){
+	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
+			DateTime start, DateTime end, 
+			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions,
+			List<Booking> bookings, Function<Booking, BookingDTO> bookingMapper){
 
 		List<TimeSlotInstanceDTO> timeSlotInstances = new ArrayList<>();
 		
 		if (end.isBefore(start)){
-			return timeSlotInstances;
+			return timeSlotInstances.stream();
 		}
 		
 		List<TimeSlot> allSlots = timeSlotRepository.findAll();
@@ -74,9 +87,22 @@ public class TimeSlotService {
 		start = null;
 		//Attention la variable start a changé ici !!! elle n'est plus réutilisable
     	
-    	List<TimeSlotInstanceDTO> timeSlotInstanceWithoutClosedDay = timeSlotInstances.stream()
+    	Stream<TimeSlotInstanceDTO> timeSlotInstanceWithoutClosedDay = timeSlotInstances.stream()
     			.filter(slotInstance -> slotNotInAnCloseDay(slotInstance, closedDays))
-				.collect(Collectors.toList());
+    			.map(slot ->{
+    	    		slot.setBookings(
+    	    				bookings.stream()
+    	    				.filter(b -> {return 
+    	    					slot.getTimeSlotType().getId().equals(b.getTimeSlotType().getId())
+    	    						&& slot.getStart().compareTo(b.getStartAt()) == 0
+    	    							&& slot.getEnd().compareTo(b.getEndAt())  == 0;
+    	    				})
+    	    	    		.sorted( (b1, b2) -> { return b1.getCreatedDate().compareTo(b2.getCreatedDate());} )
+    	    	    		.map(bookingMapper)
+    	    				.collect(Collectors.toList()));
+    	    		return slot;
+    	    	})
+        		.sorted( (s1, s2) -> { return s1.getStart().compareTo(s2.getStart());} );
     	
     	return timeSlotInstanceWithoutClosedDay;
 	}

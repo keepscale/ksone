@@ -1,12 +1,14 @@
 package org.crossfit.app.web.rest.dto;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
@@ -21,33 +23,43 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class BookingDTO implements Serializable {
 
+	public static Function<Booking, BookingDTO> adminMapper = b->{
+		Member member = b.getSubscription().getMember();
+		String title = member.getFirstName() + " " + member.getLastName() + 
+				" ("+b.getSubscription().getMembership().getName()+")";
+		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
+		return dto;
+	};
+
+	public static Function<Booking, BookingDTO> publicMapper = b->{
+		Member member = b.getSubscription().getMember();
+		String title = member.getFirstName();
+		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
+		return dto;
+	};
+	
 	private Long id;
 
 	@NotNull
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
 	private LocalDate date;
-
-	private BookingStatus status;
 	
-	private TimeSlot timeslot;
-
-	private Subscription subscription;
+	private String title;
 
 	private Long timeslotId;
+	
+	private Long subscriptionId;
 	
 	public BookingDTO() {
 		super();
 	}
 
-	public BookingDTO(Long id, LocalDate date, BookingStatus status,
-			TimeSlot timeslot, Subscription subscription) {
+	public BookingDTO(Long id, LocalDate date, String title) {
 		super();
 		this.id = id;
 		this.date = date;
-		this.status = status;
-		this.timeslot = timeslot;
-		this.subscription = subscription;
+		this.title = title;
 	}
 
 	public Long getId() {
@@ -66,28 +78,20 @@ public class BookingDTO implements Serializable {
 		this.date = date;
 	}
 
-	public TimeSlot getTimeslot() {
-		return timeslot;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTimeslot(TimeSlot timeslot) {
-		this.timeslot = timeslot;
-	}
-	
-	public Subscription getSubscription() {
-		return subscription;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public void setSubscription(Subscription subscription) {
-		this.subscription = subscription;
+	public Long getSubscriptionId() {
+		return subscriptionId;
 	}
 
-	public BookingStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(BookingStatus status) {
-		this.status = status;
+	public void setSubscriptionId(Long subscriptionId) {
+		this.subscriptionId = subscriptionId;
 	}
 
 	public Long getTimeslotId() {
@@ -100,7 +104,8 @@ public class BookingDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BookingDTO [id=" + id + ", date=" + date + ", timeSlot="
-				+ (timeslot) + ", subscription=" + (subscription) + "]";
+		return "BookingDTO [id=" + id + ", date=" + date + ", title=" + title + ", timeslotId=" + timeslotId
+				+ ", subscriptionId=" + subscriptionId + "]";
 	}
+	
 }

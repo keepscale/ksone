@@ -18,7 +18,7 @@ angular.module('crossfitApp')
         	$scope.planning = [];
             $scope.quickbooking = {};
             $scope.quickbookingSubscriptions = [];
-            Planning.query({page: $scope.page, per_page: 14}, function(result, headers) {
+            Planning.boxPlanning({page: $scope.page, per_page: 14}, function(result, headers) {
                 for (var i = 0; i < result.days.length; i++) {
                     $scope.planning.push(result.days[i]);
                 }
@@ -31,8 +31,8 @@ angular.module('crossfitApp')
         $scope.showQuickAddBooking = function(slot){
         	$scope.quickbookingLike = "";
         	$scope.quickbookingSubscriptions = [];
+        	$scope.quickbookingSlot = slot;
             $scope.quickbooking = {
-            	timeslot: slot,
             	timeslotId: slot.id,
             	date: $scope.planning[$scope.selectedIndex].date
             };
@@ -40,7 +40,7 @@ angular.module('crossfitApp')
             $('#quickAddBooking').modal('show');
         }
         $scope.selectSubscriptionForQuickBooking = function(subscription){
-			$scope.quickbooking.subscription = subscription;
+			$scope.quickbooking.subscriptionId = subscription.id;
         }
         $scope.searchSubscriptionForQuickBooking = function(){
         	if ($scope.quickbookingLike.length >= 3)

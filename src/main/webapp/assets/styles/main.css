@@ -56,7 +56,7 @@ navbar-collapse.collapse {
 	}
 
 	#page-wrapper{
-		margin-top: 60px;	
+		margin-top: 45px;	
 	}
 }
 
@@ -214,4 +214,8 @@ h1{
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+.fc-toolbar {
+    margin-bottom: 0px;
 }
