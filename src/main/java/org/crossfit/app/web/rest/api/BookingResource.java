@@ -170,7 +170,7 @@ public class BookingResource {
     }
     
     /**
-     * POST /timeSlots/:id/booking -> save the booking for timeslot
+     * POST /bookings -> save the booking for timeslot
      * @throws NoSubscriptionAvailableException 
      * @throws ManySubscriptionsAvailableException 
      */
@@ -180,7 +180,7 @@ public class BookingResource {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
-    	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeSlot().getId());
+    	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
     	
     	// Si owner est null alors on prend l'utilisateur courant
     	Subscription selectedSubscription = bookingdto.getSubscription() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscription().getId());
@@ -223,7 +223,7 @@ public class BookingResource {
     	
     	// Si il y a déjà une réservation entre les date de ce créneau
 		List<Booking> currentBookingsBetweenStartAndEnd = new ArrayList<>(
-				bookingRepository.findAllBetween(boxService.findCurrentCrossFitBox(), startAt, endAt));
+				bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt));
 		
 		Optional<Booking> alreadyBooked = currentBookingsBetweenStartAndEnd.stream()
 				.filter(b-> b.getSubscription().getMember().equals(selectedMember)).findAny();
@@ -268,7 +268,8 @@ public class BookingResource {
 		} catch (ManySubscriptionsAvailableException e) {
 			//Plusieurs souscription possibles et celle souhaite n'est pas dans la liste => erreur
 			if (selectedSubscription == null || !e.getSubscriptions().contains(selectedSubscription)){
-				throw e;
+				if (!isSuperUser)
+					throw e;
 			}	
 
 		} catch (NoSubscriptionAvailableException e) {
@@ -291,7 +292,7 @@ public class BookingResource {
     	
         Booking result = bookingRepository.save(b);
         
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(result);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
 
     }
 

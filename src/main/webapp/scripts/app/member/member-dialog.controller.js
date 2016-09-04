@@ -43,6 +43,12 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	$scope.member.subscriptions.splice(idx, 1);
         };
         
+        $scope.calculateEndDate = function(subscription){
+        	if (!subscription.subscriptionEndDate){
+        		$scope.addMonthToSubscriptionEndDate(subscription);
+        	}
+        }
+        
         $scope.addMonthToSubscriptionEndDate = function(subscription){
         	if(!subscription.membership){
         		return;

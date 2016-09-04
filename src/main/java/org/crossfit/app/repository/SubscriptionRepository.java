@@ -32,15 +32,16 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
    
 	
 	 @Query("select s from Subscription s "
-	 		+ "left join fetch s.membership "
-	 		+ "where s.member.box = :box "
+	 		+ "join s.membership ms "
+	 		+ "join s.member m "
+	 		+ "where m.box = :box "
 	    		+ "and ( "
-	    		+ "	lower(s.member.firstName) like :search "
-	    		+ "	or lower(s.member.lastName) like :search "
-	    		+ "	or lower(s.member.telephonNumber) like :search "
-	    		+ "	or lower(s.member.login) like :search "
+	    		+ "	lower(m.firstName) like :search "
+	    		+ "	or lower(m.lastName) like :search "
+	    		+ "	or lower(m.telephonNumber) like :search "
+	    		+ "	or lower(m.login) like :search "
 	    		+ ") "
-	    		+ "order by s.member.lastName, s.member.firstName")
+	    		+ "order by m.lastName, m.firstName")
 	Page<Subscription> findAllSubscriptionOfMemberLike(@Param("box") CrossFitBox box, @Param("search") String search, Pageable pageable);
 
 }

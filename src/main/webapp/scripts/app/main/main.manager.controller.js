@@ -29,6 +29,7 @@ angular.module('crossfitApp')
             $scope.selectedIndex = index;
         };
         $scope.showQuickAddBooking = function(slot){
+        	$scope.quickbookingLike = "";
         	$scope.quickbookingSubscriptions = [];
             $scope.quickbooking = {
             	timeslot: slot,
@@ -56,6 +57,7 @@ angular.module('crossfitApp')
         }
         $scope.quickAddBooking = function(){
         	$scope.quickbookingSubscriptions = [];
+        	$scope.quickbooking.timeslot = null;
         	Booking.save($scope.quickbooking, function(){
         		$scope.loadAll();
                 $('#quickAddBooking').modal('hide'); 

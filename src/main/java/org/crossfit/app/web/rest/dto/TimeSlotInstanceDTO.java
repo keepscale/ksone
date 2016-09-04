@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
@@ -86,6 +87,9 @@ public class TimeSlotInstanceDTO {
 			Subscription s = new Subscription();
 			s.setId(b.getSubscription().getId());
 			s.setMember(b.getSubscription().getMember());
+			Membership membership = new Membership();
+			membership.setName(b.getSubscription().getMembership().getName());
+			s.setMembership(membership);
 			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), b.getStatus(), slot, s);
 			return dto;
 		}).collect(Collectors.toList());

@@ -21,8 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class BookingDTO implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@NotNull
@@ -32,19 +30,23 @@ public class BookingDTO implements Serializable {
 
 	private BookingStatus status;
 	
-	private TimeSlot timeSlot;
+	private TimeSlot timeslot;
 
 	private Subscription subscription;
 
+	private Long timeslotId;
 	
-	
+	public BookingDTO() {
+		super();
+	}
+
 	public BookingDTO(Long id, LocalDate date, BookingStatus status,
-			TimeSlot timeSlot, Subscription subscription) {
+			TimeSlot timeslot, Subscription subscription) {
 		super();
 		this.id = id;
 		this.date = date;
 		this.status = status;
-		this.timeSlot = timeSlot;
+		this.timeslot = timeslot;
 		this.subscription = subscription;
 	}
 
@@ -64,12 +66,12 @@ public class BookingDTO implements Serializable {
 		this.date = date;
 	}
 
-	public TimeSlot getTimeSlot() {
-		return timeSlot;
+	public TimeSlot getTimeslot() {
+		return timeslot;
 	}
 
-	public void setTimeSlot(TimeSlot timeSlot) {
-		this.timeSlot = timeSlot;
+	public void setTimeslot(TimeSlot timeslot) {
+		this.timeslot = timeslot;
 	}
 	
 	public Subscription getSubscription() {
@@ -88,9 +90,17 @@ public class BookingDTO implements Serializable {
 		this.status = status;
 	}
 
+	public Long getTimeslotId() {
+		return timeslotId;
+	}
+
+	public void setTimeslotId(Long timeslotId) {
+		this.timeslotId = timeslotId;
+	}
+
 	@Override
 	public String toString() {
 		return "BookingDTO [id=" + id + ", date=" + date + ", timeSlot="
-				+ (timeSlot) + ", subscription=" + (subscription) + "]";
+				+ (timeslot) + ", subscription=" + (subscription) + "]";
 	}
 }

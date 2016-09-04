@@ -49,18 +49,15 @@
 																	</h5>
 																</div>
 																<div class="col-xs-3">
-																	<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span> Ajouter</button>
+																	<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
 																	<div class="clearfix"></div>
 																</div>
 															</div>
 														  </div>														
 														  	<ul class="list-group">
 																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.validatedBookings">
-																	<span class="glyphicon glyphicon-user"></span> 
+																	<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
 																	{{booking.subscription.member.firstName}} {{booking.subscription.member.lastName}} - {{booking.subscription.membership.name}}
-																	<span class="pull-right">
-        																<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Supprimer</button>
-        															</span>
 																</li>
 															</ul>
 														</div>

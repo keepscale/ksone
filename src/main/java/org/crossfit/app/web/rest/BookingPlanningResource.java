@@ -82,7 +82,7 @@ public class BookingPlanningResource {
     	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), start, end);
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
 		List<Booking> bookings = new ArrayList<>(
-    			bookingRepository.findAllBetween(currentCrossFitBox, start, end));
+    			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
     	List<TimeSlotInstanceDTO> slotInstances = timeSlotService.findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions);
     	
     	List<PlanningDayDTO> days = 
