@@ -25,6 +25,15 @@ angular.module('crossfitApp')
                     data.date = DateUtils.convertLocaleDateToServer(data.date);
                     return angular.toJson(data);
                 }
+            },
+
+            'prepareBooking': { 
+                method: 'POST',
+                params : {prepare: 'true'},
+                transformRequest: function (data) {
+                    data.date = DateUtils.convertLocaleDateToServer(data.date);
+                    return angular.toJson(data);
+                }
             }
         });
     });

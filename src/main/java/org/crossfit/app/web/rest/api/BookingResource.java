@@ -176,7 +176,9 @@ public class BookingResource {
      */
 
 	@RequestMapping(value = "/bookings", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Booking> create(@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException, ManySubscriptionsAvailableException {
+	public ResponseEntity<Booking> create(
+			@RequestParam(value = "prepare" , required = false, defaultValue = "false") boolean prepare,
+			@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException, ManySubscriptionsAvailableException {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
@@ -290,10 +292,13 @@ public class BookingResource {
         b.setEndAt(endAt);
     	b.setStatus(BookingStatus.VALIDATED);
     	
-        Booking result = bookingRepository.save(b);
-        
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
-
+    	if(!prepare){
+	        Booking result = bookingRepository.save(b);
+	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
+    	}
+    	else{
+    		return ResponseEntity.ok().body(null);
+    	}
     }
 
 }

@@ -24,30 +24,6 @@ angular.module('crossfitApp')
                     }]
                 }
             })
-            .state('member.detail', {
-                parent: 'site',
-                url: '/member/{id}',
-                data: {
-                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
-                    pageTitle: 'crossfitApp.member.detail.title'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: 'scripts/app/member/member-detail.html',
-                        controller: 'MemberDetailController'
-                    }
-                },
-                resolve: {
-                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('member');
-                        $translatePartialLoader.addPart('level');
-                        return $translate.refresh();
-                    }],
-                    entity: ['$stateParams', 'Member', function($stateParams, Member) {
-                        return Member.get({id : $stateParams.id});
-                    }]
-                }
-            })
             .state('member.new', {
                 parent: 'member',
                 url: '/new',

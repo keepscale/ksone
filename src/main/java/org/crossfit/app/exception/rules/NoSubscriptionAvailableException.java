@@ -12,4 +12,9 @@ public class NoSubscriptionAvailableException extends Exception {
 		this.exceptions = exceptions;
 	}
 
+	public List<SubscriptionException> getExceptions() {
+		return exceptions;
+	}
+
+	
 }

@@ -17,8 +17,8 @@ import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
-import org.crossfit.app.exception.rules.MembershipRulesException;
-import org.crossfit.app.exception.rules.MembershipRulesException.MembershipRulesExceptionType;
+import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
+import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
@@ -45,7 +45,8 @@ public class BookingRulesChecker {
 	}
 
 
-	public Subscription findSubscription(Member owner, TimeSlotType timeSlotType, DateTime startAt, int totalBookingForTimeSlot) throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+	public Subscription findSubscription(Member owner, TimeSlotType timeSlotType, DateTime startAt, int totalBookingForTimeSlot) 
+			throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
 
 		log.debug("Recherche d'une souscription valide pour {} {} pour un creneau {} le {} parmis ses souscription {}",
 				owner.getFirstName(), owner.getLastName(), timeSlotType.getName(), startAt, subscriptions);
@@ -89,7 +90,7 @@ public class BookingRulesChecker {
 					List<MembershipRules> breakingRules = rules.stream().filter(entry.getValue()).collect(Collectors.toList());
 					
 					if (!breakingRules.isEmpty()){
-						throw new MembershipRulesException(entry.getKey(), subscription, booking, breakingRules);
+						throw new SubscriptionMembershipRulesException(entry.getKey(), subscription, booking, breakingRules);
 					}
 				}
 				
@@ -100,7 +101,7 @@ public class BookingRulesChecker {
 
 			} catch (SubscriptionDateExpiredException
 					| SubscriptionDateExpiredForBookingException
-					| MembershipRulesException e) {				
+					| SubscriptionMembershipRulesException e) {				
 				
 				log.debug("Souscrpition {} invalide: {}", subscription, e.getMessage());
 				
