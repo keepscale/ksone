@@ -4,10 +4,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -15,17 +12,13 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
-import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
-import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
@@ -39,7 +32,6 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -139,6 +131,18 @@ public class BookingResource {
     		if(booking == null || !booking.getSubscription().getMember().equals( SecurityUtils.getCurrentMember())){
     			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
     		}
+
+    		CrossFitBox currentBox = boxService.findCurrentCrossFitBox();
+			DateTime now = timeService.nowAsDateTime(currentBox);
+    		
+		
+			BookingRulesChecker checker = new BookingRulesChecker(now);
+			Optional<MembershipRules> breakingRule = checker.breakRulesToCancel(booking);
+			
+			if (breakingRule.isPresent()){
+    	        throw new CustomParameterizedException("La réservation ne peut être annulée que "+breakingRule.get().getNbHoursAtLeastToCancel()+" heures avant le début de la séance. Veuillez prendre contact avec le coach.");
+			}
+    		
     	}
     	
 		
@@ -176,13 +180,13 @@ public class BookingResource {
      */
 
 	@RequestMapping(value = "/bookings", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Booking> create(
+	public ResponseEntity<BookingDTO> create(
 			@RequestParam(value = "prepare" , required = false, defaultValue = "false") boolean prepare,
 			@Valid @RequestBody BookingDTO bookingdto) throws URISyntaxException, NoSubscriptionAvailableException, ManySubscriptionsAvailableException {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
-    	TimeSlot timeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
+    	TimeSlot selectedTimeSlot = timeSlotRepository.findOne(bookingdto.getTimeslotId());
     	
     	// Si owner est null alors on prend l'utilisateur courant
     	Subscription selectedSubscription = bookingdto.getSubscriptionId() == null ? null : subscriptionRepository.findOne(bookingdto.getSubscriptionId());
@@ -194,32 +198,32 @@ public class BookingResource {
 
     	
     	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
-    	if(timeSlot == null){
+    	if(selectedTimeSlot == null){
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("TimeSlot introuvable", "")).body(null);
-        } else if(!timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
+        } else if(!selectedTimeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
         }
     	
     	// On ajoute l'heure à la date
-    	DateTime startAt = bookingdto.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC);
-    	DateTime endAt = bookingdto.getDate().toDateTime(timeSlot.getEndTime(), DateTimeZone.UTC);
+    	DateTime startAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
+    	DateTime endAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
 
-    	if (timeSlot.getVisibleAfter() != null && startAt.toLocalDate().isBefore(timeSlot.getVisibleAfter())){
+    	if (selectedTimeSlot.getVisibleAfter() != null && startAt.toLocalDate().isBefore(selectedTimeSlot.getVisibleAfter())){
     		 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'à partir du " + timeSlot.getVisibleAfter(), String.valueOf(timeSlot.getId())))
+             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'à partir du " + selectedTimeSlot.getVisibleAfter(), String.valueOf(selectedTimeSlot.getId())))
              		.body(null);
     	}
 
-    	if (timeSlot.getVisibleBefore() != null && startAt.toLocalDate().isAfter(timeSlot.getVisibleBefore())){
+    	if (selectedTimeSlot.getVisibleBefore() != null && startAt.toLocalDate().isAfter(selectedTimeSlot.getVisibleBefore())){
     		 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'avant le " + timeSlot.getVisibleBefore(), String.valueOf(timeSlot.getId())))
+             		.headers(HeaderUtil.createAlert("Le timeslot n'est valable qu'avant le " + selectedTimeSlot.getVisibleBefore(), String.valueOf(selectedTimeSlot.getId())))
              		.body(null);
     	}
     	
     	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
 		if (!isSuperUser && !SecurityUtils.getCurrentMember().equals(selectedMember)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            		.headers(HeaderUtil.createAlert("Vous n'avez pas le droit de reserver pour quelqu'un d'autre", String.valueOf(timeSlot.getId())))
+            		.headers(HeaderUtil.createAlert("Vous n'avez pas le droit de reserver pour quelqu'un d'autre", String.valueOf(selectedTimeSlot.getId())))
             		.body(null);
     	}
     	
@@ -231,18 +235,44 @@ public class BookingResource {
 				.filter(b-> b.getSubscription().getMember().equals(selectedMember)).findAny();
 		
     	if(alreadyBooked.isPresent()){
-    		throw new CustomParameterizedException("Une réservation existe déjà pour ce créneau et ce membre");
+    		//La résa concerne l'utilisateur connecté ?
+    		if (prepare && SecurityUtils.getCurrentMember().equals(selectedMember)){
+    			Booking b = alreadyBooked.get();
+    			
+    			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), null);
+    			dto.setSubscriptionId(b.getSubscription().getId());
+    			dto.setCreatedAt(b.getCreatedDate());
+    			
+    			//La résa est pour le même type de séance, alors oui, c'est la même
+    			if (b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType())){
+	    	        if (b.getStartAt().isBefore(now)){
+		    	        throw new CustomParameterizedException("Vous ne pouvez pas modifier une réservation passée");
+	    	        }
+	    	        else{
+	    				return ResponseEntity.badRequest().body(dto);
+	    	        }
+    				
+    			}
+    			//Sinon, c'est qu'il y a une résa à la même heure, mais pour une autre type de séance
+    			else{
+	    	        String name = b.getTimeSlotType().getName();    	    		
+	    	        throw new CustomParameterizedException("Vous avez déjà réservé pour le créneau " + name + " à ce même horaire");
+    			}
+    		}
+    		//La résa est faite par un admin
+    		else
+    			throw new CustomParameterizedException("Une réservation existe déjà pour cet horaire et ce membre");
     	}
     	
     	List<Booking> currentBookingsForTimeSlot = currentBookingsBetweenStartAndEnd.stream()
     		.filter(b->{
     			 return
-    				b.getTimeSlotType().equals(timeSlot.getTimeSlotType()) &&
+    				b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()) &&
 					b.getStartAt().getMillis() == startAt.getMillis() && 
 					b.getEndAt().getMillis() == endAt.getMillis();
     		}).collect(Collectors.toList());
     	
-    	if (!isSuperUser && currentBookingsForTimeSlot.size() >= timeSlot.getMaxAttendees()){
+    	if (!isSuperUser && currentBookingsForTimeSlot.size() >= selectedTimeSlot.getMaxAttendees()){
     		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
@@ -257,7 +287,7 @@ public class BookingResource {
         Subscription possibleSubscription = null;        
         try {
         	
-        	possibleSubscription = rules.findSubscription(selectedMember, timeSlot.getTimeSlotType(), startAt, currentBookingsForTimeSlot.size());
+        	possibleSubscription = rules.findSubscription(selectedMember, selectedTimeSlot.getTimeSlotType(), startAt, currentBookingsForTimeSlot.size());
         	
         	//Si on est pas admin, qu'on souhaite forcer une souscription, qui n'est pas possible => erreur
         	//(Si on est admin, on laisse passer)
@@ -287,7 +317,7 @@ public class BookingResource {
         
 		b.setSubscription(selectedSubscription);
         b.setBox(currentCrossFitBox);
-        b.setTimeSlotType(timeSlot.getTimeSlotType());
+        b.setTimeSlotType(selectedTimeSlot.getTimeSlotType());
         b.setStartAt(startAt);
         b.setEndAt(endAt);
     	b.setStatus(BookingStatus.VALIDATED);
@@ -297,7 +327,8 @@ public class BookingResource {
 	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
     	}
     	else{
-    		return ResponseEntity.ok().body(null);
+    		bookingdto.setSubscriptionId(selectedSubscription.getId());
+    		return ResponseEntity.ok().body(bookingdto);
     	}
     }
 

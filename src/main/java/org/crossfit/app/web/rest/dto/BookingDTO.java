@@ -16,6 +16,7 @@ import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -50,6 +51,8 @@ public class BookingDTO implements Serializable {
 	private Long timeslotId;
 	
 	private Long subscriptionId;
+	
+	private DateTime createdAt;
 	
 	public BookingDTO() {
 		super();
@@ -100,6 +103,15 @@ public class BookingDTO implements Serializable {
 
 	public void setTimeslotId(Long timeslotId) {
 		this.timeslotId = timeslotId;
+	}
+	
+
+	public DateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(DateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	@Override

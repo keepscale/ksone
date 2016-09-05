@@ -4,92 +4,85 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 
 public class SubscriptionErrorDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String message;
-    private final List<SubscriptionMessageErreur> detail;
+    private List<SubscriptionMessageErreur> errors;
+    private List<Subscription> possibleSubscriptions;
 
     public SubscriptionErrorDTO(String message) {
         this.message = message;
-        this.detail = new ArrayList<SubscriptionErrorDTO.SubscriptionMessageErreur>();
     }
 
     public String getMessage() {
         return message;
     }
     
+    public List<SubscriptionMessageErreur> getErrors() {
+		return errors;
+	}
     
 
-    
-    public List<SubscriptionMessageErreur> getDetail() {
-		return detail;
+	public List<Subscription> getPossibleSubscriptions() {
+		return possibleSubscriptions;
 	}
 
-	public SubscriptionMessageErreur addDetail(String messageKey, String... params) {
-		SubscriptionMessageErreur e = new SubscriptionMessageErreur(messageKey, params);
-		detail.add(e);
+	public void setPossibleSubscriptions(List<Subscription> possibleSubscriptions) {
+		this.possibleSubscriptions = possibleSubscriptions;
+	}
+
+	public SubscriptionMessageErreur addDetail(String message) {
+		if (this.errors == null)
+			this.errors = new ArrayList<SubscriptionErrorDTO.SubscriptionMessageErreur>();
+		SubscriptionMessageErreur e = new SubscriptionMessageErreur(message);
+		errors.add(e);
 		return e;
 	}
     
     
 	public static class SubscriptionMessageErreur{
-	    private final String[] params;
-    	private final String messageKey;
-    	private final List<RulesErreur> reason;
-		public SubscriptionMessageErreur(String messageKey, String... params) {
+    	private final String message;
+    	private final List<RulesErreur> reasons;
+		public SubscriptionMessageErreur(String message) {
 			super();
-			this.messageKey = messageKey;
-			this.params = params;
-			this.reason = new ArrayList<RulesErreur>();
+			this.message = message;
+			this.reasons = new ArrayList<RulesErreur>();
 		}
     	
-		public void addReason(Set<TimeSlotType> types, String messageKey, String... params){
-			this.reason.add(new RulesErreur(new ArrayList<TimeSlotType>(types), messageKey, params));
+		public void addReason(Set<TimeSlotType> types, String message){
+			this.reasons.add(new RulesErreur(types.stream().map(TimeSlotType::getName).collect(Collectors.joining(", ")), message));
 		}
 
-		public String[] getParams() {
-			return params;
+
+		public String getMessage() {
+			return message;
 		}
 
-		public String getMessageKey() {
-			return messageKey;
-		}
-
-		public List<RulesErreur> getReason() {
-			return reason;
+		public List<RulesErreur> getReasons() {
+			return reasons;
 		}
     	
     }
 	
 
 	public static class RulesErreur{
-		private final String messageKey;
-		private final String[] params;
-    	private final List<TimeSlotType> types;
+		private final String message;
     	
-		public RulesErreur(List<TimeSlotType> types, String messageKey, String... params) {
+		public RulesErreur(String types, String message) {
 			super();
-			this.types = types;
-			this.messageKey = messageKey;
-			this.params = params;
+			this.message = String.format(message, types);
 		}
 
-		public String getMessageKey() {
-			return messageKey;
+		public String getMessage() {
+			return message;
 		}
 
-		public String[] getParams() {
-			return params;
-		}
-
-		public List<TimeSlotType> getTypes() {
-			return types;
-		}
-    	
     }
 
 

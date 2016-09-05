@@ -13,4 +13,10 @@ public class SubscriptionDateExpiredForBookingException extends
 		this.booking = booking;
 	}
 
+	public Booking getBooking() {
+		return booking;
+	}
+	
+	
+
 }

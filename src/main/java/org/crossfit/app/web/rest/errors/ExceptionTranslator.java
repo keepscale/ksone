@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.crossfit.app.domain.MembershipRules;
+import org.crossfit.app.domain.enumeration.MembershipRulesType;
 import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
@@ -11,6 +12,7 @@ import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
 import org.crossfit.app.exception.rules.SubscriptionException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
+import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.crossfit.app.web.rest.errors.SubscriptionErrorDTO.SubscriptionMessageErreur;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
@@ -98,55 +100,65 @@ public class ExceptionTranslator {
         	error = new SubscriptionErrorDTO("Vous n'avez pas d'abonnement");
     	}
     	else{
-        	error = new SubscriptionErrorDTO("Votre abonnement ne vous permet pas de réserver ce créneau");
+        	error = new SubscriptionErrorDTO("Vous ne pouvez pas réserver ce créneau");
         	
         	for (SubscriptionException e : ex.getExceptions()) {
+				String membershipName = e.getSubscription().getMembership().getName();
+				String dateFin = sdf.format(e.getSubscription().getSubscriptionEndDate().toDate());
 				if (e instanceof SubscriptionDateExpiredException){
-					error.addDetail("message.subscription.expried", e.getSubscription().getMembership().getName(), sdf.format(e.getSubscription().getSubscriptionEndDate().toDate()));
+					error.addDetail("Votre abonnement " + membershipName + " a expiré depuis le "+ dateFin);
 					
 				}
 				else if (e instanceof SubscriptionDateExpiredForBookingException){
-					error.addDetail("message.subscription.will.expried", e.getSubscription().getMembership().getName(), sdf.format(e.getSubscription().getSubscriptionEndDate().toDate()));
+					SubscriptionDateExpiredForBookingException ee = (SubscriptionDateExpiredForBookingException) e;
+					String dateBooking = sdf.format(ee.getBooking().getStartAt());
+					error.addDetail("Votre abonnement " + membershipName + " expire le "+ dateFin + ". Vous ne pouvez pas réserver pour le "+ dateBooking);
+				}
+				else if (e instanceof SubscriptionNoMembershipRulesApplicableException){
+					SubscriptionNoMembershipRulesApplicableException ee = (SubscriptionNoMembershipRulesApplicableException) e;
+					String timeSlotTypeName = ee.getBooking().getTimeSlotType().getName();
+					error.addDetail("Votre abonnement " + membershipName + " ne vous permet pas de réserver des créneaux " + timeSlotTypeName);
 				}
 				else if (e instanceof SubscriptionMembershipRulesException){
+					
 					SubscriptionMembershipRulesException rule = (SubscriptionMembershipRulesException) e;
 
-					SubscriptionMessageErreur detail = error.addDetail("message.subscription.break.rule", e.getSubscription().getMembership().getName());
+					String timeSlotType = rule.getBooking().getTimeSlotType().getName();
 					
+					SubscriptionMessageErreur detail = error.addDetail("Votre abonnement " + membershipName + " ne vous permet pas de réserver pour un créneau de type " + timeSlotType);
 					
 					for (MembershipRules r : rule.getBreakingRules()) {
-						String[] params = null;
 						switch (rule.getType()) {
 							case CountPreviousBooking:
-								params = new String[]{
-										String.valueOf(r.getNumberOfSession()), 
-										r.getType().toString()};
-								break;
+								MembershipRulesType type = r.getType();
+								String message = "Vous êtes limités à " + r.getNumberOfSession() + " sessions ";
+								switch (type) {
+									case SUM:
+										membershipName += " au total.";
+										break;
+									case SUM_PER_WEEK:
+										membershipName += " par semaine.";
+										break;
+									case SUM_PER_MONTH:
+										membershipName += " par mois.";
+										break;
+								}
+								detail.addReason(r.getApplyForTimeSlotTypes(), message);
 		
 							case NbHoursAtLeastToBook:
-
-								params = new String[]{
-										String.valueOf(r.getNbHoursAtLeastToBook())
-								};
-								
+								detail.addReason(r.getApplyForTimeSlotTypes(), "Les séances %s doivent être réservées au moins " + r.getNbHoursAtLeastToBook() + " heures à l'avance.");
 								break;
 		
 		
 							case NbMaxBooking:
-								params = new String[]{
-										String.valueOf(r.getNbMaxBooking())
-								};
-								
+								detail.addReason(r.getApplyForTimeSlotTypes(), "Vous ne pouvez réserver que " + r.getNbMaxBooking() + " séances %s à l'avance.");
 								break;
 									
 		
-							case NbMaxDayBooking:
-								params = new String[]{
-										String.valueOf(r.getNbMaxDayBooking())
-								};								
+							case NbMaxDayBooking:	
+								detail.addReason(r.getApplyForTimeSlotTypes(), "Les séances %s ne peuvent être réservées que " + r.getNbMaxDayBooking() + " jours à l'avance.");
 								break;
 						}	
-						detail.addReason(r.getApplyForTimeSlotTypes(), "message.subscription.break.rule." + rule.getType().name().toLowerCase(), params);
 
 					}
 					
@@ -162,7 +174,9 @@ public class ExceptionTranslator {
     @ExceptionHandler(ManySubscriptionsAvailableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ParameterizedErrorDTO processManySubscriptionsAvailableExceptionError(ManySubscriptionsAvailableException ex) {
-        return new ParameterizedErrorDTO("vous avez plusieurs abonnements valable", null);
+    public SubscriptionErrorDTO processManySubscriptionsAvailableExceptionError(ManySubscriptionsAvailableException ex) {
+    	SubscriptionErrorDTO error = new SubscriptionErrorDTO("Avec quel abonnement souhaitez-vous réserver ce créneau ?");
+    	error.setPossibleSubscriptions(ex.getSubscriptions());
+    	return error;
     }
 }

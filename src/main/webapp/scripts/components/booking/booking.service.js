@@ -12,6 +12,9 @@ angular.module('crossfitApp')
                     return data;
                 }
             },
+            'delete': {
+                method: 'DELETE'
+            },
             'update': {
                 method: 'PUT',
                 transformRequest: function (data) {
