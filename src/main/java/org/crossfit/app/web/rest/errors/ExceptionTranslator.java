@@ -125,25 +125,29 @@ public class ExceptionTranslator {
 
 					String timeSlotType = rule.getBooking().getTimeSlotType().getName();
 					
-					SubscriptionMessageErreur detail = error.addDetail("Votre abonnement " + membershipName + " ne vous permet pas de réserver pour un créneau de type " + timeSlotType);
+					SubscriptionMessageErreur detail = error.addDetail("Votre abonnement " + membershipName + " ne vous permet pas de réserver pour ce créneau: ");
 					
 					for (MembershipRules r : rule.getBreakingRules()) {
 						switch (rule.getType()) {
 							case CountPreviousBooking:
 								MembershipRulesType type = r.getType();
-								String message = "Vous êtes limités à " + r.getNumberOfSession() + " sessions ";
+								String message = "Vous avez atteint votre quota de " + r.getNumberOfSession() + " sessions ";
 								switch (type) {
 									case SUM:
-										membershipName += " au total.";
+										message += " au total.";
 										break;
 									case SUM_PER_WEEK:
-										membershipName += " par semaine.";
+										message += " par semaine.";
+										break;
+									case SUM_PER_4_WEEKS:
+										message += " sur les 4 semaines écoulées.";
 										break;
 									case SUM_PER_MONTH:
-										membershipName += " par mois.";
+										message += " par mois.";
 										break;
 								}
 								detail.addReason(r.getApplyForTimeSlotTypes(), message);
+								break;
 		
 							case NbHoursAtLeastToBook:
 								detail.addReason(r.getApplyForTimeSlotTypes(), "Les séances %s doivent être réservées au moins " + r.getNbHoursAtLeastToBook() + " heures à l'avance.");

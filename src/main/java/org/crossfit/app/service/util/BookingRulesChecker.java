@@ -1,6 +1,8 @@
 package org.crossfit.app.service.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Member;
@@ -18,13 +20,13 @@ import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
-import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
-import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
-import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
 import org.crossfit.app.exception.rules.SubscriptionException;
+import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
+import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
+import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +52,9 @@ public class BookingRulesChecker {
 		this.subscriptions = new HashSet<>(subscriptions);
 	}
 
-	public Optional<MembershipRules> breakRulesToCancel(Booking booking){
+	public Optional<MembershipRules> breakRulesToCancel(Booking booking, Collection<MembershipRules> rulesToVerify){
 
-		Set<MembershipRules> rules = booking.getSubscription().getMembership().getMembershipRules();
-		Optional<MembershipRules> breakingRule = rules.stream().filter(isRuleApplyFor(booking)).filter(r->{
+		Optional<MembershipRules> breakingRule = rulesToVerify.stream().filter(isRuleApplyFor(booking)).filter(r->{
 			DateTime cancellableBefore = booking.getStartAt().minusHours(r.getNbHoursAtLeastToCancel());			
 			return now.isAfter(cancellableBefore);
 		}).findFirst();
@@ -64,8 +65,8 @@ public class BookingRulesChecker {
 	public Subscription findSubscription(Member owner, TimeSlotType timeSlotType, DateTime startAt, int totalBookingForTimeSlot) 
 			throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
 
-		log.debug("Recherche d'une souscription valide pour {} {} pour un creneau {} le {} parmis ses souscription {}",
-				owner.getFirstName(), owner.getLastName(), timeSlotType.getName(), startAt, subscriptions);
+		log.debug("Il est {}. Recherche d'une souscription valide pour {} {} pour un creneau {} le {} parmis ses souscription {}",
+				now, owner.getFirstName(), owner.getLastName(), timeSlotType.getName(), startAt, subscriptions);
 
 		Booking booking = new Booking();
         booking.setTimeSlotType(timeSlotType);
@@ -100,7 +101,7 @@ public class BookingRulesChecker {
 				}
 				
 				Map<MembershipRulesExceptionType, Predicate<? super MembershipRules>> rulesToTest = new HashMap<>();
-				rulesToTest.put(MembershipRulesExceptionType.CountPreviousBooking, isRuleBreakingCountPreviousBooking(subscriptionBookings));
+				rulesToTest.put(MembershipRulesExceptionType.CountPreviousBooking, isRuleBreakingCountPreviousBooking(booking, subscriptionBookings));
 				rulesToTest.put(MembershipRulesExceptionType.NbHoursAtLeastToBook, isRuleBreakingNbHoursAtLeastToBook(booking, totalBookingForTimeSlot));
 				rulesToTest.put(MembershipRulesExceptionType.NbMaxBooking, isRuleBreakingNbMaxBooking(subscriptionBookings));
 				rulesToTest.put(MembershipRulesExceptionType.NbMaxDayBooking, isRuleBreakingNbMaxDayBooking(booking));
@@ -146,7 +147,7 @@ public class BookingRulesChecker {
     
 	
 	
-	private Predicate<? super MembershipRules> isRuleBreakingCountPreviousBooking(List<Booking> bookings) {
+	private Predicate<? super MembershipRules> isRuleBreakingCountPreviousBooking(Booking bookingToTest, List<Booking> bookings) {
 		final List<Booking> _bookings = bookings;
 
 		return new Predicate<MembershipRules>() {
@@ -156,33 +157,58 @@ public class BookingRulesChecker {
 				if(rule.getNumberOfSession() < 0) //illimité => Valid
 					return false;
 				
+				Optional<Booking> lastBooking = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).max(Comparator.comparing((Booking::getStartAt)));
+				DateTime lastBookingDate = lastBooking.map(Booking::getStartAt).orElse(bookingToTest.getStartAt()).plusDays(1);
 				//On cherche les résa a un type de creneau ou s'appplique la regle
-				Stream<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule));
+				List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
+				
+				long bookingsCount = 0;
 				
 				switch (rule.getType()) {
 					case SUM: //somme total des resa
+						bookingsCount = bookingsForRules.size();
 						break;
 
 					case SUM_PER_WEEK: //somme total des resa de la semaine passe
-						bookingsForRules = bookingsForRules.filter(b->b.getStartAt().isAfter(now.minusWeeks(1)) && b.getStartAt().isBefore(now));
+						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(1), bookingsForRules);
+						break;
+						
+					case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
+						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(4), bookingsForRules);
 						break;
 						
 					case SUM_PER_MONTH: //somme total des resa du mois passe
-						bookingsForRules = bookingsForRules.filter(b->b.getStartAt().isAfter(now.minusMonths(1)) && b.getStartAt().isBefore(now));
+						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusMonths(1), bookingsForRules);
 						break;
 				}
-				
-				//le total des resa est superieur au total de la regle ? => La regle est viole
-				if (bookingsForRules.count() > rule.getNumberOfSession()){
 
-					log.debug("Le total des resa ({}) est superieur au total de la regle {} ({})", bookingsForRules.count(), rule.getType(), rule.getNumberOfSession());
-					
+				//le total des resa est superieur au total de la regle ? => La regle est viole
+				
+				log.debug("{} résa entre le {} et le {}. La regle {} limite {} résa.", bookingsCount, now, lastBookingDate, rule.getType(), rule.getNumberOfSession());
+
+				
+				if (bookingsCount > rule.getNumberOfSession()){					
 					return true;
 				}
 				
 				return false;
 			}
 		};
+	}
+	
+	private static final long countMaxBouking(DateTime deb, DateTime finalEnd, Function<DateTime, DateTime> increment, Collection<Booking> bookingsForRules){
+		long maxCount = 0;
+		while(deb.isBefore(finalEnd)){
+			DateTime after = deb;
+			DateTime before = increment.apply(deb);
+			
+			long count = bookingsForRules.stream().filter(b->b.getStartAt().isAfter(after) && b.getStartAt().isBefore(before)).count();
+			if (count > maxCount){
+				maxCount = count;
+			}
+			deb = before;
+		}
+		return maxCount;
 	}
 	
 	private Predicate<? super MembershipRules> isRuleApplyFor(Booking booking) {

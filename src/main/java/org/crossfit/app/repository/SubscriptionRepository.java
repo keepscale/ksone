@@ -24,6 +24,13 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
     		+ "left join fetch msr.applyForTimeSlotTypes "
     		+ "where s.member = :member")
 	Set<Subscription> findAllByMember(@Param("member") Member member);
+    
+    @Query("select s from Subscription s  "
+    		+ "left join fetch s.membership ms "
+    		+ "left join fetch ms.membershipRules msr "
+    		+ "left join fetch msr.applyForTimeSlotTypes "
+    		+ "where s.id = :id")
+	Subscription findOneWithRules(@Param("id") Long id);
 
     @Query("select s from Subscription s where s.member = :member and s.subscriptionEndDate is null")
 	Subscription findActiveByMember(@Param("member") Member member);

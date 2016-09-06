@@ -17,7 +17,7 @@ import java.util.Set;
  * Spring Data JPA repository for the Booking entity.
  */
 public interface BookingRepository extends JpaRepository<Booking,Long> {
-
+	
     @Query("select b from Booking b left join fetch b.subscription s left join fetch s.member left join fetch s.membership ms where b.box =:box AND b.startAt between :start and :end")
 	Set<Booking> findAllStartBetween(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
     

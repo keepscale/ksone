@@ -43,6 +43,7 @@
             "type" : {
             	"SUM" : "séance(s)",
             	"SUM_PER_WEEK" : "séance(s) par semaine",
+            	"SUM_PER_4_WEEKS" : "séance(s) par 4 semaines",
             	"SUM_PER_MONTH" : "séance(s) par mois"
             },
             "numberOfSession.placeholder": "Nb de session (-1=illimité)"

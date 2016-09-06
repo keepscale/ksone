@@ -136,8 +136,9 @@ public class BookingResource {
 			DateTime now = timeService.nowAsDateTime(currentBox);
     		
 		
+			Subscription bookingSubscription = subscriptionRepository.findOneWithRules(booking.getSubscription().getId());
 			BookingRulesChecker checker = new BookingRulesChecker(now);
-			Optional<MembershipRules> breakingRule = checker.breakRulesToCancel(booking);
+			Optional<MembershipRules> breakingRule = checker.breakRulesToCancel(booking, bookingSubscription.getMembership().getMembershipRules());
 			
 			if (breakingRule.isPresent()){
     	        throw new CustomParameterizedException("La réservation ne peut être annulée que "+breakingRule.get().getNbHoursAtLeastToCancel()+" heures avant le début de la séance. Veuillez prendre contact avec le coach.");
