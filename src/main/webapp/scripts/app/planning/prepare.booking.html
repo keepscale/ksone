@@ -47,4 +47,11 @@
 			</button>
 		</div>
 	</div>
+	<div class="panel-footer">
+		<a href="" ng-click="loadBookings()">Qui est présent ?</a>
+		<ul ng-if="showBookings" class="list-group">
+			<li class="list-group-item" ng-if="!bookings.length">Pas encore d'inscrits</li>
+			<li class="list-group-item" ng-repeat="title in bookings">{{title}}</li>
+		</ul>
+	</div>
 </div>

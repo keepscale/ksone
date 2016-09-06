@@ -1,32 +1,20 @@
-<div class="row">
-	<div class="col-lg-12">
-		<h4 translate="crossfitApp.booking.home.title">Reservations</h4>
+<div class="panel panel-default">
+	<div class="panel-heading"  style="text-align: center;" 
+		translate="crossfitApp.booking.home.title">
+		Mes Reservations
 	</div>
-</div>
-
-
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th translate="crossfitApp.booking.date">date</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody infinite-scroll="loadPage(page + 1)" infinite-scroll-disabled="links['last'] == page">
-                <tr ng-repeat="booking in bookings">
-                    <td>Le {{booking.startAt | date:'dd MMM yyyy'}} à {{booking.startAt | date:'HH:mm'}}</td>
-                    <td>
-                        <button type="submit"
-                        		ng-disabled="booking.past"
-                                ng-click="delete(booking.id)"
-                                class="btn btn-danger btn-sm">
-                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.booking.action.delete"> Delete</span>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	<div class="panel-body">
+	
+		<div ng-if="message" class="alert alert-danger">
+			{{message}}
+		</div>
+		
+		<ul class="list-group">
+			<li class="list-group-item" ng-repeat="booking in bookings">
+				<button ng-click="delete(booking)" 
+		                    	class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+		       	{{booking.startAt | date:"EEE dd MMM 'à' HH:mm"}} - {{booking.title}}
+			</li>
+		</ul>
+	</div>
 </div>

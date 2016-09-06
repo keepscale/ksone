@@ -124,6 +124,10 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    public String getNickName(){
+    	return firstName;
+    }
+    
     public Long getId() {
         return id;
     }

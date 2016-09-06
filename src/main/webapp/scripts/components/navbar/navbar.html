@@ -39,12 +39,23 @@
 		</a></li>
 	</ul>
 	
+	
+	
+	
+	
 	<ul class="nav navbar-nav navbar-left">
 		<li ng-class="{active: $state.includes('home')}">
 			<a ui-sref="home"> <span class="glyphicon glyphicon-home"
 				title="{{'global.menu.home'|translate}}"></span>
 		</a>
 		</li>
+		
+		<li ng-class="{active: $state.includes('planning')}" ng-switch-when="true">
+			<a href="" ng-click="planning()"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
+				title="{{'global.menu.planning'|translate}}"></span>
+		</a>
+		</li>
+		
 		
 		<li ng-class="{active: $state.includes('members')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="member"> <span

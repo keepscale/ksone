@@ -62,13 +62,26 @@ angular.module('crossfitApp')
         	window.history.back();
     	};
 		
+    	$scope.loadBookings = function(){
+			$scope.showBookings = false;
+    		Booking.findBookings({
+    			date:$stateParams.bookingDate,
+    			timeSlotId: $stateParams.timeSlotId}, 
+    			function(result){
+    				$scope.showBookings = true;
+					$scope.bookings = result;
+	    		})
+    	}
+    	
+    	
     	$scope.init = function(){
 
     		TimeSlot.get({id:$stateParams.timeSlotId}, function(result){
     			$scope.timeSlot = result;
     		});
-    		
-            
+
+			$scope.showBookings = false;
+            $scope.bookings = [];
             $scope.subscriptions = [];
             $scope.message = "";
             $scope.errors = "";

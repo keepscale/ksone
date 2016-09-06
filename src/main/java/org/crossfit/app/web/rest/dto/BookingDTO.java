@@ -3,17 +3,10 @@ package org.crossfit.app.web.rest.dto;
 import java.io.Serializable;
 import java.util.function.Function;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.TimeSlot;
-import org.crossfit.app.domain.TimeSlotType;
-import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
@@ -31,6 +24,17 @@ public class BookingDTO implements Serializable {
 		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
 		return dto;
 	};
+	
+
+	public static Function<Booking, BookingDTO> myBooking = b->{
+//		String membershipName = b.getSubscription().getMembership().getN	ame();
+		String timeslotName = b.getTimeSlotType().getName();
+		String title = "'" + timeslotName+"'";
+		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
+		dto.setCreatedAt(b.getCreatedDate());
+		dto.setStartAt(b.getStartAt());
+		return dto;
+	};
 
 	public static Function<Booking, BookingDTO> publicMapper = b->{
 		Member member = b.getSubscription().getMember();
@@ -45,6 +49,8 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
 	private LocalDate date;
+	
+	private DateTime startAt;
 	
 	private String title;
 
@@ -105,6 +111,15 @@ public class BookingDTO implements Serializable {
 		this.timeslotId = timeslotId;
 	}
 	
+	
+
+	public DateTime getStartAt() {
+		return startAt;
+	}
+
+	public void setStartAt(DateTime startAt) {
+		this.startAt = startAt;
+	}
 
 	public DateTime getCreatedAt() {
 		return createdAt;

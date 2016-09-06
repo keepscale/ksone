@@ -29,7 +29,11 @@ angular.module('crossfitApp')
                     return angular.toJson(data);
                 }
             },
-
+            'findBookings': {
+                method: 'GET',
+                url: "api/bookings/:date/:timeSlotId", 
+                params : {date: '@date', timeSlotId: '@timeSlotId'}, isArray: true
+            },
             'prepareBooking': { 
                 method: 'POST',
                 params : {prepare: 'true'},

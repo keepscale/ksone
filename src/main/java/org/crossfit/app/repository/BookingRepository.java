@@ -30,8 +30,8 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("select b from Booking b where b.subscription.member = :member order by b.startAt desc")
 	List<Booking> findAllByMember(@Param("member") Member owner);
     
-    @Query("select b from Booking b where b.subscription.member = :member order by b.startAt desc")
-	Page<Booking> findAllByMember(@Param("member") Member member, Pageable pageable);
+    @Query("select b from Booking b join b.subscription s join s.membership ms where s.member = :member and b.startAt >= :after order by b.startAt asc")
+	Page<Booking> findAllByMemberAfter(@Param("member") Member member, @Param("after") DateTime after, Pageable pageable);
     
     @Modifying
 	@Transactional

@@ -2,8 +2,10 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -32,9 +34,12 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -79,17 +84,51 @@ public class BookingResource {
     @RequestMapping(value = "/bookings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Booking>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
-                                  @RequestParam(value = "per_page", required = false) Integer limit)
-        throws URISyntaxException {
+    public ResponseEntity<List<BookingDTO>> getAll(
+    		@RequestParam(value = "page" , required = false) Integer offset,
+            @RequestParam(value = "per_page", required = false) Integer limit) throws URISyntaxException {
     	
     	Page<Booking> page = null; 
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
     	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
-    		page = bookingRepository.findAllByMember(SecurityUtils.getCurrentMember(), PaginationUtil.generatePageRequest(offset, limit));
+    		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
     	}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/bookings/{date}/{timeSlotId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getAllBookingForTimeSlot(
+    		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
+    		@PathVariable Long timeSlotId) throws URISyntaxException {
+    	
+    	TimeSlot selectedTimeSlot = timeSlotRepository.findOne(timeSlotId);
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	
+    	
+    	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
+    	if(selectedTimeSlot == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("TimeSlot introuvable", "")).body(null);
+        } else if(!selectedTimeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
+        }
+    	
+    	LocalDate localDate = new LocalDate(date);
+    	// On ajoute l'heure à la date
+    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
+    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
+
+    	Set<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt);
+		List<String> bookingNames = bookings.stream()
+				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()))
+				.map(b->b.getSubscription().getMember().getNickName())
+				.collect(Collectors.toList());
+		
+		
+        return new ResponseEntity<>(bookingNames, HttpStatus.OK);
     }
 
 
@@ -274,6 +313,7 @@ public class BookingResource {
     		}).collect(Collectors.toList());
     	
     	if (!isSuperUser && currentBookingsForTimeSlot.size() >= selectedTimeSlot.getMaxAttendees()){
+    		//TODO: Throw BookingFullException => faire un translator, et gerer l'exception cote angular pour proposer d'etre notifier
     		throw new CustomParameterizedException("Il n'y a plus de place disponible pour ce créneau");
     	}
     	
