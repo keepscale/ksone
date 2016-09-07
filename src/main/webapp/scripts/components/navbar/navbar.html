@@ -50,8 +50,8 @@
 		</a>
 		</li>
 		
-		<li ng-class="{active: $state.includes('planning')}" ng-switch-when="true">
-			<a href="" ng-click="planning()"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
+		<li ng-class="{active: $state.includes('planning','planning.detail')}" ng-switch-when="true">
+			<a ui-sref="planning"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
 				title="{{'global.menu.planning'|translate}}"></span>
 		</a>
 		</li>

@@ -4,7 +4,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
                'ui.bootstrap', // for modal dialogs
     'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker'])
 
-    .run(function ($rootScope, $location, $window, $http, $state, $translate, Language, Auth, Principal, ENV, VERSION) {
+    .run(function ($rootScope, $location, $window, $http, $state, $translate, DateUtils, Language, Auth, Principal, ENV, VERSION) {
         $rootScope.ENV = ENV;
         $rootScope.VERSION = VERSION;
         $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
@@ -39,7 +39,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
             });
             
         });
-
+        
         $rootScope.back = function() {
             // If previous state is 'activate' or do not exist go to 'home'
             if ($rootScope.previousStateName === 'activate' || $state.get($rootScope.previousStateName) === null) {

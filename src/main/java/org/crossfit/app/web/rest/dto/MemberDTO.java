@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,6 +49,13 @@ public class MemberDTO {
 
     @Size(min = 2, max = 5)
     private String langKey;
+    
+    public String getCardUid(){
+    	
+    }
+    public String getNickName(){
+    	
+    }
 
 
     private List<Subscription> subscriptions = new ArrayList<>();
