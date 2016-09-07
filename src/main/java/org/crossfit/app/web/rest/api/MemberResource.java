@@ -201,6 +201,7 @@ public class MemberResource {
 			result.setId(member.getId());
 			result.setFirstName(member.getFirstName());
 			result.setLastName(member.getLastName());
+			result.setNickName(member.getNickName());
 			result.setTitle(member.getTitle());
 			result.setAddress(member.getAddress());
 			result.setZipCode(member.getZipCode());
@@ -209,6 +210,7 @@ public class MemberResource {
 			result.setEnabled(member.isEnabled());
 			result.setLangKey(member.getLangKey());
 			result.setLocked(member.isLocked());
+			result.setCardUuid(member.getCardUuid());
 			result.setEmail(member.getLogin());
 			result.setTelephonNumber(member.getTelephonNumber());
 			

@@ -24,6 +24,9 @@ public class MemberDTO {
 
     @Size(max = 50)
     private String lastName;
+    
+    @Size(max = 50)
+    private String nickName;
 
     @Size(max = 255)
     private String address;
@@ -36,7 +39,9 @@ public class MemberDTO {
     
     @Size(max = 32)
     private String telephonNumber;
-    
+
+    @Size(max = 255)
+    private String cardUuid;
 
     @NotNull
     @Email
@@ -50,16 +55,25 @@ public class MemberDTO {
     @Size(min = 2, max = 5)
     private String langKey;
     
-    public String getCardUid(){
-    	
-    }
-    public String getNickName(){
-    	
-    }
-
-
+    
     private List<Subscription> subscriptions = new ArrayList<>();
 
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getCardUuid() {
+		return cardUuid;
+	}
+
+	public void setCardUuid(String cardUuid) {
+		this.cardUuid = cardUuid;
+	}
 
 	public Long getId() {
 		return id;

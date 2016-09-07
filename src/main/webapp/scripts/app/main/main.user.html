@@ -8,16 +8,24 @@
 		</div>
 	
 	</div>
-    <div class="row" ng-switch-when="true">
-        <div class="col-md-6">
-            <div>
-                <div class="alert alert-info" translate="main.logged.message" translate-values="{username: '{{account.lastName}}'}">
-                    Welcome "{{account.lastName}}".
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-				<div class="alert alert-success" role="alert">Vous pouvez encore reserver <strong>{{nbBookingPossible}} wod(s)</strong> cette semaine.</div>
+    <div class="row">
+ 		<div class="col-xs-12">
+				<div class="alert alert-warning" role="alert">
+					Pensez à mettre à jour vos imformations personnelles
+				</div>
+			</div>
+		</div>
+        <div class="col-xs-12">
+				<div class="alert alert-success" role="alert">
+					Accéder à la réservation de créneaux
+				</div>
+			</div>
+		</div>
+		
+        <div class="col-xs-12">
+				<div class="alert alert-danger" role="alert">
+					Vous ne disposez d'aucun abonnement valide
+				</div>
 			</div>
 		</div>
     

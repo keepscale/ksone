@@ -3,6 +3,33 @@
 angular.module('crossfitApp')
 	.controller('PlanningController', function ($rootScope, $scope, $state, $stateParams, $window, Planning, DateUtils, Principal) {
 
+		
+		if (!$stateParams.startDate){
+	   		var w = $window.innerWidth;;
+	        var mode;
+	        var view;
+	        var dStart = new Date();
+	        var dEnd = new Date();
+	        if ( w >= 991){
+	        	mode = 'desktop';
+	        	view = 'week';
+	        	dEnd.setDate(dEnd.getDate() + 7); 
+	        }
+	        else{
+	        	mode = 'mobile';
+	        	view = 'day';
+	        	dEnd.setDate(dEnd.getDate() + 1);
+	        }
+	        
+	    	var start = DateUtils.formatDateAsDate(dStart);
+	    	var end = DateUtils.formatDateAsDate(dEnd);
+	    	
+	        $state.go('planning', {startDate:start, endDate:end, view:view, mode:mode});
+	        
+	        return;
+		}
+        
+        
     	var parts = $stateParams.startDate ? $stateParams.startDate.split('-') : null;
     	var isMobile = $stateParams.mode == 'mobile';    	
     	var viewName = $rootScope.viewName == null ? 'agendaWeek' : $rootScope.viewName;

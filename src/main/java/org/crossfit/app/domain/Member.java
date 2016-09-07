@@ -23,13 +23,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
-import org.joda.time.DateTime;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -60,6 +57,10 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Size(max = 50)
     @Column(name = "last_name", length = 50)
     private String lastName;
+    
+    @Size(max = 50)
+    @Column(name = "nick_name", length = 50)
+    private String nickName;
 
     @Size(max = 255)
     @Column(name = "address", length = 255)
@@ -76,7 +77,10 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Size(max = 32)
     @Column(name = "telephon_number", length = 32)
     private String telephonNumber;
-    
+
+    @Size(max = 255)
+    @Column(name = "card_uuid", length = 255)
+    private String cardUuid;
 
     @NotNull
     @Email
@@ -123,10 +127,6 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @JsonIgnore
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Subscription> subscriptions = new ArrayList<>();
-
-    public String getNickName(){
-    	return firstName;
-    }
     
     public Long getId() {
         return id;
@@ -261,6 +261,21 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 		this.subscriptions = subscriptions;
 	}
 
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getCardUuid() {
+		return cardUuid;
+	}
+
+	public void setCardUuid(String cardUuid) {
+		this.cardUuid = cardUuid;
+	}
 
 	@Override
 	public int hashCode() {

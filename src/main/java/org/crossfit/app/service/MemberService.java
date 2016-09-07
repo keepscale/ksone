@@ -106,11 +106,13 @@ public class MemberService {
 		member.setTitle(memberdto.getTitle());
 		member.setFirstName(memberdto.getFirstName());
 		member.setLastName(memberdto.getLastName());
+		member.setNickName(memberdto.getNickName());
 		member.setAddress(memberdto.getAddress());
 		member.setZipCode(memberdto.getZipCode());
 		member.setCity(memberdto.getCity());
 		member.setLangKey(memberdto.getLangKey());
 		member.setTelephonNumber(memberdto.getTelephonNumber());
+		member.setCardUuid(memberdto.getCardUuid());
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 		member.setBox(currentCrossFitBox);

@@ -26,11 +26,10 @@
 				class="glyphicon glyphicon-cog"
 				title="{{'global.menu.config'|translate}}"></span>
 			</a></li>
-		
 		<li ng-class="{active: $state.includes('account')}"><a
-			ui-sref="account"> <span class="glyphicon glyphicon-user"
+			ui-sref="account"> <span
 				ui-sref-active="active" ng-switch-when="true"
-				title="{{account.firstName}} {{account.lastName}}"></span>
+				title="{{account.firstName}} {{account.lastName}}">{{account.firstName | limitTo: 8}}</span>
 		</a></li>
 
 		<li ui-sref-active="active" ng-switch-when="true"><a href=""
@@ -51,7 +50,7 @@
 		</li>
 		
 		<li ng-class="{active: $state.includes('planning','planning.detail')}" ng-switch-when="true">
-			<a ui-sref="planning"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
+			<a ui-sref="planningToDay"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
 				title="{{'global.menu.planning'|translate}}"></span>
 		</a>
 		</li>

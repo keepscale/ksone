@@ -71,11 +71,19 @@
 				</div>
 		    </div>
 		    
-		    <div class="row">
-		    	<div class="col-xs-12">
-		    	</div>
-		    </div>
-		    
+		    <div class="row form-group">
+		        <div class="col-xs-6">			        
+					<input type="text" class="form-control" id="nickName" name="nickName"
+						placeholder="{{'crossfitApp.member.nickName.placeholder' | translate}}"
+						ng-model="member.nickName" ng-minlength=1 ng-maxlength=50 maxlength="50">
+		        </div>
+		        <div class="col-xs-6">
+			        <input type="text" class="form-control" id="cardUuid"
+						name="cardUuid"
+						placeholder="{{'crossfitApp.member.cardUuid.placeholder' | translate}}"
+						ng-model="member.cardUuid" ng-minlength=1 ng-maxlength=255 maxlength="255">
+		        </div>
+			</div>
 		    
 		    <div class="row form-group">
 		    	<div class="col-xs-12">

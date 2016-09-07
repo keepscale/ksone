@@ -28,10 +28,13 @@
             <column name="title" type="varchar(2)"/>
             <column name="first_name" type="varchar(50)"/>
             <column name="last_name" type="varchar(50)"/>
+            <column name="nick_name" type="varchar(50)"/>
             <column name="address" type="varchar(255)"/>
             <column name="zip_code" type="varchar(20)"/>
             <column name="city" type="varchar(100))"/>
             <column name="telephon_number" type="varchar(32)"/>
+            
+            <column name="card_uuid" type="varchar(255)"/>
             
             <column name="login" type="varchar(100)">
                 <constraints nullable="false"/>
@@ -126,6 +129,10 @@
                                  constraintName="fk_member_persistent_token"
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
+
+		<sql>
+			CREATE UNIQUE INDEX idx_member_uuid_box ON MEMBER (card_uuid, box_id) WHERE card_uuid IS NOT NULL;
+		</sql>
         
     </changeSet>
 </databaseChangeLog>

@@ -19,7 +19,7 @@ angular.module('crossfitApp')
 	            Booking.delete({id: booking.id}, function(result) {
 	                $scope.loadAllBookings();
 	            }, function(result){
-	            	$scope.message = result.data.message;
+	            	$scope.message = result.datav.message;
 	            });
         	}
         };
