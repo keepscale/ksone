@@ -50,6 +50,15 @@ angular.module('crossfitApp')
 			if (result.data.createdAt){
 				$scope.booking.createdAt = result.data.createdAt;
 			}
+			
+			//une erreur ? on regarde l'etat du creneau, on peut proposer des alternatives.
+			Booking.status({
+    			date:$stateParams.bookingDate,
+    			timeSlotId: $stateParams.timeSlotId}, 
+    			function(result){
+    				$scope.isFull = result.count >= result.max;
+    				$scope.hasSubscribeNotification = result.hasSubscribeNotification;
+	    		})
         }
         
         $scope.selectSubscription = function(s){
@@ -73,6 +82,16 @@ angular.module('crossfitApp')
 	    		})
     	}
     	
+    	$scope.subscribeNotification = function(){
+    		if ($scope.isFull && !$scope.hasSubscribeNotification){
+    			Booking.subscribe({
+        			date:$stateParams.bookingDate,
+        			timeSlotId: $stateParams.timeSlotId}, 
+        			function(result){
+        				$scope.init();
+    	    		})
+    		}
+    	}
     	
     	$scope.init = function(){
 
@@ -85,6 +104,8 @@ angular.module('crossfitApp')
             $scope.subscriptions = [];
             $scope.message = "";
             $scope.errors = "";
+			$scope.isFull = false;
+			$scope.hasSubscribeNotification = false;
             
             $scope.booking = {
         			timeslotId: $stateParams.timeSlotId,

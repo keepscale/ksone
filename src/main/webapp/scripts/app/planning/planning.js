@@ -7,7 +7,7 @@ angular.module('crossfitApp')
 	            parent: 'site',
 	            url: '/planning',
 	            data: {
-	                roles: ['ROLE_USER'],
+	                roles: ['ROLE_USER','ROLE_MANAGER','ROLE_ADMIN'],
 	                pageTitle: 'crossfitApp.planning.home.title'
 	            },
 	            views: {
@@ -21,7 +21,7 @@ angular.module('crossfitApp')
 	            parent: 'planningToDay',
 	            url: '/:mode/:view/:startDate',
 	            data: {
-	                roles: ['ROLE_USER'],
+	                roles: ['ROLE_USER','ROLE_MANAGER','ROLE_ADMIN'],
 	                pageTitle: 'crossfitApp.planning.home.title'
 	            },
 	            views: {
@@ -42,7 +42,7 @@ angular.module('crossfitApp')
 	                parent: 'planning',
 	                url: '/:timeSlotId/:bookingDate',
 	                data: {
-	                    roles: ['ROLE_USER'],
+	                    roles: ['ROLE_USER','ROLE_MANAGER','ROLE_ADMIN'],
 	                    pageTitle: 'crossfitApp.planning.home.title'
 	                },
 	                views: {

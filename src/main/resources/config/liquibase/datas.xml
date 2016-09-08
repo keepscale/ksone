@@ -168,42 +168,6 @@
 	</changeSet>
 	
 	
-	<changeSet id="data-openshift" author="lgangloff" context="openshift-test">
-		<insert tableName="CROSSFITBOX">
-			<column name="name" value="Crossfit Nancy" />
-			<column name="website_pattern" value="test-(.*).crossfit-nancy.fr" />
-			<column name="adminwebsite" value="http://test-admin.crossfit-nancy.fr/" />
-			<column name="bookingwebsite" value="http://test-booking.crossfit-nancy.fr/" />
-			<column name="rootwebsite" value="http://test-www.crossfit-nancy.fr/" />
-			<column name="email_from" value="no-reply@crossfit-nancy.fr" />
-			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
-			<column name="time_zone" value="fr" />
-		</insert>
-
-		<insert tableName="MEMBER">
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
-			<column name="enabled" value="true"/>
-			<column name="locked" value="false"/>
-
-			<column name="title" value="MS" />
-			<column name="first_name" value="webmaster" />
-			<column name="last_name" value="crossfit-nancy" />
-
-			<column name="login" value="webmasters@crossfit-nancy.fr" />
-			<column name="PASSWORD" value="${defaultpwd}" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		<insert tableName="MEMBER_AUTHORITY">
-			<column name="member_id" valueComputed="currval('member_id_seq')" />			
-			<column name="authority_name" value="ROLE_ADMIN" />
-		</insert>
-		<insert tableName="MEMBER_AUTHORITY">
-			<column name="member_id" valueComputed="currval('member_id_seq')" />			
-			<column name="authority_name" value="ROLE_MANAGER" />
-		</insert>
-	</changeSet>
-	
 	<changeSet id="data-common" author="lgangloff">
 		
 		<insert tableName="TIMESLOTTYPE">			

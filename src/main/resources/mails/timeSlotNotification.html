@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.timeSlotNotification.title}">Un créneau vient de se libérer !</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p th:text="#{email.timeSlotNotification.hello(${user.firstName}, ${user.lastName})}">
+            Salut Loic G,
+        </p>
+        <p th:text="#{email.timeSlotNotification.text1(${timeSlotDate}, ${timeSlotTime})}">
+            Une place s'est libérée pour le créneau de {0} du {1} !
+        </p>
+        
+        <p>
+            <span th:text="#{email.timeSlotNotification.text2}">
+				Réserve vite avant que quelqu'un d'autre ne le fasse avant toi !
+			</span>
+        </p>
+        
+        <p>
+            <span th:text="#{email.timeSlotNotification.link.text}">
+				Clique ici, c'est un raccourci pour réserver: 
+			</span>
+            <a th:href="@{${linkResa}}">Booking Link</a>
+        </p>
+        
+        <p>
+            <em th:text="#{email.signature(${box.name})}">Crossfit Team.</em>
+        </p>
+    </body>
+</html>

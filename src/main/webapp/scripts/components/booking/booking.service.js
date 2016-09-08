@@ -34,6 +34,16 @@ angular.module('crossfitApp')
                 url: "api/bookings/:date/:timeSlotId", 
                 params : {date: '@date', timeSlotId: '@timeSlotId'}, isArray: true
             },
+            'status': {
+                method: 'GET',
+                url: "api/bookings/:date/:timeSlotId/status", 
+                params : {date: '@date', timeSlotId: '@timeSlotId'}
+            },
+            'subscribe': {
+                method: 'POST',
+                url: "api/bookings/:date/:timeSlotId/subscribe", 
+                params : {date: '@date', timeSlotId: '@timeSlotId'}
+            },
             'prepareBooking': { 
                 method: 'POST',
                 params : {prepare: 'true'},

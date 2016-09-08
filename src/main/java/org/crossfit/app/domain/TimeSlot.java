@@ -250,16 +250,4 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
                 '}';
     }
     
-    public DateTime getStartDateTime(DateTime firstDateOfWeek){
-    	DateTime slotDateDay = firstDateOfWeek.dayOfWeek().setCopy(getDayOfWeek());
-		DateTime startDateTime = slotDateDay.withTime(getStartTime().getHourOfDay(), getStartTime().getMinuteOfHour(), 0, 0);
-		return startDateTime;
-    }
-
-    public DateTime getEndDateTime(DateTime firstDateOfWeek){
-    	DateTime slotDateDay = firstDateOfWeek.dayOfWeek().setCopy(getDayOfWeek());
-		
-		DateTime endDateTime = slotDateDay.withTime(getEndTime().getHourOfDay(), getEndTime().getMinuteOfHour(), 0, 0);
-		return endDateTime;
-    }
 }
