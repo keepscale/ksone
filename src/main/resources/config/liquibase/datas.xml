@@ -17,8 +17,8 @@
 			<column name="bookingwebsite" value="http://localhost:8080" />
 			<column name="rootwebsite" value="http://localhost:8080" />
 			<column name="email_from" value="no-reply@crossfit-local.com" />
-			<column name="logo_url" value="NULL" />
-			<column name="time_zone" value="NULL" />
+			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
+			<column name="time_zone" value="fr" />
 		</insert>
 
 		<insert tableName="MEMBER">
@@ -38,6 +38,11 @@
 		<insert tableName="MEMBER_AUTHORITY">
 			<column name="member_id" valueComputed="currval('member_id_seq')" />			
 			<column name="authority_name" value="ROLE_ADMIN" />
+		</insert>
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_MANAGER" />
 		</insert>
 
 		<insert tableName="MEMBER">
@@ -60,6 +65,7 @@
 			<column name="member_id" valueComputed="currval('member_id_seq')" />	
 			<column name="authority_name" value="ROLE_MANAGER" />
 		</insert>
+		
 
 		<insert tableName="MEMBER">
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />			
@@ -67,8 +73,8 @@
 			<column name="locked" value="false"/>
 
 			<column name="title" value="MS" />
-			<column name="first_name" value="user1" />
-			<column name="last_name" value="crossfit-local" />
+			<column name="first_name" value="Joe" />
+			<column name="last_name" value="Bar" />
 
 			<column name="login" value="user1@crossfit-local.com" />
 			<column name="PASSWORD" value="${defaultpwd}" />
@@ -88,10 +94,33 @@
 			<column name="locked" value="false"/>
 			
 			<column name="title" value="MS" />
-			<column name="first_name" value="user2" />
-			<column name="last_name" value="crossfit-local" />
+			<column name="first_name" value="Jean" />
+			<column name="last_name" value="Manche'sek" />
+			<column name="nick_name" value="Rick" />
 
 			<column name="login" value="user2@crossfit-local.com" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />	
+			<column name="authority_name" value="ROLE_USER" />
+		</insert>
+		
+		
+		
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />				
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+			
+			<column name="title" value="MS" />
+			<column name="first_name" value="Ed" />
+			<column name="last_name" value="Lapoignée" />
+			<column name="nick_name" value="Susan" />
+
+			<column name="login" value="user3@crossfit-local.com" />
 			<column name="PASSWORD" value="${defaultpwd}" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -111,7 +140,7 @@
 			<column name="rootwebsite" value="http://www.crossfit-nancy.fr/" />
 			<column name="email_from" value="no-reply@crossfit-nancy.fr" />
 			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
-			<column name="time_zone" value="NULL" />
+			<column name="time_zone" value="fr" />
 		</insert>
 
 		<insert tableName="MEMBER">
@@ -131,6 +160,47 @@
 		<insert tableName="MEMBER_AUTHORITY">
 			<column name="member_id" valueComputed="currval('member_id_seq')" />			
 			<column name="authority_name" value="ROLE_ADMIN" />
+		</insert>
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_MANAGER" />
+		</insert>
+	</changeSet>
+	
+	
+	<changeSet id="data-openshift" author="lgangloff" context="openshift-test">
+		<insert tableName="CROSSFITBOX">
+			<column name="name" value="Crossfit Nancy" />
+			<column name="website_pattern" value="test-(.*).crossfit-nancy.fr" />
+			<column name="adminwebsite" value="http://test-admin.crossfit-nancy.fr/" />
+			<column name="bookingwebsite" value="http://test-booking.crossfit-nancy.fr/" />
+			<column name="rootwebsite" value="http://test-www.crossfit-nancy.fr/" />
+			<column name="email_from" value="no-reply@crossfit-nancy.fr" />
+			<column name="logo_url" value="http://www.crossfit-nancy.fr/img/logo_web.png" />
+			<column name="time_zone" value="fr" />
+		</insert>
+
+		<insert tableName="MEMBER">
+			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
+			<column name="enabled" value="true"/>
+			<column name="locked" value="false"/>
+
+			<column name="title" value="MS" />
+			<column name="first_name" value="webmaster" />
+			<column name="last_name" value="crossfit-nancy" />
+
+			<column name="login" value="webmasters@crossfit-nancy.fr" />
+			<column name="PASSWORD" value="${defaultpwd}" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_ADMIN" />
+		</insert>
+		<insert tableName="MEMBER_AUTHORITY">
+			<column name="member_id" valueComputed="currval('member_id_seq')" />			
+			<column name="authority_name" value="ROLE_MANAGER" />
 		</insert>
 	</changeSet>
 	
@@ -157,9 +227,9 @@
 		<insert tableName="TIMESLOTTYPE">
 			<column name="id" value="3" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
-			<column name="name" value="Normal" />
+			<column name="name" value="WOD" />
 			<column name="description" value="WOD" />
-			<column name="color" value="#BDBDBD" />
+			<column name="color" value="#3C763D" />
 			<column name="created_by" value="system" />
 		</insert>
 		
@@ -176,7 +246,7 @@
 		<insert tableName="TIMESLOTTYPE">
 			<column name="id" value="5" />
 			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />		
-			<column name="name" value="Accès libre" />
+			<column name="name" value="Open Box" />
 			<column name="description" value="Séances libres" />
 			<column name="color" value="#FF4000" />
 			<column name="created_by" value="system" />
@@ -457,109 +527,32 @@
 	
 	<changeSet id="data-dev-timeslot" author="lgangloff"  context="dev">
 	
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="1" />	
-			<column name="start_time" value="09:00:00" />
-			<column name="end_time" value="10:00:00" />
-			<column name="max_attendees" value="6" />
-			<column name="timeslottype_id" value="1" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="1" />	
-			<column name="start_time" value="09:00:00" />
-			<column name="end_time" value="10:00:00" />
-			<column name="max_attendees" value="4" />
-			<column name="timeslottype_id" value="5" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
+		<sql>
 		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="1" />	
-			<column name="start_time" value="10:00:00" />
-			<column name="end_time" value="11:00:00" />
-			<column name="max_attendees" value="12" />
-			<column name="timeslottype_id" value="3" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
+			insert into timeslot(day_of_week, start_time, end_time, max_attendees, timeslottype_id, box_id, created_by) 
+			select i, '09:00:00', '10:00:00', 12, (select id from timeslottype where name = 'WOD'), (select last_value from crossfitbox_id_seq), 'system' 
+			from generate_Series(1,5) AS i;
+						
+			insert into timeslot(day_of_week, start_time, end_time, max_attendees, timeslottype_id, box_id, created_by) 
+			select i, ((9+j)||':00:00')::time, ((10+j)||':00:00')::time, 12, (select id from timeslottype where name = 'Open Box'), (select last_value from crossfitbox_id_seq), 'system' from generate_Series(1,6) AS i, generate_Series(1,2) j;
+			
+			
+			insert into timeslot(day_of_week, start_time, end_time, max_attendees, timeslottype_id, box_id, created_by) 
+			select i, '12:30:00', '13:30:00', 12, (select id from timeslottype where name = 'WOD'), (select last_value from crossfitbox_id_seq), 'system' 
+			from generate_Series(1,6) AS i;
+						
+			
+			insert into timeslot(day_of_week, start_time, end_time, max_attendees, timeslottype_id, box_id, created_by) 
+			select i, ((13+j)||':00:00')::time, ((14+j)||':00:00')::time, 12, (select id from timeslottype where name = 'Open Box'), (select last_value from crossfitbox_id_seq), 'system'
+			from generate_Series(1,6) AS i, generate_Series(1,7) j;
+			
+			
+			update timeslot set timeslottype_id = (select id from timeslottype where name = 'Fondation') where start_time = '12:30:00' and day_of_week = 3;	
+			update timeslot set timeslottype_id = (select id from timeslottype where name = 'WOD') where start_time in ('18:00:00', '19:00:00', '20:00:00') or (day_of_week = 6 and start_time in ('10:00:00', '14:00:00'));			
+			update timeslot set timeslottype_id = (select id from timeslottype where name = 'Spécialisation') where (start_time = '19:00:00' and day_of_week in (2, 4)) or (day_of_week = 6 and start_time = '15:00:00');			
+			delete from timeslot where (start_time = '20:00:00' and day_of_week in (1,3,5)) or (day_of_week = 6 and start_time in ('09:00:00', '17:00:00', '18:00:00', '19:00:00', '20:00:00'));
 		
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="1" />	
-			<column name="start_time" value="11:30:00" />
-			<column name="end_time" value="12:30:00" />
-			<column name="max_attendees" value="12" />
-			<column name="timeslottype_id" value="3" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="1" />	
-			<column name="start_time" value="13:00:00" />
-			<column name="end_time" value="14:00:00" />
-			<column name="max_attendees" value="6" />
-			<column name="timeslottype_id" value="5" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="11:00:00" />
-			<column name="end_time" value="12:00:00" />
-			<column name="max_attendees" value="6" />
-			<column name="timeslottype_id" value="1" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="16:00:00" />
-			<column name="end_time" value="17:00:00" />
-			<column name="max_attendees" value="12" />
-			<column name="timeslottype_id" value="3" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="17:30:00" />
-			<column name="end_time" value="18:30:00" />
-			<column name="max_attendees" value="12" />
-			<column name="timeslottype_id" value="3" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
-		
-		
-		
-		<insert tableName="TIMESLOT">
-			<column name="day_of_week" value="4" />	
-			<column name="start_time" value="19:00:00" />
-			<column name="end_time" value="20:00:00" />
-			<column name="max_attendees" value="6" />
-			<column name="timeslottype_id" value="5" />
-			<column name="box_id" valueComputed="currval('crossfitbox_id_seq')" />
-			<column name="created_by" value="system" />
-		</insert>
+		</sql>
 		
 	</changeSet>
 </databaseChangeLog>

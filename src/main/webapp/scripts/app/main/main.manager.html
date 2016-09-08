@@ -21,13 +21,12 @@
                 		<div class="panel-heading">
 		                	<ul class="nav nav-tabs">
 							  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
-							  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd/MM'}}</a>
+							  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE'}}</a>
 							  </li>
 							</ul>
 						</div>
 						<div class="panel-body">
                     		<div class="tab-content">
-					
 								<div class="row">
 			        				<div class="col-md-12">
 										<div class="row" ng-repeat="interval in planning[selectedIndex].slotsByInterval">
@@ -39,12 +38,12 @@
 														  <div style="background-color: {{slot.timeSlotType.color}}; color: #FFF" class="panel-heading">
 														  	<div class="row">
 															  	<div class="col-xs-9"> 
-																	<h5 class="text-center three-points-overflow">
+																	<h5>
 																		<a ui-sref="timeSlot.edit({id:slot.id})" style="color: #FFF" >
 																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-																			{{slot.timeSlotType.name}} |
-																			{{slot.bookings.length}}/{{slot.maxAttendees}} 
-																			inscrits  {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}}
+																			{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
+																			{{slot.timeSlotType.name}} 
+																			  
 																		</a>
 																	</h5>
 																</div>

@@ -44,6 +44,13 @@
 							Annuler ma réservation
 					</button>
 					
+					<button class="btn btn-default" ng-click="cancelBooking()"
+						ng-disabled="booking.id == null">
+						
+						<span class="glyphicon glyphicon-ok" style="color: green;"></span>
+							Me notifier d'une place dispo.
+					</button>
+					
 					<button class="btn btn-default" ng-click="goBack()">
 						<span class="glyphicon glyphicon-ban-circle"></span>
 						Retour

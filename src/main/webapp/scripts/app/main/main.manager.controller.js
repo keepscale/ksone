@@ -18,7 +18,7 @@ angular.module('crossfitApp')
         	$scope.planning = [];
             $scope.quickbooking = {};
             $scope.quickbookingSubscriptions = [];
-            Planning.boxPlanning({page: $scope.page, per_page: 14}, function(result, headers) {
+            Planning.boxPlanning({page: $scope.page, per_page: 3}, function(result, headers) {
                 for (var i = 0; i < result.days.length; i++) {
                     $scope.planning.push(result.days[i]);
                 }

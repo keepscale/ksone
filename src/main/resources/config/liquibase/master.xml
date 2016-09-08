@@ -9,8 +9,8 @@
     </changeSet>
 
     <include file="classpath:config/liquibase/changelog/00_added_entity_CrossFitBox.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/01_added_entity_TimeSlot.xml" relativeToChangelogFile="false"/>
-	<include file="classpath:config/liquibase/changelog/02_added_entity_Member.xml" relativeToChangelogFile="false"/>
+	<include file="classpath:config/liquibase/changelog/01_added_entity_Member.xml" relativeToChangelogFile="false"/>
+	<include file="classpath:config/liquibase/changelog/02_added_entity_TimeSlot.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/03_added_entity_MembershipType.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/04_added_entity_Subscription.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/05_added_entity_Booking.xml" relativeToChangelogFile="false"/>

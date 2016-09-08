@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
@@ -172,6 +173,6 @@ public class CrossFitBox implements Serializable {
     }
 
 	public String getTimeZoneId() {
-		return TimeZone.getTimeZone("fr").getID();
+		return TimeZone.getTimeZone(StringUtils.isEmpty(getTimeZone()) ? "fr" : getTimeZone()).getID();
 	}
 }

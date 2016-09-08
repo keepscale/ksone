@@ -38,6 +38,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -53,6 +54,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 /**
  * REST controller for managing Booking.
@@ -79,6 +83,9 @@ public class BookingResource {
 	private SubscriptionRepository subscriptionRepository;
 
 
+	@Autowired
+	private EventBus eventBus;
+
     /**
      * GET  /bookings -> get all the bookings.
      */
@@ -94,9 +101,11 @@ public class BookingResource {
     	
     	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
     		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
+
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
+            return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
     	}
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
-        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
+    	 return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @RequestMapping(value = "/bookings/{date}/{timeSlotId}",
@@ -165,7 +174,10 @@ public class BookingResource {
     @RequestMapping(value = "/bookings/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+    		@PathVariable Long id,
+    		@RequestParam(name="silent", defaultValue="false") boolean silent) {
+    	
         log.debug("REST request to delete Booking : {}", id);
 		Booking booking = bookingRepository.findOne(id);
 		
@@ -191,9 +203,13 @@ public class BookingResource {
     	
 		
         bookingRepository.delete(id);
+        
+        if (!silent){
+        	eventBus.notify("booking", Event.wrap(booking));
+        }
+        
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("booking", id.toString())).build();
     }
-    
     
 
     /**
