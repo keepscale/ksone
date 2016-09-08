@@ -66,7 +66,7 @@ public class MemberResource {
 		if (member.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new member cannot already have an ID").body(null);
 		}
-		MemberDTO result = convert().apply(memberService.doSave(member));
+		MemberDTO result = MemberDTO.MAPPER.apply(memberService.doSave(member));
 		return ResponseEntity.created(new URI("/api/members/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("member", result.getId().toString())).body(result);
 	}
@@ -82,7 +82,7 @@ public class MemberResource {
 		if (member.getId() == null) {
 			return create(member);
 		}
-		MemberDTO result = convert().apply(memberService.doSave(member));
+		MemberDTO result = MemberDTO.MAPPER.apply(memberService.doSave(member));
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("member", member.getId().toString()))
 				.body(result);
 	}
@@ -110,7 +110,7 @@ public class MemberResource {
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
 				boxService.findCurrentCrossFitBox(), customSearch, 
-				includeActif, includeNotEnabled, includeBloque, generatePageRequest).stream().map(convert()).collect(Collectors.toList());
+				includeActif, includeNotEnabled, includeBloque, generatePageRequest).stream().map(MemberDTO.MAPPER).collect(Collectors.toList());
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class MemberResource {
 
 	protected MemberDTO doGet(Long id) {
 		Member member = memberRepository.findOne(id);		
-		MemberDTO memberDTO = convert().apply(member);
+		MemberDTO memberDTO = MemberDTO.MAPPER.apply(member);
 		
 		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member)));
 		
@@ -195,26 +195,5 @@ public class MemberResource {
 	
 	
 
-	private Function<Member, MemberDTO> convert() {
-		return (member)->{
-			MemberDTO result = new MemberDTO();
-			result.setId(member.getId());
-			result.setFirstName(member.getFirstName());
-			result.setLastName(member.getLastName());
-			result.setNickName(member.getNickName());
-			result.setTitle(member.getTitle());
-			result.setAddress(member.getAddress());
-			result.setZipCode(member.getZipCode());
-			result.setCity(member.getCity());
-			
-			result.setEnabled(member.isEnabled());
-			result.setLangKey(member.getLangKey());
-			result.setLocked(member.isLocked());
-			result.setCardUuid(member.getCardUuid());
-			result.setEmail(member.getLogin());
-			result.setTelephonNumber(member.getTelephonNumber());
-			
-			return result;
-		};
-	}
+	
 }

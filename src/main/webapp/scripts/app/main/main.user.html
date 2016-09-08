@@ -8,35 +8,31 @@
 		</div>
 	
 	</div>
-    <div class="row">
- 		<div class="col-xs-12">
+	<div ng-switch-when="true" style="text-align: center;">
+	    <div class="row">
+	 		<div class="col-md-6 col-md-offset-3">
 				<div class="alert alert-warning" role="alert">
-					Pensez à mettre à jour vos imformations personnelles
+					<a href="" ui-sref="account.edit">
+						<strong>{{account.firstName}}</strong>, pensez à mettre à jour vos <strong>informations personnelles</strong>
+					</a>
 				</div>
 			</div>
 		</div>
-        <div class="col-xs-12">
+	    <div class="row" ng-if="account.subscriptions.length > 0">
+	        <div class="col-md-6 col-md-offset-3">
 				<div class="alert alert-success" role="alert">
-					Accéder à la réservation de créneaux
+					<a href="" ui-sref="planning">
+						<strong>Accédez au planning</strong> et commencez à réserver vos WOD !	
+					</a>
 				</div>
 			</div>
 		</div>
-		
-        <div class="col-xs-12">
+	    <div class="row" ng-if="!account.subscriptions.length">
+	        <div class="col-md-6 col-md-offset-3">
 				<div class="alert alert-danger" role="alert">
-					Vous ne disposez d'aucun abonnement valide
+					Attention, vous ne disposez d'aucun abonnement
 				</div>
 			</div>
-		</div>
-    
-    
-    
-    <div class="row" ng-switch-when="true">
-		<div class="col-lg-12">
-		   	<jh-alert></jh-alert>
-	    </div>
+		</div>    
 	</div>
-
-
-    
 </div>

@@ -1,5 +1,6 @@
 package org.crossfit.app.web.rest.api;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,12 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
-import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.PersistentTokenRepository;
+import org.crossfit.app.domain.Membership;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.security.SecurityUtils;
-import org.crossfit.app.service.MailService;
 import org.crossfit.app.service.MemberService;
-import org.crossfit.app.web.rest.dto.UserDTO;
+import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -54,19 +54,28 @@ public class AccountResource {
     @RequestMapping(value = "/account",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> getAccount() {
+    public ResponseEntity<MemberDTO> getAccount() {
         return Optional.ofNullable(SecurityUtils.getCurrentMember())
             .map(member -> {
-                return new ResponseEntity<>(
-                    new UserDTO(
-                		member.getLogin(),
-                        null,
-                        member.getFirstName(),
-                        member.getLastName(),
-                        member.getLangKey(),
-                        member.getAuthorities().stream().map(Authority::getName)
-                            .collect(Collectors.toList())),
-                HttpStatus.OK);
+            	MemberDTO dto = MemberDTO.MAPPER.apply(member);
+
+        		List<String> roles = member.getAuthorities().stream().map(Authority::getName)
+                 .collect(Collectors.toList());
+        		dto.setRoles(roles);
+
+        		for (Subscription subscription : member.getSubscriptions()) {
+        			Subscription s = new Subscription();
+        			s.setSubscriptionStartDate(subscription.getSubscriptionStartDate());
+        			s.setSubscriptionEndDate(subscription.getSubscriptionEndDate());
+        			
+        			Membership m = new Membership();
+        			m.setName(subscription.getMembership().getName());
+        			s.setMembership(m);
+        			
+        			dto.getSubscriptions().add(s);
+				}
+        		
+                return new ResponseEntity<>(dto,HttpStatus.OK);
             })
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
@@ -88,7 +97,7 @@ public class AccountResource {
 
 
     private boolean checkPasswordLength(String password) {
-      return (!StringUtils.isEmpty(password) && password.length() >= UserDTO.PASSWORD_MIN_LENGTH && password.length() <= UserDTO.PASSWORD_MAX_LENGTH);
+      return (!StringUtils.isEmpty(password) && password.length() >= MemberDTO.PASSWORD_MIN_LENGTH && password.length() <= MemberDTO.PASSWORD_MAX_LENGTH);
     }
 
 }

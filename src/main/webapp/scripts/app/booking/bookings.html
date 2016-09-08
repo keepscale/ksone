@@ -9,7 +9,12 @@
 			{{message}}
 		</div>
 		
-		<ul class="list-group">
+		<div ng-if="!bookings.length" class="alert alert-info" style="text-align: center;">
+			Vous n'avez aucune réservation à venir. <br/>
+			<a href="" ui-sref="planning"><strong>Accéder au planning</strong> pour trouver votre créneau !	</a>
+		</div>
+		
+		<ul class="list-group" ng-if="bookings.length">
 			<li class="list-group-item" ng-repeat="booking in bookings">
 				<button ng-click="delete(booking)" 
 		                    	class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span></button>

@@ -2,11 +2,14 @@ package org.crossfit.app.web.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.crossfit.app.domain.Authority;
+import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.validator.constraints.Email;
@@ -14,14 +17,41 @@ import org.hibernate.validator.constraints.Email;
 public class MemberDTO {
 
 	private static final long serialVersionUID = 1L;
+	public static final int PASSWORD_MIN_LENGTH = 5;
+	public static final int PASSWORD_MAX_LENGTH = 100;
+    
+	public static final Function<Member, MemberDTO> MAPPER =  (member)-> {
+		MemberDTO dto = new MemberDTO();
+		dto.setId(member.getId());
+		dto.setFirstName(member.getFirstName());
+		dto.setLastName(member.getLastName());
+		dto.setNickName(member.getNickName());
+		dto.setTitle(member.getTitle());
+		dto.setAddress(member.getAddress());
+		dto.setZipCode(member.getZipCode());
+		dto.setCity(member.getCity());
+		
+		dto.setEnabled(member.isEnabled());
+		dto.setLangKey(member.getLangKey());
+		dto.setLocked(member.isLocked());
+		dto.setCardUuid(member.getCardUuid());
+		dto.setEmail(member.getLogin());
+		dto.setTelephonNumber(member.getTelephonNumber());
+         
+		return dto;
+	};
+
+	
     private Long id;
 
     @NotNull
     private Title title;
-    
+
+    @NotNull
     @Size(max = 50)
     private String firstName;
 
+    @NotNull
     @Size(max = 50)
     private String lastName;
     
@@ -54,10 +84,14 @@ public class MemberDTO {
 
     @Size(min = 2, max = 5)
     private String langKey;
-    
+
+    private List<String> roles;
     
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    public String getLogin(){
+    	return this.email;
+    }
 
 	public String getNickName() {
 		return nickName;
@@ -202,7 +236,16 @@ public class MemberDTO {
 	public void setSubscriptions(List<Subscription> subscriptions) {
 		this.subscriptions = subscriptions;
 	}
+	
 
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
 
 	@Override
 	public String toString() {

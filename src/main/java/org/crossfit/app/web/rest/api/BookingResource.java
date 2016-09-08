@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
@@ -124,7 +125,10 @@ public class BookingResource {
     	Set<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt);
 		List<String> bookingNames = bookings.stream()
 				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()))
-				.map(b->b.getSubscription().getMember().getNickName())
+				.map(b->{
+					String nick = b.getSubscription().getMember().getNickName();
+					return StringUtils.isEmpty(nick) ? "Anonyme" : nick;
+				})
 				.collect(Collectors.toList());
 		
 		

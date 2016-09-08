@@ -27,9 +27,9 @@
 				title="{{'global.menu.config'|translate}}"></span>
 			</a></li>
 		<li ng-class="{active: $state.includes('account')}"><a
-			ui-sref="account"> <span
+			ui-sref="account.edit"> <span class="glyphicon glyphicon-user"
 				ui-sref-active="active" ng-switch-when="true"
-				title="{{account.firstName}} {{account.lastName}}">{{account.firstName | limitTo: 8}}</span>
+				title="{{account.firstName}} {{account.lastName}}"><!-- {{account.firstName | limitTo: 8}} --> </span>
 		</a></li>
 
 		<li ui-sref-active="active" ng-switch-when="true"><a href=""
