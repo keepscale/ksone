@@ -1,0 +1,14 @@
+{
+    "crossfitApp": {
+        "account" : {
+            "home": {
+                "title": "Mon compte"
+            },
+ 			"nickName.placeholder" : "Nom affiché aux autres membres",
+ 			"password.actual.placeholder" : "Votre mot de passe actuel",
+ 			"password.new.placeholder" : "Nouveau mot de passe",
+ 			"password.confirm.placeholder" : "Confirmez le nouveau mot de passe"
+        }
+    }
+}
+
