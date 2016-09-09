@@ -1,165 +1,167 @@
-<div class="row">
-	<div class="col-md-6 col-md-offset-3"  style="text-align: center;">
-	
-		<div class="panel panel-default">
+<div ng-cloak>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3"  style="text-align: center;">
 		
-			<div class="panel-heading">Informations publiques</div>
-			<div class="panel-body">
+			<div class="panel panel-default">
 			
-	    		<div class="form-group">
-					<input type="text" class="form-control" id="nickName" name="nickName"
-						placeholder="{{'crossfitApp.account.nickName.placeholder' | translate}}"
-						ng-model="account.nickName" ng-minlength=1 ng-maxlength=50 maxlength="50">
-		        </div>
-		        
-		        <div class="row">
-			        <div class="col-xs-12">
-				        <button type="submit"
-							ng-disabled="form.$invalid"
-							class="btn btn-primary pull-right">
-							<span class="glyphicon glyphicon-ok"></span>
-						</button>
-					</div>
-		        </div>
-			</div>
-		</div>
-		
-		<div class="panel panel-default">
-			<div class="panel-heading">Informations personnelles</div>
-			<div class="panel-body">
-		        
-		    	<div class="form-group"> 
-			            <select class="form-control" name="title" ng-model="account.title"
-						id="field_title" required>
-							<option value="MS" translate="crossfitApp.member.title.MS">Mme</option>
-							<option value="MR" translate="crossfitApp.member.title.MR">Mr</option>
-						</select>
-		        </div>
-		    	<div class="form-group"> 	        
-						<input type="text" class="form-control" id="firstName" name="firstName"
-							placeholder="{{'crossfitApp.member.firstname.placeholder' | translate}}"
-							ng-model="account.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
-		        </div>
-	    		<div class="form-group"> 
-				        <input type="text" class="form-control" id="lastName"
-							name="lastName"
-							placeholder="{{'crossfitApp.member.lastname.placeholder' | translate}}"
-							ng-model="account.lastName" ng-minlength=1 ng-maxlength=50
-							required maxlength="50">
-		        </div>
-			        
-		    	<div class="row"> 
-			        <div class="col-xs-12">
-			    	  	<div ng-show="form.firstName.$invalid">
-							<p class="help-block" ng-show="form.firstName.$error.required"
-								translate="crossfitApp.member.messages.validate.firstname.required">Your first name is required.</p>
-							<p class="help-block" ng-show="form.firstName.$error.minlength"
-								translate="crossfitApp.member.messages.validate.firstname.minlength"> Your first name is required to be at least 1 character.</p>
-							<p class="help-block" ng-show="form.firstName.$error.maxlength"
-								translate="crossfitApp.member.messages.validate.firstname.maxlength"> Your first name cannot be longer than 50 characters.</p>
-						</div>
-			    	
-			    	
-						<div ng-show="form.lastName.$invalid">
-							<p class="help-block" ng-show="form.lastName.$error.required"
-								translate="crossfitApp.member.messages.validate.lastname.required">Your
-								last name is required.</p>
-							<p class="help-block" ng-show="form.lastName.$error.minlength"
-								translate="crossfitApp.member.messages.validate.lastname.minlength">Your
-								last name is required to be at least 1 character.</p>
-							<p class="help-block" ng-show="form.lastName.$error.maxlength"
-								translate="crossfitApp.member.messages.validate.lastname.maxlength">Your
-								last name cannot be longer than 50 characters.</p>
-						</div>
-					</div>
-				</div>
-	    
-			    <div class="row form-group">
-			    	<div class="col-xs-12">
-			    		<input type="text" class="form-control" id="address" name="address"
-							placeholder="{{'crossfitApp.member.address.placeholder' | translate}}"
-							ng-model="account.address" ng-maxlength=255 maxlength="255">
-			    	</div>
-		    	</div>
-		    	
-			    <div class="row form-group">
-			    	<div class="col-xs-5">
-			    		<input type="text" class="form-control" id="zipCode" name="zipCode"
-							placeholder="{{'crossfitApp.member.zipCode.placeholder' | translate}}"
-							ng-model="account.zipCode" ng-maxlength=20 maxlength="20">
-			    	</div>
-			    	<div class="col-xs-7">
-			    		<input type="text" class="form-control" id="city" name="city"
-							placeholder="{{'crossfitApp.member.city.placeholder' | translate}}"
-							ng-model="account.city" ng-maxlength=100 maxlength="100">
-			    	</div>
-		    	</div>
-			    <div class="form-group">
-		    		 <input type="text" class="form-control" name="telephonNumber" id="field_telephonNumber"
-		    		 placeholder="{{'crossfitApp.member.telephonNumber.placeholder' | translate}}"
-						ng-model="account.telephonNumber">
-				</div>
+				<div class="panel-heading">Informations publiques</div>
+				<div class="panel-body">
 				
-						        
-		        <div class="row">
-			        <div class="col-xs-12">
-				        <button type="submit"
-							ng-disabled="form.$invalid"
-							class="btn btn-primary pull-right">
-							<span class="glyphicon glyphicon-ok"></span>
-						</button>
-					</div>
-		        </div>
-		    	
+		    		<div class="form-group">
+						<input type="text" class="form-control" id="nickName" name="nickName"
+							placeholder="{{'crossfitApp.account.nickName.placeholder' | translate}}"
+							ng-model="account.nickName" ng-minlength=1 ng-maxlength=50 maxlength="50">
+			        </div>
+			        
+			        <div class="row">
+				        <div class="col-xs-12">
+					        <button type="submit"
+								ng-disabled="form.$invalid"
+								class="btn btn-primary pull-right">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+			        </div>
+				</div>
 			</div>
-		</div>
-		
-		
-		<div class="panel panel-default">
-		
-			<div class="panel-heading">Changement de mot de passe</div>
-			<div class="panel-body">
 			
-	    		<div class="form-group">
-					<input type="text" class="form-control" id="actualPassword" name="actualPassword"
-						placeholder="{{'crossfitApp.account.password.actual.placeholder' | translate}}"
-						ng-model="password.actual" ng-minlength=5 ng-maxlength=100 maxlength="100">
-		        </div>
-		        
-	    		<div class="form-group">
-					<input type="text" class="form-control" id="newPassword" name="newPassword"
-						placeholder="{{'crossfitApp.account.password.new.placeholder' | translate}}"
-						ng-model="password.new" ng-minlength=5 ng-maxlength=100 maxlength="100">
-		        </div>
-		        
-	    		<div class="form-group">
-					<input type="text" class="form-control" id="confirmNewPassword" name="confirmNewPassword"
-						placeholder="{{'crossfitApp.account.password.confirm.placeholder' | translate}}"
-						ng-model="password.confirm" ng-minlength=5 ng-maxlength=100 maxlength="100">
-		        </div>
-		        
-		        <div class="row">
-			        <div class="col-xs-12">
-				        <button type="submit"
-							ng-disabled="form.$invalid"
-							class="btn btn-primary pull-right">
-							<span class="glyphicon glyphicon-ok"></span>
-						</button>
+			<div class="panel panel-default">
+				<div class="panel-heading">Informations personnelles</div>
+				<div class="panel-body">
+			        
+			    	<div class="form-group"> 
+				            <select class="form-control" name="title" ng-model="account.title"
+							id="field_title" required>
+								<option value="MS" translate="crossfitApp.member.title.MS">Mme</option>
+								<option value="MR" translate="crossfitApp.member.title.MR">Mr</option>
+							</select>
+			        </div>
+			    	<div class="form-group"> 	        
+							<input type="text" class="form-control" id="firstName" name="firstName"
+								placeholder="{{'crossfitApp.member.firstname.placeholder' | translate}}"
+								ng-model="account.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
+			        </div>
+		    		<div class="form-group"> 
+					        <input type="text" class="form-control" id="lastName"
+								name="lastName"
+								placeholder="{{'crossfitApp.member.lastname.placeholder' | translate}}"
+								ng-model="account.lastName" ng-minlength=1 ng-maxlength=50
+								required maxlength="50">
+			        </div>
+				        
+			    	<div class="row"> 
+				        <div class="col-xs-12">
+				    	  	<div ng-show="form.firstName.$invalid">
+								<p class="help-block" ng-show="form.firstName.$error.required"
+									translate="crossfitApp.member.messages.validate.firstname.required">Your first name is required.</p>
+								<p class="help-block" ng-show="form.firstName.$error.minlength"
+									translate="crossfitApp.member.messages.validate.firstname.minlength"> Your first name is required to be at least 1 character.</p>
+								<p class="help-block" ng-show="form.firstName.$error.maxlength"
+									translate="crossfitApp.member.messages.validate.firstname.maxlength"> Your first name cannot be longer than 50 characters.</p>
+							</div>
+				    	
+				    	
+							<div ng-show="form.lastName.$invalid">
+								<p class="help-block" ng-show="form.lastName.$error.required"
+									translate="crossfitApp.member.messages.validate.lastname.required">Your
+									last name is required.</p>
+								<p class="help-block" ng-show="form.lastName.$error.minlength"
+									translate="crossfitApp.member.messages.validate.lastname.minlength">Your
+									last name is required to be at least 1 character.</p>
+								<p class="help-block" ng-show="form.lastName.$error.maxlength"
+									translate="crossfitApp.member.messages.validate.lastname.maxlength">Your
+									last name cannot be longer than 50 characters.</p>
+							</div>
+						</div>
 					</div>
-		        </div>
+		    
+				    <div class="row form-group">
+				    	<div class="col-xs-12">
+				    		<input type="text" class="form-control" id="address" name="address"
+								placeholder="{{'crossfitApp.member.address.placeholder' | translate}}"
+								ng-model="account.address" ng-maxlength=255 maxlength="255">
+				    	</div>
+			    	</div>
+			    	
+				    <div class="row form-group">
+				    	<div class="col-xs-5">
+				    		<input type="text" class="form-control" id="zipCode" name="zipCode"
+								placeholder="{{'crossfitApp.member.zipCode.placeholder' | translate}}"
+								ng-model="account.zipCode" ng-maxlength=20 maxlength="20">
+				    	</div>
+				    	<div class="col-xs-7">
+				    		<input type="text" class="form-control" id="city" name="city"
+								placeholder="{{'crossfitApp.member.city.placeholder' | translate}}"
+								ng-model="account.city" ng-maxlength=100 maxlength="100">
+				    	</div>
+			    	</div>
+				    <div class="form-group">
+			    		 <input type="text" class="form-control" name="telephonNumber" id="field_telephonNumber"
+			    		 placeholder="{{'crossfitApp.member.telephonNumber.placeholder' | translate}}"
+							ng-model="account.telephonNumber">
+					</div>
+					
+							        
+			        <div class="row">
+				        <div class="col-xs-12">
+					        <button type="submit"
+								ng-disabled="form.$invalid"
+								class="btn btn-primary pull-right">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+			        </div>
+			    	
+				</div>
 			</div>
-		</div>
-		
-		<div class="panel panel-default">
-		
-			<div class="panel-heading">Vos abonnements</div>
-			<div class="panel-body">
-				<ul class="list-group" ng-if="account.subscriptions.length">
-					<li class="list-group-item" ng-repeat="s in account.subscriptions">
-						
-				    	"{{s.membership.name}}" valable jusqu'au {{s.subscriptionEndDate | date:"dd MMM yyyy"}}
-					</li>
-				</ul>
+			
+			
+			<div class="panel panel-default">
+			
+				<div class="panel-heading">Changement de mot de passe</div>
+				<div class="panel-body">
+				
+		    		<div class="form-group">
+						<input type="text" class="form-control" id="actualPassword" name="actualPassword"
+							placeholder="{{'crossfitApp.account.password.actual.placeholder' | translate}}"
+							ng-model="password.actual" ng-minlength=5 ng-maxlength=100 maxlength="100">
+			        </div>
+			        
+		    		<div class="form-group">
+						<input type="text" class="form-control" id="newPassword" name="newPassword"
+							placeholder="{{'crossfitApp.account.password.new.placeholder' | translate}}"
+							ng-model="password.new" ng-minlength=5 ng-maxlength=100 maxlength="100">
+			        </div>
+			        
+		    		<div class="form-group">
+						<input type="text" class="form-control" id="confirmNewPassword" name="confirmNewPassword"
+							placeholder="{{'crossfitApp.account.password.confirm.placeholder' | translate}}"
+							ng-model="password.confirm" ng-minlength=5 ng-maxlength=100 maxlength="100">
+			        </div>
+			        
+			        <div class="row">
+				        <div class="col-xs-12">
+					        <button type="submit"
+								ng-disabled="form.$invalid"
+								class="btn btn-primary pull-right">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+			        </div>
+				</div>
+			</div>
+			
+			<div class="panel panel-default">
+			
+				<div class="panel-heading">Vos abonnements</div>
+				<div class="panel-body">
+					<ul class="list-group" ng-if="account.subscriptions.length">
+						<li class="list-group-item" ng-repeat="s in account.subscriptions">
+							
+					    	"{{s.membership.name}}" valable jusqu'au {{s.subscriptionEndDate | date:"dd MMM yyyy"}}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

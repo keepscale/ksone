@@ -7,7 +7,8 @@ angular.module('crossfitApp')
                 parent: 'site',
                 url: '/',
                 data: {
-                    roles: []
+                    roles: [],
+                    pageTitle: 'global.title'
                 },
                 views: {
                     'content@': {
@@ -35,6 +36,7 @@ angular.module('crossfitApp')
                     mainTranslatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate,$translatePartialLoader) {
                         $translatePartialLoader.addPart('main');
                         $translatePartialLoader.addPart('booking');
+                        $translatePartialLoader.addPart('global');
                         return $translate.refresh();
                     }]
                 }
