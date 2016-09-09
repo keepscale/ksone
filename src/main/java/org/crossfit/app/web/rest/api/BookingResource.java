@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -18,11 +19,13 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
@@ -30,6 +33,7 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.dto.BookingStatusDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
@@ -38,6 +42,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -53,6 +58,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 /**
  * REST controller for managing Booking.
@@ -78,6 +86,11 @@ public class BookingResource {
     @Inject
 	private SubscriptionRepository subscriptionRepository;
 
+    @Inject
+	private EventBus eventBus;
+
+    @Inject
+	private TimeSlotNotificationRepository notificationRepository;
 
     /**
      * GET  /bookings -> get all the bookings.
@@ -94,11 +107,42 @@ public class BookingResource {
     	
     	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
     		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
+
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
+            return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
     	}
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
-        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
+    	 return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
+
+	private TimeSlot findTimeSlot(Long timeSlotId) {
+		TimeSlot selectedTimeSlot = timeSlotRepository.findOne(timeSlotId);
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	
+    	
+    	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
+    	if(selectedTimeSlot == null){
+    		throw new CustomParameterizedException("TimeSlot introuvable", "");
+        } else if(!selectedTimeSlot.getBox().equals(currentCrossFitBox)){
+    		throw new CustomParameterizedException("Le timeSlot n'appartient pas à la box", "");
+        }
+		return selectedTimeSlot;
+	}
+	
+	private Stream<Booking> findBookingsFor(Date date, TimeSlot selectedTimeSlot) {
+
+    	
+    	LocalDate localDate = new LocalDate(date);
+    	// On ajoute l'heure à la date
+    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
+    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
+
+    	Stream<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt).stream()
+				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()));
+		return bookings;
+	}
+
+	
     @RequestMapping(value = "/bookings/{date}/{timeSlotId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -106,25 +150,10 @@ public class BookingResource {
     		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
     		@PathVariable Long timeSlotId) throws URISyntaxException {
     	
-    	TimeSlot selectedTimeSlot = timeSlotRepository.findOne(timeSlotId);
-    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
+    	Stream<Booking> bookings = findBookingsFor(date, selectedTimeSlot);
     	
-    	
-    	// Si le timeSlot n'existe pas ou si il n'appartient pas à la box
-    	if(selectedTimeSlot == null){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("TimeSlot introuvable", "")).body(null);
-        } else if(!selectedTimeSlot.getBox().equals(boxService.findCurrentCrossFitBox())){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Le timeSlot n'appartient pas à la box", "")).body(null);
-        }
-    	
-    	LocalDate localDate = new LocalDate(date);
-    	// On ajoute l'heure à la date
-    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
-    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
-
-    	Set<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt);
-		List<String> bookingNames = bookings.stream()
-				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()))
+		List<String> bookingNames = bookings
 				.map(b->{
 					String nick = b.getSubscription().getMember().getNickName();
 					return StringUtils.isEmpty(nick) ? "Anonyme" : nick;
@@ -135,6 +164,49 @@ public class BookingResource {
         return new ResponseEntity<>(bookingNames, HttpStatus.OK);
     }
 
+
+    
+    @RequestMapping(value = "/bookings/{date}/{timeSlotId}/status",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookingStatusDTO> getBookingStatusForTimeSlot(
+    		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
+    		@PathVariable Long timeSlotId) throws URISyntaxException {
+    	
+    	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
+    	Stream<Booking> bookings = findBookingsFor(date, selectedTimeSlot);
+
+
+    	Optional<TimeSlotNotification> notif = notificationRepository.findOneByDateAndTimeSlotAndMember(
+    			new LocalDate(date), selectedTimeSlot, SecurityUtils.getCurrentMember());
+			
+        return new ResponseEntity<BookingStatusDTO>(
+        		new BookingStatusDTO(selectedTimeSlot.getMaxAttendees(), bookings.count(), notif.isPresent()), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/bookings/{date}/{timeSlotId}/subscribe",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookingStatusDTO> subscribeNotificationForTimeSlot(
+    		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
+    		@PathVariable Long timeSlotId) throws URISyntaxException {
+    	
+    	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
+
+    	Optional<TimeSlotNotification> notif = notificationRepository.findOneByDateAndTimeSlotAndMember(
+    			new LocalDate(date), selectedTimeSlot, SecurityUtils.getCurrentMember());
+    	
+    	if (!notif.isPresent()){
+    		TimeSlotNotification notification = new TimeSlotNotification();
+    		notification.setDate(new LocalDate(date));
+    		notification.setMember(SecurityUtils.getCurrentMember());
+    		notification.setTimeSlot(selectedTimeSlot);
+    		
+			notificationRepository.save(notification);
+    	}
+			
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     /**
      * GET  /bookings/:id -> get the "id" booking.
@@ -165,7 +237,10 @@ public class BookingResource {
     @RequestMapping(value = "/bookings/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+    		@PathVariable Long id,
+    		@RequestParam(name="silent", defaultValue="false") boolean silent) {
+    	
         log.debug("REST request to delete Booking : {}", id);
 		Booking booking = bookingRepository.findOne(id);
 		
@@ -191,9 +266,13 @@ public class BookingResource {
     	
 		
         bookingRepository.delete(id);
+        
+        if (!silent){
+        	eventBus.notify("booking", Event.wrap(booking));
+        }
+        
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("booking", id.toString())).build();
     }
-    
     
 
     /**

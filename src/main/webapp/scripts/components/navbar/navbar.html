@@ -8,11 +8,17 @@
 				 <span class="glyphicon glyphicon-flash"
 				title="{{'global.menu.config'|translate}}"></span>
 			</a></li>
+			
+		<li ng-class="{active: $state.includes('members')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="member"> <span
+				class="glyphicon glyphicon-user"
+				title="{{'global.menu.members'|translate}}"></span>
+		</a></li>
 
-		<li ng-class="{active: $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="membership"> <span
-				class="glyphicon glyphicon-calendar"
-				title="{{'global.menu.memberships'|translate}}"></span>
+		<li ng-class="{active: $state.includes('timeSlot')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="timeSlot"> <span
+				class="glyphicon glyphicon-time"
+				title="{{'global.menu.timeslots'|translate}}"></span>
 		</a></li>
 		
 		<li ng-class="{active: $state.includes('timeSlotType')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
@@ -21,12 +27,17 @@
 				title="{{'global.menu.timeslottype'|translate}}"></span>
 		</a></li>
 
+		<li ng-class="{active: $state.includes('membership')}"  has-any-role="ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="membership"> <span
+				class="glyphicon glyphicon-calendar"
+				title="{{'global.menu.memberships'|translate}}"></span>
+		</a></li>
 		<li ng-class="{active: $state.includes('config')}"  has-any-role="ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="config"> <span
 				class="glyphicon glyphicon-cog"
 				title="{{'global.menu.config'|translate}}"></span>
 			</a></li>
-		<li ng-class="{active: $state.includes('account')}"><a
+		<li ng-class="{active: $state.includes('account')}"  has-any-role="ROLE_USER"><a
 			ui-sref="account.edit"> <span class="glyphicon glyphicon-user"
 				ui-sref-active="active" ng-switch-when="true"
 				title="{{account.firstName}} {{account.lastName}}"><!-- {{account.firstName | limitTo: 8}} --> </span>
@@ -50,29 +61,17 @@
 		</li>
 		
 		<li ng-class="{active: $state.includes('planning','planning.detail')}" ng-switch-when="true">
-			<a ui-sref="planningToDay"> <span class="glyphicon glyphicon-calendar" as-any-role="ROLE_USER"
+			<a ui-sref="planningToDay"> <span class="glyphicon glyphicon-calendar" has-any-role="ROLE_USER,ROLE_MANAGER,ROLE_ADMIN"
 				title="{{'global.menu.planning'|translate}}"></span>
 		</a>
 		</li>
 		
-		
-		<li ng-class="{active: $state.includes('members')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="member"> <span
-				class="glyphicon glyphicon-user"
-				title="{{'global.menu.members'|translate}}"></span>
-		</a></li>
-
-		<li ng-class="{active: $state.includes('timeSlot')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="timeSlot"> <span
-				class="glyphicon glyphicon-time"
-				title="{{'global.menu.timeslots'|translate}}"></span>
-		</a></li>
-		
-		<li ng-class="{active: $state.includes('booking')}"  has-any-role="ROLE_USER"
+		<li ng-class="{active: $state.includes('booking')}"  has-any-role="ROLE_USER,ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="booking"> <span
 				class="glyphicon glyphicon-time"
 				title="{{'global.menu.bookings'|translate}}"></span>
 		</a></li>
+		
 
 	</ul>
 </nav>

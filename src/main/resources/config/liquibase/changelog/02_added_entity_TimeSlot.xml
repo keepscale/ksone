@@ -65,13 +65,23 @@
             <column name="day_of_week" type="integer" />
             <column name="date" type="timestamp" />
             
-            <column name="start_time" type="time"/>
-            <column name="end_time" type="time"/>
+            <column name="start_time" type="time">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="time">
+                <constraints nullable="false"/>
+            </column>
             
-            <column name="max_attendees" type="integer"/>
+            <column name="max_attendees" type="integer">
+                <constraints nullable="false"/>
+            </column>
             
-            <column name="timeslottype_id" type="bigint"/>
-            <column name="box_id" type="bigint"/>
+            <column name="timeslottype_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="box_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
                         
             <column name="visible_after" type="date" />
             <column name="visible_before" type="date" />
@@ -135,6 +145,45 @@
         <addForeignKeyConstraint baseColumnNames="timeslot_id"
                                  baseTableName="TIMESLOT_EXCLUSION"
                                  constraintName="fk_timeslot_exclusion_timeslot_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="TIMESLOT"/>
+                    
+        <createTable tableName="TIMESLOT_NOTIFICATION">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            
+            <column name="timeslot_id" type="bigint"/>
+                        
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="member_id" type="bigint">
+            	<constraints nullable="false" />
+            </column>
+            
+            <column name="created_by" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(100)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>         
+
+		<addUniqueConstraint columnNames="timeslot_id, date, member_id" tableName="TIMESLOT_NOTIFICATION"/>		
+                                         
+        <addForeignKeyConstraint baseColumnNames="member_id"
+                                 baseTableName="TIMESLOT_NOTIFICATION"
+                                 constraintName="fk_timeslot_notification_member_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="MEMBER"/>
+                                 
+        <addForeignKeyConstraint baseColumnNames="timeslot_id"
+                                 baseTableName="TIMESLOT_NOTIFICATION"
+                                 constraintName="fk_timeslot_notification_timeslot_id"
                                  referencedColumnNames="id"
                                  referencedTableName="TIMESLOT"/>
         

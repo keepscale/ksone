@@ -26,6 +26,10 @@
 					</select>
 				</div>
 				
+				<div ng-if="booking.id == null && hasSubscribeNotification" class="alert alert-warning">
+					Vous serez notifié lorsqu'une place se libérera !
+				</div>
+				
 				<div ng-if="booking.id != null" class="alert alert-success">
 					Vous êtes inscrit à ce créneau depuis le {{booking.createdAt | date:"dd/MM/yyyy 'à' HH'h'mm"}}
 				</div>
@@ -42,6 +46,13 @@
 						
 						<span class="glyphicon glyphicon-remove"></span>
 							Annuler ma réservation
+					</button>
+					
+					<button ng-if="isFull && booking.id == null" class="btn btn-default" ng-click="subscribeNotification()"
+						ng-disabled="hasSubscribeNotification">
+						
+						<span class="glyphicon glyphicon-ok" style="{{hasSubscribeNotification ? 'color: green' : ''}}"></span>
+							Me notifier d'une place dispo.
 					</button>
 					
 					<button class="btn btn-default" ng-click="goBack()">
