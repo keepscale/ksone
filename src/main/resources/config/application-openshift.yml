@@ -40,7 +40,7 @@ spring:
         basename: i18n/messages
     thymeleaf:
         mode: XHTML
-        cache: true
+        cache: false
 
 http:
     cache:
@@ -63,3 +63,4 @@ mail:
     username: ${SENDGRID_USERNAME}
     password: ${SENDGRID_PASSWORD}
     protocol: sendgrid
+    from: ne-pas-repondre@crossfit-nancy.fr
