@@ -1,7 +1,9 @@
 package org.crossfit.app.web.rest.api;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Membership;
+import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.MemberService;
@@ -68,10 +71,18 @@ public class AccountResource {
         			s.setSubscriptionStartDate(subscription.getSubscriptionStartDate());
         			s.setSubscriptionEndDate(subscription.getSubscriptionEndDate());
         			
+
+        			subscription.getMembership().getMembershipRules().forEach(mr->{
+        				mr.setId(null);
+        				mr.setMembership(null);
+        			});;
+
         			Membership m = new Membership();
         			m.setName(subscription.getMembership().getName());
+        			m.setMembershipRules(subscription.getMembership().getMembershipRules());
+
         			s.setMembership(m);
-        			
+        			        			
         			dto.getSubscriptions().add(s);
 				}
         		

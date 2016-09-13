@@ -37,6 +37,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "left join fetch m.authorities "
     		+ "left join fetch m.subscriptions s "
     		+ "left join fetch s.membership ms "
+    		+ "left join fetch ms.membershipRules msr "
+    		+ "left join fetch msr.applyForTimeSlotTypes "
     		+ "where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);
 
