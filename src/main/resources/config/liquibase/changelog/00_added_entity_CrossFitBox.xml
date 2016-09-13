@@ -40,6 +40,9 @@
 			<column name="email_from" type="varchar(100)">
                 <constraints nullable="false" />
             </column>
+			<column name="social_enabled" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
             <column name="logo_url" type="varchar(255)"/>
 			<column name="time_zone" type="varchar(255)"/>
 			

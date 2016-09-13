@@ -24,12 +24,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.Title;
+import org.crossfit.app.domain.util.CustomLocalDateSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
+import org.joda.time.LocalDate;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * A Member.
@@ -62,6 +68,12 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Column(name = "nick_name", length = 50)
     private String nickName;
 
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "birthday_date", nullable = true)
+    private LocalDate birthdayDate;
+    
     @Size(max = 255)
     @Column(name = "address", length = 255)
     private String address;

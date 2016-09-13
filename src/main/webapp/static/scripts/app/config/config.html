@@ -1,0 +1,79 @@
+<form name="form" role="form" novalidate ng-submit="update()">
+
+	<div class="modal-header">
+		<h4 class="modal-title" id="myMemberLabel"
+			translate="crossfitApp.config.home.title">Configuration</h4>
+	</div>
+	
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-md-12">
+               	<jh-alert-error></jh-alert-error>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.name" for="field_name">Name</label>
+		            <input type="text" class="form-control" name="name" id="field_name" ng-model="box.name">
+		        </div>
+		        
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.websitepattern" for="field_websitepattern">websitepattern</label>
+		            <input type="text" class="form-control" name="websitepattern" id="field_websitepattern" ng-model="box.websitepattern">
+		        </div>
+		        
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.adminwebsite" for="field_adminwebsite">adminwebsite</label>
+		            <input type="text" class="form-control" name="adminwebsite" id="field_adminwebsite" ng-model="box.adminwebsite">
+		        </div>
+		        
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.bookingwebsite" for="field_bookingwebsite">bookingwebsite</label>
+		            <input type="text" class="form-control" name="bookingwebsite" id="field_bookingwebsite" ng-model="box.bookingwebsite">
+		        </div>
+		        
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.rootwebsite" for="field_rootwebsite">rootwebsite</label>
+		            <input type="text" class="form-control" name="rootwebsite" id="field_rootwebsite" ng-model="box.rootwebsite">
+		        </div>
+        	</div>
+        	
+        	
+			<div class="col-md-6">
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.emailFrom" for="field_emailFrom">emailFrom</label>
+		            <input type="text" class="form-control" name="emailFrom" id="field_emailFrom" ng-model="box.emailFrom">
+		        </div>
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.logoUrl" for="field_logoUrl">logoUrl</label>
+		            <input type="text" class="form-control" name="logoUrl" id="field_logoUrl" ng-model="box.logoUrl">
+		        </div>		   
+		        <div class="form-group">
+		            <label class="checkbox">
+					</label>
+		       			<input type="checkbox"
+						    name="socialEnabled"
+						    ng-model="box.socialEnabled" >
+							{{ 'crossfitApp.config.socialEnabled' | translate }}
+		        </div>		        
+        	</div>
+        </div>
+        
+    </div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal"
+			ng-click="clear()">
+			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+				translate="entity.action.cancel">Cancel</span>
+		</button>
+		<button type="submit"
+			ng-disabled="form.$invalid"
+			class="btn btn-primary">
+			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+				translate="entity.action.save">Save</span>
+		</button>
+	</div>
+</form>
+

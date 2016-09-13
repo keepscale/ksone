@@ -29,6 +29,7 @@
             <column name="first_name" type="varchar(50)"/>
             <column name="last_name" type="varchar(50)"/>
             <column name="nick_name" type="varchar(50)"/>
+            <column name="birthday_date" type="date" />
             <column name="address" type="varchar(255)"/>
             <column name="zip_code" type="varchar(20)"/>
             <column name="city" type="varchar(100))"/>

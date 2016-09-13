@@ -1,0 +1,32 @@
+'use strict';
+
+angular.module('crossfitApp')
+    .config(function ($stateProvider) {
+        $stateProvider
+        .state('account', {
+        	abstract: true,
+            parent: 'site'
+        })
+        .state('account.edit', {
+                parent: 'account',
+	            url: '/account',
+	            data: {
+	                roles: ['ROLE_USER'],
+	                pageTitle: 'crossfitApp.account.home.title'
+	            },
+	            views: {
+	                'content@': {
+	                    templateUrl: 'static/scripts/app/account/account.html',
+	                    controller: 'AccountController'
+	                }
+	            },
+	            resolve: {
+	                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                    $translatePartialLoader.addPart('account');
+	                    $translatePartialLoader.addPart('member');
+	                    $translatePartialLoader.addPart('global');
+	                    return $translate.refresh();
+	                }]
+	            }
+            });
+    });

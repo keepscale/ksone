@@ -149,7 +149,13 @@ public class BookingResource {
     public ResponseEntity<List<String>> getAllBookingForTimeSlot(
     		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
     		@PathVariable Long timeSlotId) throws URISyntaxException {
-    	
+		
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+
+    	if (!currentCrossFitBox.isSocialEnabled()){
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+		
     	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
     	Stream<Booking> bookings = findBookingsFor(date, selectedTimeSlot);
     	

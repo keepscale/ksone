@@ -123,8 +123,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4.1208</version>
-		</dependency>
+			</dependency>
 
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -220,6 +219,9 @@
 				<excludes>
 					<exclude>**/*.xml</exclude>
 				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
 			</resource>
 		</resources>
 		<plugins>

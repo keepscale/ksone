@@ -1,0 +1,73 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+	
+		<div class="panel panel-default" style="text-align: center;">
+			<div class="panel-heading">
+				Séance {{timeSlot.timeSlotType.name}} <br/>
+				{{booking.date | date:'EEEE dd MMM'}} à {{timeSlot.startTime  | date:'HH:mm'}}
+			</div>
+			<div class="panel-body">
+				
+				<div ng-if="message && !subscriptions.length" class="alert alert-danger">
+					<span ng-if="!errors.length">{{message}}</span>
+					<div ng-repeat="err in errors">
+						<span>{{err.message}}</span><br/>
+						<p ng-repeat="r in err.reasons"><i>{{r.message}}</i></p>
+					</div>
+				</div>
+				
+				<div ng-if="subscriptions.length > 0" class="alert alert-warning form-group">
+					{{message}}<br/>
+					<select class="form-control">
+						<option ng-click="selectSubscription(null)">Sélectionner</option>
+						<option ng-repeat="s in subscriptions" ng-click="selectSubscription(s)">
+							{{s.membership.name}} (Expire {{s.subscriptionEndDate | date:'MM/yy'}})
+						</option>
+					</select>
+				</div>
+				
+				<div ng-if="booking.id == null && hasSubscribeNotification" class="alert alert-warning">
+					Vous serez notifié lorsqu'une place se libérera !
+				</div>
+				
+				<div ng-if="booking.id != null" class="alert alert-success">
+					Vous êtes inscrit à ce créneau depuis le {{booking.createdAt | date:"dd/MM/yyyy 'à' HH'h'mm"}}
+				</div>
+		
+				<div class="btn-group btn-group-vertical" role="group" style="width: 100%">
+					<button class="btn btn-default" ng-click="saveBooking()"
+						ng-disabled="booking.id != null || booking.subscriptionId == null">
+						<span class="glyphicon glyphicon-ok"></span>
+						Réserver
+					</button>
+					
+					<button class="btn btn-default" ng-click="cancelBooking()"
+						ng-disabled="booking.id == null">
+						
+						<span class="glyphicon glyphicon-remove"></span>
+							Annuler ma réservation
+					</button>
+					
+					<button ng-if="isFull && booking.id == null" class="btn btn-default" ng-click="subscribeNotification()"
+						ng-disabled="hasSubscribeNotification">
+						
+						<span class="glyphicon glyphicon-ok" style="{{hasSubscribeNotification ? 'color: green' : ''}}"></span>
+							Me notifier d'une place dispo.
+					</button>
+					
+					<button class="btn btn-default" ng-click="goBack()">
+						<span class="glyphicon glyphicon-ban-circle"></span>
+						Retour
+					</button>
+				</div>
+			</div>
+			<div class="panel-footer" ng-if="socialEnabled">
+				<a href="" ng-click="loadBookings()">Qui est présent ?</a>
+				<ul ng-if="showBookings" class="list-group">
+					<li class="list-group-item" ng-if="!bookings.length">Pas encore d'inscrits</li>
+					<li class="list-group-item" ng-repeat="title in bookings">{{title}}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,23 @@
+{
+    "crossfitApp": {
+        "config" : {
+            "home": {
+                "title": "Configuration de la box"
+            },
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer"
+        	},
+        	"name" : "Nom de la box",
+        	"websitepattern" : "Regexp du site",
+        	"adminwebsite" : "Url du site d'admin",
+            "bookingwebsite": "Url du site de résa.",
+        	"rootwebsite" : "Racine du site",
+        	
+            "emailFrom": "Email d'envoi des mails",
+        	"logoUrl" : "Url du logo",
+        	"socialEnabled": "Activer les fonctionnalités 'social'"
+        }
+    }
+}
+

@@ -64,6 +64,9 @@ public class CrossFitBox implements Serializable {
     @Column(name = "time_zone", nullable = true)
     private String timeZone;
 
+    @NotNull        
+    @Column(name = "social_enabled", nullable = false)
+    private boolean socialEnabled = false;
 
     public Long getId() {
         return id;
@@ -113,7 +116,13 @@ public class CrossFitBox implements Serializable {
         this.rootwebsite = rootwebsite;
     }
     
-   
+	public boolean isSocialEnabled() {
+		return socialEnabled;
+	}
+
+	public void setSocialEnabled(boolean socialEnabled) {
+		this.socialEnabled = socialEnabled;
+	}
 
 	public String getEmailFrom() {
 		return emailFrom;

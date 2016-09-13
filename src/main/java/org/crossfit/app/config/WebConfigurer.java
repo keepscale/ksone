@@ -42,7 +42,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
                
         initCachingHttpHeadersFilter(servletContext, disps);
-        //initStaticResourcesProductionFilter(servletContext, disps);
+//        initStaticResourcesProductionFilter(servletContext, disps);
         initGzipFilter(servletContext, disps);
         
         log.info("Web application fully configured");
@@ -91,6 +91,8 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
                         new StaticResourcesProductionFilter());
 
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/");
+        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/bower_components/*");
+        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/i18n/*");
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
         staticResourcesProductionFilter.setAsyncSupported(true);
