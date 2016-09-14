@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/error/error.html'
+                        templateUrl: 'scripts/app/error/error.html'
                     }
                 },
                 resolve: {
@@ -30,7 +30,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/error/accessdenied.html'
+                        templateUrl: 'scripts/app/error/accessdenied.html'
                     }
                 },
                 resolve: {

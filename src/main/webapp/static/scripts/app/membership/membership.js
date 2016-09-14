@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/membership/memberships.html',
+                        templateUrl: 'scripts/app/membership/memberships.html',
                         controller: 'MembershipController'
                     }
                 },
@@ -32,7 +32,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/membership/membership-dialog.html',
+                        templateUrl: 'scripts/app/membership/membership-dialog.html',
                         controller: 'MembershipDialogController',
                         size: 'lg',
                         resolve: {
@@ -56,7 +56,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/membership/membership-dialog.html',
+                        templateUrl: 'scripts/app/membership/membership-dialog.html',
                         controller: 'MembershipDialogController',
                         size: 'lg',
                         resolve: {

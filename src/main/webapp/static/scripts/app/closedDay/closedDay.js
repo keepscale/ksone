@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/closedDay/closedDays.html',
+                        templateUrl: 'scripts/app/closedDay/closedDays.html',
                         controller: 'ClosedDayController'
                     }
                 },
@@ -32,7 +32,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/closedDay/closedDay-dialog.html',
+                        templateUrl: 'scripts/app/closedDay/closedDay-dialog.html',
                         controller: 'ClosedDayDialogController',
                         size: 'lg',
                         resolve: {
@@ -55,7 +55,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/closedDay/closedDay-dialog.html',
+                        templateUrl: 'scripts/app/closedDay/closedDay-dialog.html',
                         controller: 'ClosedDayDialogController',
                         size: 'lg',
                         resolve: {

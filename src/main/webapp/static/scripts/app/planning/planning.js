@@ -12,7 +12,7 @@ angular.module('crossfitApp')
 	            },
 	            views: {
 	                'content@': {
-	                    templateUrl: 'static/scripts/app/planning/planning.html',
+	                    templateUrl: 'scripts/app/planning/planning.html',
 	                    controller: 'PlanningController'
 	                }
 	            }
@@ -26,7 +26,7 @@ angular.module('crossfitApp')
 	            },
 	            views: {
 	                'content@': {
-	                    templateUrl: 'static/scripts/app/planning/planning.html',
+	                    templateUrl: 'scripts/app/planning/planning.html',
 	                    controller: 'PlanningController'
 	                }
 	            },
@@ -47,7 +47,7 @@ angular.module('crossfitApp')
 	                },
 	                views: {
 	                    'content@': {
-	                        templateUrl: 'static/scripts/app/planning/prepare.booking.html',
+	                        templateUrl: 'scripts/app/planning/prepare.booking.html',
 	                        controller: 'PrepareBookingController'
 	                    }
 	                },

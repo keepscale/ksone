@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/account/password/password.html',
+                        templateUrl: 'scripts/app/account/password/password.html',
                         controller: 'PasswordController'
                     }
                 },

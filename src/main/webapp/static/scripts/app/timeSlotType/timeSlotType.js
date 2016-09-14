@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/timeSlotType/timeSlotTypes.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotTypes.html',
                         controller: 'TimeSlotTypeController'
                     }
                 },
@@ -32,7 +32,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/timeSlotType/timeSlotType-dialog.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html',
                         controller: 'TimeSlotTypeDialogController',
                         size: 'lg',
                         resolve: {
@@ -55,7 +55,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/timeSlotType/timeSlotType-dialog.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html',
                         controller: 'TimeSlotTypeDialogController',
                         size: 'lg',
                         resolve: {

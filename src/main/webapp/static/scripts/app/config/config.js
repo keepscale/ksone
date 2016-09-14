@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/config/config.html',
+                        templateUrl: 'scripts/app/config/config.html',
                         controller: 'ConfigController'
                     }
                 },

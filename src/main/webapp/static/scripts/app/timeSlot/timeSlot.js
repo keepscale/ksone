@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/timeSlot/timeSlots.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlots.html',
                         controller: 'TimeSlotController'
                     }
                 },
@@ -32,7 +32,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/timeSlot/timeSlot-dialog.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
                         controller: 'TimeSlotDialogController',
                         size: 'lg',
                         resolve: {
@@ -62,7 +62,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/timeSlot/timeSlot-dialog.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
                         controller: 'TimeSlotDialogController',
                         size: 'lg',
                         resolve: {
@@ -84,7 +84,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/timeSlot/timeSlot-dialog-suppr.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog-suppr.html',
                         controller: 'TimeSlotDialogSupprController',
                         size: 'lg',
                         resolve: {

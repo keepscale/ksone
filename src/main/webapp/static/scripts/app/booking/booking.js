@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'static/scripts/app/booking/bookings.html',
+                        templateUrl: 'scripts/app/booking/bookings.html',
                         controller: 'BookingController'
                     }
                 },
@@ -32,7 +32,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/booking/booking-dialog.html',
+                        templateUrl: 'scripts/app/booking/booking-dialog.html',
                         controller: 'BookingDialogController',
                         size: 'sm',
                         resolve: {
@@ -60,7 +60,7 @@ angular.module('crossfitApp')
                 },
                 onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
                     $modal.open({
-                        templateUrl: 'static/scripts/app/booking/booking-dialog.html',
+                        templateUrl: 'scripts/app/booking/booking-dialog.html',
                         controller: 'BookingDialogController',
                         size: 'sm',
                         resolve: {

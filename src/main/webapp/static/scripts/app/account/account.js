@@ -16,7 +16,7 @@ angular.module('crossfitApp')
 	            },
 	            views: {
 	                'content@': {
-	                    templateUrl: 'static/scripts/app/account/account.html',
+	                    templateUrl: 'scripts/app/account/account.html',
 	                    controller: 'AccountController'
 	                }
 	            },

@@ -15,11 +15,11 @@ angular.module('crossfitApp')
 
                         templateProvider: function(Principal, $stateParams, $templateFactory){
                        	 if(Principal.isInAnyRole(['ROLE_MANAGER', 'ROLE_ADMIN'])){
-        	                	return $templateFactory.fromUrl('static/scripts/app/main/main.manager.html', $stateParams);
+        	                	return $templateFactory.fromUrl('scripts/app/main/main.manager.html', $stateParams);
         	                } 
         	                else {
         	                	
-        	                	return $templateFactory.fromUrl('static/scripts/app/main/main.user.html', $stateParams);
+        	                	return $templateFactory.fromUrl('scripts/app/main/main.user.html', $stateParams);
         	                }
                         },
                         controllerProvider: function(Principal){

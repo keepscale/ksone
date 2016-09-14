@@ -68,7 +68,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
             'abstract': true,
             views: {
                 'navbar@': {
-                    templateUrl: 'static/scripts/components/navbar/navbar.html',
+                    templateUrl: 'scripts/components/navbar/navbar.html',
                     controller: 'NavbarController'
                 }
             },
@@ -90,7 +90,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         
         // Initialize angular-translate
         $translateProvider.useLoader('$translatePartialLoader', {
-            urlTemplate: 'static/i18n/{lang}/{part}.json'
+            urlTemplate: 'i18n/{lang}/{part}.json'
         });
 
         $translateProvider.preferredLanguage('fr');
@@ -98,7 +98,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         $translateProvider.useSanitizeValueStrategy('escaped');
         $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
 
-        tmhDynamicLocaleProvider.localeLocationPattern('static/bower_components/angular-i18n/angular-locale_{{locale}}.js');
+        tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js');
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
         
