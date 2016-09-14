@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.validator.constraints.Email;
@@ -86,8 +87,9 @@ public class MemberDTO {
     private String langKey;
 
     private List<String> roles;
-    
+
     private List<Subscription> subscriptions = new ArrayList<>();
+    private List<MembershipRules> rules = new ArrayList<>();
 
     public String getLogin(){
     	return this.email;
@@ -237,7 +239,16 @@ public class MemberDTO {
 		this.subscriptions = subscriptions;
 	}
 	
+	
 
+
+	public List<MembershipRules> getRules() {
+		return rules;
+	}
+
+	public void setRules(List<MembershipRules> rules) {
+		this.rules = rules;
+	}
 
 	public List<String> getRoles() {
 		return roles;

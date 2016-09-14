@@ -109,6 +109,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/account/**").authenticated()
+            .antMatchers("/api/boxs/current").authenticated()
             .antMatchers("/api/boxs/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/membershipTypes/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers(HttpMethod.GET, "/api/bookings/**").authenticated()
