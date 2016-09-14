@@ -178,4 +178,24 @@ public class MemberService {
 	}
 
 
+	public void updateAccount(MemberDTO dto) {
+		
+		Member online = SecurityUtils.getCurrentMember();
+		
+		if(online == null){
+			return;
+		}
+
+		online.setTitle(dto.getTitle());
+		online.setFirstName(dto.getFirstName());
+		online.setLastName(dto.getLastName());
+		online.setAddress(dto.getAddress());
+		online.setZipCode(dto.getZipCode());
+		online.setCity(dto.getZipCode());
+		online.setTelephonNumber(dto.getTelephonNumber());
+		
+		memberRepository.save(online);
+	}
+
+
 }

@@ -28,6 +28,8 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Informations personnelles</div>
 				<div class="panel-body">
+			        		
+			        <jh-alert-error></jh-alert-error>
 			        
 			    	<div class="form-group"> 
 				            <select class="form-control" name="title" ng-model="account.title"
@@ -104,7 +106,7 @@
 							        
 			        <div class="row">
 				        <div class="col-xs-12">
-					        <button type="submit"
+					        <button ng-click="updatePersonnalInformation()"
 								ng-disabled="form.$invalid"
 								class="btn btn-primary pull-right">
 								<span class="glyphicon glyphicon-ok"></span>

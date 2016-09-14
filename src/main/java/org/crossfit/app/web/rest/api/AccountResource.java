@@ -7,22 +7,29 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
+import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
 import org.crossfit.app.service.TimeService;
+import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +63,22 @@ public class AccountResource {
         return request.getRemoteUser();
     }
 
+
+    /**
+     * PUT  /account -> update the current user information.
+     */
+    @RequestMapping(value = "/account",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MemberDTO> update(@Valid @RequestBody MemberDTO dto) {
+        log.debug("REST request to update account");
+
+    	memberService.updateAccount(dto);
+        
+        return getAccount();
+    }
+    
+    
     /**
      * GET  /account -> get the current user.
      */
