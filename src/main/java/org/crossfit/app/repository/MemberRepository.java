@@ -8,8 +8,10 @@ import org.crossfit.app.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Spring Data JPA repository for the Member entity.
@@ -44,6 +46,17 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     @Query("select m from Member m where m.box = :box and m.enabled = false")
     List<Member> findAllUserNotEnabled(@Param("box") CrossFitBox box);
+
+
+    @Modifying(clearAutomatically=true)
+	@Transactional
+	@Query("UPDATE Member m SET m.cardUuid = :cardUuid where m.id = :id")
+	void updateCardUuid(@Param("id") Long id, @Param("cardUuid") String cardUuid);
+
+    @Modifying(clearAutomatically=true)
+	@Transactional
+	@Query("UPDATE Member m SET m.cardUuid = NULL where m.cardUuid = :cardUuid")
+	void clearUsageCardUuid(@Param("cardUuid") String cardUuid);
     
 
 }

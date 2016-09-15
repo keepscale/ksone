@@ -42,6 +42,7 @@ public class AccessCardAuthenticationFilter extends OncePerRequestFilter {
              
              
              Authentication auth = new AccessCardAuthentication();
+             auth.setAuthenticated(true);
              SecurityContextHolder.getContext().setAuthentication(auth);           
         }
         
