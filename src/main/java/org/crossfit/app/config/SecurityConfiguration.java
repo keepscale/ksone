@@ -2,6 +2,7 @@ package org.crossfit.app.config;
 
 import javax.inject.Inject;
 
+import org.crossfit.app.security.AccessCardAuthenticationFilter;
 import org.crossfit.app.security.AjaxAuthenticationFailureHandler;
 import org.crossfit.app.security.AjaxAuthenticationSuccessHandler;
 import org.crossfit.app.security.AjaxLogoutSuccessHandler;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 @Configuration
@@ -105,6 +107,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .headers()
             .frameOptions()
             .disable()
+        .and()
+        	.addFilterBefore(
+        			new AccessCardAuthenticationFilter(env.getProperty("security.access.card.token")), 
+        			BasicAuthenticationFilter.class)
+        	.authorizeRequests()
+        	.antMatchers("/card/**").hasAuthority(AuthoritiesConstants.ACCESS_CARD)
         .and()
             .authorizeRequests()
             .antMatchers("/api/authenticate").permitAll()

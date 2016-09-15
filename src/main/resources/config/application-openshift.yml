@@ -53,6 +53,7 @@ cache:
 
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: 7ca8472b058a18726dfg425e5f6u6k85dx6546c6b7
+security.access.card.token: 9R99504y7l6h4F87Ihhb2qGG97T2mYfU
 
 async:
     corePoolSize: 2
