@@ -239,15 +239,12 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "TimeSlot{" +
-                "id=" + id +
-                ", dayOfWeek='" + dayOfWeek + "'" +
-                ", startTime='" + startTime + "'" +
-                ", endTime='" + endTime + "'" +
-                ", maxAttendees='" + maxAttendees + "'" +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "TimeSlot [id=" + id + ", name=" + name + ", recurrent=" + recurrent + ", dayOfWeek=" + dayOfWeek
+				+ ", date=" + date + ", startTime=" + startTime + ", endTime=" + endTime + ", maxAttendees="
+				+ maxAttendees + ", visibleAfter=" + visibleAfter + ", visibleBefore=" + visibleBefore + "]";
+	}
+
     
 }

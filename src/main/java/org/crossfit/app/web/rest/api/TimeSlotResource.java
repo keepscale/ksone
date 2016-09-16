@@ -120,7 +120,7 @@ public class TimeSlotResource {
 		}
 		
 
-		
+		log.debug("Sauvegarde du timeslot: {}", timeSlot);
 		TimeSlot result = timeSlotRepository.save(timeSlot);
 
 		timeSlotExclusionRepository.delete(timeSlotExclusionRepository.findAllByTimeSlot(timeSlot));
@@ -133,7 +133,8 @@ public class TimeSlotResource {
 		for (TimeSlotExclusion timeSlotExclusion : exptectedExclusions) {
 			timeSlotExclusionRepository.save(timeSlotExclusion);
 		}
-		
+
+		log.debug("Timeslot sauvegardé: {}", result);
 		
 		return result;
 	}

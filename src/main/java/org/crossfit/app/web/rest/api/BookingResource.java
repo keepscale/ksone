@@ -451,9 +451,12 @@ public class BookingResource {
         b.setStartAt(startAt);
         b.setEndAt(endAt);
     	b.setStatus(BookingStatus.VALIDATED);
-    	
+
+
+		log.debug("Booking a sauvegarder ou a preparer: {}", b);
     	if(!prepare){
 	        Booking result = bookingRepository.save(b);
+    		log.debug("Booking sauvegarde: {}", b);
 	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
     	}
     	else{
