@@ -308,6 +308,143 @@
 					</arguments>
 				</configuration>
 			</plugin>
+					
+			<plugin>
+		        <groupId>com.samaxes.maven</groupId>
+		        <artifactId>minify-maven-plugin</artifactId>
+		        <version>1.7.4</version>
+		        <executions>
+		          <execution>
+		            <id>default-minify</id>
+		            <phase>compile</phase><!-- When omitted defaults to 'process-resources' -->
+		            <configuration>
+		              <charset>UTF-8</charset>
+		              <jsSourceDir>static</jsSourceDir>
+		              <jsSourceFiles>
+		              
+						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
+						<jsSourceFile>/bower_components/jquery/dist/jquery.js</jsSourceFile>
+						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.js</jsSourceFile>
+						<jsSourceFile>/bower_components/json3/lib/json3.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular/angular.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-bootstrap/ui-bootstrap-tpls.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-ui-router/release/angular-ui-router.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-resource/angular-resource.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-cookies/angular-cookies.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-sanitize/angular-sanitize.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-translate/angular-translate.js</jsSourceFile>
+						<jsSourceFile>/bower_components/messageformat/messageformat.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-local-storage/dist/angular-local-storage.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-cache-buster/angular-cache-buster.js</jsSourceFile>
+						        
+						        
+						<jsSourceFile>/bower_components/moment/moment.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js</jsSourceFile>
+						        
+						<jsSourceFile>/bower_components/moment/min/moment.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/fullcalendar/dist/fullcalendar.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/fullcalendar/dist/gcal.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-ui-calendar/src/calendar.js</jsSourceFile>
+		              
+						<jsSourceFile>/scripts/app/app.js</jsSourceFile>
+						<jsSourceFile>/scripts/app/app.constants.js</jsSourceFile>
+						<jsSourceFile>/scripts/components/auth/auth.service.js</jsSourceFile>
+						
+					    <jsSourceFile>/scripts/components/auth/principal.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/auth/authority.directive.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/auth/services/account.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/auth/services/password.service.js</jsSourceFile>
+						<jsSourceFile>/scripts/components/form/form.directive.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/interceptor/auth.interceptor.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/interceptor/errorhandler.interceptor.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/interceptor/notification.interceptor.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/navbar/navbar.directive.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/navbar/navbar.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/util/truncate.filter.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/util/base64.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/alert/alert.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/alert/alert.directive.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/util/parse-links.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/util/dateutil.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/account.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/account.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/login/login.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/login/login.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/logout/logout.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/logout/logout.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/password/password.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/password/password.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/account/password/password.directive.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/error/error.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/language/language.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/language/language.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/auth/provider/auth.session.service.js</jsSourceFile>
+					    
+					    <jsSourceFile>/scripts/app/main/main.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/main/main.user.controller.js</jsSourceFile>  
+					    <jsSourceFile>/scripts/app/main/main.manager.controller.js</jsSourceFile>    
+					    
+					    <jsSourceFile>/scripts/app/booking/booking.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/booking/booking.controller.js</jsSourceFile>   
+					    <jsSourceFile>/scripts/app/booking/booking-dialog.controller.js</jsSourceFile>   
+					    <jsSourceFile>/scripts/components/booking/booking.service.js</jsSourceFile>
+					    
+					    
+					    <jsSourceFile>/scripts/components/planning/planning.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/subscription/subscription.service.js</jsSourceFile>
+					    
+					    
+					    <jsSourceFile>/scripts/app/timeSlot/timeSlot.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/timeSlot/timeSlot.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/timeSlot/timeSlot-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/timeSlot/timeSlot-dialog-suppr.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/timeSlot/timeSlot.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/timeSlot/timeSlotType.service.js</jsSourceFile>
+					    
+					    
+					    <jsSourceFile>/scripts/app/membership/membership.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/membership/membership.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/membership/membership-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/membership/membership.service.js</jsSourceFile>
+				    
+					    <jsSourceFile>/scripts/app/member/member.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/member/member.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/member/member-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/member/member.service.js</jsSourceFile>
+				    
+					    <jsSourceFile>/scripts/app/config/config.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/config/config.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/crossfitbox/crossfitbox.service.js</jsSourceFile>
+				    	    
+					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType-dialog.controller.js</jsSourceFile>
+					    
+					    <jsSourceFile>/scripts/app/closedDay/closedDay.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/closedDay/closedDay.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/closedDay/closedDay-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/closedDay/closedDay.service.js</jsSourceFile>
+					    
+					    
+					    <jsSourceFile>/scripts/app/planning/planning.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/planning/planning.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/planning/prepare.booking.controller.js</jsSourceFile>
+		              </jsSourceFiles>
+		              <jsFinalFile>script.js</jsFinalFile>
+		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>
+		              <jsEngine>YUI</jsEngine>
+		              <skipMinify>true</skipMinify>
+		            </configuration>
+		            <goals>
+		              <goal>minify</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
 		</plugins>
 	</build>
 
@@ -368,8 +505,7 @@
 			</build>
 			<properties>
 				<!-- log configuration -->
-				<logback.loglevel>INFO</logback.loglevel>
-				<grunt.build>buildOpenshift</grunt.build>
+				<logback.loglevel>DEBUG</logback.loglevel>
 			</properties>
 		</profile>
 	</profiles>
