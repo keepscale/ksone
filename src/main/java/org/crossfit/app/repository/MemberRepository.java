@@ -44,9 +44,12 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);
 
+    
+    @Query("select m from Member m where m.cardUuid = :cardUuid and m.box = :box")
+    Optional<Member> findOneByCardUuid(@Param("cardUuid") String cardUuid, @Param("box") CrossFitBox currentCrossFitBox);
+
     @Query("select m from Member m where m.box = :box and m.enabled = false")
     List<Member> findAllUserNotEnabled(@Param("box") CrossFitBox box);
-
 
     @Modifying(clearAutomatically=true)
 	@Transactional
@@ -57,6 +60,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 	@Transactional
 	@Query("UPDATE Member m SET m.cardUuid = NULL where m.cardUuid = :cardUuid")
 	void clearUsageCardUuid(@Param("cardUuid") String cardUuid);
+
     
 
 }

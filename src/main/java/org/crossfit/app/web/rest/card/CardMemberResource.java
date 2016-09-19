@@ -1,20 +1,33 @@
 package org.crossfit.app.web.rest.card;
 
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.Member;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
+import org.crossfit.app.web.rest.card.dto.MemberCardDTO;
+import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.util.PaginationUtil;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +51,11 @@ public class CardMemberResource {
 	private CrossFitBoxSerivce boxService;
 	
 	@Inject	
-	private MemberRepository memberRepository;    
+	private MemberRepository memberRepository;  
+	@Inject	
+	private BookingRepository bookingRepository; 
+	@Inject	
+	private TimeService timeService;      
     
     
 	/**
@@ -64,7 +81,7 @@ public class CardMemberResource {
 				includeActif, includeNotEnabled, includeBloque, generatePageRequest).stream().map(MemberDTO.MAPPER).collect(Collectors.toList());
 	}
 
-	
+
     /**
      * PUT  /account -> update the current user information.
      */
@@ -78,6 +95,43 @@ public class CardMemberResource {
         memberRepository.updateCardUuid(id, cardUuid);
         
         return ResponseEntity.ok().build();
+    }
+    
+
+    /**
+     * GET  /bookings/{carduuid} -> get the bookings of the user associated with card uuid.
+     */
+    @RequestMapping(value = "/{carduuid}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MemberCardDTO> get(@PathVariable String carduuid,
+    		@RequestParam(name="now", required=false) @DateTimeFormat(iso=ISO.DATE_TIME) Date date, 
+    		@RequestParam(name="lessMinute", defaultValue="30", required=false) int lessMinute, 
+    		@RequestParam(name="moreMinute", defaultValue="120", required=false) int moreMinute) {
+        log.debug("REST request to get the bookings of the user associated with card uuid : {}", carduuid);
+
+        CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Optional<Member> member = memberRepository.findOneByCardUuid(carduuid, box);
+        
+		return member
+		.map(m -> {
+			
+			DateTime now = date == null ? timeService.nowAsDateTime(box) : new DateTime(date);
+			
+			DateTime start = now.minusMinutes(lessMinute);
+			DateTime end = now.plusMinutes(moreMinute);
+			
+			log.debug("Il est {} (force={}) Recherche de resa entre le {} et le {} pour l'utilisateur {}", now, date !=null, start, end, m.getId());
+			
+			List<BookingDTO> bookings = bookingRepository.findAllStartBetween(box, m, start.toLocalDateTime(), end.toLocalDateTime())
+					.stream().map(BookingDTO.cardMapper).collect(Collectors.toList());
+
+			MemberCardDTO result = new MemberCardDTO(m, bookings);			
+			
+			return ResponseEntity.ok(result); 
+		})
+		.orElse(new ResponseEntity<MemberCardDTO>(HttpStatus.NOT_FOUND));
+        
     }
 	
 }

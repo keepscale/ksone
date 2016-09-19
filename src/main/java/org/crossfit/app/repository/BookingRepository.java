@@ -1,25 +1,40 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
+import java.util.Set;
+
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Spring Data JPA repository for the Booking entity.
  */
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 	
-    @Query("select b from Booking b left join fetch b.subscription s left join fetch s.member left join fetch s.membership ms where b.box =:box AND b.startAt between :start and :end")
+    public static final String START_BETWEEN = ""
+    		+ "select b from Booking b "
+    		+ "left join fetch b.subscription s "
+    		+ "left join fetch s.member "
+    		+ "left join fetch s.membership ms "
+    		+ "WHERE b.box =:box AND b.startAt BETWEEN :start AND :end";
+
+	@Query(START_BETWEEN)
 	Set<Booking> findAllStartBetween(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
+	
+	@Query(START_BETWEEN + " AND s.member = :member ")
+	Set<Booking> findAllStartBetween(@Param("box") CrossFitBox box, @Param("member") Member member, 
+			@Param("start") LocalDateTime start, 
+			@Param("end") LocalDateTime end);
     
     @Query("select b from Booking b left join fetch b.subscription s left join fetch s.member left join fetch s.membership ms where b.box =:box AND b.startAt = :start and b.endAt = :end")
  	Set<Booking> findAllAt(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);

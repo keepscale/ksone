@@ -89,6 +89,9 @@ public class BookingPlanningResource {
 
     	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), start, end);
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
+
+		log.debug("Recherche des resas entre {} et {}", start, end);
+		
 		List<Booking> bookings = new ArrayList<>(
     			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
 		
@@ -128,6 +131,8 @@ public class BookingPlanningResource {
 		List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(currentCrossFitBox, startAt, endAt);
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	
+		log.debug("Recherche des resas entre {} et {}", startAt, endAt);
+		
 		List<Booking> bookings = new ArrayList<>(
     			bookingRepository.findAllStartBetween(currentCrossFitBox, startAt, endAt));
 		

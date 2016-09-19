@@ -28,6 +28,7 @@ import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
 import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +56,8 @@ public class BookingRulesChecker {
 	public Optional<MembershipRules> breakRulesToCancel(Booking booking, Collection<MembershipRules> rulesToVerify){
 
 		Optional<MembershipRules> breakingRule = rulesToVerify.stream().filter(isRuleApplyFor(booking)).filter(r->{
-			DateTime cancellableBefore = booking.getStartAt().minusHours(r.getNbHoursAtLeastToCancel());			
-			return now.isAfter(cancellableBefore);
+			LocalDateTime cancellableBefore = booking.getStartAt().minusHours(r.getNbHoursAtLeastToCancel());			
+			return now.toLocalDateTime().isAfter(cancellableBefore);
 		}).findFirst();
 		
 		return breakingRule;
@@ -70,7 +71,7 @@ public class BookingRulesChecker {
 
 		Booking booking = new Booking();
         booking.setTimeSlotType(timeSlotType);
-        booking.setStartAt(startAt);
+        booking.setStartAt(startAt.toLocalDateTime());
                 
         List<Subscription> possibleSubscriptionsToUse = new ArrayList<>();
         List<SubscriptionException> subscriptionsInvalid = new ArrayList<>();
@@ -158,7 +159,7 @@ public class BookingRulesChecker {
 					return false;
 				
 				Optional<Booking> lastBooking = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).max(Comparator.comparing((Booking::getStartAt)));
-				DateTime lastBookingDate = lastBooking.map(Booking::getStartAt).orElse(bookingToTest.getStartAt()).plusDays(1);
+				LocalDateTime lastBookingDate = lastBooking.map(Booking::getStartAt).orElse(bookingToTest.getStartAt()).plusDays(1);
 				//On cherche les résa a un type de creneau ou s'appplique la regle
 				List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
 				
@@ -170,7 +171,7 @@ public class BookingRulesChecker {
 						break;
 
 					case SUM_PER_WEEK: //somme total des resa de la semaine passe
-						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(1), bookingsForRules);
+						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(1).to, bookingsForRules);
 						break;
 						
 					case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
@@ -196,11 +197,11 @@ public class BookingRulesChecker {
 		};
 	}
 	
-	private static final long countMaxBouking(DateTime deb, DateTime finalEnd, Function<DateTime, DateTime> increment, Collection<Booking> bookingsForRules){
+	private static final long countMaxBouking(LocalDateTime deb, LocalDateTime finalEnd, Function<LocalDateTime, LocalDateTime> increment, Collection<Booking> bookingsForRules){
 		long maxCount = 0;
 		while(deb.isBefore(finalEnd)){
-			DateTime after = deb;
-			DateTime before = increment.apply(deb);
+			LocalDateTime after = deb;
+			LocalDateTime before = increment.apply(deb);
 			
 			long count = bookingsForRules.stream().filter(b->b.getStartAt().isAfter(after) && b.getStartAt().isBefore(before)).count();
 			if (count > maxCount){
