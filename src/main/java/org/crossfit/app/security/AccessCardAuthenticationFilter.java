@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,8 +37,7 @@ public class AccessCardAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.isNotEmpty(xAccessToken)){
         	
         	 if(!StringUtils.equals(xAccessToken, tokenValue)){
-                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad Token value");
-                 return;
+                 throw new SecurityException();
              }                            
              
              

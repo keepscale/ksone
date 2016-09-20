@@ -21,7 +21,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -44,14 +43,14 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     @Column(name = "start_at", nullable = false)
-    private LocalDateTime startAt;
+    private DateTime startAt;
 
     @NotNull        
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     @Column(name = "end_at", nullable = false)
-    private LocalDateTime endAt;
+    private DateTime endAt;
 
     @NotNull        
     @Enumerated(EnumType.STRING)
@@ -75,19 +74,19 @@ public class Booking extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getStartAt() {
+    public DateTime getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(LocalDateTime startAt) {
+    public void setStartAt(DateTime startAt) {
         this.startAt = startAt;
     }
 
-    public LocalDateTime getEndAt() {
+    public DateTime getEndAt() {
         return endAt;
     }
 
-    public void setEndAt(LocalDateTime endAt) {
+    public void setEndAt(DateTime endAt) {
         this.endAt = endAt;
     }
 
