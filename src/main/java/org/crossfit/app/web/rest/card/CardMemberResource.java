@@ -118,12 +118,12 @@ public class CardMemberResource {
 			
 			DateTime now = date == null ? timeService.nowAsDateTime(box) : new DateTime(date);
 			
-			DateTime start = now.minusMinutes(lessMinute);
-			DateTime end = now.plusMinutes(moreMinute);
+			DateTime start = now.minusMinutes(lessMinute).toDateTimeISO();
+			DateTime end = now.plusMinutes(moreMinute).toDateTimeISO();
 			
 			log.debug("Il est {} (force={}) Recherche de resa entre le {} et le {} pour l'utilisateur {}", now, date !=null, start, end, m.getId());
 			
-			List<BookingDTO> bookings = bookingRepository.findAllStartBetween(box, m, start.toLocalDateTime(), end.toLocalDateTime())
+			List<BookingDTO> bookings = bookingRepository.findAllStartBetween(box, m, start, end)
 					.stream().map(BookingDTO.cardMapper).collect(Collectors.toList());
 
 			MemberCardDTO result = new MemberCardDTO(m, bookings);			
