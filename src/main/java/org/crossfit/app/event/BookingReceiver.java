@@ -39,8 +39,8 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 
 	public void accept(Event<Booking> event) {
 		Booking booking = event.getData();
-		LocalTime start = booking.getStartAt().toDateTime(DateTimeZone.UTC).toLocalTime();
-		LocalTime end = booking.getEndAt().toDateTime(DateTimeZone.UTC).toLocalTime();
+		LocalTime start = booking.getStartAt().toLocalTime();
+		LocalTime end = booking.getEndAt().toLocalTime();
 		TimeSlotType timeSlotType = booking.getTimeSlotType();
 		CrossFitBox box = booking.getBox();
 

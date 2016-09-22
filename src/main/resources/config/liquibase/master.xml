@@ -15,6 +15,7 @@
     <include file="classpath:config/liquibase/changelog/04_added_entity_Subscription.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/05_added_entity_Booking.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/06_added_entity_ClosedDay.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/07_timezone.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/datas.xml" relativeToChangelogFile="false"/>
  
 </databaseChangeLog>

@@ -78,7 +78,8 @@ public class BookingPlanningResource {
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
         
-    	DateTime start = timeService.nowAsDateTime(currentCrossFitBox).plusDays((offset < 0 ? 0 : offset) * limit);
+    	DateTime now = timeService.nowAsDateTime(currentCrossFitBox).withTimeAtStartOfDay();
+		DateTime start = now.plusDays((offset < 0 ? 0 : offset) * limit);
     	DateTime end = start.plusDays(limit <= 0 ? 1 : limit);
     	
     	if (Days.daysBetween(start, end).getDays() > 14){
@@ -119,15 +120,16 @@ public class BookingPlanningResource {
     public ResponseEntity<List<EventSourceDTO>> planningProtected(
     		@RequestParam(value = "start" , required = true) String startStr,
     		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
- 
-    	DateTime startAt = timeService.parseDateAsUTC("yyyy-MM-dd", startStr);
+
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	
+    	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, currentCrossFitBox);
     	DateTime endAt = "day".equals(viewStr) ? startAt.plusDays(1) : "week".equals(viewStr) ? startAt.plusDays(7) : null;
     	
     	if (startAt == null || endAt == null){
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 
-    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(currentCrossFitBox, startAt, endAt);
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	

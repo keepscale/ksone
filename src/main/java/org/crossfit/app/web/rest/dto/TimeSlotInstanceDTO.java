@@ -54,12 +54,12 @@ public class TimeSlotInstanceDTO {
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public DateTime getStart() {
-		return date.withTime(slot.getStartTime().getHourOfDay(), slot.getStartTime().getMinuteOfHour(), 0, 0).toDateTime(DateTimeZone.UTC);
+		return date.withTime(slot.getStartTime().getHourOfDay(), slot.getStartTime().getMinuteOfHour(), 0, 0);
 	}
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public DateTime getEnd() {
-		return date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0).toDateTime(DateTimeZone.UTC);
+		return date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0);
 	}
 
 	public Integer getMaxAttendees() {

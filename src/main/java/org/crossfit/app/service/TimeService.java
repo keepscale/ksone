@@ -38,15 +38,19 @@ public class TimeService {
     }
 
     public DateTime nowAsDateTime(CrossFitBox box){
-    	return DateTime.now(DateTimeZone.forTimeZone(getCurrentTimeZome(box)));
-    }
-    public LocalDate nowAsLocalDate(CrossFitBox box){
-    	return LocalDate.now(DateTimeZone.forTimeZone(getCurrentTimeZome(box)));
+    	return DateTime.now(getDateTimeZone(box));
     }
 
-	public DateTime parseDateAsUTC(String pattern, String value) {
+	private DateTimeZone getDateTimeZone(CrossFitBox box) {
+		return DateTimeZone.forTimeZone(getCurrentTimeZome(box));
+	}
+    public LocalDate nowAsLocalDate(CrossFitBox box){
+    	return LocalDate.now(getDateTimeZone(box));
+    }
+
+	public DateTime parseDate(String pattern, String value, CrossFitBox box) {
 		try {
-			return DateTimeFormat.forPattern(pattern).withZone(UTC).parseDateTime(value);
+			return DateTimeFormat.forPattern(pattern).withZone(getDateTimeZone(box)).parseDateTime(value);
 		} catch (Exception e) {
 			return null;
 		}

@@ -182,6 +182,6 @@ public class CrossFitBox implements Serializable {
     }
 
 	public String getTimeZoneId() {
-		return TimeZone.getTimeZone(StringUtils.isEmpty(getTimeZone()) ? "fr" : getTimeZone()).getID();
+		return TimeZone.getTimeZone(StringUtils.isEmpty(getTimeZone()) ? "Europe/Paris" : getTimeZone()).getID();
 	}
 }

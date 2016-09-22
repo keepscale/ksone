@@ -105,13 +105,10 @@ public class BookingResource {
     	Page<Booking> page = null; 
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
-    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
-    		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
+		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
 
-            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
-            return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
-    	}
-    	 return new ResponseEntity<>(HttpStatus.OK);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
+        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
     }
 
 
@@ -134,8 +131,8 @@ public class BookingResource {
     	
     	LocalDate localDate = new LocalDate(date);
     	// On ajoute l'heure à la date
-    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
-    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
+    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime());
+    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime());
 
     	Stream<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt).stream()
 				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()));
@@ -334,8 +331,8 @@ public class BookingResource {
         }
     	
     	// On ajoute l'heure à la date
-    	DateTime startAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getStartTime(), DateTimeZone.UTC);
-    	DateTime endAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getEndTime(), DateTimeZone.UTC);
+    	DateTime startAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getStartTime());
+    	DateTime endAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getEndTime());
 
     	if (selectedTimeSlot.getVisibleAfter() != null && startAt.toLocalDate().isBefore(selectedTimeSlot.getVisibleAfter())){
     		 return ResponseEntity.status(HttpStatus.FORBIDDEN)

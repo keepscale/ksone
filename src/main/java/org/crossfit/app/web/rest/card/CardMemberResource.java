@@ -22,6 +22,8 @@ import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
@@ -117,13 +119,16 @@ public class CardMemberResource {
 		.map(m -> {
 			
 			DateTime now = date == null ? timeService.nowAsDateTime(box) : new DateTime(date);
-			
-			DateTime start = now.minusMinutes(lessMinute).toDateTimeISO();
-			DateTime end = now.plusMinutes(moreMinute).toDateTimeISO();
+			DateTime start = now.minusMinutes(lessMinute);
+			DateTime end =   now.plusMinutes(moreMinute);
 			
 			log.debug("Il est {} (force={}) Recherche de resa entre le {} et le {} pour l'utilisateur {}", now, date !=null, start, end, m.getId());
 			
-			List<BookingDTO> bookings = bookingRepository.findAllStartBetween(box, m, start, end)
+			Set<Booking> findAllStartBetween = bookingRepository.findAllStartBetween(box, m, start, end);
+			for (Booking booking : findAllStartBetween) {
+				log.debug("\tBooking [{}] [{}]", booking.getStartAt());
+			}
+			List<BookingDTO> bookings = findAllStartBetween
 					.stream().map(BookingDTO.cardMapper).collect(Collectors.toList());
 
 			MemberCardDTO result = new MemberCardDTO(m, bookings);			

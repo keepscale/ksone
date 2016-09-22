@@ -1,6 +1,7 @@
 package org.crossfit.app.web.rest.dto.calendar;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class EventDTO {
 
@@ -34,8 +35,8 @@ public class EventDTO {
 		super();
 		this.id = id;
 		this.title = title;
-		this.start = start;
-		this.end = end;
+		this.start = start.withZoneRetainFields(DateTimeZone.UTC);
+		this.end = end.withZoneRetainFields(DateTimeZone.UTC);
 	}
 
 	public Long getId() {

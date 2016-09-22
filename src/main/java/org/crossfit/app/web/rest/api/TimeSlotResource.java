@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.ClosedDay;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.domain.TimeSlotType;
@@ -236,16 +237,17 @@ public class TimeSlotResource {
     public ResponseEntity<List<EventSourceDTO>> getAll(
     		@RequestParam(value = "start", required = false) String startStr,
     		@RequestParam(value = "end", required = false) String endStr) {
-    	
 
-    	DateTime startAt = timeService.parseDateAsUTC("yyyy-MM-dd", startStr);
-    	DateTime endAt = timeService.parseDateAsUTC("yyyy-MM-dd", endStr);
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+
+    	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, box);
+    	DateTime endAt = timeService.parseDate("yyyy-MM-dd", endStr, box);
     	
     	if (startAt == null || endAt == null){
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 
-    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), startAt, endAt);
+		List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(box, startAt, endAt);
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	
     	List<EventSourceDTO> eventSources =  
@@ -288,7 +290,7 @@ public class TimeSlotResource {
 							
 					+ " ("+ timeSlot.getMaxAttendees() + ")";
 			
-			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime(), DateTimeZone.UTC), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime(), DateTimeZone.UTC));
+			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO();
