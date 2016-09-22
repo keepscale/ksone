@@ -22,6 +22,7 @@
 		<modifyDataType tableName="closedday" 			columnName="start_at" newDataType="TIMESTAMP WITH TIME ZONE USING start_at AT TIME ZONE 'UTC'"/>
 		<modifyDataType tableName="closedday" 			columnName="end_at" newDataType="TIMESTAMP WITH TIME ZONE USING end_at AT TIME ZONE 'UTC'"/>
     
+    	<update tableName="CROSSFITBOX"><column name="time_zone" value="Europe/Paris"></column></update>
     </changeSet>
     
 </databaseChangeLog>
