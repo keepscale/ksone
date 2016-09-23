@@ -98,13 +98,16 @@ public class TimeSlotResource {
     }
 
 	protected TimeSlot doSave(TimeSlot timeSlot) throws BadRequestException {
-		timeSlot.setBox(boxService.findCurrentCrossFitBox());
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		timeSlot.setBox(box);
 
 		if (timeSlot.getRecurrent() == TimeSlotRecurrent.DATE){
 			timeSlot.setDayOfWeek(null);
 			timeSlot.getExclusions().clear();
 			timeSlot.setVisibleAfter(null);
 			timeSlot.setVisibleBefore(null);
+			DateTime date = timeSlot.getDate().toDateTime(timeService.getDateTimeZone(box));
+			timeSlot.setDate(date);
 		}
 		else if (timeSlot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK){
 			timeSlot.setDate(null);
@@ -303,7 +306,7 @@ public class TimeSlotResource {
 
     	//Pareil pour les jours d'exclusions
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay.getName(), closeDay.getStartAt(), closeDay.getEndAt());
+			return new EventDTO(closeDay.getName(), closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evtCloseDay = new EventSourceDTO();

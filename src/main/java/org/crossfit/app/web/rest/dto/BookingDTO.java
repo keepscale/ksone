@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
+import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
@@ -62,6 +63,8 @@ public class BookingDTO implements Serializable {
 	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
 	private LocalDate date;
 
+	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime startAt;
 	
 	private String title;
@@ -70,6 +73,8 @@ public class BookingDTO implements Serializable {
 	
 	private Long subscriptionId;
 
+	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime createdAt;
 	
 	public BookingDTO() {
@@ -125,7 +130,6 @@ public class BookingDTO implements Serializable {
 	
 	
 
-	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	public DateTime getStartAt() {
 		return startAt;
 	}
@@ -134,7 +138,6 @@ public class BookingDTO implements Serializable {
 		this.startAt = startAt;
 	}
 
-	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	public DateTime getCreatedAt() {
 		return createdAt;
 	}

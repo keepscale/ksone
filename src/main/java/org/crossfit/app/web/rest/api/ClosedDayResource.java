@@ -4,14 +4,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.ClosedDay;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -35,17 +39,26 @@ public class ClosedDayResource {
 
     @Inject
     private ClosedDayRepository closedDayRepository;
-    
+
     @Inject
     private CrossFitBoxSerivce boxService;
+    @Inject
+    private TimeService timeService;
 
 	protected ClosedDay doSave(ClosedDay closedDay) {
-		closedDay.setBox(boxService.findCurrentCrossFitBox());
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		closedDay.setBox(box);
+		DateTime startAt = closedDay.getStartAt().toDateTime(timeService.getDateTimeZone(box));
+		DateTime endAt = closedDay.getEndAt().toDateTime(timeService.getDateTimeZone(box));
+		closedDay.setStartAt(startAt);
+		closedDay.setEndAt(endAt);
 		ClosedDay result = closedDayRepository.save(closedDay);
 		return result;	}
 
 	protected List<ClosedDay> doFindAll() {
-		return closedDayRepository.findAll(boxService.findCurrentCrossFitBox());
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		List<ClosedDay> findAll = closedDayRepository.findAll(box);
+		return findAll;
 	}
 
 	protected ClosedDay doGet(Long id) {
