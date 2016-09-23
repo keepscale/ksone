@@ -41,7 +41,7 @@ public class TimeService {
     	return DateTime.now(getDateTimeZone(box));
     }
 
-	private DateTimeZone getDateTimeZone(CrossFitBox box) {
+	public DateTimeZone getDateTimeZone(CrossFitBox box) {
 		return DateTimeZone.forTimeZone(getCurrentTimeZome(box));
 	}
     public LocalDate nowAsLocalDate(CrossFitBox box){

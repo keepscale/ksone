@@ -331,8 +331,8 @@ public class BookingResource {
         }
     	
     	// On ajoute l'heure à la date
-    	DateTime startAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getStartTime());
-    	DateTime endAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getEndTime());
+    	DateTime startAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getStartTime(), timeService.getDateTimeZone(currentCrossFitBox));
+    	DateTime endAt = bookingdto.getDate().toDateTime(selectedTimeSlot.getEndTime(), timeService.getDateTimeZone(currentCrossFitBox));
 
     	if (selectedTimeSlot.getVisibleAfter() != null && startAt.toLocalDate().isBefore(selectedTimeSlot.getVisibleAfter())){
     		 return ResponseEntity.status(HttpStatus.FORBIDDEN)
