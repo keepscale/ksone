@@ -11,7 +11,7 @@ angular.module('crossfitApp')
                 parent: 'account',
 	            url: '/account',
 	            data: {
-	                roles: ['ROLE_USER'],
+	                roles: ['ROLE_USER','ROLE_MANAGER','ROLE_ADMIN'],
 	                pageTitle: 'crossfitApp.account.home.title'
 	            },
 	            views: {
