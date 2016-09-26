@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TimeService {
-    private static final DateTimeZone UTC = DateTimeZone.forTimeZone(TimeZone.getTimeZone("UTC"));
 
 	private final Logger log = LoggerFactory.getLogger(TimeService.class);
 
@@ -32,8 +31,8 @@ public class TimeService {
     
     public TimeZone getCurrentTimeZome(CrossFitBox box){
     	String boxTimeZoneID = box.getTimeZoneId();
-    	TimeZone res = boxTimeZoneID != null ? TimeZone.getTimeZone(boxTimeZoneID) : UTC.toTimeZone();
-    	log.debug("Using TimeZone " + res.getDisplayName());
+    	TimeZone res = boxTimeZoneID != null ? TimeZone.getTimeZone(boxTimeZoneID) : DateTimeZone.UTC.toTimeZone();
+    	log.info("Using TimeZone " + res.getDisplayName());
     	return res;
     }
 

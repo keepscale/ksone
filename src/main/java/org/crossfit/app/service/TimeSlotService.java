@@ -21,6 +21,8 @@ import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class TimeSlotService {
 	private final Logger log = LoggerFactory.getLogger(TimeSlotService.class);
 
     @Inject
-    private CrossFitBoxSerivce boxService;
+    private TimeService timeService;
 
 
     @Inject
@@ -42,8 +44,8 @@ public class TimeSlotService {
 
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
-			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions){
-		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), b->{return null;});
+			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions, DateTimeZone timeZone){
+		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), b->{return null;}, timeZone);
 	}
     
 	/**
@@ -53,12 +55,13 @@ public class TimeSlotService {
 	 * @param closedDays 
 	 * @param timeSlotExclusions 
 	 * @param bookingMapper 
+	 * @param timeZone 
 	 * @return
 	 */
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
 			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions,
-			List<Booking> bookings, Function<Booking, BookingDTO> bookingMapper){
+			List<Booking> bookings, Function<Booking, BookingDTO> bookingMapper, DateTimeZone timeZone){
 
 		List<TimeSlotInstanceDTO> timeSlotInstances = new ArrayList<>();
 		
@@ -74,7 +77,7 @@ public class TimeSlotService {
 		while(!start.isAfter(end)){
 			final DateTime startF = start;
 			List<TimeSlotInstanceDTO> slotInstanceOfDay = allSlots.stream()
-				.filter( isSlotInDay(startF))
+				.filter( isSlotInDay(startF, timeZone))
 				.filter( isSlotVisibleAt(startF))
 				.filter( isSlotNotInAnTimeSlotExclusion(startF, timeSlotExclusionsByTimeSlot))
 				.map(slot -> {return new TimeSlotInstanceDTO(startF, slot);})
@@ -115,10 +118,16 @@ public class TimeSlotService {
 				(slot.getVisibleBefore() == null || startF.toLocalDate().isBefore(slot.getVisibleBefore()));};
 	}
 	
-	protected Predicate<? super TimeSlot> isSlotInDay(final DateTime startF) {
-		return slot -> { return 
-				slot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK ? 
-				slot.getDayOfWeek() == startF.getDayOfWeek() : slot.getDate().toLocalDate().equals(startF.toLocalDate()); };
+	protected Predicate<? super TimeSlot> isSlotInDay(final DateTime startF, DateTimeZone zone) {
+		return slot -> { 
+			if (slot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK)
+				return slot.getDayOfWeek() == startF.getDayOfWeek();
+			else{
+
+				LocalDate localDate = slot.getDate().withZone(zone).toLocalDate();
+				return localDate.equals(startF.toLocalDate());
+			}
+		};
 	}
 	
 

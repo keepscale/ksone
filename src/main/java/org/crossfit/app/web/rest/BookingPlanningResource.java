@@ -97,7 +97,7 @@ public class BookingPlanningResource {
     			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
 		
     	Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
-    			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper);
+    			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
     	
     	List<PlanningDayDTO> days = slotInstancesStream
     		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
@@ -142,7 +142,7 @@ public class BookingPlanningResource {
 		
 		
     	List<EventSourceDTO> eventSources = timeSlotService.findAllTimeSlotInstance(
-    			startAt, endAt, closedDays, timeSlotExclusions, bookings, BookingDTO.publicMapper)
+    			startAt, endAt, closedDays, timeSlotExclusions, bookings, BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
     	.collect(Collectors.groupingBy(slotInstance ->{
     		Integer max = slotInstance.getMaxAttendees();
     		Integer count = slotInstance.getTotalBooking();

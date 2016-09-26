@@ -24,16 +24,14 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.exception.BadRequestException;
-import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
-import org.joda.time.Period;
+import org.joda.time.Minutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -106,7 +104,7 @@ public class TimeSlotResource {
 			timeSlot.getExclusions().clear();
 			timeSlot.setVisibleAfter(null);
 			timeSlot.setVisibleBefore(null);
-			DateTime date = timeSlot.getDate().toDateTime(timeService.getDateTimeZone(box));
+			DateTime date = timeSlot.getDate().toDateTime(timeService.getDateTimeZone(box)).withTime(timeSlot.getStartTime());
 			timeSlot.setDate(date);
 		}
 		else if (timeSlot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK){
@@ -120,7 +118,9 @@ public class TimeSlotResource {
 		LocalTime startAt = timeSlot.getStartTime();
 		LocalTime endAt = timeSlot.getEndTime();
 		if (startAt.isAfter(endAt)){
-			timeSlot.setEndTime(startAt.plus(Period.fieldDifference(endAt, startAt)));
+			int difference = Minutes.minutesBetween(startAt, endAt).getMinutes();
+			difference = difference < 0 ? -1 * difference : difference;
+			timeSlot.setEndTime(startAt.plusMinutes(difference));
 		}
 		
 
@@ -254,7 +254,7 @@ public class TimeSlotResource {
 		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(startAt.toLocalDate(), endAt.toLocalDate());
     	
     	List<EventSourceDTO> eventSources =  
-    			timeSlotService.findAllTimeSlotInstance(startAt, endAt, closedDays, timeSlotExclusions) //Les timeslot instance
+    			timeSlotService.findAllTimeSlotInstance(startAt, endAt, closedDays, timeSlotExclusions, timeService.getDateTimeZone(box)) //Les timeslot instance
 			.collect(
 				Collectors.groupingBy(TimeSlotInstanceDTO::getTimeSlotType)) //Groupé par level
 			
@@ -282,8 +282,8 @@ public class TimeSlotResource {
 	        	return evt;
 			})
 			.collect(Collectors.toList()); 
-    	
-    	//Pareil pour les jours fériés
+
+    	//Pareil pour les jours d'exclusions
 		List<EventDTO> timeSlotExclusionsAsDTO = timeSlotExclusions.stream().map(timeSlotExclusion -> {
 
 			TimeSlot timeSlot = timeSlotExclusion.getTimeSlot();
@@ -304,7 +304,7 @@ public class TimeSlotResource {
     	
     	
 
-    	//Pareil pour les jours d'exclusions
+    	//Pareil pour les jours fériés
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
 			return new EventDTO(closeDay.getName(), closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
 

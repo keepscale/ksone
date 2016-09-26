@@ -80,12 +80,12 @@
             <label for="field_recurrent_week">Une fois par semaine, tous les {{timeSlot.dayOfWeek | dayOfWeek}}</label>
 			<br/>
 			<input id="field_recurrent_date" type="radio" name="recurrent" ng-model="timeSlot.recurrent" value="DATE"> 
-			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}}</label>
+			<label for="field_recurrent_date">Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy':'UTC'}}</label>
 		
         </div>
         <div class="form-group" ng-show="timeSlot.id != null">
             <label ng-show="timeSlot.recurrent == 'DATE'">
-            	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
+            	Uniquement le {{timeSlot.date | date:'EEE dd MMM yyyy':'UTC'}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
             <label ng-show="timeSlot.recurrent == 'DAY_OF_WEEK'">
             	Tous les {{timeSlot.dayOfWeek | dayOfWeek}} de {{timeSlot.startTime | hour}} à {{timeSlot.endTime | hour}}</label>
         </div>
