@@ -6,6 +6,9 @@
         },
         "planning": {
             "no.timeslot": "Aucun créneau de configuré"
-        }
+        },
+        "quickbooking.title" : "Ajout rapide d'une réservation",
+        "quickbooking.action.add" : "Ajouter",
+        "quickbooking.action.cancel" : "Annuler"
     }
 }
