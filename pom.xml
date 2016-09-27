@@ -376,8 +376,6 @@
 					    <jsSourceFile>/scripts/app/account/login/login.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/account/logout/logout.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/account/logout/logout.controller.js</jsSourceFile>
-					    <jsSourceFile>/scripts/app/account/password/password.js</jsSourceFile>
-					    <jsSourceFile>/scripts/app/account/password/password.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/account/password/password.directive.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/error/error.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/language/language.service.js</jsSourceFile>

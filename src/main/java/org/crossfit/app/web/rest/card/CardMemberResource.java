@@ -90,7 +90,7 @@ public class CardMemberResource {
     @RequestMapping(value = "/members/{id}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update(@RequestBody String cardUuid, @PathVariable Long id) {
+    public ResponseEntity<Void> update(@RequestBody(required=false) String cardUuid, @PathVariable Long id) {
         log.debug("REST request to update cardUuid of Member : {}", id);
 
         memberRepository.clearUsageCardUuid(cardUuid);

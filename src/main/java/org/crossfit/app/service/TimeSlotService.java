@@ -113,9 +113,9 @@ public class TimeSlotService {
 
 	protected Predicate<? super TimeSlot> isSlotVisibleAt(final DateTime startF) {
 		return slot -> { return 
-				(slot.getVisibleAfter() == null || startF.toLocalDate().isAfter(slot.getVisibleAfter()) )
+				(slot.getVisibleAfter() == null || startF.toLocalDate().compareTo(slot.getVisibleAfter()) >= 0 )
 				&& 
-				(slot.getVisibleBefore() == null || startF.toLocalDate().isBefore(slot.getVisibleBefore()));};
+				(slot.getVisibleBefore() == null || startF.toLocalDate().compareTo(slot.getVisibleBefore()) <= 0);};
 	}
 	
 	protected Predicate<? super TimeSlot> isSlotInDay(final DateTime startF, DateTimeZone zone) {
