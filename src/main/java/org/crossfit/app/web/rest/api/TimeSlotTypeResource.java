@@ -101,7 +101,7 @@ public class TimeSlotTypeResource {
 		}
         
         return ResponseEntity.created(new URI("/api/TimeSlotType/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("TimeSlotType", result.getId().toString()))
+                .headers(HeaderUtil.createEntityCreationAlert("timeSlotType", result.getId().toString()))
                 .body(result);
     }
 
@@ -129,7 +129,7 @@ public class TimeSlotTypeResource {
 			 return ResponseEntity.badRequest().header("Failure", e.getMessage()).body(null);
 		}
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("TimeSlotType", timeSlotType.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert("timeSlotType", timeSlotType.getId().toString()))
                 .body(result);
     }
     

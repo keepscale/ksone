@@ -5,7 +5,7 @@
 		<button type="button" class="close" data-dismiss="modal"
 			aria-hidden="true" ng-click="clear()">&times;</button>
 		<h4 class="modal-title" id="myTimeSlotTypeLabel"
-			translate="crossfitApp.membership.home.createOrEditLabel">Create or
+			translate="crossfitApp.timeSlotType.home.createOrEditLabel">Create or
 			edit a TimeSlotType</h4>
 	</div>
 	
@@ -39,16 +39,16 @@
 	        <div class="col-xs-12">
 	    	  	<div ng-show="form.name.$invalid">
 					<p class="help-block" ng-show="form.name.$error.required"
-						translate="crossfitApp.membership.messages.validate.name.required">The name is required.</p>
+						translate="crossfitApp.timeSlotType.messages.validate.name.required">The name is required.</p>
 					<p class="help-block" ng-show="form.name.$error.maxlength"
-						translate="crossfitApp.membership.messages.validate.name.maxlength"> The name cannot be longer than 255 characters.</p>
+						translate="crossfitApp.timeSlotType.messages.validate.name.maxlength"> The name cannot be longer than 255 characters.</p>
 				</div>
 	    	
 	    	  	<div ng-show="form.description.$invalid">
 					<p class="help-block" ng-show="form.description.$error.required"
-						translate="crossfitApp.membership.messages.validate.description.required">The description is required.</p>
+						translate="crossfitApp.timeSlotType.messages.validate.description.required">The description is required.</p>
 					<p class="help-block" ng-show="form.description.$error.maxlength"
-						translate="crossfitApp.membership.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
+						translate="crossfitApp.timeSlotType.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
 				</div>
 			</div>
 		</div>

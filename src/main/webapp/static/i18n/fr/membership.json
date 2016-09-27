@@ -3,7 +3,8 @@
         "membership" : {
             "home": {
                 "title": "Gestion des abonnements",
-                "createLabel" : "Ajouter un abonnement"
+                "createLabel" : "Ajouter un abonnement",
+                "createOrEditLabel" : "Créer ou modifier un abonnement"
             },
             "action" : {
             	"edit" : "Modifier",
