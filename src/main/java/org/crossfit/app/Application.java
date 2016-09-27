@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.crossfit.app.event.BookingReceiver;
+import org.crossfit.app.event.CheckingCardReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class Application implements CommandLineRunner{
 
 	@Autowired
 	private BookingReceiver bookingReceiver;
+
+	@Autowired
+	private CheckingCardReceiver checkingCardReceiver;
 	
 	@Autowired
 	private EventBus eventBus;
@@ -54,6 +58,7 @@ public class Application implements CommandLineRunner{
     @Override
 	public void run(String... arg0) throws Exception {
 		eventBus.on($("booking"), bookingReceiver);
+		eventBus.on($("checkingcard"), checkingCardReceiver);
 	}
 
 	@PostConstruct

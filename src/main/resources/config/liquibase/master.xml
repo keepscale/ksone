@@ -17,5 +17,6 @@
     <include file="classpath:config/liquibase/changelog/06_added_entity_ClosedDay.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/datas.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/07_timezone.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/08_added_entity_CardEvent.xml" relativeToChangelogFile="false"/>
  
 </databaseChangeLog>

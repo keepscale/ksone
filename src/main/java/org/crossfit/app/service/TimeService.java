@@ -32,7 +32,7 @@ public class TimeService {
     public TimeZone getCurrentTimeZome(CrossFitBox box){
     	String boxTimeZoneID = box.getTimeZoneId();
     	TimeZone res = boxTimeZoneID != null ? TimeZone.getTimeZone(boxTimeZoneID) : DateTimeZone.UTC.toTimeZone();
-    	log.info("Using TimeZone " + res.getDisplayName());
+    	log.trace("Using TimeZone " + res.getDisplayName());
     	return res;
     }
 

@@ -11,6 +11,7 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.TimeSlotType;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.MailService;
@@ -36,6 +37,8 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 	private TimeSlotRepository timeSlotRepository;
 	@Inject
 	private MailService mailService;
+    @Inject
+    private BookingRepository bookingRepository;
 
 	public void accept(Event<Booking> event) {
 		Booking booking = event.getData();
@@ -58,8 +61,16 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 
 			List<TimeSlotNotification> notifs = notifAtBookingDate.stream().filter(t->t.getTimeSlot().equals(optTimeSlot.get())).collect(Collectors.toList());
 			
-			mailService.sendNotification(notifs);			
-			notificationRepository.delete(notifs);
+			if (notifs != null && !notifs.isEmpty()){
+				int bookingCount = bookingRepository.findAllAt(box, booking.getStartAt(), booking.getEndAt()).size();
+				if (bookingCount < optTimeSlot.get().getMaxAttendees()){
+					mailService.sendNotification(notifs);	
+					notificationRepository.delete(notifs);
+				}
+				else{
+					log.info("Une resa a ete supprimée, mais le nombre d'inscrit est encore au dessus: {} >= {}", bookingCount, optTimeSlot.get().getMaxAttendees());
+				}
+			}		
 		}
 		else{
 			log.debug("Impossible de trouver un timeslot matchant la resa.");

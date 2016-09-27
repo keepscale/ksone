@@ -22,7 +22,13 @@
         
         <p>
             <a th:href="@{${box.bookingwebsite}|}"
-               th:text="#{email.creation.link}">Activation Link</a>
+               th:text="#{email.creation.link}">Booking Link</a>
+        </p>
+        
+        <p>
+        	<span th:text="#{email.creation.link.alternative}"></span>
+        	<a th:href="@{${box.bookingwebsite}|}"
+               th:text="@{${box.bookingwebsite}}">Booking Link</a>
         </p>
         
         <p>

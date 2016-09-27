@@ -63,10 +63,13 @@ public class MailService {
 		}
 	}
 
-	private static final SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
-	private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
 	
 	public void sendNotification(TimeSlotNotification notif) {
+		
+		final SimpleDateFormat sdfDateDisplay = new SimpleDateFormat("dd/MM/yyyy");
+		final SimpleDateFormat sdfDateBooking = new SimpleDateFormat("yyyy-MM-dd");
+		final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+		
 		Member member = notif.getMember();
 		log.debug("Sending notification e-mail to '{}'", member.getLogin());
 		Locale locale = Locale.forLanguageTag(member.getLangKey() == null ? "fr" : member.getLangKey());
@@ -76,10 +79,10 @@ public class MailService {
 		
 		Date dateResa = notif.getDate().toDateTime(notif.getTimeSlot().getStartTime()).toDate();
 		context.setVariable("timeSlotId", notif.getTimeSlot().getId());
-		context.setVariable("timeSlotDate", sdfDate.format(dateResa));
+		context.setVariable("timeSlotDate", sdfDateDisplay.format(dateResa));
 		context.setVariable("timeSlotTime", sdfTime.format(dateResa));
 		
-		String link = member.getBox().getBookingwebsite()+"/#/planning/mobile/day/"+sdfDate.format(dateResa)+"/"+notif.getTimeSlot().getId()+"/"+sdfDate.format(dateResa);
+		String link = member.getBox().getBookingwebsite()+"#/planning/mobile/day/"+sdfDateBooking.format(dateResa)+"/"+notif.getTimeSlot().getId()+"/"+sdfDateBooking.format(dateResa);
 		context.setVariable("linkResa", link);
 		context.setVariable("box", member.getBox());
 		String content = templateEngine.process("timeSlotNotification", context);

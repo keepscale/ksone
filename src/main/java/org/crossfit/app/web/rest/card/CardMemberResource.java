@@ -7,10 +7,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+
+
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.repository.BookingRepository;
@@ -41,6 +46,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
+import reactor.bus.Event;
+import reactor.bus.EventBus;
+
 /**
  * REST controller for managing Member.
  */
@@ -58,7 +68,9 @@ public class CardMemberResource {
 	private BookingRepository bookingRepository; 
 	@Inject	
 	private TimeService timeService;      
-    
+
+    @Inject
+	private EventBus eventBus;
     
 	/**
 	 * GET /members -> get all the members.
@@ -114,28 +126,47 @@ public class CardMemberResource {
 
         CrossFitBox box = boxService.findCurrentCrossFitBox();
 		Optional<Member> member = memberRepository.findOneByCardUuid(carduuid, box);
-        
+
+		DateTime nowAsDateTime = timeService.nowAsDateTime(box);
+		DateTime checkForDate = date == null ? nowAsDateTime : new DateTime(date, timeService.getDateTimeZone(box));
+		DateTime start = checkForDate.minusMinutes(lessMinute);
+		DateTime end =   checkForDate.plusMinutes(moreMinute);
+
+		
+		log.debug("Il est {}. Check for {} (force={}) Recherche de resa entre le {} et le {} pour l'utilisateur {}", nowAsDateTime, checkForDate, date !=null, start, end, member.map(Member::getId).orElse(null));
+		
 		return member
 		.map(m -> {
-			
-			DateTime now = date == null ? timeService.nowAsDateTime(box) : new DateTime(date);
-			DateTime start = now.minusMinutes(lessMinute);
-			DateTime end =   now.plusMinutes(moreMinute);
-			
-			log.debug("Il est {} (force={}) Recherche de resa entre le {} et le {} pour l'utilisateur {}", now, date !=null, start, end, m.getId());
-			
+						
 			Set<Booking> findAllStartBetween = bookingRepository.findAllStartBetween(box, m, start, end);
-			for (Booking booking : findAllStartBetween) {
-				log.debug("\tBooking [{}] [{}]", booking.getStartAt());
+			if (findAllStartBetween.isEmpty()){
+				CardEvent cardEvent = new CardEvent(nowAsDateTime, checkForDate, carduuid, box, m);
+				eventBus.notify("checkingcard", Event.wrap(cardEvent));
 			}
+			else{
+				for (Booking booking : findAllStartBetween) {
+					log.debug("\tBooking [{}] [{}]", booking.getStartAt());
+					
+					CardEvent cardEvent = new CardEvent(nowAsDateTime, checkForDate, carduuid, box, m, booking);
+					eventBus.notify("checkingcard", Event.wrap(cardEvent));
+				}
+			}
+			
+			
+			
 			List<BookingDTO> bookings = findAllStartBetween
 					.stream().map(BookingDTO.cardMapper).collect(Collectors.toList());
 
-			MemberCardDTO result = new MemberCardDTO(m, bookings);			
+			MemberCardDTO result = new MemberCardDTO(m, bookings);	
+			
 			
 			return ResponseEntity.ok(result); 
 		})
-		.orElse(new ResponseEntity<MemberCardDTO>(HttpStatus.NOT_FOUND));
+		.orElseGet(()->{
+			CardEvent cardEvent = new CardEvent(nowAsDateTime, checkForDate, carduuid, box);
+			eventBus.notify("checkingcard", Event.wrap(cardEvent));
+			return new ResponseEntity<MemberCardDTO>(HttpStatus.NOT_FOUND);
+		});
         
     }
 	
