@@ -40,7 +40,7 @@ navbar-collapse.collapse {
     margin: 0;	
 }
 .navbar-nav>li, .navbar-nav {
-  float: left !important;
+	float: left !important;
 }
 
 #page-wrapper{
@@ -67,6 +67,20 @@ navbar-collapse.collapse {
 
 .navbar-right {
   float: right!important;
+}
+
+.navbar-cf-nancy{
+	background-color: #57718a;
+}
+.navbar-cf-nancy .navbar-nav > li > a {
+    color: #fff;
+}
+.navbar-cf-nancy .navbar-nav > li > a:hover {
+	color: rgba(255, 255, 255, 0.8);
+}
+.navbar-cf-nancy .navbar-nav > .active > a, .navbar-cf-nancy .navbar-nav > .active > a:hover, .navbar-cf-nancy .navbar-nav > .active > a:focus{
+	background-color: #00334a;
+    color: #fff;
 }
 
 /* ==========================================================================
