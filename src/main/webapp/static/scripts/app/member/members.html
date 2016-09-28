@@ -33,8 +33,7 @@
 			</div>
 			
 			<div class="form-group pull-right form-inline">
-				<input type="number" ng-model="per_page" class="form-control" style="width: 70px;" /> <label>/
-					{{totalMember}} membres</label>
+				<label>{{totalMember}} membres</label>
 			</div>
 		</div>
 	</div>
@@ -123,8 +122,13 @@
 							</span>
 						</button>
 						
-				</td>
+					</td>
                 </tr>
+                <tr>
+                	<td colspan="4" align="center">
+                		<a href="" ng-click="loadPage(page + 1)" ng-if="links['last'] != page">Afficher plus</a>
+                	</td>
+               	</tr>
             </tbody>
         </table>
     </div>

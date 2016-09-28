@@ -3,13 +3,14 @@
 angular.module('crossfitApp')
     .controller('MemberController', function ($scope, Member, ParseLinks) {
         $scope.members = [];
+        $scope.page = 1;
         $scope.per_page = 20;
         $scope.include_actif = true;
         $scope.include_not_ennabled = true;
         $scope.include_bloque = false;
         $scope.loadAll = function() {
             Member.query({
-            	page: 1, per_page: $scope.per_page, 
+            	page: $scope.page, per_page: $scope.per_page, 
             	search: $scope.searchLike, 
             	include_actif: $scope.include_actif,
             	include_not_enabled: $scope.include_not_ennabled,
@@ -23,14 +24,17 @@ angular.module('crossfitApp')
 	                }
             	});
         };
+        $scope.loadPage = function(page) {
+            $scope.page = page;
+            $scope.loadAll();
+        };
         $scope.reset = function() {
             $scope.page = 1;
             $scope.members = [];
             $scope.loadAll();
         };
         $scope.search = function() {
-            $scope.members = [];
-            $scope.loadAll();
+            $scope.reset();
         };
         $scope.loadAll();
 

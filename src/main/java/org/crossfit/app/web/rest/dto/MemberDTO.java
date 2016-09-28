@@ -14,6 +14,7 @@ import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.validator.constraints.Email;
+import org.springframework.core.convert.converter.Converter;
 
 public class MemberDTO {
 
@@ -41,6 +42,7 @@ public class MemberDTO {
          
 		return dto;
 	};
+	public static final Converter<Member, MemberDTO> CONVERTER = (m) ->{return MAPPER.apply(m);};
 
 	
     private Long id;

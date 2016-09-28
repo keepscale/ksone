@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -23,7 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -100,17 +99,17 @@ public class MemberResource {
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		List<MemberDTO> list = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
-		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders( new PageImpl<MemberDTO>(list), "/api/members", offset, limit);
-		return new ResponseEntity<>(list, headers, HttpStatus.OK);
+		Page<Member> page = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
+		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
 
-	protected List<MemberDTO> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
 				boxService.findCurrentCrossFitBox(), customSearch, 
-				includeActif, includeNotEnabled, includeBloque, generatePageRequest).stream().map(MemberDTO.MAPPER).collect(Collectors.toList());
+				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
 	}
 
 	/**

@@ -31,7 +31,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "or ( true = :includeBloque and m.locked = true ) "
     		+ ") "
     		+ "order by m.enabled DESC, m.lastName, m.firstName")
-	List<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
+	Page<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
 			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
 			Pageable pageable);
 
