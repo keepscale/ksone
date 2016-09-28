@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
  * Controller advice to translate the server side exceptions to client-friendly json structures.
@@ -111,7 +112,7 @@ public class ExceptionTranslator {
 				}
 				else if (e instanceof SubscriptionDateExpiredForBookingException){
 					SubscriptionDateExpiredForBookingException ee = (SubscriptionDateExpiredForBookingException) e;
-					String dateBooking = sdf.format(ee.getBooking().getStartAt());
+					String dateBooking = sdf.format(ee.getBooking().getStartAt().toDate());
 					error.addDetail("Votre abonnement " + membershipName + " expire le "+ dateFin + ". Vous ne pouvez pas réserver pour le "+ dateBooking);
 				}
 				else if (e instanceof SubscriptionNoMembershipRulesApplicableException){

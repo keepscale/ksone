@@ -39,6 +39,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     public void onStartup(ServletContext servletContext) throws ServletException {
         log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
         servletContext.addListener(RequestContextListener.class);
+
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
                
         initCachingHttpHeadersFilter(servletContext, disps);

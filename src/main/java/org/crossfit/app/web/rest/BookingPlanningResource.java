@@ -162,11 +162,11 @@ public class BookingPlanningResource {
     		});
     		
     		boolean past = slotInstance.getStart().isBefore(now);
-    		int percentFree = 100-(Integer.divideUnsigned(100, slotInstance.getMaxAttendees())) * slotInstance.getTotalBooking();
+    		int percentFree = 100-(Integer.divideUnsigned(100, max)) * count;
     		return booked ? TimeSlotStatus.BOOKED 
     				: past ? TimeSlotStatus.NO_ABLE 
     						: count >= max ? TimeSlotStatus.FULL 
-    								: percentFree <= 25 ? TimeSlotStatus.ALMOST_FULL 
+    								: (percentFree <= 25 || (max - count) == 1) ? TimeSlotStatus.ALMOST_FULL 
     										: TimeSlotStatus.FREE;
     	}))
 		.entrySet().stream() //pour chaque level
@@ -208,7 +208,7 @@ public class BookingPlanningResource {
 		NO_ABLE("#A0A0A0"),
 		BOOKED("#337ab7"),
 		FULL("#d9534f"),
-		ALMOST_FULL("f0ad4e"),
+		ALMOST_FULL("#f0ad4e"),
 		FREE("#5cb85c");
 		
 		String color;

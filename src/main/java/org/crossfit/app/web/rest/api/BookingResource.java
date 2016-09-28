@@ -428,8 +428,11 @@ public class BookingResource {
         	selectedSubscription = possibleSubscription;
         	
 		} catch (ManySubscriptionsAvailableException e) {
+			if (selectedSubscription == null){
+				throw e;
+			}
 			//Plusieurs souscription possibles et celle souhaite n'est pas dans la liste => erreur
-			if (selectedSubscription == null || !e.getSubscriptions().contains(selectedSubscription)){
+			if (!e.getSubscriptions().contains(selectedSubscription)){
 				if (!isSuperUser)
 					throw e;
 			}	
