@@ -59,7 +59,11 @@ public class TimeSlotInstanceDTO {
 
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public DateTime getEnd() {
-		return date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0);
+		DateTime returnDate = date.withTime(slot.getEndTime().getHourOfDay(), slot.getEndTime().getMinuteOfHour(), 0, 0);
+		if (returnDate.isBefore(getStart())){
+			returnDate = returnDate.plusDays(1);
+		}
+		return returnDate;
 	}
 
 	public Integer getMaxAttendees() {

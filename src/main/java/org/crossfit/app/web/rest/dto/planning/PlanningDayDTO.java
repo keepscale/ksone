@@ -31,7 +31,9 @@ public class PlanningDayDTO{
 		this.slotsByInterval = new ArrayList<IntervalDTO>();
 		
 		List<Interval> intervals = slots.stream()
-				.map(instance -> { return new Interval(instance.getStart(), instance.getEnd());})
+				.map(instance -> { 
+					return new Interval(instance.getStart(), instance.getEnd());
+				})
 				.collect(Collectors.toSet())
 				.stream()
 				.sorted((i1,i2)->i1.getStart().compareTo(i2.getStart()))

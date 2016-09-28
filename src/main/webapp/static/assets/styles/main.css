@@ -212,6 +212,15 @@ h1{
     padding: 5px 5px 0 5px;
     text-overflow: ellipsis;
 }
+
+.panel.with-nav-tabs .active-slot{
+	background-color: green;
+}
+
+.panel.with-nav-tabs .active-slot h5 a{
+	color: #FFF;
+}
+
 .panel.with-nav-tabs .nav-tabs{
 	border-bottom: none;
 }
@@ -229,6 +238,7 @@ h1{
 	overflow: hidden;
 	white-space: nowrap;
 }
+
 
 .fc-toolbar {
     margin-bottom: 0px;

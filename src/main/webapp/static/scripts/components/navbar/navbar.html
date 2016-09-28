@@ -55,7 +55,7 @@
 	
 	<ul class="nav navbar-nav navbar-left">
 		<li ng-class="{active: $state.includes('home')}">
-			<a ui-sref="home"> <span class="glyphicon glyphicon-home"
+			<a ui-sref="home" ui-sref-opts="{reload: true}"> <span class="glyphicon glyphicon-home"
 				title="{{'global.menu.home'|translate}}"></span>
 		</a>
 		</li>

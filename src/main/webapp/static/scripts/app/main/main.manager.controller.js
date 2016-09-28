@@ -13,17 +13,37 @@ angular.module('crossfitApp')
             $scope.loadAll();
         });
         
+        $scope.next = function(){
+        	$scope.page++;
+            $scope.selectedIndex = 0;
+            $scope.loadAll();
+        }
+
+        $scope.prev = function(){
+        	$scope.page--;
+            $scope.selectedIndex = 0;
+            $scope.loadAll();
+        }
+        
         
         $scope.loadAll = function() {
-        	$scope.planning = [];
             $scope.quickbooking = {};
             $scope.quickbookingSubscriptions = [];
-            Planning.boxPlanning({page: $scope.page, per_page: 3}, function(result, headers) {
-                for (var i = 0; i < result.days.length; i++) {
-                    $scope.planning.push(result.days[i]);
-                }
+            Planning.boxPlanning({page: $scope.page, per_page: 2}, function(result, headers) {
+            	$scope.page = result.page;
+            	$scope.planning = result.days;
             });
         };
+        
+        $scope.calculateCssClass = function(slot){
+        	var now = new Date().getTime();
+        	var start = new Date(slot.start).getTime();
+        	var end = new Date(slot.end).getTime();
+        	if ( start <= now && now <= end){
+        		return "active-slot";
+        	}
+        	return "";
+        }
 
         $scope.select = function(index) {
             $scope.selectedIndex = index;

@@ -78,39 +78,50 @@ public class BookingPlanningResource {
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
         
-    	DateTime now = timeService.nowAsDateTime(currentCrossFitBox).withTimeAtStartOfDay();
-		DateTime start = now.plusDays((offset < 0 ? 0 : offset) * limit);
-    	DateTime end = start.plusDays(limit <= 0 ? 1 : limit);
+    
+    	List<PlanningDayDTO> days = new ArrayList<PlanningDayDTO>();
+    	int i = 0;
     	
-    	if (Days.daysBetween(start, end).getDays() > 14){
-    		log.warn("Le nombre de jour recherche est trop important: " + Days.daysBetween(start, end).getDays());
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	do{
+
+        	DateTime now = timeService.nowAsDateTime(currentCrossFitBox).withTimeAtStartOfDay();
+    		DateTime start = now.plusDays(offset * limit);
+        	DateTime end = start.plusDays(limit <= 0 ? 1 : limit).minusMillis(1);
+        	
+        	if (Days.daysBetween(start, end).getDays() > 14){
+        		log.warn("Le nombre de jour recherche est trop important: " + Days.daysBetween(start, end).getDays());
+        		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        	}
+
+
+        	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(currentCrossFitBox, start, end);
+    		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
+
+    		log.debug("Recherche des resas entre {} et {}", start, end);
+    		
+    		List<Booking> bookings = new ArrayList<>(
+        			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
+    		
+        	Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
+        			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
+        	
+        	days = slotInstancesStream
+        		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
+        		.entrySet().stream()
+        		.map(entry -> {
+        			return new PlanningDayDTO(entry.getKey(), entry.getValue());
+        		})
+        		.sorted( (d1, d2) -> { return d1.getDate().compareTo(d2.getDate());} )
+        		.collect(Collectors.toList());
+        	
+        	offset++;
+        	i++;
     	}
-
-
-    	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(boxService.findCurrentCrossFitBox(), start, end);
-		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
-
-		log.debug("Recherche des resas entre {} et {}", start, end);
-		
-		List<Booking> bookings = new ArrayList<>(
-    			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
-		
-    	Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
-    			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
+    	while (days.isEmpty() && i <= 7); //Sert à rien de boucler plus de 7 fois...
     	
-    	List<PlanningDayDTO> days = slotInstancesStream
-    		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
-    		.entrySet().stream()
-    		.map(entry -> {
-    			return new PlanningDayDTO(entry.getKey(), entry.getValue());
-    		})
-    		.sorted( (d1, d2) -> { return d1.getDate().compareTo(d2.getDate());} )
-    		.collect(Collectors.toList());
+    	offset--; //On a ete une fois trop loin
     	
-    	
-    	
-    	return new ResponseEntity<>(new PlanningDTO(days) , HttpStatus.OK);
+    	return new ResponseEntity<>(new PlanningDTO(offset, days) , HttpStatus.OK);
     }
 
     @RequestMapping(value = "/protected/planning",
