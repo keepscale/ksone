@@ -8,7 +8,7 @@ public class NoSubscriptionAvailableException extends Exception {
 
 	public NoSubscriptionAvailableException(
 			List<SubscriptionException> exceptions) {
-		super();
+		super("Pas de soucscription disponible");
 		this.exceptions = exceptions;
 	}
 

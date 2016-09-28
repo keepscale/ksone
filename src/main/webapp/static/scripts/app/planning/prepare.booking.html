@@ -21,7 +21,7 @@
 					<select class="form-control">
 						<option ng-click="selectSubscription(null)">Sélectionner</option>
 						<option ng-repeat="s in subscriptions" ng-click="selectSubscription(s)">
-							{{s.membership.name}} (Expire {{s.subscriptionEndDate | date:'MM/yy'}})
+							{{s.membership.name}} (Exp {{s.subscriptionEndDate | date:'dd/MM/yy'}})
 						</option>
 					</select>
 				</div>

@@ -9,7 +9,7 @@ public class ManySubscriptionsAvailableException extends Exception {
 	private final List<Subscription> subscriptions;
 
 	public ManySubscriptionsAvailableException(List<Subscription> subscriptions) {
-		super();
+		super("Trop de souscription disponible");
 		this.subscriptions = subscriptions;
 	}
 
