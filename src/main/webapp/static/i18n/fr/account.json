@@ -5,10 +5,12 @@
                 "title": "Mon compte"
             },
  			"nickName.placeholder" : "Nom affiché aux autres membres",
+ 			"actualPassword.placeholder" : "Votre mot de passe actuel",
  			"password.placeholder" : "Nouveau mot de passe",
  			"password.confirm.placeholder" : "Confirmez le nouveau mot de passe",
  			"error.dontmatch" : "Les mots de passe ne sont pas identiques",
  			"validate" : {
+ 				"actualPassword.required" : "Votre de mot de passe actuel est obligatoire",
  				"password.required" : "Le mot de passe est obligatoire",
  				"password.minlength" : "Le mot de passe doit faire au moins 5 caractères",
  				"password.maxlength" : "Le mot de passe est obligatoire",

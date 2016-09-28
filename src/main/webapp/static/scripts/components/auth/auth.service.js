@@ -55,10 +55,10 @@ angular.module('crossfitApp')
                     });
             },
             
-            changePassword: function (newPassword, callback) {
+            changePassword: function (actualPassword, newPassword, callback) {
                 var cb = callback || angular.noop;
 
-                return Password.save(newPassword, function () {
+                return Password.save({ "actualPassword": actualPassword, "newPassword" : newPassword }, function () {
                     return cb();
                 }, function (err) {
                     return cb(err);

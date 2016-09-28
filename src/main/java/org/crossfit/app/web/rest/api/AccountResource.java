@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -124,6 +125,25 @@ public class AccountResource {
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    public static class PasswordDTO{
+    	String actualPassword;
+		String newPassword;
+		
+		public String getActualPassword() {
+			return actualPassword;
+		}
+		public void setActualPassword(String actualPassword) {
+			this.actualPassword = actualPassword;
+		}
+		public String getNewPassword() {
+			return newPassword;
+		}
+		public void setNewPassword(String newPassword) {
+			this.newPassword = newPassword;
+		}
+		
+		
+    }
 
     /**
      * POST  /change_password -> changes the current user's password
@@ -131,11 +151,14 @@ public class AccountResource {
     @RequestMapping(value = "/account/change_password",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changePassword(@RequestBody String password) {
-        if (!checkPasswordLength(password)) {
-            return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDTO pwd) {
+        if (!checkPasswordLength(pwd.getNewPassword())) {
+            return new ResponseEntity<>("Nouveau mot de passe trop court", HttpStatus.BAD_REQUEST);
         }
-        memberService.changePassword(password);
+        if (!memberService.isValidPassword(pwd.getActualPassword())){
+            return new ResponseEntity<>("Mot de passe actuel incorrect", HttpStatus.BAD_REQUEST);
+        }
+        memberService.changePassword(pwd.getNewPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

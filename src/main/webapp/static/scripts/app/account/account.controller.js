@@ -4,6 +4,7 @@ angular.module('crossfitApp')
 	.controller('AccountController', function ($rootScope, $scope, $state, $stateParams, $window, Principal, Account, Auth, AlertService) {
 		
 		$scope.socialEnabled = $rootScope.socialEnabled;
+		$scope.actualPassword = "";
 		$scope.password = "";
 		$scope.confirmPassword = "";
 		$scope.doNotMatch = false;
@@ -28,11 +29,11 @@ angular.module('crossfitApp')
                 $scope.doNotMatch = 'ERROR';
             } else {
                 $scope.doNotMatch = null;
-                Auth.changePassword($scope.password).then(function () {
+                Auth.changePassword($scope.actualPassword, $scope.password).then(function () {
                     $scope.error = null;
     				AlertService.success("Mot de passe changé !");
-                }).catch(function () {
-    				AlertService.error("Impossible de mettre à jour votre mot de passe !");
+                }).catch(function (result) {
+    				AlertService.error("Mot de passe actuel incorrect");
                 });
             }
         };

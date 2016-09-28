@@ -166,6 +166,11 @@ public class MemberService {
         });
     }
    
+   public boolean isValidPassword(String password){
+       return Optional.of(SecurityUtils.getCurrentMember()).map(u-> {
+           return passwordEncoder.matches(password, u.getPassword());
+       }).orElse(false);
+   }
 
 
 	public void deleteMember(Long id) {

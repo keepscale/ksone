@@ -135,6 +135,21 @@
 			            <div class="alert alert-danger" ng-show="doNotMatch" translate="crossfitApp.account.error.dontmatch">
 			                The password and its confirmation do not match!
 			            </div>
+
+				        
+			    		<div class="form-group">
+							<input type="password" class="form-control" id="actualPassword" name="actualPassword" autocomplete="off"
+								placeholder="{{'crossfitApp.account.actualPassword.placeholder' | translate}}"
+								ng-model="actualPassword" required>
+								
+								
+		                    <div ng-show="updatePasswordForm.actualPassword.$dirty && updatePasswordForm.actualPassword.$invalid">
+		                        <p class="help-block"
+		                           ng-show="updatePasswordForm.actualPassword.$error.required" translate="crossfitApp.account.validate.actualPassword.required">
+		                            Your password is required.
+		                        </p>
+		                    </div>
+				        </div>
 				        
 			    		<div class="form-group">
 							<input type="password" class="form-control" id="password" name="password" autocomplete="off"
