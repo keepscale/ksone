@@ -51,6 +51,16 @@ angular.module('crossfitApp')
                     data.date = DateUtils.convertLocaleDateToServer(data.date);
                     return angular.toJson(data);
                 }
-            }
+            },
+            'getPast': {
+                method: 'GET',
+                url: "api/pastbookings",
+                isArray: true,
+                transformResponse: function (data) {
+                    data = angular.fromJson(data);
+                    data.date = DateUtils.convertLocaleDateFromServer(data.date);
+                    return data;
+                }
+            },
         });
     });

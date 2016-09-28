@@ -1,5 +1,13 @@
 {
     "crossfitApp": {
+    	"pastbooking" : {
+            "home": {
+                "title": "Mes réservations passées"
+            },
+            "action" : {
+            	"showMore" : "Afficher plus"
+            }
+    	},
         "booking" : {
         	"title": "Réservation",
             "home": {

@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -109,6 +110,27 @@ public class BookingResource {
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
         return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
+    }
+    
+
+    /**
+     * GET  /bookings -> get all past the bookings.
+     */
+    @RequestMapping(value = "/pastbookings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookingDTO>> getAllPast(
+    		@RequestParam(value = "page" , required = false) Integer offset) throws URISyntaxException {
+    	
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+    	DateTime end = timeService.nowAsDateTime(box).minusMillis(1);
+		DateTime start = end.minusMonths(offset);
+		Set<Booking> result = bookingRepository.findAllStartBetween(box, SecurityUtils.getCurrentMember(), start, end);
+
+        Comparator<? super BookingDTO> comparator = (b1,b2) ->{
+        	return b2.getStartAt().compareTo(b1.getStartAt());
+        };
+		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
     }
 
 
