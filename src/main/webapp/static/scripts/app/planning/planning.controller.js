@@ -75,8 +75,10 @@ angular.module('crossfitApp')
 					selectable: false,
 					selectHelper: true,
 					eventClick: function(calEvent, jsEvent, calendar) {
-				    	var eventDate = DateUtils.formatDateAsDate(new Date(calEvent.start));
-			            $state.go('planning.preparebooking', {timeSlotId:calEvent.id, bookingDate:eventDate});
+						if (calEvent.id){
+					    	var eventDate = DateUtils.formatDateAsDate(new Date(calEvent.start));
+				            $state.go('planning.preparebooking', {timeSlotId:calEvent.id, bookingDate:eventDate});
+						}
 				    },
 				    viewRender : function(calendar, element){
 				    	var startDateCalendar = new Date(calendar.start).toISOString().slice(0, 10);

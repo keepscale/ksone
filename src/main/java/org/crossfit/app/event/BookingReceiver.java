@@ -15,6 +15,7 @@ import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.MailService;
+import org.crossfit.app.service.TimeService;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -39,19 +40,29 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 	private MailService mailService;
     @Inject
     private BookingRepository bookingRepository;
+    @Inject
+    private TimeService timeService;
 
 	public void accept(Event<Booking> event) {
 		Booking booking = event.getData();
-		LocalTime start = booking.getStartAt().toLocalTime();
-		LocalTime end = booking.getEndAt().toLocalTime();
-		TimeSlotType timeSlotType = booking.getTimeSlotType();
 		CrossFitBox box = booking.getBox();
-
-		log.debug("Suppression d'une resa, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", start, end, timeSlotType.getId(), box.getId());
-
-		List<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAllByDate(booking.getStartAt().toLocalDate());
 		
-		List<TimeSlot> possibleTimeSlotMatch = timeSlotRepository.findAll(notifAtBookingDate.stream().map(TimeSlotNotification::getTimeSlot).map(TimeSlot::getId).collect(Collectors.toList()));
+		
+		DateTime bookingStartAt = booking.getStartAt().withZone(timeService.getDateTimeZone(box));
+		DateTime bookingEndAt = booking.getEndAt().withZone(timeService.getDateTimeZone(box));
+		
+		LocalTime start = bookingStartAt.toLocalTime();
+		LocalTime end = bookingEndAt.toLocalTime();
+		TimeSlotType timeSlotType = booking.getTimeSlotType();
+
+		log.debug("Suppression d'une resa {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", booking, start, end, timeSlotType.getId(), box.getId());
+
+		LocalDate localDate = bookingStartAt.toLocalDate();
+		log.debug("Recherche des demandes de notif pour le {}", localDate);
+		List<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAllByDate(localDate);
+		
+		List<Long> timeSlotIds = notifAtBookingDate.stream().map(TimeSlotNotification::getTimeSlot).map(TimeSlot::getId).collect(Collectors.toList());
+		List<TimeSlot> possibleTimeSlotMatch = timeSlotRepository.findAll(timeSlotIds);
 
 		Optional<TimeSlot> optTimeSlot = possibleTimeSlotMatch.stream().filter(t->{
 	    	return t.getTimeSlotType().equals(timeSlotType) && t.getStartTime().equals(start) && t.getEndTime().equals(end);
@@ -62,7 +73,9 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 			List<TimeSlotNotification> notifs = notifAtBookingDate.stream().filter(t->t.getTimeSlot().equals(optTimeSlot.get())).collect(Collectors.toList());
 			
 			if (notifs != null && !notifs.isEmpty()){
-				int bookingCount = bookingRepository.findAllAt(box, booking.getStartAt(), booking.getEndAt()).size();
+				log.debug("Recherche des resa au {} -> {}", bookingStartAt, bookingEndAt);
+				
+				int bookingCount = bookingRepository.findAllAt(box, bookingStartAt, bookingEndAt).size();
 				if (bookingCount < optTimeSlot.get().getMaxAttendees()){
 					mailService.sendNotification(notifs);	
 					notificationRepository.delete(notifs);

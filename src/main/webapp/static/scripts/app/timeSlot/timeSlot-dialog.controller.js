@@ -26,7 +26,7 @@ angular.module('crossfitApp').controller('TimeSlotDialogController',
         };
 
         $scope.clear = function() {
-            $modalInstance.dismiss('cancel');
+            $modalInstance.close();
         };
 
         $scope.delete = function () {	

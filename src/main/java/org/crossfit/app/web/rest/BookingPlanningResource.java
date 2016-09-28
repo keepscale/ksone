@@ -122,7 +122,7 @@ public class BookingPlanningResource {
     		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
 
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-    	
+    	DateTime now = timeService.nowAsDateTime(currentCrossFitBox);
     	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, currentCrossFitBox);
     	DateTime endAt = "day".equals(viewStr) ? startAt.plusDays(1) : "week".equals(viewStr) ? startAt.plusDays(7) : null;
     	
@@ -149,8 +149,14 @@ public class BookingPlanningResource {
     		boolean booked = slotInstance.getBookings().stream().anyMatch(bDto->{
     			return bookingsById.get(bDto.getId()).getSubscription().getMember().equals(SecurityUtils.getCurrentMember());
     		});
-
-    		return booked ? TimeSlotStatus.BOOKED : count >= max ? TimeSlotStatus.FULL : TimeSlotStatus.FREE;
+    		
+    		boolean past = slotInstance.getStart().isBefore(now);
+    		int percentFree = 100-(Integer.divideUnsigned(100, slotInstance.getMaxAttendees())) * slotInstance.getTotalBooking();
+    		return booked ? TimeSlotStatus.BOOKED 
+    				: past ? TimeSlotStatus.NO_ABLE 
+    						: count >= max ? TimeSlotStatus.FULL 
+    								: percentFree <= 25 ? TimeSlotStatus.ALMOST_FULL 
+    										: TimeSlotStatus.FREE;
     	}))
 		.entrySet().stream() //pour chaque level
     	.map(entry -> {
@@ -165,16 +171,22 @@ public class BookingPlanningResource {
     						+ " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
 
     				
-					return new EventDTO( slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
+					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
     			}).collect(Collectors.toList());
 			
 			EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
-        	evt.setEditable(true);
+        	evt.setEditable(status == TimeSlotStatus.NO_ABLE ? false : true);
 			evt.setEvents(events);
 			evt.setColor(status.color);
         	return evt;
 		})
     	.collect(Collectors.toList()); 
+
+    	EventSourceDTO evt = timeSlotService.buildEventSourceForExclusion(timeSlotExclusions);
+    	eventSources.add(evt);
+    	EventSourceDTO evt2 = timeSlotService.buildEventSourceForClosedDay(closedDays);
+    	eventSources.add(evt2);
+    	
     	
     	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
     		
@@ -182,8 +194,10 @@ public class BookingPlanningResource {
     
 
 	enum TimeSlotStatus{
+		NO_ABLE("#A0A0A0"),
 		BOOKED("#337ab7"),
 		FULL("#d9534f"),
+		ALMOST_FULL("f0ad4e"),
 		FREE("#5cb85c");
 		
 		String color;

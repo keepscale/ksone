@@ -282,39 +282,17 @@ public class TimeSlotResource {
 	        	return evt;
 			})
 			.collect(Collectors.toList()); 
-
-    	//Pareil pour les jours d'exclusions
-		List<EventDTO> timeSlotExclusionsAsDTO = timeSlotExclusions.stream().map(timeSlotExclusion -> {
-
-			TimeSlot timeSlot = timeSlotExclusion.getTimeSlot();
-			
-			String title = 
-					(StringUtils.isBlank(timeSlot.getName()) ? timeSlot.getTimeSlotType().getName() : timeSlot.getName() )
-							
-					+ " ("+ timeSlot.getMaxAttendees() + ")";
-			
-			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
-
-		}).collect(Collectors.toList());
-		EventSourceDTO evt = new EventSourceDTO();
-    	evt.setEditable(false);
-    	evt.setEvents(timeSlotExclusionsAsDTO);
-    	evt.setColor("#A0A0A0");
+    	
+		//Pareil pour les jours d'exclusions
+    	EventSourceDTO evt = timeSlotService.buildEventSourceForExclusion(timeSlotExclusions);
     	eventSources.add(evt);
     	
     	
-
-    	//Pareil pour les jours fériés
-		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay.getName(), closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
-
-		}).collect(Collectors.toList());
-		EventSourceDTO evtCloseDay = new EventSourceDTO();
-    	evtCloseDay.setEditable(false);
-    	evtCloseDay.setEvents(closedDaysAsDTO);
-    	evtCloseDay.setColor("#A0A0A0");
+		//Pareil pour les jours ferie
+    	EventSourceDTO evtCloseDay = timeSlotService.buildEventSourceForClosedDay(closedDays);
     	eventSources.add(evtCloseDay);
     	
     	return new ResponseEntity<List<EventSourceDTO>>(eventSources, HttpStatus.OK);
     }
+
 }

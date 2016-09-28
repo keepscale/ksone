@@ -126,14 +126,16 @@ public class BookingResource {
 		return selectedTimeSlot;
 	}
 	
-	private Stream<Booking> findBookingsFor(Date date, TimeSlot selectedTimeSlot) {
+	private Stream<Booking> findBookingsFor(Date date, DateTimeZone dateTimeZone, TimeSlot selectedTimeSlot) {
 
     	
-    	LocalDate localDate = new LocalDate(date);
+    	LocalDate localDate = new LocalDate(date, dateTimeZone);
     	// On ajoute l'heure à la date
-    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime());
-    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime());
+    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), dateTimeZone);
+    	DateTime endAt = localDate.toDateTime(selectedTimeSlot.getEndTime(), dateTimeZone);
 
+    	log.debug("Recherche des resa pour au {} -> {} de type {}", startAt, endAt, selectedTimeSlot.getTimeSlotType());
+    	
     	Stream<Booking> bookings = bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt).stream()
 				.filter( b -> b.getTimeSlotType().equals(selectedTimeSlot.getTimeSlotType()));
 		return bookings;
@@ -147,14 +149,14 @@ public class BookingResource {
     		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
     		@PathVariable Long timeSlotId) throws URISyntaxException {
 		
-    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
 
-    	if (!currentCrossFitBox.isSocialEnabled()){
+    	if (!box.isSocialEnabled()){
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
 		
     	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
-    	Stream<Booking> bookings = findBookingsFor(date, selectedTimeSlot);
+    	Stream<Booking> bookings = findBookingsFor(date, timeService.getDateTimeZone(box), selectedTimeSlot);
     	
 		List<String> bookingNames = bookings
 				.map(b->{
@@ -175,9 +177,10 @@ public class BookingResource {
     public ResponseEntity<BookingStatusDTO> getBookingStatusForTimeSlot(
     		@PathVariable @DateTimeFormat(iso=ISO.DATE) Date date,
     		@PathVariable Long timeSlotId) throws URISyntaxException {
-    	
+
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
-    	Stream<Booking> bookings = findBookingsFor(date, selectedTimeSlot);
+    	Stream<Booking> bookings = findBookingsFor(date, timeService.getDateTimeZone(box), selectedTimeSlot);
 
 
     	Optional<TimeSlotNotification> notif = notificationRepository.findOneByDateAndTimeSlotAndMember(

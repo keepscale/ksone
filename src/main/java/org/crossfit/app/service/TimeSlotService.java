@@ -12,14 +12,18 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.ClosedDay;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -36,6 +40,9 @@ public class TimeSlotService {
 
     @Inject
     private TimeService timeService;
+    
+    @Inject
+    private CrossFitBoxSerivce boxService;
 
 
     @Inject
@@ -108,6 +115,43 @@ public class TimeSlotService {
         		.sorted( (s1, s2) -> { return s1.getStart().compareTo(s2.getStart());} );
     	
     	return timeSlotInstanceWithoutClosedDay;
+	}
+	
+
+	public EventSourceDTO buildEventSourceForClosedDay(List<ClosedDay> closedDays) {
+
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+    	
+		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
+			return new EventDTO(closeDay.getName(), closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
+
+		}).collect(Collectors.toList());
+		EventSourceDTO evtCloseDay = new EventSourceDTO();
+    	evtCloseDay.setEditable(false);
+    	evtCloseDay.setEvents(closedDaysAsDTO);
+    	evtCloseDay.setColor("#A0A0A0");
+		return evtCloseDay;
+	}
+
+	public EventSourceDTO buildEventSourceForExclusion(List<TimeSlotExclusion> timeSlotExclusions) {
+
+		List<EventDTO> timeSlotExclusionsAsDTO = timeSlotExclusions.stream().map(timeSlotExclusion -> {
+
+			TimeSlot timeSlot = timeSlotExclusion.getTimeSlot();
+			
+			String title = 
+					(StringUtils.isBlank(timeSlot.getName()) ? timeSlot.getTimeSlotType().getName() : timeSlot.getName() )
+							
+					+ " ("+ timeSlot.getMaxAttendees() + ")";
+			
+			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
+
+		}).collect(Collectors.toList());
+		EventSourceDTO evt = new EventSourceDTO();
+    	evt.setEditable(false);
+    	evt.setEvents(timeSlotExclusionsAsDTO);
+    	evt.setColor("#A0A0A0");
+		return evt;
 	}
 
 
