@@ -115,6 +115,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         	.antMatchers("/card/**").hasAuthority(AuthoritiesConstants.ACCESS_CARD)
         .and()
             .authorizeRequests()
+            .antMatchers("/recover/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/account/**").authenticated()
             .antMatchers("/api/boxs/current").authenticated()

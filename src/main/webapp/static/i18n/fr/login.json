@@ -15,5 +15,14 @@
         "password" : {
             "forgot": "Avez-vous oublié votre mot de passe?"
         }
-    }
+    },
+    
+    "forgotpassword" : {
+    	"title" : "Mot de passe oublié ?",
+        "form": {
+            "email.placeholder": "Saisissez votre mail de connexion",
+            "email.required": "Saisissez votre mail de connexion !"
+        },
+    	"form.button" : "Envoyez moi un nouveau mot de passe !"
+	}
 }

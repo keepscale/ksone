@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -138,7 +139,12 @@ public class MemberService {
 		member.setEnabled(false);
 		member.setLocked(false);
 	
-		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof UserDetails)
+			member.setLastModifiedBy(((UserDetails) authentication.getPrincipal()).getUsername());
+		else
+			member.setLastModifiedBy("system");
+		
 		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 	
 		mailService.sendActivationEmail(member, generatePassword);

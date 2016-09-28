@@ -8,8 +8,8 @@
             </div>
             <form class="form" role="form" ng-submit="login($event)">
                 <div class="form-group">
-                    <label for="username" translate="global.form.username">Login</label>
-                    <input type="text" class="form-control" id="username" placeholder="{{'global.form.username.placeholder' | translate}}" ng-model="username">
+                    <label for="username" translate="global.form.email">Login</label>
+                    <input type="text" class="form-control" id="username" placeholder="{{'global.form.email.placeholder' | translate}}" ng-model="username">
                 </div>
                 <div class="form-group">
                     <label for="password" translate="login.form.password">Password</label>
@@ -27,6 +27,11 @@
 						translate="login.form.button">Authenticate</button>
 				</div>
 			</form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+        	<a href="" ui-sref="forgotpassword">Mot de passe oublié ?</a>
         </div>
     </div>
 </div>
