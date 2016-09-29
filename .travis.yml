@@ -1,3 +1,11 @@
 language: java
-jdk:
-  - oraclejdk8
+jdk: oraclejdk8
+sudo: required
+dist: trusty
+
+before_install:
+  - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version`
+  - echo $APP_VERSION
+
+script:
+  - mvn clean package -Dmaven.test.skip=true
