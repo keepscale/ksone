@@ -17,7 +17,7 @@ angular.module('crossfitApp')
                 rememberMe: $scope.rememberMe
             }).then(function () {
                 $scope.authenticationError = false;
-                $rootScope.back();
+                $state.go('home', null, { reload: true });
             }).catch(function () {
                 $scope.authenticationError = true;
             });
