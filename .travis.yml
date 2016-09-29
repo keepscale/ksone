@@ -4,7 +4,7 @@ sudo: required
 dist: trusty
 
 before_install:
-  - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version`
+  - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)`
   - echo $APP_VERSION
 
 script:
