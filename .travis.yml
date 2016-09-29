@@ -4,8 +4,20 @@ sudo: required
 dist: trusty
 
 before_install:
-  - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)`
+  - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)'`
   - echo $APP_VERSION
 
 script:
   - mvn clean package -Dmaven.test.skip=true
+
+before_deploy:
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=v$APP_VERSION.$TRAVIS_BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI for $GIT_TAG"
+  - git push -q https://${GH_TOKEN}@github.com/lgangloff/crossfit-2.0 --tags
+  - ls -R
+
+branches:
+  except:
+    - /^v[0-9]/
