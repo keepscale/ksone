@@ -54,7 +54,7 @@ angular.module('crossfitApp')
             },
             'getPast': {
                 method: 'GET',
-                url: "api/pastbookings",
+                url: "api/bookings/pastbookings",
                 isArray: true,
                 transformResponse: function (data) {
                     data = angular.fromJson(data);

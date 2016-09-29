@@ -116,7 +116,7 @@ public class BookingResource {
     /**
      * GET  /bookings -> get all past the bookings.
      */
-    @RequestMapping(value = "/pastbookings",
+    @RequestMapping(value = "/bookings/pastbookings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookingDTO>> getAllPast(
