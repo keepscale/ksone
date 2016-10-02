@@ -7,6 +7,7 @@ angular.module('crossfitApp')
 		//$stateParams.bookingDate;
 		
 		$scope.socialEnabled = $rootScope.socialEnabled;
+		$scope.selectedSubscriptionId = "";
 
 		$scope.cancelBooking = function(){
 			if (confirm("Annuler votre réservation ?")){
@@ -63,12 +64,6 @@ angular.module('crossfitApp')
 	    		})
         }
         
-        $scope.selectSubscription = function(s){
-        	if (s)
-        		$scope.booking.subscriptionId = s.id;
-        	else
-        		$scope.booking.subscriptionId = null;
-        }
         $scope.goBack = function() {
         	window.history.back();
     	};

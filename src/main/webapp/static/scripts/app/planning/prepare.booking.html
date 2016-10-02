@@ -18,9 +18,9 @@
 				
 				<div ng-if="subscriptions.length > 0" class="alert alert-warning form-group">
 					{{message}}<br/>
-					<select class="form-control">
-						<option ng-click="selectSubscription(null)">Sélectionner</option>
-						<option ng-repeat="s in subscriptions" ng-click="selectSubscription(s)">
+					<select class="form-control" ng-model="booking.subscriptionId">
+						<option value="">Sélectionner</option>
+						<option ng-repeat="s in subscriptions" value="{{s.id}}">
 							{{s.membership.name}} (Exp {{s.subscriptionEndDate | date:'dd/MM/yy'}})
 						</option>
 					</select>
@@ -36,7 +36,7 @@
 		
 				<div class="btn-group btn-group-vertical" role="group" style="width: 100%">
 					<button class="btn btn-default" ng-click="saveBooking()"
-						ng-disabled="booking.id != null || booking.subscriptionId == null">
+						ng-disabled="booking.id != null || !booking.subscriptionId ">
 						<span class="glyphicon glyphicon-ok"></span>
 						Réserver
 					</button>
