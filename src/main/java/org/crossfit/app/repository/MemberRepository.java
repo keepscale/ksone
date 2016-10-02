@@ -26,11 +26,11 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "	or lower(m.login) like :search "
     		+ ") "
     		+ "and ( "
-    		+ "( true = :includeActif AND m.enabled = true and m.locked = false ) "
-    		+ "or ( true = :includeNotEnabled and m.enabled = false ) "
-    		+ "or ( true = :includeBloque and m.locked = true ) "
+    		+ "		( true = :includeActif 		AND m.enabled = true 	and m.locked = false ) "
+    		+ "or 	( true = :includeNotEnabled AND m.enabled = false  	and m.locked = false ) "
+    		+ "or 	( true = :includeBloque 	AND m.locked  = true ) "
     		+ ") "
-    		+ "order by m.enabled DESC, m.lastName, m.firstName")
+    		+ "order by m.enabled DESC, m.locked ASC, m.lastName, m.firstName")
 	Page<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
 			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
 			Pageable pageable);
