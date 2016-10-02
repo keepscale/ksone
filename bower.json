@@ -1,7 +1,7 @@
 {
   "name": "crossfit",
   "version": "2.0.0",
-  "appPath": "src/main/webapp",
+  "appPath": "src/main/webapp/static",
   "testPath": "src/test/javascript/spec",
   "dependencies": {
     "angular": "1.5.7",
@@ -23,6 +23,7 @@
     "angular-translate-interpolation-messageformat": "^2.11.0",
     "angular-translate-loader-partial": "^2.11.0",
     "angular-translate-storage-cookie": "^2.11.0",
-    "angular-dynamic-locale": "^0.1.32"
+    "angular-dynamic-locale": "^0.1.32",
+    "ng-fastclick": "^1.0.2"
   }
 }
