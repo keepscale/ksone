@@ -18,12 +18,12 @@
 				
 				<div ng-if="subscriptions.length > 0" class="alert alert-warning form-group">
 					{{message}}<br/>
-					<select class="form-control" ng-model="booking.subscriptionId">
-						<option value="">Sélectionner</option>
-						<option ng-repeat="s in subscriptions" value="{{s.id}}">
+					<span ng-repeat="s in subscriptions">
+						<label>
+							<input type="radio" ng-model="booking.subscriptionId" value="{{s.id}}">
 							{{s.membership.name}} (Exp {{s.subscriptionEndDate | date:'dd/MM/yy'}})
-						</option>
-					</select>
+						</label> <br/>
+					</span>
 				</div>
 				
 				<div ng-if="booking.id == null && hasSubscribeNotification" class="alert alert-warning">
