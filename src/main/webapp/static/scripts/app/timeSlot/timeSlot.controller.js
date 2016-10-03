@@ -27,7 +27,7 @@ angular.module('crossfitApp')
 					var startD = new Date(start);
 					var endD = new Date(end);
 
-					var dayOfWeek = startD.getDay();
+					var dayOfWeek = startD.getUTCDay();
 					if (dayOfWeek == 0){
 						dayOfWeek = 7;
 					}
@@ -46,7 +46,7 @@ angular.module('crossfitApp')
 					var startD = new Date(event.start);
 					var endD = new Date(event.end);
 
-					var dayOfWeek = startD.getDay();
+					var dayOfWeek = startD.getUTCDay();
 					if (dayOfWeek == 0){
 						dayOfWeek = 7;
 					}
