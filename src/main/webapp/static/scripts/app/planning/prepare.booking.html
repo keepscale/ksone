@@ -49,7 +49,7 @@
 					</button>
 					
 					<button ng-if="isFull && booking.id == null" class="btn btn-default" ng-click="subscribeNotification()"
-						ng-disabled="hasSubscribeNotification">
+						ng-disabled="!canSubscribeNotification">
 						
 						<span class="glyphicon glyphicon-ok" style="{{hasSubscribeNotification ? 'color: green' : ''}}"></span>
 							Me notifier d'une place dispo.

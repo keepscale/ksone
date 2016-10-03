@@ -61,6 +61,7 @@ angular.module('crossfitApp')
     			function(result){
     				$scope.isFull = result.count >= result.max;
     				$scope.hasSubscribeNotification = result.hasSubscribeNotification;
+    				$scope.canSubscribeNotification = result.canSubscribeNotification;
 	    		})
         }
         

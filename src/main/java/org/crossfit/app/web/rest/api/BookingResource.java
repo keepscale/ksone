@@ -201,15 +201,31 @@ public class BookingResource {
     		@PathVariable Long timeSlotId) throws URISyntaxException {
 
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
+    	DateTimeZone dateTimeZone = timeService.getDateTimeZone(box);
+    	
     	TimeSlot selectedTimeSlot = findTimeSlot(timeSlotId);
-    	Stream<Booking> bookings = findBookingsFor(date, timeService.getDateTimeZone(box), selectedTimeSlot);
+		List<Booking> bookings = findBookingsFor(date, dateTimeZone, selectedTimeSlot).collect(Collectors.toList());
 
 
     	Optional<TimeSlotNotification> notif = notificationRepository.findOneByDateAndTimeSlotAndMember(
     			new LocalDate(date), selectedTimeSlot, SecurityUtils.getCurrentMember());
-			
+
+    	LocalDate localDate = new LocalDate(date, dateTimeZone);
+    	DateTime startAt = localDate.toDateTime(selectedTimeSlot.getStartTime(), dateTimeZone);
+    	
+    	boolean canSubscribeNotif = true;
+    	if (notif.isPresent()){
+    		canSubscribeNotif = false;
+    	}
+    	else if (startAt.isBefore(timeService.nowAsDateTime(box))){
+    		canSubscribeNotif = false;
+    	}
+    	else if (bookings.stream().anyMatch(b->{return b.getSubscription().getMember().equals(SecurityUtils.getCurrentMember());})){
+    		canSubscribeNotif = false;
+    	}
+    	
         return new ResponseEntity<BookingStatusDTO>(
-        		new BookingStatusDTO(selectedTimeSlot.getMaxAttendees(), bookings.count(), notif.isPresent()), HttpStatus.OK);
+        		new BookingStatusDTO(selectedTimeSlot.getMaxAttendees(), bookings.size(), notif.isPresent(), canSubscribeNotif), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/bookings/{date}/{timeSlotId}/subscribe",

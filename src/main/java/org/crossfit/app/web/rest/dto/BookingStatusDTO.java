@@ -8,16 +8,19 @@ public class BookingStatusDTO implements Serializable {
 	private long count;
 
 	private boolean hasSubscribeNotification;
+	
+	private boolean canSubscribeNotification;
 
 	public BookingStatusDTO() {
 		super();
 	}
 
-	public BookingStatusDTO(int max, long count, boolean hasSubscribeNotification) {
+	public BookingStatusDTO(int max, long count, boolean hasSubscribeNotification, boolean canSubscribeNotification) {
 		super();
 		this.max = max;
 		this.count = count;
 		this.hasSubscribeNotification = hasSubscribeNotification;
+		this.canSubscribeNotification = canSubscribeNotification;
 	}
 
 	public int getMax() {
@@ -44,4 +47,11 @@ public class BookingStatusDTO implements Serializable {
 		this.hasSubscribeNotification = hasSubscribeNotification;
 	}
 
+	public boolean isCanSubscribeNotification() {
+		return canSubscribeNotification;
+	}
+
+	public void setCanSubscribeNotification(boolean canSubscribeNotification) {
+		this.canSubscribeNotification = canSubscribeNotification;
+	}
 }
