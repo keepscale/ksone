@@ -11,7 +11,7 @@
 
 	<groupId>org.crossfit.app</groupId>
 	<artifactId>crossfit</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>crossfit</name>
@@ -120,6 +120,12 @@
 			<artifactId>spring-security-data</artifactId>
 		</dependency>
 
+		<dependency>
+		    <groupId>com.jcabi</groupId>
+		    <artifactId>jcabi-manifests</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

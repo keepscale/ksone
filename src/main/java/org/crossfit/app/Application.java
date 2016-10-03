@@ -22,6 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
+import com.jcabi.manifests.Manifests;
+
 import reactor.bus.EventBus;
 
 @SpringBootApplication
@@ -78,10 +80,11 @@ public class Application implements CommandLineRunner{
         Environment env = app.run(args).getEnvironment();
         log.info("Access URLs:\n----------------------------------------------------------\n\t" +
             "Local: \t\thttp://127.0.0.1:{}\n\t" +
-            "External: \thttp://{}:{}\n----------------------------------------------------------",
+            "External: \thttp://{}:{}\n\t"+
+            "Version: \t{}\n----------------------------------------------------------",
             env.getProperty("server.port"),
             InetAddress.getLocalHost().getHostAddress(),
-            env.getProperty("server.port"));
+            env.getProperty("server.port"), Manifests.read("Implementation-Version"));
 
     }
 
