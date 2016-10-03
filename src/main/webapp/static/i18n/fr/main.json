@@ -5,7 +5,8 @@
             "message": "Bienvenue {{username}} !"
         },
         "planning": {
-            "no.timeslot": "Aucun créneau de configuré"
+            "no.timeslot": "Aucun créneau de configuré",
+            "no.timeslot.thisday": "Aucun créneau ce jour"
         },
         "quickbooking.title" : "Ajout rapide d'une réservation",
         "quickbooking.action.add" : "Ajouter",

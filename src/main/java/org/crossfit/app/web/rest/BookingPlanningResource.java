@@ -29,7 +29,9 @@ import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDayDTO;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -72,8 +74,8 @@ public class BookingPlanningResource {
     @RequestMapping(value = "/private/planning",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer offset,
-                                  @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer limit)
+    public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer index,
+                                  @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer nbDaysToDisplay)
         throws URISyntaxException {
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
@@ -81,12 +83,12 @@ public class BookingPlanningResource {
     
     	List<PlanningDayDTO> days = new ArrayList<PlanningDayDTO>();
     	int i = 0;
-    	
+    	DateTime start, end = null;
     	do{
 
         	DateTime now = timeService.nowAsDateTime(currentCrossFitBox).withTimeAtStartOfDay();
-    		DateTime start = now.plusDays(offset * limit);
-        	DateTime end = start.plusDays(limit <= 0 ? 1 : limit).minusMillis(1);
+    		start = now.plusDays(index * nbDaysToDisplay);
+        	end = start.plusDays(nbDaysToDisplay <= 0 ? 1 : nbDaysToDisplay).minusMillis(1);
         	
         	if (Days.daysBetween(start, end).getDays() > 14){
         		log.warn("Le nombre de jour recherche est trop important: " + Days.daysBetween(start, end).getDays());
@@ -111,17 +113,41 @@ public class BookingPlanningResource {
         		.map(entry -> {
         			return new PlanningDayDTO(entry.getKey(), entry.getValue());
         		})
-        		.sorted( (d1, d2) -> { return d1.getDate().compareTo(d2.getDate());} )
         		.collect(Collectors.toList());
         	
-        	offset++;
+        	index++;
         	i++;
     	}
     	while (days.isEmpty() && i <= 7); //Sert à rien de boucler plus de 7 fois...
     	
-    	offset--; //On a ete une fois trop loin
+    	index--; //On a ete une fois trop loin
     	
-    	return new ResponseEntity<>(new PlanningDTO(offset, days) , HttpStatus.OK);
+    	i = days.size();
+    	LocalDate startAt = start.withZoneRetainFields(DateTimeZone.UTC).toLocalDate();
+    	while (i < nbDaysToDisplay){
+    		boolean containDate = false;
+    		for (PlanningDayDTO day : days) {
+    			if (day.getDate().equals(startAt)){
+    				containDate = true;
+    				break;
+    			}
+			}
+    		
+    		if (!containDate){
+    			days.add(new PlanningDayDTO(startAt, new ArrayList<>()));
+    		}
+    		startAt = startAt.plusDays(1);
+    		i++;
+    		if (i > 14){ //On se protège, pas plus de 14 !
+    			break;
+    		}
+    	}
+    	
+    	List<PlanningDayDTO> sortedDay = days.stream()
+        		.sorted( (d1, d2) -> { return d1.getDate().compareTo(d2.getDate());} )
+        		.collect(Collectors.toList());
+    	
+    	return new ResponseEntity<>(new PlanningDTO(index, sortedDay) , HttpStatus.OK);
     }
 
     @RequestMapping(value = "/protected/planning",
