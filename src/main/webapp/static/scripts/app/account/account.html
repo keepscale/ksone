@@ -210,7 +210,7 @@
 					<ul class="list-group" ng-if="account.subscriptions.length">
 						<li class="list-group-item" ng-repeat="s in account.subscriptions">
 							
-					    	"{{s.membership.name}}" valable jusqu'au {{s.subscriptionEndDate | date:"dd MMM yyyy"}}
+					    	"{{s.membership.name}}" valable jusqu'au {{s.subscriptionEndDate | date:"dd MMM yyyy"}} <span ng-if="s.maxCount > 0">({{s.bookingCount}} / {{s.maxCount}})</span>
 						</li>
 					</ul>
 				</div>

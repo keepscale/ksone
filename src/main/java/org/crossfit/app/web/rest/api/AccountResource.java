@@ -5,16 +5,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Membership;
+import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.domain.enumeration.MembershipRulesType;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -52,6 +57,8 @@ public class AccountResource {
     private TimeService timeService;
     @Inject
     private CrossFitBoxSerivce boxService;
+    @Inject
+    private BookingRepository bookingRepository;
 
 
     /**
@@ -105,15 +112,24 @@ public class AccountResource {
 					LocalDate endAt = subscription.getSubscriptionEndDate();
 					if (now.equals(startAt) || now.equals(endAt) || (now.isAfter(startAt) && now.isBefore(endAt))){
 
-            			Subscription s = new Subscription();
+            			SubscriptionDTO s = new SubscriptionDTO();
             			s.setSubscriptionStartDate(subscription.getSubscriptionStartDate());
             			s.setSubscriptionEndDate(subscription.getSubscriptionEndDate());
+            			
+            			Optional<MembershipRules> sumRules = subscription.getMembership().getMembershipRules().stream().filter(rule->{
+            				return rule.getType()==MembershipRulesType.SUM && rule.getNumberOfSession() > 0;
+            			}).findFirst();
+            			
+            			if (sumRules.isPresent()){
+            				s.setBookingCount(bookingRepository.countBySubscription(subscription));
+            				s.setMaxCount(sumRules.get().getNumberOfSession());
+            			}
             			
             			Membership m = new Membership();
             			m.setName(subscription.getMembership().getName());
             			s.setMembership(m);
             			
-            			dto.getSubscriptions().add(SubscriptionDTO.fullMapper.apply(s));
+            			dto.getSubscriptions().add(s);
             			
             			
             			dto.getRules().addAll(subscription.getMembership().getMembershipRules());

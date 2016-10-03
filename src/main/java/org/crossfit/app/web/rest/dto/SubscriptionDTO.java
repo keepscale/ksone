@@ -52,7 +52,8 @@ public class SubscriptionDTO implements Serializable {
     private LocalDate subscriptionEndDate;
 
     private Long bookingCount;
-    
+    private int maxCount;
+        
     public Long getId() {
         return id;
     }
@@ -69,6 +70,15 @@ public class SubscriptionDTO implements Serializable {
 
 	public void setBookingCount(Long bookingCount) {
 		this.bookingCount = bookingCount;
+	}
+
+	
+	public int getMaxCount() {
+		return maxCount;
+	}
+
+	public void setMaxCount(int maxCount) {
+		this.maxCount = maxCount;
 	}
 
 	@Override
