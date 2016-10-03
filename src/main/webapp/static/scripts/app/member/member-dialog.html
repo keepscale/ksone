@@ -195,10 +195,10 @@
 							</div>
 					        <div class="col-xs-2">
 					        
-				  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)">
+				  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)" ng-disabled="subscription.bookingCount > 0">
 									<span class="glyphicon glyphicon-remove"></span>
 								</button>
-							
+								<span ng-if="subscription.bookingCount > 0">{{subscription.bookingCount}} résa.</span>
 					        </div>
 				        </div>
 				        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">

@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -43,6 +44,8 @@ public class SubscriptionResource {
 
 	@Inject
 	private SubscriptionRepository subscriptionRepository;
+	@Inject
+	private BookingRepository bookingRepository;
 	@Inject
 	private CrossFitBoxSerivce boxService;
 
@@ -139,6 +142,7 @@ public class SubscriptionResource {
 				.map(subscription -> new ResponseEntity<>(subscription, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
+	
 
 	protected Subscription doGet(Long id) {
 		return subscriptionRepository.findOne(id);

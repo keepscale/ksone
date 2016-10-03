@@ -19,6 +19,7 @@ import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -124,8 +125,15 @@ public class MemberService {
 			initAccountAndSendMail(member);
 		}
 		member.getSubscriptions().clear();
-		for (Subscription s : memberdto.getSubscriptions()) {
+		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
+			Subscription s = new Subscription();
         	s.setMember(member);
+        	
+			s.setId(dto.getId());
+        	s.setMembership(dto.getMembership());
+        	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
+        	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
+        	
 			member.getSubscriptions().add(s);
 		}
 		member = memberRepository.save(member);

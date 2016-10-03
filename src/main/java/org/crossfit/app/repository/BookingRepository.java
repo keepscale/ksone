@@ -6,6 +6,7 @@ import java.util.Set;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,5 +52,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 	@Transactional
 	@Query("delete from Booking b where b.subscription.member = :member")
 	void deleteAllByMember(@Param("member") Member member);
+    
+    Long countBySubscription(Subscription subscription);
 
 }

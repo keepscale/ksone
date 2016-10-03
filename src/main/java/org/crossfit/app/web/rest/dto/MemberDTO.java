@@ -90,7 +90,7 @@ public class MemberDTO {
 
     private List<String> roles;
 
-    private List<Subscription> subscriptions = new ArrayList<>();
+    private List<SubscriptionDTO> subscriptions = new ArrayList<>();
     private List<MembershipRules> rules = new ArrayList<>();
 
     public String getLogin(){
@@ -226,23 +226,17 @@ public class MemberDTO {
 		return langKey;
 	}
 
-
 	public void setLangKey(String langKey) {
 		this.langKey = langKey;
 	}
 
-
-	public List<Subscription> getSubscriptions() {
+	public List<SubscriptionDTO> getSubscriptions() {
 		return subscriptions;
 	}
 
-
-	public void setSubscriptions(List<Subscription> subscriptions) {
+	public void setSubscriptions(List<SubscriptionDTO> subscriptions) {
 		this.subscriptions = subscriptions;
 	}
-	
-	
-
 
 	public List<MembershipRules> getRules() {
 		return rules;

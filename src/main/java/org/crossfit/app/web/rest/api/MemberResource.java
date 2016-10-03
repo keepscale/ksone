@@ -7,15 +7,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
 import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
@@ -51,9 +55,11 @@ public class MemberResource {
 	private MemberService memberService;
 	@Inject
 	private MemberRepository memberRepository;
-    
+
     @Inject
     private SubscriptionRepository subscriptionRepository;
+    @Inject
+    private BookingRepository bookingRepository;
     
     
 	/**
@@ -128,7 +134,13 @@ public class MemberResource {
 		Member member = memberRepository.findOne(id);		
 		MemberDTO memberDTO = MemberDTO.MAPPER.apply(member);
 		
-		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member)));
+		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member).stream().map(s ->{
+			
+			SubscriptionDTO dto = SubscriptionDTO.fullMapper.apply(s);
+			dto.setBookingCount(bookingRepository.countBySubscription(s));
+			return dto;
+			
+		}).collect(Collectors.toList())));
 		
 		return memberDTO;
 	}

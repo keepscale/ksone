@@ -22,6 +22,7 @@ import org.crossfit.app.service.MemberService;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -112,7 +113,7 @@ public class AccountResource {
             			m.setName(subscription.getMembership().getName());
             			s.setMembership(m);
             			
-            			dto.getSubscriptions().add(s);
+            			dto.getSubscriptions().add(SubscriptionDTO.fullMapper.apply(s));
             			
             			
             			dto.getRules().addAll(subscription.getMembership().getMembershipRules());
