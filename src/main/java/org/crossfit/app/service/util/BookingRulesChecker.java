@@ -23,6 +23,7 @@ import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
+import org.crossfit.app.exception.rules.SubscriptionDateNotYetAvaiblableException;
 import org.crossfit.app.exception.rules.SubscriptionException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
@@ -84,6 +85,9 @@ public class BookingRulesChecker {
 				if(subscription.getSubscriptionEndDate() != null && subscription.getSubscriptionEndDate().isBefore(startAt.toLocalDate()))
 					throw new SubscriptionDateExpiredForBookingException(subscription, booking);
 
+				if (subscription.getSubscriptionStartDate() != null && subscription.getSubscriptionStartDate().isAfter(startAt.toLocalDate())){
+					throw new SubscriptionDateNotYetAvaiblableException(subscription, booking);
+				}
 							
 				//On ajoute à toute les resa passée, celle en cours de préparation
 				List<Booking> subscriptionBookings = new ArrayList<>();
@@ -122,7 +126,7 @@ public class BookingRulesChecker {
 
 			} catch (SubscriptionDateExpiredException
 					| SubscriptionDateExpiredForBookingException
-					| SubscriptionMembershipRulesException | SubscriptionNoMembershipRulesApplicableException e) {				
+					| SubscriptionMembershipRulesException | SubscriptionNoMembershipRulesApplicableException | SubscriptionDateNotYetAvaiblableException e) {				
 				
 				log.debug("Souscrpition {} invalide: {}", subscription, e.getMessage());
 				

@@ -10,6 +10,7 @@ import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
+import org.crossfit.app.exception.rules.SubscriptionDateNotYetAvaiblableException;
 import org.crossfit.app.exception.rules.SubscriptionException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
 import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
@@ -106,6 +107,7 @@ public class ExceptionTranslator {
         	for (SubscriptionException e : ex.getExceptions()) {
 				String membershipName = e.getSubscription().getMembership().getName();
 				String dateFin = sdf.format(e.getSubscription().getSubscriptionEndDate().toDate());
+				String dateDeb = sdf.format(e.getSubscription().getSubscriptionStartDate().toDate());
 				if (e instanceof SubscriptionDateExpiredException){
 					error.addDetail("Votre abonnement " + membershipName + " a expiré depuis le "+ dateFin);
 					
@@ -114,6 +116,11 @@ public class ExceptionTranslator {
 					SubscriptionDateExpiredForBookingException ee = (SubscriptionDateExpiredForBookingException) e;
 					String dateBooking = sdf.format(ee.getBooking().getStartAt().toDate());
 					error.addDetail("Votre abonnement " + membershipName + " expire le "+ dateFin + ". Vous ne pouvez pas réserver pour le "+ dateBooking);
+				}
+				else if (e instanceof SubscriptionDateNotYetAvaiblableException){
+					SubscriptionDateNotYetAvaiblableException ee = (SubscriptionDateNotYetAvaiblableException) e;
+					String dateBooking = sdf.format(ee.getBooking().getStartAt().toDate());
+					error.addDetail("Votre abonnement " + membershipName + " démarre le "+ dateDeb + ". Vous ne pouvez pas encore réserver pour le "+ dateBooking);
 				}
 				else if (e instanceof SubscriptionNoMembershipRulesApplicableException){
 					SubscriptionNoMembershipRulesApplicableException ee = (SubscriptionNoMembershipRulesApplicableException) e;
