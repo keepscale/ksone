@@ -124,7 +124,7 @@ public class BookingPlanningResource {
     	
     	i = days.size();
     	LocalDate startAt = start.withZoneRetainFields(DateTimeZone.UTC).toLocalDate();
-    	while (i < nbDaysToDisplay){
+    	while (days.size() < nbDaysToDisplay){
     		boolean containDate = false;
     		for (PlanningDayDTO day : days) {
     			if (day.getDate().equals(startAt)){
