@@ -16,7 +16,9 @@
         	
             "emailFrom": "Email d'envoi des mails",
         	"logoUrl" : "Url du logo",
-        	"socialEnabled": "Activer les fonctionnalités 'social'"
+        	"socialEnabled": "Activer les fonctionnalités 'social'",
+        	"redirectToRules": "Règles de redirection",
+        	"redirectToRules.description": "booking.crossfit-nancy.fr->booking-old.crossfit-nancy.fr<br/>booking-new.crossfit-nancy.fr->booking-old.crossfit-nancy.fr<br/>admin.crossfit-nancy.fr->admin-old.crossfit-nancy.fr<br/>admin-new.crossfit-nancy.fr->admin-old.crossfit-nancy.fr"
         }
     }
 }

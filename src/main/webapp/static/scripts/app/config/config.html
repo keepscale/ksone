@@ -56,6 +56,11 @@
 						    name="socialEnabled"
 						    ng-model="box.socialEnabled" >
 							{{ 'crossfitApp.config.socialEnabled' | translate }}
+		        </div>	
+		        <div class="form-group">
+		            <label translate="crossfitApp.config.redirectToRules" for="field_logoUrl">logoUrl</label>
+		            <textarea class="form-control" name="redirectToRules" id="field_redirectToRules" ng-model="box.redirectToRules"></textarea>
+		            <p translate="crossfitApp.config.redirectToRules.description">Description</p>
 		        </div>		        
         	</div>
         </div>

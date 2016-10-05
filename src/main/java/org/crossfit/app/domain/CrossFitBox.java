@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -67,6 +68,10 @@ public class CrossFitBox implements Serializable {
     @NotNull        
     @Column(name = "social_enabled", nullable = false)
     private boolean socialEnabled = false;
+    
+    @Size(max=255)
+    @Column(name = "redirect_to_rules", nullable = true)
+    private String redirectToRules;
 
     public Long getId() {
         return id;
@@ -148,6 +153,14 @@ public class CrossFitBox implements Serializable {
 		this.timeZone = timeZone;
 	}
 	
+	public String getRedirectToRules() {
+		return redirectToRules;
+	}
+
+	public void setRedirectToRules(String redirectToRules) {
+		this.redirectToRules = redirectToRules;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {

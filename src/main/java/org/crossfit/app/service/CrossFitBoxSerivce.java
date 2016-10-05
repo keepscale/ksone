@@ -42,7 +42,7 @@ public class CrossFitBoxSerivce {
 		}
 		String serverName = request.getServerName();
 		
-		log.debug("Recherche d'une box associé à {}", serverName);
+		log.trace("Recherche d'une box associé à {}", serverName);
 		
 		List<CrossFitBox> boxs = crossFitBoxRepository.findAll();
 		

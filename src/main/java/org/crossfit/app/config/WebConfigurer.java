@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.crossfit.app.web.filter.CachingHttpHeadersFilter;
+import org.crossfit.app.web.filter.RedirectToOtherApplicationVersionFilter;
 import org.crossfit.app.web.filter.StaticResourcesProductionFilter;
 import org.crossfit.app.web.filter.gzip.GZipServletFilter;
 import org.slf4j.Logger;
@@ -20,9 +21,11 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
@@ -41,8 +44,9 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         servletContext.addListener(RequestContextListener.class);
 
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
-               
+        
         initCachingHttpHeadersFilter(servletContext, disps);
+        initRedirectToOtherApplicationFilter(servletContext, disps);
 //        initStaticResourcesProductionFilter(servletContext, disps);
         initGzipFilter(servletContext, disps);
         
@@ -61,7 +65,24 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         mappings.add("json", "text/html;charset=utf-8");
         container.setMimeMappings(mappings);
     }
+
+    /**
+     * Initializes the RedirectToOtherApplicationVersion filter.
+     */
+    private void initRedirectToOtherApplicationFilter(ServletContext servletContext, EnumSet<DispatcherType> disps) {
+        log.debug("Registering RedirectToOtherApplicationVersion Filter");
+        
+        FilterRegistration.Dynamic redirectFilter =
+                servletContext.addFilter("delegateFilter", new DelegatingFilterProxy("redirectToOtherApplicationVersionFilter"));
+
+        Map<String, String> parameters = new HashMap<>();
+        redirectFilter.setInitParameters(parameters);
+        redirectFilter.addMappingForUrlPatterns(disps, true, "/");
+        redirectFilter.setAsyncSupported(true);
+    }
     
+    
+
     /**
      * Initializes the GZip filter.
      */
