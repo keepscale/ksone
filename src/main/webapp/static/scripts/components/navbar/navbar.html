@@ -27,7 +27,7 @@
 				title="{{'global.menu.timeslottype'|translate}}"></span>
 		</a></li>
 
-		<li ng-class="{active: $state.includes('membership')}"  has-any-role="ROLE_ADMIN"
+		<li ng-class="{active: $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="membership"> <span
 				class="glyphicon glyphicon-calendar"
 				title="{{'global.menu.memberships'|translate}}"></span>

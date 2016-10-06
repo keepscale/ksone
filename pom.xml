@@ -425,6 +425,7 @@
 					    <jsSourceFile>/scripts/app/config/config.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/config/config.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/crossfitbox/crossfitbox.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/admin/admin.sql.service.js</jsSourceFile>
 				    	    
 					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.controller.js</jsSourceFile>
