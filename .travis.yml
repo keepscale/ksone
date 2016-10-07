@@ -25,9 +25,8 @@ deploy:
   api_key: ${GH_TOKEN}
   file: crossfit-$APP_VERSION.jar
   skip_cleanup: true
-  on:
-    tags: true
-    
+
 branches:
   except:
     - /^v[0-9]/
+
