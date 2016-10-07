@@ -14,6 +14,14 @@ install: "/bin/true"
 script:
 - mvn clean package -Dmaven.test.skip=true
 
+before_deploy:
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=v$APP_VERSION.$TRAVIS_BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI for $GIT_TAG"
+  - git push -q https://${GH_TOKEN}@github.com/lgangloff/crossfit-2.0 --tags
+  - ls -R
+
 deploy:
   provider: releases
   skip_cleanup: true
@@ -22,6 +30,7 @@ deploy:
   file: target/crossfit-$APP_VERSION.jar
   on:
     repo: lgangloff/crossfit-2.0
+    tags: false
     
 branches:
   except:
