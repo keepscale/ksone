@@ -2,7 +2,9 @@ language: java
 jdk: oraclejdk8
 sudo: required
 dist: trusty
-cache: bundler
+cache:
+  directories:
+    - $HOME/.m2
 
 before_install:
 - export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate
