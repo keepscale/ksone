@@ -19,7 +19,7 @@ before_deploy:
   - git config --global user.name "Travis CI"
   - export GIT_TAG=v$APP_VERSION.$TRAVIS_BUILD_NUMBER
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI for $GIT_TAG"
-  - git push -q https://${GH_TOKEN}@github.com/lgangloff/crossfit-2.0 --tags
+  - git push -q https://$GITHUBTOKEN@github.com/lgangloff/crossfit-2.0 --tags
   - ls -R
 
 deploy:
