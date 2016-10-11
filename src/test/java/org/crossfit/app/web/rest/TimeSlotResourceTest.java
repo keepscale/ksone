@@ -1,24 +1,29 @@
 package org.crossfit.app.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.TimeSlot;
+import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
+import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
+import org.crossfit.app.repository.TimeSlotTypeRepository;
+import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.rest.api.TimeSlotResource;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -27,22 +32,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Test class for the TimeSlotResource REST controller.
  *
  * @see TimeSlotResource
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -68,8 +79,17 @@ public class TimeSlotResourceTest {
     private static final Integer DEFAULT_MAX_ATTENDEES = 0;
     private static final Integer UPDATED_MAX_ATTENDEES = 1;
 
+    
+    @Inject
+    private CrossFitBoxSerivce boxService;
     @Inject
     private TimeSlotRepository timeSlotRepository;
+    @Inject
+    private TimeService timeService;
+    @Inject
+    private TimeSlotExclusionRepository timeSlotExclusionRepository;
+    @Inject
+    private TimeSlotTypeRepository timeSlotTypeRepository;
 
     @Inject
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -78,22 +98,38 @@ public class TimeSlotResourceTest {
 
     private TimeSlot timeSlot;
 
+    @Autowired
+    private WebApplicationContext wac;
+   
+    
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
         TimeSlotResource timeSlotResource = new TimeSlotResource();
+        ReflectionTestUtils.setField(timeSlotResource, "timeService", timeService);
+        ReflectionTestUtils.setField(timeSlotResource, "boxService", boxService);
+        ReflectionTestUtils.setField(timeSlotResource, "timeSlotExclusionRepository", timeSlotExclusionRepository);
         ReflectionTestUtils.setField(timeSlotResource, "timeSlotRepository", timeSlotRepository);
+        
         this.restTimeSlotMockMvc = MockMvcBuilders.standaloneSetup(timeSlotResource).setMessageConverters(jacksonMessageConverter).build();
+        
+
+        MockServletContext sc = new MockServletContext("");
+        ServletContextListener listener = new ContextLoaderListener(wac);
+        ServletContextEvent event = new ServletContextEvent(sc);
+        listener.contextInitialized(event);
     }
 
     @Before
     public void initTest() {
         timeSlot = new TimeSlot();
+        timeSlot.setRecurrent(TimeSlotRecurrent.DAY_OF_WEEK);
         timeSlot.setDayOfWeek(DEFAULT_DAY_OF_WEEK);
         timeSlot.setName(DEFAULT_NAME);
         timeSlot.setStartTime(DEFAULT_START_TIME);
         timeSlot.setEndTime(DEFAULT_END_TIME);
         timeSlot.setMaxAttendees(DEFAULT_MAX_ATTENDEES);
+        timeSlot.setTimeSlotType(timeSlotTypeRepository.findOne(1L));
     }
 
     @Test
@@ -125,6 +161,30 @@ public class TimeSlotResourceTest {
         int databaseSizeBeforeTest = timeSlotRepository.findAll().size();
         // set the field null
         timeSlot.setDayOfWeek(null);
+        timeSlot.setDate(new DateTime());
+        timeSlot.setRecurrent(TimeSlotRecurrent.DAY_OF_WEEK);
+
+        // Create the TimeSlot, which fails.
+
+        restTimeSlotMockMvc.perform(post("/api/timeSlots")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(timeSlot)))
+                .andExpect(status().isBadRequest());
+
+        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
+        assertThat(timeSlots).hasSize(databaseSizeBeforeTest);
+    }
+
+
+
+    @Test
+    @Transactional
+    public void checkDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = timeSlotRepository.findAll().size();
+        // set the field null
+        timeSlot.setDayOfWeek(1);
+        timeSlot.setDate(null);
+        timeSlot.setRecurrent(TimeSlotRecurrent.DATE);
 
         // Create the TimeSlot, which fails.
 
@@ -140,94 +200,11 @@ public class TimeSlotResourceTest {
     @Test
     @Transactional
     public void getAllTimeSlots() throws Exception {
-        // Initialize the database
-        timeSlotRepository.saveAndFlush(timeSlot);
 
         // Get all the timeSlots
         restTimeSlotMockMvc.perform(get("/api/timeSlots"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(timeSlot.getId().intValue())))
-                .andExpect(jsonPath("$.[*].dayOfWeek").value(hasItem(DEFAULT_DAY_OF_WEEK)))
-                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].startTime").value(hasItem(DEFAULT_START_TIME_STR)))
-                .andExpect(jsonPath("$.[*].endTime").value(hasItem(DEFAULT_END_TIME_STR)))
-                .andExpect(jsonPath("$.[*].maxAttendees").value(hasItem(DEFAULT_MAX_ATTENDEES)));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    @Transactional
-    public void getTimeSlot() throws Exception {
-        // Initialize the database
-        timeSlotRepository.saveAndFlush(timeSlot);
-
-        // Get the timeSlot
-        restTimeSlotMockMvc.perform(get("/api/timeSlots/{id}", timeSlot.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(timeSlot.getId().intValue()))
-            .andExpect(jsonPath("$.dayOfWeek").value(DEFAULT_DAY_OF_WEEK))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
-            .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
-            .andExpect(jsonPath("$.maxAttendees").value(DEFAULT_MAX_ATTENDEES));
-    }
-
-    @Test
-    @Transactional
-    public void getNonExistingTimeSlot() throws Exception {
-        // Get the timeSlot
-        restTimeSlotMockMvc.perform(get("/api/timeSlots/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    public void updateTimeSlot() throws Exception {
-        // Initialize the database
-        timeSlotRepository.saveAndFlush(timeSlot);
-
-		int databaseSizeBeforeUpdate = timeSlotRepository.findAll().size();
-
-        // Update the timeSlot
-        timeSlot.setDayOfWeek(UPDATED_DAY_OF_WEEK);
-        timeSlot.setName(UPDATED_NAME);
-        timeSlot.setStartTime(UPDATED_START_TIME);
-        timeSlot.setEndTime(UPDATED_END_TIME);
-        timeSlot.setMaxAttendees(UPDATED_MAX_ATTENDEES);
-        
-
-        restTimeSlotMockMvc.perform(put("/api/timeSlots")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(timeSlot)))
-                .andExpect(status().isOk());
-
-        // Validate the TimeSlot in the database
-        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
-        assertThat(timeSlots).hasSize(databaseSizeBeforeUpdate);
-        TimeSlot testTimeSlot = timeSlots.get(timeSlots.size() - 1);
-        assertThat(testTimeSlot.getDayOfWeek()).isEqualTo(UPDATED_DAY_OF_WEEK);
-        assertThat(testTimeSlot.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testTimeSlot.getStartTime()).isEqualTo(UPDATED_START_TIME);
-        assertThat(testTimeSlot.getEndTime()).isEqualTo(UPDATED_END_TIME);
-        assertThat(testTimeSlot.getMaxAttendees()).isEqualTo(UPDATED_MAX_ATTENDEES);
-    }
-
-    @Test
-    @Transactional
-    public void deleteTimeSlot() throws Exception {
-        // Initialize the database
-        timeSlotRepository.saveAndFlush(timeSlot);
-
-		int databaseSizeBeforeDelete = timeSlotRepository.findAll().size();
-
-        // Get the timeSlot
-        restTimeSlotMockMvc.perform(delete("/api/timeSlots/{id}", timeSlot.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-
-        // Validate the database is empty
-        List<TimeSlot> timeSlots = timeSlotRepository.findAll();
-        assertThat(timeSlots).hasSize(databaseSizeBeforeDelete - 1);
-    }
 }

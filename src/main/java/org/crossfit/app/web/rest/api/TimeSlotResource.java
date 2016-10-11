@@ -104,7 +104,7 @@ public class TimeSlotResource {
 			timeSlot.getExclusions().clear();
 			timeSlot.setVisibleAfter(null);
 			timeSlot.setVisibleBefore(null);
-			DateTime date = timeSlot.getDate().toDateTime(timeService.getDateTimeZone(box)).withTime(timeSlot.getStartTime());
+			DateTime date = timeSlot.getDate() == null ? null : timeSlot.getDate().toDateTime(timeService.getDateTimeZone(box)).withTime(timeSlot.getStartTime());
 			timeSlot.setDate(date);
 		}
 		else if (timeSlot.getRecurrent() == TimeSlotRecurrent.DAY_OF_WEEK){

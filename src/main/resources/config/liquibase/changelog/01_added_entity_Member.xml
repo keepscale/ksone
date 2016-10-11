@@ -131,7 +131,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="MEMBER"/>
 
-		<sql>
+		<sql dbms="postgresql">
 			CREATE UNIQUE INDEX idx_member_uuid_box ON MEMBER (card_uuid, box_id) WHERE card_uuid IS NOT NULL;
 		</sql>
         

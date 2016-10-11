@@ -2,17 +2,12 @@ server:
     port: 10344
     address: localhost
 
-
-# security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7
-
-async:
-    corePoolSize: 2
-    maxPoolSize: 50
-    queueCapacity: 10000
-
 liquibase:
-    context: test
+    change-log: classpath:config/liquibase/master-test.xml
+    contexts: test
+
+logback.loglevel: DEBUG
+
 
 spring:
     datasource:
@@ -22,7 +17,6 @@ spring:
         serverName:
         username:
         password:
-
     jpa:
         database-platform: org.crossfit.app.domain.util.FixedH2Dialect
         database: H2
@@ -37,6 +31,15 @@ spring:
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
+    
+# security configuration (this key should be unique for your application, and kept secret)
+security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7
+security.access.card.token: ABCD
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
 
 mail:
     host: localhost
@@ -46,6 +49,7 @@ mail:
     protocol: smtp
     tls: false
     auth: false
+    from: no-reply@crossfit-webapp.com
 
 metrics:
     jmx.enabled: false

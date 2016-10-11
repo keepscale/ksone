@@ -2,27 +2,40 @@ package org.crossfit.app.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.crossfit.app.Application;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.PersistentToken;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
+import org.crossfit.app.web.rest.api.TimeSlotResource;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Test class for the UserResource REST controller.
  *
  * @see MemberService
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -39,9 +52,23 @@ public class UserServiceTest {
     @Inject
     private MemberService userService;
 
+    @Inject
+    private CrossFitBoxSerivce boxService;
+
+    @Autowired
+    private WebApplicationContext wac;
+    
+    @PostConstruct
+    public void setup() {
+        MockServletContext sc = new MockServletContext("");
+        ServletContextListener listener = new ContextLoaderListener(wac);
+        ServletContextEvent event = new ServletContextEvent(sc);
+        listener.contextInitialized(event);
+    }
+    
     @Test
     public void testRemoveOldPersistentTokens() {
-    	Member admin = memberRepository.findOneByLogin("admin", null).get();
+    	Member admin = memberRepository.findOneByLogin("webmaster@crossfit-local.com", boxService.findCurrentCrossFitBox()).get();
         int existingCount = persistentTokenRepository.findByMember(admin).size();
         generateUserToken(admin, "1111-1111", new LocalDate());
         LocalDate now = new LocalDate();

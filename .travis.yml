@@ -14,7 +14,7 @@ before_install:
 install: "/bin/true"
 
 script:
-- mvn clean package -Dmaven.test.skip=true
+- mvn clean package
 
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
