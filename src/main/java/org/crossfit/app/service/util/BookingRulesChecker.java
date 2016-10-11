@@ -29,13 +29,14 @@ import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.MembershipRulesExceptionType;
 import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class BookingRulesChecker {
 
-    private final Logger log = LoggerFactory.getLogger(BookingRulesChecker.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingRulesChecker.class);
 	
     private final DateTime now;
 	private final Map<Subscription, List<Booking>> bookingsBySubscriptions;
@@ -167,28 +168,33 @@ public class BookingRulesChecker {
 				List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
 				
 				long bookingsCount = 0;
-				
+				DateTime deb = now;
 				switch (rule.getType()) {
 					case SUM: //somme total des resa
 						bookingsCount = bookingsForRules.size();
 						break;
 
 					case SUM_PER_WEEK: //somme total des resa de la semaine passe
-						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(1), bookingsForRules);
+						deb = now.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
+						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(1), bookingsForRules, rule);
 						break;
 						
 					case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
-						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusWeeks(4), bookingsForRules);
+						Optional<Booking> previousBookingBeforeNow = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule) && b.getStartAt().isBefore(now)).max(Comparator.comparing((Booking::getStartAt)));
+						DateTime deb4Week = previousBookingBeforeNow.map(Booking::getStartAt).orElse(now);
+						deb = deb4Week.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay();
+						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(4), bookingsForRules, rule);
 						break;
 						
 					case SUM_PER_MONTH: //somme total des resa du mois passe
-						bookingsCount = countMaxBouking(now, lastBookingDate, d->d.plusMonths(1), bookingsForRules);
+						deb = now.withDayOfMonth(1).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
+						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusMonths(1), bookingsForRules, rule);
 						break;
 				}
 
 				//le total des resa est superieur au total de la regle ? => La regle est viole
-				
-				log.debug("{} résa entre le {} et le {}. La regle {} limite {} résa.", bookingsCount, now, lastBookingDate, rule.getType(), rule.getNumberOfSession());
+
+				log.debug("Suivant la regle {} limitant a {} resa, on a compte au max {} résa entre le {} et le {}", rule.getType(), rule.getNumberOfSession(), bookingsCount, deb, lastBookingDate);
 
 				
 				if (bookingsCount > rule.getNumberOfSession()){					
@@ -200,7 +206,7 @@ public class BookingRulesChecker {
 		};
 	}
 	
-	private static final long countMaxBouking(DateTime deb, DateTime finalEnd, Function<DateTime, DateTime> increment, Collection<Booking> bookingsForRules){
+	private static final long countMaxBouking(DateTime deb, DateTime finalEnd, Function<DateTime, DateTime> increment, Collection<Booking> bookingsForRules, MembershipRules rule){
 		long maxCount = 0;
 		while(deb.isBefore(finalEnd)){
 			DateTime after = deb;
@@ -209,6 +215,7 @@ public class BookingRulesChecker {
 			long count = bookingsForRules.stream().filter(b->b.getStartAt().isAfter(after) && b.getStartAt().isBefore(before)).count();
 			if (count > maxCount){
 				maxCount = count;
+				log.debug("{} résa entre le {} et le {}. La regle {} limite {} résa.", count, after, before, rule.getType(), rule.getNumberOfSession());
 			}
 			deb = before;
 		}

@@ -388,7 +388,7 @@
 			<column name="membership_id" value="6" />	
 			<column name="number_of_session" value="3" />
 			<column name="type" value="SUM_PER_WEEK" />
-			<column name="nb_max_booking" value="3" />
+			<column name="nb_max_booking" value="10" />
 			<column name="nb_max_day_booking" value="14" />
 			<column name="nb_hours_at_least_to_book" value="24" />
 			<column name="nb_hours_at_least_to_cancel" value="6" />
@@ -409,7 +409,7 @@
 			<column name="membership_id" value="6" />	
 			<column name="number_of_session" value="-1" />
 			<column name="type" value="SUM" />
-			<column name="nb_max_booking" value="4" />
+			<column name="nb_max_booking" value="10" />
 			<column name="nb_max_day_booking" value="14" />
 			<column name="nb_hours_at_least_to_book" value="24" />
 			<column name="nb_hours_at_least_to_cancel" value="6" />
