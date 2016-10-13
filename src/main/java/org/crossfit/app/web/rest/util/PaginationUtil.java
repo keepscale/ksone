@@ -24,7 +24,7 @@ public class PaginationUtil {
 
     public static final int DEFAULT_LIMIT = 20;
 
-    public static final int MAX_LIMIT = 100;
+    public static final int MAX_LIMIT = 500;
 
     public static Pageable generatePageRequest(Integer offset, Integer limit) {
         if (offset == null || offset < MIN_OFFSET) {

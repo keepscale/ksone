@@ -70,7 +70,7 @@ public class CardMemberResource {
 	@RequestMapping(value = "/members", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MemberDTO>> getAll(
 			@RequestParam(value = "page", required = false) Integer offset,
-			@RequestParam(value = "per_page", required = false) Integer limit,
+			@RequestParam(value = "per_page", required = false, defaultValue = "499") Integer limit,
 			@RequestParam(value = "search", required = false) String search) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
