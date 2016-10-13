@@ -33,6 +33,7 @@ deploy:
   on:
     repo: lgangloff/crossfit-2.0
     tags: false
+    all_branches: true
     
 branches:
   except:
