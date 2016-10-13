@@ -52,7 +52,7 @@ public class GitHubResource {
     @Value("${github.download.directory}")
 	private String githubDownloadDirectory;
     
-    @Value("${github.users.vars.path:''}")
+    @Value("${github.users.vars.path:}")
 	private String usersVarsPath;
 
     /**
