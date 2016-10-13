@@ -537,7 +537,7 @@
 			                        <goal>repackage</goal>
 			                    </goals>
 			                    <configuration>
-			                        <finalName>${artifact}-${version}-${env.TRAVIS_BUILD_NUMBER}</finalName>
+			                        <finalName>${artifactId}-${version}-${env.TRAVIS_BUILD_NUMBER}</finalName>
 			                    </configuration>
 			                </execution>
 			            </executions>
