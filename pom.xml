@@ -134,6 +134,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
+			<version>3.5.2</version>
 		</dependency>
 
 
