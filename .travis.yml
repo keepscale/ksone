@@ -14,12 +14,12 @@ before_install:
 install: "/bin/true"
 
 script:
-- mvn clean package
+- mvn clean package -P openshift
 
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - export GIT_TAG=v$APP_VERSION.$TRAVIS_BUILD_NUMBER
+  - export GIT_TAG=$APP_VERSION.$TRAVIS_BUILD_NUMBER
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI for $GIT_TAG"
   - git push -q https://$GITHUBTOKEN@github.com/lgangloff/crossfit-2.0 --tags
   - ls -R

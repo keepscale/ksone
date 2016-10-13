@@ -5,6 +5,9 @@ liquibase:
     change-log: classpath:config/liquibase/master.xml
     contexts: openshift
 
+github.download.directory: ${OPENSHIFT_DATA_DIR}/releases
+github.users.vars.path: ${HOME}/.env/user_vars
+
 spring:
     profiles:
         active: openshift
