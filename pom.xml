@@ -80,11 +80,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.kohsuke</groupId>
-			<artifactId>github-api</artifactId>
-			<version>1.77</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
@@ -255,22 +250,6 @@
 			</resource>
 		</resources>
 		<plugins>
-		
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-						<configuration>
-                        	<finalName>${artifactId}-${version}-${env.TRAVIS_BUILD_NUMBER}</finalName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -462,10 +441,16 @@
 					    <jsSourceFile>/scripts/app/member/member-dialog.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/member/member.service.js</jsSourceFile>
 				    
-					    <jsSourceFile>/scripts/app/config/config.js</jsSourceFile>
-					    <jsSourceFile>/scripts/app/config/config.controller.js</jsSourceFile>
-					    <jsSourceFile>/scripts/components/crossfitbox/crossfitbox.service.js</jsSourceFile>
+				    
+					    <jsSourceFile>/scripts/app/admin/config/config.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/admin/config/config.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/admin/sql/sql.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/admin/sql/sql.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/admin/version/version.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/admin/version/version.controller.js</jsSourceFile>
+	    			    <jsSourceFile>/scripts/components/crossfitbox/crossfitbox.service.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/admin/admin.sql.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/admin/admin.version.service.js</jsSourceFile>
 				    	    
 					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/timeSlotType/timeSlotType.controller.js</jsSourceFile>

@@ -32,11 +32,6 @@
 				class="glyphicon glyphicon-calendar"
 				title="{{'global.menu.memberships'|translate}}"></span>
 		</a></li>
-		<li ng-class="{active: $state.includes('config')}"  has-any-role="ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="config"> <span
-				class="glyphicon glyphicon-cog"
-				title="{{'global.menu.config'|translate}}"></span>
-			</a></li>
 		<li ng-class="{active: $state.includes('account')}"  has-any-role="ROLE_USER,ROLE_MANAGER,ROLE_ADMIN"
 		 ng-switch-when="true" ><a ui-sref="account.edit"> <span class="glyphicon glyphicon-user"
 				ui-sref-active="active"

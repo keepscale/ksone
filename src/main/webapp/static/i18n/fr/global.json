@@ -18,6 +18,8 @@
             "timeslots" : "Créneaux",
             "timeslottype" : "Type de créneaux",
             "config" : "Configuration",
+            "sql" : "SQL",
+            "version" : "Version",
             "language": "Langue",
             "memberships" : "Abonnements",
             "config" : "Configuration"

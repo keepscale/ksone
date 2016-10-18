@@ -3,22 +3,22 @@
 angular.module('crossfitApp')
     .config(function ($stateProvider) {
         $stateProvider
-            .state('config', {
+            .state('sql', {
                 parent: 'site',
-                url: '/config',
+                url: '/sql',
                 data: {
-                    roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
-                    pageTitle: 'crossfitApp.config.home.title'
+                    roles: ['ROLE_ADMIN'],
+                    pageTitle: 'crossfitApp.sql.home.title'
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/config/config.html',
-                        controller: 'ConfigController'
+                        templateUrl: 'scripts/app/admin/sql/sql.html',
+                        controller: 'SQLController'
                     }
                 },
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('config');
+                        $translatePartialLoader.addPart('sql');
                         $translatePartialLoader.addPart('global');
                         return $translate.refresh();
                     }]

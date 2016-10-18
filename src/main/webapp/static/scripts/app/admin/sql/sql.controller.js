@@ -1,10 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('ConfigController', function ($scope, CrossfitBox, ParseLinks, AdminSQL) {
- 
-    	$scope.box = CrossfitBox.current();
-    	
+    .controller('SQLController', function ($scope, AdminSQL) {
+     	
     	$scope.querySQL = "SELECT * FROM member"
 
 		$scope.countQuery = 0;
@@ -22,10 +20,5 @@ angular.module('crossfitApp')
     		AdminSQL.executeUpdate($scope.querySQL, function(result){
     			$scope.countQuery = result;
     		});
-    	};
-    	
-    	
-    	$scope.update = function(){
-    		CrossfitBox.update($scope.box);
     	};
     });

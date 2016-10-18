@@ -1,3 +1,24 @@
+<nav class="navbar ng-scope" role="navigation" ng-switch="isAuthenticated()">
+	<ul class="nav navbar-nav">
+		<li ng-class="{active: $state.includes('config')}"  has-any-role="ROLE_ADMIN">
+			<a ui-sref="config"> 
+				<span>{{'global.menu.config'|translate}}</span>
+			</a>
+		</li>
+		<li ng-class="{active: $state.includes('sql')}"  has-any-role="ROLE_ADMIN">
+			<a ui-sref="sql"> 
+				<span>{{'global.menu.sql'|translate}}</span>
+			</a>
+		</li>
+		<li ng-class="{active: $state.includes('version')}"  has-any-role="ROLE_ADMIN">
+			<a ui-sref="version"> 
+				<span>{{'global.menu.version'|translate}}</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+
+
 <form name="form" role="form" novalidate ng-submit="update()">
 
 	<div class="modal-header">
@@ -80,60 +101,5 @@
 				translate="entity.action.save">Save</span>
 		</button>
 	</div>
-</form>
-
-
-
-<form novalidate>
-
-	<div class="modal-header">
-		<h4 class="modal-title"
-			translate="crossfitApp.config.sql.home.title">SQL</h4>
-	</div>
-	
-	<div class="modal-body">
-	
-		<div class="row">
-			<div class="col-md-12">
-               	<jh-alert-error></jh-alert-error>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-		        <div class="form-group">
-		            <textarea class="form-control" name="querySQL" id="querySQL" ng-model="querySQL"></textarea>
-		            <p>{{countQuery}} élément(s)</p>
-		        </div>		        
-        	</div>
-        </div>
-        
-    </div>
-
-	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="executeUpdate()">
-			<span class="glyphicon glyphicon-save"></span>&nbsp;<span>Update</span>
-		</button>
-		<button class="btn btn-primary" ng-click="executeSelect()">
-			<span class="glyphicon glyphicon-save"></span>&nbsp;<span>Select</span>
-		</button>
-	</div>
-	
-    <div class="table-responsive" ng-if="queryResultList">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th ng-repeat="colonne in queryResultList[0]"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="ligne in queryResultList">
-                    <td ng-repeat="colonne in ligne">
-                    	{{colonne}}
-					</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 </form>
 

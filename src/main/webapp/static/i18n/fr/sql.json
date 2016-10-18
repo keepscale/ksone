@@ -1,0 +1,10 @@
+{
+    "crossfitApp": {
+        "sql" : {
+            "home": {
+                "title": "SQL"
+            }
+        }
+    }
+}
+

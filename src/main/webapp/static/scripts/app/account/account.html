@@ -2,6 +2,13 @@
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3"  style="text-align: center;">
 		
+			<div ng-class="{active: $state.includes('config')}"  has-any-role="ROLE_ADMIN">
+				<a ui-sref="config"> <span
+					class="glyphicon glyphicon-cog"
+					title="{{'global.menu.config'|translate}}"></span>
+				</a>
+			</div>
+			
 			<div class="panel panel-default" ng-if="socialEnabled">
 			
 				<div class="panel-heading">Informations publiques</div>

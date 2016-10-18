@@ -1,0 +1,10 @@
+{
+    "crossfitApp": {
+        "version" : {
+            "home": {
+                "title": "Gestion des versions"
+            }
+        }
+    }
+}
+

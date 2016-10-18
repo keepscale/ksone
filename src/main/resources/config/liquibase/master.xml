@@ -21,4 +21,6 @@
  
     <include file="classpath:config/liquibase/changelog/09_modify_entity_CrossFitBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/datas-2.xml" relativeToChangelogFile="false"/>
+    
+    <include file="classpath:config/liquibase/changelog/10_added_entity_Version.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
