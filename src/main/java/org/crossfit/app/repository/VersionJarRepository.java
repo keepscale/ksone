@@ -1,5 +1,6 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.crossfit.app.domain.VersionJar;
@@ -14,4 +15,7 @@ public interface VersionJarRepository extends JpaRepository<VersionJar,Long> {
 	@Query("from VersionJar where actif = true")
 	Optional<VersionJar> findOneActif();
 	
+	
+	@Query("from VersionJar order by actif desc, name desc")
+	List<VersionJar> findAll();
 }

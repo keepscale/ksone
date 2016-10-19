@@ -18,6 +18,11 @@
 	</ul>
 </nav>
 
+<div class="row">
+	<div class="col-lg-12">
+	   	<jh-alert></jh-alert>
+    </div>
+</div>
 
 <form novalidate>
 	
@@ -26,19 +31,20 @@
             <thead>
                 <tr>
                     <th width="50">ID</th>
-                    <th width="50">Name</th>
+                    <th width="200">Version name</th>
                     <th>DownloadUrl</th>
                     <th width="50"></th>
                 </tr>
                 <tr>
-                    <th><input type="text" class="form-control" name="name" id="field_name" ng-model="box.name"></th>
-                    <th><input type="text" class="form-control" name="name" id="field_name" ng-model="box.name"></th>
-                    <th><input type="text" class="form-control" name="name" id="field_name" ng-model="box.name"></th>
+                    <th></th>
+                    <th><input type="text" class="form-control" name="name" id="field_name" ng-model="version.name" placeholder="a.b.c-build"></th>
+                    <th><input type="text" class="form-control" name="downloadUrl" id="field_name" ng-model="version.downloadUrl" placeholder="https://...."></th>
                     <th>
 						<button class="btn btn-primary" ng-click="add()">
 							<span class="glyphicon glyphicon-save"></span>&nbsp;<span>Ajouter</span>
 						</button>
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -46,7 +52,17 @@
                     <td>{{v.id}}</td>
                     <td>{{v.name}}</td>
                     <td>{{v.downloadUrl}}</td>
-                    <td></td>
+                    <td  style="text-align: center;">
+						<button ng-class="{'btn-success':v.actif, 'btn-warning':!v.actif}" class="btn" ng-disabled="v.actif" ng-click="activate(v)">
+							<span ng-if="v.actif" class="glyphicon glyphicon-ok"></span>
+							<span ng-if="!v.actif">Activer</span>
+						</button>
+                    </td>
+                    <td>
+						<button class="btn btn-danger" ng-disabled="v.actif" ng-click="delete(v.id)">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

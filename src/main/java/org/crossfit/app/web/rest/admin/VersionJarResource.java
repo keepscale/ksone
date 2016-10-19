@@ -1,17 +1,22 @@
 package org.crossfit.app.web.rest.admin;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.crossfit.app.domain.VersionJar;
 import org.crossfit.app.repository.VersionJarRepository;
+import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +48,10 @@ public class VersionJarResource {
 		return ResponseEntity.ok(versionJarRepository.findAll());
     }
 
+    /**
+     * POST  /admin/version/activate -> active the version sended
+     * @throws IOException 
+     */
     @RequestMapping(value = "/activate",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +73,28 @@ public class VersionJarResource {
 		return ResponseEntity.ok().build();
     }	
     
+	/**
+	 * POST /admin/version -> Create a new version.
+	 */
+	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<VersionJar> create(@Valid @RequestBody VersionJar versionJar) throws URISyntaxException {
+		log.debug("REST request to save VersionJar : {}", versionJar);
+		
+		VersionJar result = versionJarRepository.save(versionJar);
+		return ResponseEntity.created(new URI("/admin/version/" + result.getId()))
+				.headers(HeaderUtil.createEntityCreationAlert("versionJar", result.getId().toString())).body(result);
+	}
+	
+
+	/**
+	 * DELETE /admin/version/:id -> delete the "id" versionJar.
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		log.debug("REST request to delete VersionJar : {}", id);
+		versionJarRepository.delete(id);
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("versionJar", id.toString())).build();
+	}
     
 
 }
