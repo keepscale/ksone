@@ -74,5 +74,10 @@ angular.module('crossfitApp')
 		utcDate.setUTCMilliseconds(0);
 		return utcDate;
 	}
+	
+	this.toUTCDate = function(d){
+		return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 
+				d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
+	}
       
     });

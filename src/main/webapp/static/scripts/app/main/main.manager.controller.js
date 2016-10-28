@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MainManagerController', function ($scope, Principal, Planning, Subscription, Booking) {
+    .controller('MainManagerController', function ($scope, Principal, Planning, Subscription, Booking, DateUtils) {
     	$scope.planning = [];
         $scope.page = 0;
         $scope.selectedIndex = 0;
@@ -36,9 +36,10 @@ angular.module('crossfitApp')
         };
         
         $scope.calculateCssClass = function(slot){
-        	var now = new Date().getTime();
-        	var start = new Date(slot.start).getTime();
-        	var end = new Date(slot.end).getTime();
+        	var now = Date.now();
+        	var start = DateUtils.toUTCDate(new Date(slot.start)).getTime();
+        	var end = DateUtils.toUTCDate(new Date(slot.end)).getTime();
+        	
         	if ( start <= now && now <= end){
         		return "active-slot";
         	}
