@@ -212,9 +212,25 @@ h1{
     padding: 5px 5px 0 5px;
     text-overflow: ellipsis;
 }
+.panel.with-nav-tabs .toggle-button{
+	margin-right: 2px;
+}
+.panel.with-nav-tabs .no-booking .panel-heading{
+	background-color: #d0d2dc;
+}
 
-.panel.with-nav-tabs .active-slot{
+.panel.with-nav-tabs .active-slot .panel-heading{
 	background-color: green;
+}
+.panel.with-nav-tabs .toggle-button span:before {
+    content: "\e259";
+}
+.panel.with-nav-tabs .close-slot .toggle-button span:before {
+    content: "\e258";
+}
+
+.panel.with-nav-tabs .close-slot .list-group{
+	display: none;
 }
 
 .panel.with-nav-tabs .active-slot h5 a{

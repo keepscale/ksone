@@ -44,26 +44,30 @@
 												<div class="row">
 													<div class="{{'col-md-' +  (12 / interval.slots.length) }}" ng-repeat="slot in interval.slots">
 														
-														<div class="panel panel-default">
-														  <div ng-class="calculateCssClass(slot)" class="panel-heading">
-														  	<div class="row">
-															  	<div class="col-xs-9"> 
-																	<h5>
-																		<a ui-sref="timeSlot.edit({id:slot.id})">
-																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-																			{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
-																			{{slot.timeSlotType.name}} 
-																			  
-																		</a>
-																	</h5>
+														<div class="panel panel-default" ng-class="calculateCssClass(slot)" >
+															<div class="panel-heading">
+															 	<div class="row">		
+																  	<div class="col-xs-9"> 
+																  		<button class="btn btn-sm btn-default pull-left toggle-button" ng-click="toggle($event)">
+																  			<span class="glyphicon"></span>
+																  		</button>
+																  																	  																			
+																		<h5>
+																			<a ui-sref="timeSlot.edit({id:slot.id})">
+																				{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
+																				{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
+																				{{slot.timeSlotType.name}} 
+																				  
+																			</a>
+																		</h5>
+																	</div>
+																	<div class="col-xs-3">
+																		<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
+																		<div class="clearfix"></div>
+																	</div>
 																</div>
-																<div class="col-xs-3">
-																	<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
-																	<div class="clearfix"></div>
-																</div>
-															</div>
-														  </div>														
-														  	<ul class="list-group">
+															</div>														
+															<ul class="list-group">
 																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
 																	<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
 																	{{booking.title}}

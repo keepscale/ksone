@@ -34,16 +34,31 @@ angular.module('crossfitApp')
             	$scope.planning = result.days;
             });
         };
+        $scope.toggle = function(event){
+        	var panel = $(event.target).parents(".panel");
+        	$(panel).toggleClass("close-slot");
+        }
         
         $scope.calculateCssClass = function(slot){
         	var now = Date.now();
         	var start = DateUtils.toUTCDate(new Date(slot.start)).getTime();
         	var end = DateUtils.toUTCDate(new Date(slot.end)).getTime();
         	
+        	var style = "";
         	if ( start <= now && now <= end){
-        		return "active-slot";
+        		style = "active-slot";
         	}
-        	return "";
+        	else if ( start < now ){
+        		style = "close-slot"
+        	}
+        	else{
+        		style = "open-slot";
+        	}
+        	if (slot.bookings.length == 0){
+        		style += " no-booking"
+        	}
+        	
+        	return style;
         }
 
         $scope.select = function(index) {
