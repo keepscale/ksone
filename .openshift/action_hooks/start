@@ -29,7 +29,7 @@ jar_path(){
 
 exist_jar(){
 
-        if [ -f $(jar_path $1)]; then
+        if [ -f $(jar_path $1) ]; then
                 echo "true"
         fi
                 echo "false";
