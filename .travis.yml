@@ -14,7 +14,7 @@ before_install:
 install: "/bin/true"
 
 script:
-- mvn clean package -P openshift -DskipTests=true
+- mvn clean package -Popenshift
 
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"

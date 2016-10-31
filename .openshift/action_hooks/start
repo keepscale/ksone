@@ -7,15 +7,15 @@ export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk1.8.0_102
 
 RELEASES_RELATIVE_PATH=releases
 RELEASES_PATH=$OPENSHIFT_DATA_DIR$RELEASES_RELATIVE_PATH
-INIT_APP_VERSION=2.1.0-53
-INIT_APP_URL=https://github.com/lgangloff/crossfit-2.0/releases/download/2.1.0-53/crossfit-2.1.0-53.jar
+INIT_APP_VERSION=2.1.0-59
+INIT_APP_URL=https://github.com/lgangloff/crossfit-2.0/releases/download/2.1.0-59/crossfit-2.1.0-59.jar
 
 CROSSFIT_APP_VERSION=$INIT_APP_VERSION
 CROSSFIT_APP_URL=$INIT_APP_URL
 
 
 log(){
-	echo "$(date +%F-%T) - $1" >> ${OPENSHIFT_DIY_LOG_DIR}/boot.log
+        echo "$(date +%F-%T) - $1" >> ${OPENSHIFT_DIY_LOG_DIR}/boot.log
 }
 
 download_jar(){
@@ -40,25 +40,25 @@ log "Starting CrossFit Application"
 
 read is_versionnable <<< $(psql -t -A -F " " -c "select 1 FROM information_schema.tables where table_name='version_jar';")
 
-if [ $is_versionnable = "1" ]; then
+if [ "$is_versionnable" = "1" ]; then
         read version download_url <<< $(psql -t -A -F " " -c "select name, download_url from version_jar where actif = true;")
-		
-		if [ -n "$version" ]; then
-		        CROSSFIT_APP_VERSION=$version
-				CROSSFIT_APP_URL=$download_url
-				log "Activated version: $CROSSFIT_APP_VERSION"
-		else
-			log "Unable to find activated version. Using version: $CROSSFIT_APP_VERSION"
-		fi
+
+                if [ -n "$version" ]; then
+                        CROSSFIT_APP_VERSION=$version
+                                CROSSFIT_APP_URL=$download_url
+                                log "Activated version: $CROSSFIT_APP_VERSION"
+                else
+                        log "Unable to find activated version. Using version: $CROSSFIT_APP_VERSION"
+                fi
 else
-	log "Unable to lookup version. Using version: $CROSSFIT_APP_VERSION"
+        log "Unable to lookup version. Using version: $CROSSFIT_APP_VERSION"
 fi
 
-if [ $(exist_jar $CROSSFIT_APP_VERSION) = "false" ]; then
+if [ "$(exist_jar $CROSSFIT_APP_VERSION)" = "false" ]; then
         download_jar $CROSSFIT_APP_URL $CROSSFIT_APP_VERSION
 fi
 
-if [ $(exist_jar $CROSSFIT_APP_VERSION) = "false" ]; then
+if [ "$(exist_jar $CROSSFIT_APP_VERSION)" = "false" ]; then
         log "The file $(jar_path $CROSSFIT_APP_VERSION) doesn't exist or can't be downloaded from $CROSSFIT_APP_URL"
         exit 5;
 fi
