@@ -379,7 +379,7 @@
 						<jsSourceFile>/bower_components/angular-ui-calendar/src/calendar.js</jsSourceFile>
 		              
 						<jsSourceFile>/scripts/app/app.js</jsSourceFile>
-						<jsSourceFile>/scripts/app/app.constants.js</jsSourceFile>
+						<jsSourceFile>/scripts/components/app/version.service.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/auth/auth.service.js</jsSourceFile>
 						
 					    <jsSourceFile>/scripts/components/auth/principal.service.js</jsSourceFile>

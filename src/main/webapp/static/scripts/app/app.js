@@ -4,9 +4,8 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
                'ui.bootstrap', // for modal dialogs
     'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker', 'ng-fastclick'])
 
-    .run(function ($rootScope, $location, $window, $http, $state, $translate, DateUtils, Language, Auth, Principal, ENV, VERSION, CrossfitBox) {
-        $rootScope.ENV = ENV;
-        $rootScope.VERSION = VERSION;
+    .run(function ($rootScope, $location, $window, $http, $state, $translate, DateUtils, Language, Auth, Principal, CrossfitBox, Version) {
+
         $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
             $rootScope.toState = toState;
             $rootScope.toStateParams = toStateParams;
@@ -53,6 +52,9 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         	$rootScope.socialEnabled = result.socialEnabled;
         });
         
+        Version.current(function(v){
+            $rootScope.VERSION = v.content;
+        });
     })
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider, $translateProvider, tmhDynamicLocaleProvider, httpRequestInterceptorCacheBusterProvider) {
 
