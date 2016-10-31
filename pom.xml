@@ -335,7 +335,6 @@
 					</arguments>
 				</configuration>
 			</plugin>
-					
 			<plugin>
 		        <groupId>com.samaxes.maven</groupId>
 		        <artifactId>minify-maven-plugin</artifactId>
@@ -527,6 +526,20 @@
 							<arguments>
 								<argument>--spring.profiles.active=prod</argument>
 							</arguments>
+						</configuration>
+					</plugin>					
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<configuration>
+						  <archive>
+							<manifest>
+							  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+							  <Implementation-Version>${project.version}-${env.TRAVIS_BUILD_NUMBER}</Implementation-Version>
+							</manifestEntries>
+						  </archive>
 						</configuration>
 					</plugin>
 				</plugins>
