@@ -65,9 +65,9 @@ angular.module('crossfitApp')
 	this.parseDateAsDate = function(datestr){
 		var parts = datestr.split('-');
         var utcDate = new Date();
-        utcDate.setUTCFullYear(parts[0]);
-        utcDate.setUTCMonth(parts[1]-1);
         utcDate.setUTCDate(parts[2]);
+        utcDate.setUTCMonth(parts[1]-1);
+        utcDate.setUTCFullYear(parts[0]);
 		utcDate.setUTCHours(0);
 		utcDate.setUTCMinutes(0);
 		utcDate.setUTCSeconds(0);
