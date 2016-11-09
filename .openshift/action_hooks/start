@@ -64,4 +64,4 @@ if [ "$(exist_jar $CROSSFIT_APP_VERSION)" = "false" ]; then
 fi
 
 rm -rf /tmp/*
-nohup $JAVA_HOME/bin/java -Xms384m -Xmx412m -jar $(jar_path $CROSSFIT_APP_VERSION) --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --spring.profiles.active=openshift > ${OPENSHIFT_DIY_LOG_DIR}/crossfit.log 2>&1 &
+nohup $JAVA_HOME/bin/java -Xms128m -Xmx320m -jar $(jar_path $CROSSFIT_APP_VERSION) --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --spring.profiles.active=openshift > ${OPENSHIFT_DIY_LOG_DIR}/crossfit.log 2>&1 &
