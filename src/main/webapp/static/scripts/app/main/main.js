@@ -13,13 +13,13 @@ angular.module('crossfitApp')
                 views: {
                     'content@': {
 
-                        templateProvider: function(Principal, $stateParams, $templateFactory){
+                        templateProvider: function(Principal, $stateParams, $templateFactory, $rootScope){
                        	 if(Principal.isInAnyRole(['ROLE_MANAGER', 'ROLE_ADMIN'])){
-        	                	return $templateFactory.fromUrl('scripts/app/main/main.manager.html', $stateParams);
+        	                	return $templateFactory.fromUrl('scripts/app/main/main.manager.html?v='+$rootScope.VERSION, $stateParams);
         	                } 
         	                else {
         	                	
-        	                	return $templateFactory.fromUrl('scripts/app/main/main.user.html', $stateParams);
+        	                	return $templateFactory.fromUrl('scripts/app/main/main.user.html?v='+$rootScope.VERSION, $stateParams);
         	                }
                         },
                         controllerProvider: function(Principal){
