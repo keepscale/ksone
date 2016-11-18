@@ -2,6 +2,7 @@ package org.crossfit.app.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
@@ -52,7 +54,7 @@ public class TimeSlotService {
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
 			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions, DateTimeZone timeZone){
-		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), b->{return null;}, timeZone);
+		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), new ArrayList<>(), b->{return null;}, timeZone);
 	}
     
 	/**
@@ -68,7 +70,7 @@ public class TimeSlotService {
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
 			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions,
-			List<Booking> bookings, Function<Booking, BookingDTO> bookingMapper, DateTimeZone timeZone){
+			List<Booking> bookings, List<CardEvent> cardEvents, Function<Booking, BookingDTO> bookingMapper, DateTimeZone timeZone){
 
 		List<TimeSlotInstanceDTO> timeSlotInstances = new ArrayList<>();
 		
@@ -80,6 +82,11 @@ public class TimeSlotService {
 		Map<TimeSlot, List<TimeSlotExclusion>> timeSlotExclusionsByTimeSlot = timeSlotExclusions
 				.stream()
 				.collect(Collectors.groupingBy(TimeSlotExclusion::getTimeSlot));
+		
+
+		Map<Booking, List<CardEvent>> cardEventsByBooking = cardEvents
+				.stream()
+				.collect(Collectors.groupingBy(CardEvent::getBooking));
 		
 		while(!start.isAfter(end)){
 			final DateTime startF = start;
@@ -107,7 +114,19 @@ public class TimeSlotService {
     	    						&& slot.getStart().compareTo(b.getStartAt()) == 0
     	    							&& slot.getEnd().compareTo(b.getEndAt())  == 0;
     	    				})
-    	    	    		.sorted( (b1, b2) -> { return b1.getCreatedDate().compareTo(b2.getCreatedDate());} )
+    	    	    		.map(b->{
+    	    	    			List<CardEvent> event = cardEventsByBooking.getOrDefault(b, Collections.emptyList());
+								b.setCardEvent(event.stream().sorted((e1, e2)->{
+    	    	    				return e1.getCheckingDate().compareTo(e2.getCheckingDate());
+	    	    					}).findFirst());
+    	    	    			return b;
+    	    	    		})
+    	    	    		.sorted( (b1, b2) -> { 
+    	    	    				int res = Boolean.compare(b1.getCardEvent().isPresent(), b2.getCardEvent().isPresent());
+    	    	    				res = res != 0 ? res : Boolean.compare(StringUtils.isBlank(b2.getSubscription().getMember().getCardUuid()), StringUtils.isBlank(b1.getSubscription().getMember().getCardUuid()));
+    	    	    				res = res != 0 ? res : b1.getCreatedDate().compareTo(b2.getCreatedDate());
+    	    	    				return res;
+    	    				} )
     	    	    		.map(bookingMapper)
     	    				.collect(Collectors.toList()));
     	    		return slot;

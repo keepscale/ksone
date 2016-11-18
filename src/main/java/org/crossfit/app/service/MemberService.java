@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
@@ -114,7 +115,7 @@ public class MemberService {
 		member.setCity(memberdto.getCity());
 		member.setLangKey(memberdto.getLangKey());
 		member.setTelephonNumber(memberdto.getTelephonNumber());
-		member.setCardUuid(memberdto.getCardUuid());
+		member.setCardUuid(StringUtils.isBlank(memberdto.getCardUuid()) ? null : memberdto.getCardUuid());
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
 		member.setBox(currentCrossFitBox);
@@ -210,7 +211,7 @@ public class MemberService {
 		online.setLastName(dto.getLastName());
 		online.setAddress(dto.getAddress());
 		online.setZipCode(dto.getZipCode());
-		online.setCity(dto.getZipCode());
+		online.setCity(dto.getCity());
 		online.setTelephonNumber(dto.getTelephonNumber());
 		
 		memberRepository.save(online);

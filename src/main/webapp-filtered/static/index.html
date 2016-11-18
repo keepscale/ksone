@@ -18,7 +18,7 @@
 		<!-- Gestion du calendrier -->
 		<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css"/>
 		
-        <link rel="stylesheet" href="assets/styles/main.css" />
+        <link rel="stylesheet" href="assets/styles/main.css?v=@project.version@-@env.TRAVIS_BUILD_NUMBER@" />
         
         <!-- build:css assets/styles/main.css -->
         <!-- endbuild -->
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 
-	    <script src="script.js"></script>
+	    <script src="script.js?v=@project.version@-@env.TRAVIS_BUILD_NUMBER@"></script>
     
 </body>
 </html>

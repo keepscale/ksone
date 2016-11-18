@@ -29,6 +29,11 @@ angular.module('crossfitApp')
                     return angular.toJson(data);
                 }
             },
+            'checkIn': {
+                method: 'PUT',
+                url: "api/bookings/:id/checkin", 
+                params : {id: '@id'}
+            },
             'findBookings': {
                 method: 'GET',
                 url: "api/bookings/:date/:timeSlotId", 

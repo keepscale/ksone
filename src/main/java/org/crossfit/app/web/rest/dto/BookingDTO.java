@@ -5,7 +5,9 @@ import java.util.function.Function;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
@@ -35,6 +37,9 @@ public class BookingDTO implements Serializable {
 		String title = member.getFirstName() + " " + member.getLastName() + 
 				" ("+b.getSubscription().getMembership().getName()+")";
 		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
+		dto.setCheckInDate(b.getCardEvent().map(CardEvent::getCheckingDate).orElseGet(()->{return null;}));
+		dto.setCardUuid(member.getCardUuid());
+		dto.setMemberId(member.getId());
 		return dto;
 	};
 	
@@ -46,6 +51,7 @@ public class BookingDTO implements Serializable {
 		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
 		dto.setCreatedAt(b.getCreatedDate());
 		dto.setStartAt(b.getStartAt());
+		
 		return dto;
 	};
 
@@ -76,6 +82,14 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime createdAt;
+
+	private Long memberId;
+	
+	private String cardUuid;
+	
+	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
+	private DateTime checkInDate;
 	
 	public BookingDTO() {
 		super();
@@ -144,6 +158,30 @@ public class BookingDTO implements Serializable {
 
 	public void setCreatedAt(DateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public Long getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getCardUuid() {
+		return cardUuid;
+	}
+
+	public void setCardUuid(String cardUuid) {
+		this.cardUuid = cardUuid;
+	}
+
+	public DateTime getCheckInDate() {
+		return checkInDate;
+	}
+
+	public void setCheckInDate(DateTime checkInDate) {
+		this.checkInDate = checkInDate;
 	}
 
 	@Override

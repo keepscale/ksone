@@ -12,10 +12,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.security.SecurityUtils;
@@ -52,6 +54,9 @@ public class BookingPlanningResource {
 
     @Inject
     private BookingRepository bookingRepository;
+    
+    @Inject
+    private CardEventRepository cardEventRepository;
 
     @Inject
     private TimeService timeService;
@@ -99,13 +104,17 @@ public class BookingPlanningResource {
         	List<ClosedDay> closedDays = closedDayRepository.findAllByBoxAndBetween(currentCrossFitBox, start, end);
     		List<TimeSlotExclusion> timeSlotExclusions = timeSlotExclusionRepository.findAllBetween(start.toLocalDate(), end.toLocalDate());
 
-    		log.debug("Recherche des resas entre {} et {}", start, end);
     		
     		List<Booking> bookings = new ArrayList<>(
         			bookingRepository.findAllStartBetween(currentCrossFitBox, start, end));
+    		log.debug("{} resas entre {} et {}", bookings.size(), start, end);
     		
-        	Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
-        			start, end, closedDays, timeSlotExclusions, bookings, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
+        	List<CardEvent> cardEvents = new ArrayList<>(
+        			cardEventRepository.findAllBetweenBookingStartDate(currentCrossFitBox, start, end));
+    		log.debug("{} cardevents entre {} et {}", cardEvents.size(), start, end);
+        	
+			Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
+        			start, end, closedDays, timeSlotExclusions, bookings, cardEvents, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
         	
         	days = slotInstancesStream
         		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
@@ -179,7 +188,7 @@ public class BookingPlanningResource {
 		
 		
     	List<EventSourceDTO> eventSources = timeSlotService.findAllTimeSlotInstance(
-    			startAt, endAt, closedDays, timeSlotExclusions, bookings, BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
+    			startAt, endAt, closedDays, timeSlotExclusions, bookings, new ArrayList<>(), BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
     	.collect(Collectors.groupingBy(slotInstance ->{
     		Integer max = slotInstance.getMaxAttendees();
     		Integer count = slotInstance.getTotalBooking();

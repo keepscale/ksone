@@ -238,6 +238,19 @@ h1{
 	padding-bottom: 5px;	
 }
 
+.panel.with-nav-tabs .list-group .glyphicon-thumbs-down{
+	color: orange;
+}
+.panel.with-nav-tabs .list-group .glyphicon-thumbs-up{
+	color: green;
+}
+.panel.with-nav-tabs .list-group .no-card{
+	color: red;
+}
+.btn-noborder{
+  border:0px solid transparent; /* this was 1px earlier */
+}
+
 .three-points-overflow{
 	text-overflow: ellipsis;
 	overflow: hidden;

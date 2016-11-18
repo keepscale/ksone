@@ -100,7 +100,14 @@ angular.module('crossfitApp')
         	});
         }
 
-
+        $scope.quickCheckIn = function(booking){
+        	if (confirm("Valider la présence de "+booking.title+" ?")){
+        		Booking.checkIn({id : booking.id}, function(){
+        			$scope.loadAll();
+        		});
+        	}
+        }
+        
         $scope.quickDeleteBooking = function(booking){
         	if (confirm("Supprimer la réservation de "+booking.title+" ?")){
             	Booking.delete({id : booking.id}, function(){

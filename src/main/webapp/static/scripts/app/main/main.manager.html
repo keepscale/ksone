@@ -69,8 +69,16 @@
 															</div>														
 															<ul class="list-group">
 																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
+																	<button class="btn btn-sm btn-default {{booking.checkInDate || !booking.cardUuid ? 'btn-noborder' : ''}}" 
+																		ng-disabled="booking.checkInDate != null || !booking.cardUuid" ng-click="quickCheckIn(booking)"
+																		title="{{booking.checkInDate ? (booking.checkInDate | date:'HH:mm:ss') : booking.cardUuid ? 'Cliquez ici pour valider la réservation' : 'Ce membre n\'a pas de carte !'}}">
+																		
+																		<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
+																	</button>
+																	
 																	<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
-																	{{booking.title}}
+																	
+																	<a href="#" ui-sref="member.edit({id:booking.memberId})">{{booking.title}}</a>
 																</li>
 															</ul>
 														</div>

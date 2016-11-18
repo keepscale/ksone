@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.MembershipRules;
@@ -25,6 +26,7 @@ import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
@@ -43,7 +45,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -74,6 +75,9 @@ public class BookingResource {
 
     @Inject
     private BookingRepository bookingRepository;
+
+	@Inject
+	private CardEventRepository cardEventRepository;
 
     @Inject
     private CrossFitBoxSerivce boxService;
@@ -317,7 +321,30 @@ public class BookingResource {
         
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("booking", id.toString())).build();
     }
-    
+
+    /**
+     * PUT  /bookings/:id/checkin -> Make a card event for the "id" booking.
+     */
+    @RequestMapping(value = "/bookings/{id}/checkin",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> checkin(@PathVariable Long id) {
+
+    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'avez pas les droits necessaires", "")).body(null);
+    	}
+    	
+		Booking booking = bookingRepository.findOne(id);
+		Member m = booking.getSubscription().getMember();
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+		DateTime nowAsDateTime = timeService.nowAsDateTime(box);
+		
+		CardEvent cardEvent = new CardEvent(nowAsDateTime, nowAsDateTime, m.getCardUuid(), box, m, booking);
+
+		cardEventRepository.save(cardEvent);
+    	
+		return ResponseEntity.ok().build();
+    }
 
     /**
      * PUT  /bookings/:id/validate -> validate the "id" booking.
