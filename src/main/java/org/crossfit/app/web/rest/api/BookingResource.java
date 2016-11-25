@@ -23,6 +23,8 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.exception.booking.NotBookingOwnerException;
+import org.crossfit.app.exception.booking.UnableToDeleteBooking;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
@@ -32,6 +34,7 @@ import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
+import org.crossfit.app.service.BookingService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.util.BookingRulesChecker;
@@ -75,6 +78,9 @@ public class BookingResource {
 
     @Inject
     private BookingRepository bookingRepository;
+    
+    @Inject
+    private BookingService bookingService;
 
 	@Inject
 	private CardEventRepository cardEventRepository;
@@ -90,9 +96,6 @@ public class BookingResource {
     
     @Inject
 	private SubscriptionRepository subscriptionRepository;
-
-    @Inject
-	private EventBus eventBus;
 
     @Inject
 	private TimeSlotNotificationRepository notificationRepository;
@@ -290,34 +293,16 @@ public class BookingResource {
     		@RequestParam(name="silent", defaultValue="false") boolean silent) {
     	
         log.debug("REST request to delete Booking : {}", id);
-		Booking booking = bookingRepository.findOne(id);
-		
-
-    	if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
-    		if(booking == null || !booking.getSubscription().getMember().equals( SecurityUtils.getCurrentMember())){
-    			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
-    		}
-
-    		CrossFitBox currentBox = boxService.findCurrentCrossFitBox();
-			DateTime now = timeService.nowAsDateTime(currentBox);
-    		
-		
-			Subscription bookingSubscription = subscriptionRepository.findOneWithRules(booking.getSubscription().getId());
-			BookingRulesChecker checker = new BookingRulesChecker(now);
-			Optional<MembershipRules> breakingRule = checker.breakRulesToCancel(booking, bookingSubscription.getMembership().getMembershipRules());
-			
-			if (breakingRule.isPresent()){
-    	        throw new CustomParameterizedException("La réservation ne peut être annulée que "+breakingRule.get().getNbHoursAtLeastToCancel()+" heures avant le début de la séance. Veuillez prendre contact avec le coach.");
-			}
-    		
-    	}
-    	
-		
-        bookingRepository.delete(id);
         
-        if (!silent){
-        	eventBus.notify("booking", Event.wrap(booking));
-        }
+        try {
+			bookingService.deleteBooking(id, !silent);
+		} catch (NotBookingOwnerException e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
+		} catch (UnableToDeleteBooking e) {
+	        throw new CustomParameterizedException("La réservation ne peut être annulée que "+e.getRules().getNbHoursAtLeastToCancel()+" heures avant le début de la séance. Veuillez prendre contact avec le coach.");
+
+		}
+        
         
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("booking", id.toString())).build();
     }
