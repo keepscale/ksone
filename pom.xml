@@ -358,33 +358,32 @@
 						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
 						<jsSourceFile>/bower_components/jquery/dist/jquery.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/json3/lib/json3.js</jsSourceFile>
+						<jsSourceFile>/bower_components/json3/lib/json3.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular/angular.min.js</jsSourceFile>
 				        <jsSourceFile>/bower_components/ng-fastclick/dist/index.min.js</jsSourceFile>
 						
 						<jsSourceFile>/bower_components/angular-bootstrap/ui-bootstrap-tpls.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-ui-router/release/angular-ui-router.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-resource/angular-resource.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-cookies/angular-cookies.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-sanitize/angular-sanitize.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-translate/angular-translate.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-ui-router/release/angular-ui-router.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-resource/angular-resource.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-cookies/angular-cookies.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-sanitize/angular-sanitize.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-translate/angular-translate.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/messageformat/messageformat.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular-local-storage/dist/angular-local-storage.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-local-storage/dist/angular-local-storage.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-cache-buster/angular-cache-buster.js</jsSourceFile>
 						        
 						        
-						<jsSourceFile>/bower_components/moment/moment.js</jsSourceFile>
+						<jsSourceFile>/bower_components/moment/min/moment.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js</jsSourceFile>
 						<jsSourceFile>/bower_components/d3/d3.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/nvd3/build/nv.d3.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-nvd3/dist/angular-nvd3.min.js</jsSourceFile>
         
 						        
-						<jsSourceFile>/bower_components/moment/min/moment.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/fullcalendar/dist/fullcalendar.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/fullcalendar/dist/gcal.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-ui-calendar/src/calendar.js</jsSourceFile>
@@ -489,6 +488,7 @@
 		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>
 		              <jsEngine>YUI</jsEngine>
 		              <skipMinify>true</skipMinify>
+		              <yuiDisableOptimizations>true</yuiDisableOptimizations>
 		            </configuration>
 		            <goals>
 		              <goal>minify</goal>
