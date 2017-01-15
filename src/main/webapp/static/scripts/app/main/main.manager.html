@@ -9,6 +9,14 @@
                 
                 
                 <div class="planning" ng-switch-when="true">
+                
+           			<div ng-class="{active: $state.includes('stats')}"  has-any-role="ROLE_ADMIN,ROLE_DIRECTOR" style="float: right;">
+						<a ui-sref="stats"> <span
+							class="glyphicon glyphicon-stats"
+							title="{{'global.menu.stats'|translate}}"></span>
+						</a>
+					</div>
+					
                 	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
                 	</div>
                 	<div class="row">

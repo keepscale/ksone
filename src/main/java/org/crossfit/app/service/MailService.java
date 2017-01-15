@@ -46,6 +46,7 @@ public class MailService {
 		Context context = new Context(locale);
 		context.setVariable("user", member);
 		context.setVariable("clearPassword", clearPassword);
+		log.debug("Sending activation e-mail to '{}'", clearPassword);
 		context.setVariable("box", member.getBox());
 		String content = templateEngine.process("activationCompte", context);
 		String subject = messageSource.getMessage("email.creation.title", new Object[] { member.getBox().getName() },

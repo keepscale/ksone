@@ -9,6 +9,8 @@ public final class AuthoritiesConstants {
     }
 
     public static final String ADMIN = "ROLE_ADMIN";
+
+    public static final String DIRECTOR = "ROLE_DIRECTOR";
     
     public static final String MANAGER = "ROLE_MANAGER";
     

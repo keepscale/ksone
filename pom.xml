@@ -379,6 +379,10 @@
 						        
 						<jsSourceFile>/bower_components/moment/moment.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js</jsSourceFile>
+						<jsSourceFile>/bower_components/d3/d3.js</jsSourceFile>
+						<jsSourceFile>/bower_components/nvd3/build/nv.d3.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-nvd3/dist/angular-nvd3.js</jsSourceFile>
+        
 						        
 						<jsSourceFile>/bower_components/moment/min/moment.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/fullcalendar/dist/fullcalendar.min.js</jsSourceFile>
@@ -473,6 +477,13 @@
 					    <jsSourceFile>/scripts/app/planning/planning.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/planning/planning.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/planning/prepare.booking.controller.js</jsSourceFile>
+					    
+					    
+					    
+					    <jsSourceFile>/scripts/app/stats/stats.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/stats/stats.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/stats/stats.service.js</jsSourceFile>
+					    
 		              </jsSourceFiles>
 		              <jsFinalFile>script.js</jsFinalFile>
 		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>
