@@ -30,9 +30,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/member/member-dialog.html',
+                        templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
                         size: 'lg',
                         resolve: {
@@ -63,9 +63,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/member/member-dialog.html',
+                        templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
                         size: 'lg',
                         resolve: {

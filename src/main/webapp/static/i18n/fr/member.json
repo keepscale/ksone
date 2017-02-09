@@ -37,6 +37,9 @@
             	"MS" : "Mme",
             	"MR" : "M."
             },
+        	"infoperso" : "Infos Perso",
+        	"abonnements" : "Abonnements",
+        	"reservations" : "Réservations",
         	"firstname" : "Prénom",
         	"firstname.placeholder" : "Prénom",
         	"lastname" : "Nom",

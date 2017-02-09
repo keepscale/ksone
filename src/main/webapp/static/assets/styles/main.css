@@ -10,6 +10,9 @@ Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
+a[ng-click]{
+    cursor: pointer;
+}
 
 .footer {
 	text-align: center;
@@ -238,13 +241,13 @@ h1{
 	padding-bottom: 5px;	
 }
 
-.panel.with-nav-tabs .list-group .glyphicon-thumbs-down{
+.list-group .glyphicon-thumbs-down{
 	color: orange;
 }
-.panel.with-nav-tabs .list-group .glyphicon-thumbs-up{
+.list-group .glyphicon-thumbs-up{
 	color: green;
 }
-.panel.with-nav-tabs .list-group .no-card{
+.list-group .no-card{
 	color: red;
 }
 .btn-noborder{

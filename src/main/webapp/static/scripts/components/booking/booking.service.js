@@ -67,5 +67,16 @@ angular.module('crossfitApp')
                     return data;
                 }
             },
+            'getByMember': {
+                method: 'GET',
+                url: "api/members/:memberId/bookings",
+                params : {memberId: '@memberId'},
+                isArray: true,
+                transformResponse: function (data) {
+                    data = angular.fromJson(data);
+                    data.date = DateUtils.convertLocaleDateFromServer(data.date);
+                    return data;
+                }
+            },
         });
     });

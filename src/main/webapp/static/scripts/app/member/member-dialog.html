@@ -11,18 +11,42 @@
 	
 	<div class="modal-body">
 		<jh-alert-error></jh-alert-error>
-		<div class="form-group">
-			<label for="id" translate="global.field.id">ID</label> <input
-				type="text" class="form-control" id="id" name="id"
-				ng-model="member.id" readonly>
-		</div>
+		
+		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
+			<ul class="nav navbar-nav">
+				<li ng-class="{active:view=='infoperso'}">
+					<a ng-click="showView('infoperso')"> 
+						<span>{{'crossfitApp.member.infoperso'|translate}}</span>
+					</a>
+				</li>
+				<li ng-class="{active:view=='abonnements'}">
+					<a ng-click="showView('abonnements')"> 
+						<span>{{'crossfitApp.member.abonnements'|translate}}</span>
+					</a>
+				</li>
+				<li ng-class="{active:view=='reservations'}">
+					<a ng-click="showView('reservations')"> 
+						<span>{{'crossfitApp.member.reservations'|translate}}</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
 		
 		
-		<div class="row ">
+		<div class="row" ng-if="view == 'infoperso'">
 		  <div class="col-xs-12">
+	    	<div class="row form-group"> 
+				<div class="col-xs-12">
+					<input
+						type="text" class="form-control" id="id" name="id"
+						ng-model="member.id" readonly>
+				</div>
+			</div>
 		    <div class="row form-group">
 		  		<div class="col-xs-12">
+					
 			    	<div class="row"> 
+			    							
 				        <div class="col-xs-2">
 				            <select class="form-control" name="title" ng-model="member.title"
 							id="field_title" required>
@@ -150,68 +174,79 @@
 		</div>
 		
 		
-		<div class="row form-group">
+		<div class="row form-group" ng-if="view == 'abonnements'">
   			<div class="col-xs-12">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-	  					Abonnements
-		  				
-		  				<button type="button" class="btn btn-primary" ng-click="addSubscription()">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button></div>
-					<div class="panel-body">				        
-				    	<div class="row form-group" ng-repeat="subscription in member.subscriptions"> 
-					        <div class="col-xs-4"> 
-								<select
-									class="form-control" id="field_membership" name="membership"
-									ng-model="subscription.membership" required ng-click="calculateEndDate(subscription)"
-									ng-options='membership as (membership.name + " - " + membership.price) for membership in memberships track by membership.id'>
-								</select>
-							</div>
-							<div class="col-xs-3"> 
-																	
-					          <datetimepicker name="subscriptionStartDate" how-weeks="false"
-					          show-meridian="false" 
-			       	date-format="dd/MM/yyyy" hidden-time="true"
-					          		ng-model="subscription.subscriptionStartDate"></datetimepicker>
-       	
-							</div>
-							<div class="col-xs-3"> 
-								<datetimepicker name="subscriptionEndDate" how-weeks="false" show-meridian="false" 
-			       	date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
-       	
-<!-- 								<div class="input-group"> -->
-												
-								
-<!-- 					   				<span class="input-group-btn"> -->
-<!-- 										<button type="button" class="btn" ng-click="addMonthToSubscriptionEndDate(subscription)"> -->
-<!-- 											<span class="glyphicon"></span>&nbsp; -->
-<!-- 											<span> -->
-<!-- 											{{ 'crossfitApp.member.action.date.addmonth' | translate:{total: subscription.membership.nbMonthValidity} }} -->
-<!-- 											</span> -->
-<!-- 										</button> -->
-<!-- 									</span> -->
-<!-- 								</div> -->
-							</div>
-					        <div class="col-xs-2">
-					        
-				  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)" ng-disabled="subscription.bookingCount > 0">
-									<span class="glyphicon glyphicon-remove"></span>
-								</button>
-								<span ng-if="subscription.bookingCount > 0">{{subscription.bookingCount}} résa.</span>
-					        </div>
-				        </div>
-				        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
-					        <div class="col-xs-12"> 
-								<p class="help-block" ng-show="form.subscriptionStartDate.$error.required"
-									translate="crossfitApp.member.messages.validate.subscriptionStartDate.required">subscriptionStartDate is required.</p>
-								<p class="help-block" ng-show="form.subscriptionEndDate.$error.required"
-										translate="crossfitApp.member.messages.validate.subscriptionEndDate.required">subscriptionEndDate is required.</p>
-								<p class="help-block" ng-show="form.membership.$error.required"
-									translate="crossfitApp.member.messages.validate.membership.required">field_membership is required.</p>
-							</div>
-						</div>
+						
+		    	<div class="row form-group" ng-repeat="subscription in member.subscriptions"> 
+			        <div class="col-xs-4"> 
+						<select
+							class="form-control" id="field_membership" name="membership"
+							ng-model="subscription.membership" required ng-click="calculateEndDate(subscription)"
+							ng-options='membership as (membership.name + " - " + membership.price) for membership in memberships track by membership.id'>
+						</select>
+					</div>
+					<div class="col-xs-3"> 
+															
+			          <datetimepicker name="subscriptionStartDate" how-weeks="false"
+			          show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
+			          		ng-model="subscription.subscriptionStartDate"></datetimepicker>
+     	
+					</div>
+					<div class="col-xs-3"> 
+						<datetimepicker name="subscriptionEndDate" how-weeks="false" show-meridian="false" 
+	       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
+     	
+					</div>
+			        <div class="col-xs-2">
+			        
+		  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)" ng-disabled="subscription.bookingCount > 0">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<span ng-if="subscription.bookingCount > 0">{{subscription.bookingCount}} résa.</span>
+			        </div>
+		        </div>
+		        
+		        
+		        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
+			        <div class="col-xs-12"> 
+						<p class="help-block" ng-show="form.subscriptionStartDate.$error.required"
+							translate="crossfitApp.member.messages.validate.subscriptionStartDate.required">subscriptionStartDate is required.</p>
+						<p class="help-block" ng-show="form.subscriptionEndDate.$error.required"
+								translate="crossfitApp.member.messages.validate.subscriptionEndDate.required">subscriptionEndDate is required.</p>
+						<p class="help-block" ng-show="form.membership.$error.required"
+							translate="crossfitApp.member.messages.validate.membership.required">field_membership is required.</p>
+					</div>
 				</div>
+				
+						       
+		    	<div class="row form-group">  
+			        <div class="col-xs-12"> 
+		  				<button type="button" class="btn btn-primary pull-right" ng-click="addSubscription()">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button>
+			        </div>
+				</div>
+				
+			</div>
+		</div>
+		
+		
+		
+		<div class="row form-group" ng-if="view == 'reservations'">
+  			<div class="col-xs-12"  style="max-height: 300px; overflow: scroll;">
+  			
+				<ul class="list-group" ng-if="member.bookings.length">
+					<li class="list-group-item" ng-repeat="booking in member.bookings">
+																			
+						<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
+							
+				       	{{booking.startAt | date:"EEE dd MMM 'à' HH:mm"}} - {{booking.title}}
+				       						
+						<button type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
+	                    	<span class="glyphicon glyphicon-remove"></span></button>
+					</li>
+				</ul>
+		
 			</div>
 		</div>
     </div>

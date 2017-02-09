@@ -1,17 +1,15 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership',
-        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership) {
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking',
+        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking) {
 
+    	$scope.view = "infoperso";
     	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
         $scope.memberships = Membership.query();
-        $scope.load = function(id) {
-            Member.get({id : id}, function(result) {
-                $scope.member = result;
-            });
-        };
+        
+        
 
         var onSaveFinished = function (result) {
             $scope.$emit('crossfitApp:memberUpdate', result);
@@ -29,6 +27,12 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
         };
+        
+        $scope.loadBooking = function(){
+        	Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
+            	$scope.member.bookings = resultBookings;
+            });
+        }
 
 
         $scope.addSubscription = function() {
@@ -60,4 +64,20 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	
         	subscription.subscriptionEndDate = d;
         }
+        
+        $scope.showView = function(viewname){
+        	$scope.view = viewname;
+        }
+        
+
+        $scope.quickDeleteBooking = function(booking){
+        	if (confirm("Supprimer la réservation de "+booking.title+" ?")){
+            	Booking.delete({id : booking.id}, function(){
+            		$scope.loadBooking();
+            	});
+        	}
+        }
+        
+
+        $scope.loadBooking();
 }]);

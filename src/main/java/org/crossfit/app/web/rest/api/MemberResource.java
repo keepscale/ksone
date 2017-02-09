@@ -3,21 +3,27 @@ package org.crossfit.app.web.rest.api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-
+import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.CardEvent;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
+import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -55,6 +61,8 @@ public class MemberResource {
 	private MemberService memberService;
 	@Inject
 	private MemberRepository memberRepository;
+    @Inject
+    private CardEventRepository cardEventRepository;
 
     @Inject
     private SubscriptionRepository subscriptionRepository;
@@ -129,6 +137,40 @@ public class MemberResource {
 				.map(member -> new ResponseEntity<>(member, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
+	
+    @RequestMapping(value = "/members/{id}/bookings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookingDTO>> getAllBooking(@PathVariable Long id) throws URISyntaxException {
+    	
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Member member = memberRepository.findOne(id);
+		
+		log.debug("getAllBooking() - Loading event cards"); 
+		
+		Map<Booking, List<CardEvent>> cardEventsByBooking = 
+    			cardEventRepository.findAllBookingCardEventByMember(member)
+				.stream()
+				.collect(Collectors.groupingBy(CardEvent::getBooking));
+
+		log.debug("getAllBooking() - Loading booking"); 
+		
+		List<Booking> result = bookingRepository.findAllByMember(member).stream().map(b->{
+    	    	    			List<CardEvent> event = cardEventsByBooking.getOrDefault(b, Collections.emptyList());
+								b.setCardEvent(event.stream().sorted((e1, e2)->{
+    	    	    				return e1.getCheckingDate().compareTo(e2.getCheckingDate());
+	    	    					}).findFirst());
+    	    	    			return b;
+    	    	    		}).collect(Collectors.toList());
+		
+		log.debug("getAllBooking() - to dto"); 
+
+        Comparator<? super BookingDTO> comparator = (b1,b2) ->{
+        	return b2.getStartAt().compareTo(b1.getStartAt());
+        };
+		return new ResponseEntity<>(result.stream().map(BookingDTO.memberEditMapper).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
 
 	protected MemberDTO doGet(Long id) {
 		Member member = memberRepository.findOne(id);		

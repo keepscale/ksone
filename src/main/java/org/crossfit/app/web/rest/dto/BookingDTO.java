@@ -42,7 +42,12 @@ public class BookingDTO implements Serializable {
 		dto.setMemberId(member.getId());
 		return dto;
 	};
-	
+
+	public static Function<Booking, BookingDTO> memberEditMapper = b->{
+		BookingDTO dto = adminMapper.apply(b);
+		dto.setStartAt(b.getStartAt());
+		return dto;
+	};
 
 	public static Function<Booking, BookingDTO> myBooking = b->{
 //		String membershipName = b.getSubscription().getMembership().getN	ame();
