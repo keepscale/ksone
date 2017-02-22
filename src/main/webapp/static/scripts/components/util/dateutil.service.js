@@ -4,10 +4,7 @@ angular.module('crossfitApp')
     .service('DateUtils', function () {
       this.convertLocaleDateToServer = function(date) {
         if (date) {
-			var utcDate = new Date();
-			utcDate.setUTCDate(date.getDate());
-			utcDate.setUTCMonth(date.getMonth());
-			utcDate.setUTCFullYear(date.getFullYear());
+			var utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 			utcDate.setUTCHours(0);
 			utcDate.setUTCMinutes(0);
 			utcDate.setUTCSeconds(0);
@@ -64,10 +61,7 @@ angular.module('crossfitApp')
        };
 	this.parseDateAsDate = function(datestr){
 		var parts = datestr.split('-');
-        var utcDate = new Date();
-        utcDate.setUTCDate(parts[2]);
-        utcDate.setUTCMonth(parts[1]-1);
-        utcDate.setUTCFullYear(parts[0]);
+		var utcDate = new Date(Date.UTC(parts[0], parts[1]-1, parts[2]));
 		utcDate.setUTCHours(0);
 		utcDate.setUTCMinutes(0);
 		utcDate.setUTCSeconds(0);
