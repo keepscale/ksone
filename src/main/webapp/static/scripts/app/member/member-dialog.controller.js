@@ -29,9 +29,11 @@ angular.module('crossfitApp').controller('MemberDialogController',
         };
         
         $scope.loadBooking = function(){
-        	Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
-            	$scope.member.bookings = resultBookings;
-            });
+            if ($stateParams.id != null) {
+	        	Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
+	            	$scope.member.bookings = resultBookings;
+	            });
+            }
         }
 
 

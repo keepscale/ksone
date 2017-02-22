@@ -33,7 +33,7 @@
 		</nav>
 		
 		
-		<div class="row" ng-if="view == 'infoperso'">
+		<div class="row" ng-show="view == 'infoperso'">
 		  <div class="col-xs-12">
 	    	<div class="row form-group"> 
 				<div class="col-xs-12">
@@ -174,7 +174,7 @@
 		</div>
 		
 		
-		<div class="row form-group" ng-if="view == 'abonnements'">
+		<div class="row form-group" ng-show="view == 'abonnements'">
   			<div class="col-xs-12">
 						
 		    	<div class="row form-group" ng-repeat="subscription in member.subscriptions"> 
@@ -232,8 +232,8 @@
 		
 		
 		
-		<div class="row form-group" ng-if="view == 'reservations'">
-  			<div class="col-xs-12"  style="max-height: 300px; overflow: scroll;">
+		<div class="row form-group" ng-show="view == 'reservations'">
+  			<div class="col-xs-12"  style="max-height: 300px; overflow-y: scroll;">
   			
 				<ul class="list-group" ng-if="member.bookings.length">
 					<li class="list-group-item" ng-repeat="booking in member.bookings">
@@ -247,6 +247,9 @@
 					</li>
 				</ul>
 		
+				<div ng-if="!member.bookings || member.bookings.length == 0">
+					Aucune réservation
+				</div>
 			</div>
 		</div>
     </div>
