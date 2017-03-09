@@ -25,7 +25,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -79,11 +78,11 @@ public class CardMemberResource {
 		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
 
-	protected Page<Member> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
-				boxService.findCurrentCrossFitBox(), customSearch, 
+				boxService.findCurrentCrossFitBox(), customSearch,null, true,
 				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
 	}
 

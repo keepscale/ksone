@@ -78,7 +78,8 @@
             "delete": "Suppr.",
             "save": "Sauvegarder",
             "view": "Voir",
-            "lock": "Bloquer"
+            "lock": "Bloquer",
+            "export": "Export"
         },
         "detail": {
             "field": "Champs",

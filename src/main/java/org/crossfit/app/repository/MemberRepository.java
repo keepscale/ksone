@@ -2,6 +2,7 @@ package org.crossfit.app.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
@@ -30,8 +31,13 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "or 	( true = :includeNotEnabled AND m.enabled = false  	and m.locked = false ) "
     		+ "or 	( true = :includeBloque 	AND m.locked  = true ) "
     		+ ") "
+    		+ "and ( "
+    		+ "		( true = :includeAllMembership ) "
+    		+ "or exists ( select s from Subscription s where s.member = m and s.membership.id in ( :includeMembershipsIds ) ) "
+    		+ ") "
     		+ "order by m.enabled DESC, m.locked ASC, m.lastName, m.firstName")
 	Page<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
+			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, @Param("includeAllMembership") boolean includeAllMembership,
 			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
 			Pageable pageable);
 

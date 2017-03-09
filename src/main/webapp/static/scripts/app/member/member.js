@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/member/members.html',
+                        templateUrl: 'scripts/app/member/members.html?v='+$stateProvider.VERSION,
                         controller: 'MemberController'
                     }
                 },

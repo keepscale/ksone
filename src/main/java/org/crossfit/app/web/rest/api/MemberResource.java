@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -33,6 +34,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -108,21 +110,59 @@ public class MemberResource {
 			@RequestParam(value = "page", required = false) Integer offset,
 			@RequestParam(value = "per_page", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeActif, includeNotEnabled, includeBloque );
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
 		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
 
-	protected Page<Member> doFindAll(Pageable generatePageRequest, String search,boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	/**
+	 * GET /members -> get all the members.
+	 */
+	@RequestMapping(value = "/members.csv", method = RequestMethod.GET, produces = "text/csv;charset=utf-8")
+	public String getAllAsCSV(
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
+			@RequestParam(value = "include_actif", required = false) boolean includeActif,
+			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
+			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
+		
+		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
+		
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeActif, includeNotEnabled, includeBloque );
+		
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("[Id];[Title];[FirstName];[LastName];[Email];[Telephon];[Address];[ZipCode];[City]\n");		
+		for (Member m : page) {
+			append(sb, m.getId()).append(";");
+			append(sb, m.getTitle()).append(";");
+			append(sb, m.getFirstName()).append(";");
+			append(sb, m.getLastName()).append(";");
+			append(sb, m.getLogin()).append(";");
+			append(sb, m.getTelephonNumber()).append(";");
+			append(sb, m.getAddress()).append(";");
+			append(sb, m.getZipCode()).append(";");
+			append(sb, m.getCity()).append("\n");
+		}
+		return sb.toString();
+	}
+	
+	private static final StringBuffer append(StringBuffer sb, Object value){
+		sb.append("\"").append(value == null ? "" : value).append("\"");
+		return sb;
+	}
+	
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
-				boxService.findCurrentCrossFitBox(), customSearch, 
+				boxService.findCurrentCrossFitBox(), customSearch, Stream.of(includeMembershipsIds).collect(Collectors.toSet()), false,
 				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
 	}
 
