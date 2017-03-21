@@ -26,5 +26,6 @@
 
     <include file="classpath:config/liquibase/datas-3.xml" relativeToChangelogFile="false"/>
 
+    <include file="classpath:config/liquibase/changelog/11_modify_entity_member.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

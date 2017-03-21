@@ -50,15 +50,16 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         
         CrossfitBox.current(function(result){
         	$rootScope.socialEnabled = result.socialEnabled;
+        	$rootScope.box = result;
         });
         
         Version.current(function(v){
             $rootScope.VERSION = v.content;
         });
     })
-    .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider, $translateProvider, tmhDynamicLocaleProvider, httpRequestInterceptorCacheBusterProvider) {
+    .config(function ($compileProvider, $stateProvider, $urlRouterProvider, $httpProvider, $locationProvider, $translateProvider, tmhDynamicLocaleProvider, httpRequestInterceptorCacheBusterProvider) {
 
-    	$stateProvider.VERSION = "2";
+    	$stateProvider.VERSION = "3";
         
         //enable CSRF
         $httpProvider.defaults.xsrfCookieName = 'CSRF-TOKEN';
@@ -105,6 +106,9 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js');
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
+        
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|webcal|chrome-extension):/);
+
         
     })
     .filter('dayOfWeek', function($filter) {

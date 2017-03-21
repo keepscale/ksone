@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -93,6 +94,10 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Size(max = 255)
     @Column(name = "card_uuid", length = 255)
     private String cardUuid;
+    
+    @Size(max = 36)
+    @Column(name = "uuid", length = 36, nullable = false, unique = true)
+    private String uuid;
 
     @NotNull
     @Email
@@ -148,7 +153,15 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
         this.id = id;
     }
 
-    public Title getTitle() {
+    public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Title getTitle() {
 		return title;
 	}
 

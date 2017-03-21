@@ -49,6 +49,7 @@
     <logger name="liquibase" level="WARN"/>
     <logger name="sun.rmi.transport" level="WARN"/>
     <logger name="org.crossfit.app.service.util.BookingRulesChecker" level="${logback.loglevel}"/>
+    <logger name="net.fortuna.ical4j" level="INFO"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>

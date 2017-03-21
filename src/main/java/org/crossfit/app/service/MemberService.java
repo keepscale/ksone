@@ -3,6 +3,7 @@ package org.crossfit.app.service;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -27,7 +28,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +35,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * Service class for managing users.
@@ -92,6 +91,7 @@ public class MemberService {
 		if (memberdto.getId() == null){
 			
 			member = new Member();
+			member.setUuid(UUID.randomUUID().toString());
 			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
 			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		}
@@ -218,4 +218,8 @@ public class MemberService {
 	}
 
 
+	public Optional<Member> findMemberByUuid(String uuid) {
+		return memberRepository.findOneByUuid(uuid);
+	}
+	
 }

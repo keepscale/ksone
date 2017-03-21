@@ -9,7 +9,21 @@
 	
 	</div>
 	<div ng-switch-when="true" style="text-align: center;">
-	    <div class="row">
+	
+		<div class="row">
+	 		<div class="col-md-6 col-md-offset-3">
+				<div class="alert alert-info" role="alert">
+					<strong>Nouveauté !</strong> <br/>
+					<div  style="text-align: left;">
+						Vous pouvez maintenant exporter vos réservations dans votre agenda ! <br/>
+						Ciquez directement ici: <a href="{{webcalUrl}}" title="Exporter l'agenda des réservations"><span class="glyphicon glyphicon-calendar" style="color: red;"></span></a><br/>
+						Ou bien paramétrez votre agenda et utilisez cette url: <a href="{{httpICalUrl}}" target="_blank">{{httpICalUrl}}</a>
+					</div> 
+				</div>
+			</div>
+		</div>
+		
+	    <div class="row" ng-if="mustFillPersonnalInfo()">
 	 		<div class="col-md-6 col-md-offset-3">
 				<div class="alert alert-warning" role="alert">
 					<a href="" ui-sref="account.edit">
@@ -18,21 +32,20 @@
 				</div>
 			</div>
 		</div>
-	    <div class="row" ng-if="account.subscriptions.length > 0">
-	        <div class="col-md-6 col-md-offset-3">
-				<div class="alert alert-success" role="alert">
+		
+	    <div class="row">
+	        <div class="col-md-6 col-md-offset-3" ng-switch="account.subscriptions.length > 0">
+				
+				<div class="alert alert-success" role="alert" ng-switch-when="true">
 					<a href="" ui-sref="planningToDay">
 						<strong>Accédez au planning</strong> et commencez à réserver vos WOD !	
 					</a>
 				</div>
-			</div>
-		</div>
-	    <div class="row" ng-if="!account.subscriptions.length">
-	        <div class="col-md-6 col-md-offset-3">
-				<div class="alert alert-danger" role="alert">
+				
+				<div class="alert alert-danger" role="alert"  ng-switch-when="false">
 					Attention, vous ne disposez d'aucun abonnement
 				</div>
 			</div>
-		</div>    
+		</div>
 	</div>
 </div>

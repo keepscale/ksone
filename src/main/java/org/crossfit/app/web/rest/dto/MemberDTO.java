@@ -25,6 +25,7 @@ public class MemberDTO {
 	public static final Function<Member, MemberDTO> MAPPER =  (member)-> {
 		MemberDTO dto = new MemberDTO();
 		dto.setId(member.getId());
+		dto.setUuid(member.getUuid());
 		dto.setFirstName(member.getFirstName());
 		dto.setLastName(member.getLastName());
 		dto.setNickName(member.getNickName());
@@ -76,6 +77,9 @@ public class MemberDTO {
     @Size(max = 255)
     private String cardUuid;
 
+    private String uuid;
+    
+    
     @NotNull
     @Email
     @Size(max = 100)
@@ -93,7 +97,16 @@ public class MemberDTO {
     private List<SubscriptionDTO> subscriptions = new ArrayList<>();
     private List<MembershipRules> rules = new ArrayList<>();
 
-    public String getLogin(){
+    
+    public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getLogin(){
     	return this.email;
     }
 

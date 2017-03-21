@@ -67,6 +67,9 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 	@Query("UPDATE Member m SET m.cardUuid = NULL where m.cardUuid = :cardUuid")
 	void clearUsageCardUuid(@Param("cardUuid") String cardUuid);
 
+    @Query("select m from Member m where m.uuid = :uuid")
+	Optional<Member> findOneByUuid(@Param("uuid") String uuid);
+
     
 
 }
