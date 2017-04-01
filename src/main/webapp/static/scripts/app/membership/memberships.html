@@ -1,8 +1,5 @@
 <div class="row">
-	<div class="col-xs-8">
-		<h4 translate="crossfitApp.membership.home.title">Gestion des abonnements</h4>
-	</div>
-	<div class="col-xs-4">	
+	<div class="col-xs-12">	
          <div class="form-group pull-right">
 			<a href="#" ui-sref="membership.new"> <span
 							class="glyphicon glyphicon-flash"></span> <span
@@ -51,26 +48,18 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th translate="crossfitApp.membership.name">Abonnements</th>
+                    <th translate="crossfitApp.membership.name.table">Abonnements</th>
                     <th translate="crossfitApp.membership.price">Prix</th>
-                    <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="membership in memberships" >
-                    <td>{{membership.name}}</td>
+                    <td><a href="#" ui-sref="membership.edit({id:membership.id})">{{membership.name}}</a></td>
                     <td>{{membership.price}}</td>
-                    <td>
-                    	<a href="#" ui-sref="membership.edit({id:membership.id})"><span
-										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
-										translate="crossfitApp.membership.action.edit"> Edit</span>
-						</a>
-					</td>
-                    <td>		
+                    <td  width="30px">
 						<a ng-click="delete(membership.id)"> <span
-								class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
-								translate="crossfitApp.membership.action.delete"> Delete</span>
+								class="glyphicon glyphicon-remove-circle" style="color:red"></span>
 						</a>
                     
                     </td>

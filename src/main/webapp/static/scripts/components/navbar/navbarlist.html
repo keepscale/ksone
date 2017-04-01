@@ -1,0 +1,22 @@
+	<ul class="nav nav-pills" role="navigation" ng-switch="isAuthenticated() &&  ($state.includes('timeSlotType') || $state.includes('membership') || $state.includes('resource'))">
+
+
+		<li ng-class="{active: $state.includes('timeSlotType')}"  has-any-role="ROLE_DIRECTOR,ROLE_ADMIN"
+			ng-switch-when="true">
+			<a ui-sref="timeSlotType">
+				{{'global.menu.timeslottype'|translate}}
+			</a></li>
+			
+		<li ng-class="{active: $state.includes('membership')}" has-any-role="ROLE_DIRECTOR,ROLE_ADMIN"
+			ng-switch-when="true">
+			<a ui-sref="membership">  {{'global.menu.memberships'|translate}} </a>
+		</li>
+
+		<li ng-class="{active: $state.includes('resource')}" has-any-role="ROLE_DIRECTOR,ROLE_ADMIN"
+			ng-switch-when="true">
+			<a ui-sref="resource">  {{'global.menu.resources'|translate}} </a>
+		</li>
+		
+	</ul>
+	
+

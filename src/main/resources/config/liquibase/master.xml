@@ -25,6 +25,8 @@
     <include file="classpath:config/liquibase/changelog/10_added_entity_Version.xml" relativeToChangelogFile="false"/>
 
     <include file="classpath:config/liquibase/datas-3.xml" relativeToChangelogFile="false"/>
+    
+    <include file="classpath:config/liquibase/datas-4.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>

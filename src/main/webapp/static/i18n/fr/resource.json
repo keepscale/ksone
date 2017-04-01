@@ -1,0 +1,41 @@
+{
+    "crossfitApp": {
+        "resource" : {
+            "home": {
+                "title": "Gestion des types de ressource",
+                "createLabel": "Créer une nouvelle ressource",
+                "createOrEditLabel": "Créer ou éditer une ressource"
+            },
+            "action" : {
+            	"edit": "Modifier",
+            	"delete": "Supprimer"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer la ressource {{ id }} ?"
+            },
+            "detail": {
+                "title": "Ressource"
+            },
+            "created": "Une nouvelle ressource a été créé avec l'identifiant {{ param }}",
+            "updated": "Ressource avec l'identifiant {{ param }} mis à jour",
+            "deleted": "Ressource avec l'identifiant {{ param }} supprimé.",
+            "name": "Nom de la ressource",
+            "color": "Couleur",
+            "description": "Description",
+            "messages" : {
+	        	"validate" : {
+		        	"name" : {
+			        	"required": "Le nom est obligatoire"
+			    	},
+		        	"color" : {
+			        	"required": "La couleur est obligatoire"
+			    	},
+		        	"description" : {
+			        	"required": "La description est obligatoire"
+			    	}
+		    	}
+	    	}
+        }
+    }
+}
+

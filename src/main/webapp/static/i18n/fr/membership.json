@@ -17,6 +17,7 @@
                 "title": "Abonnements"
             },
             "name": "Nom",
+            "name.table": "Nom de l'abonnement",
             "name.placeholder": "Nom de l'abonnement",
             "price": "Prix",
             "price.placeholder": "Prix",

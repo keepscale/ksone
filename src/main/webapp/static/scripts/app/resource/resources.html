@@ -1,10 +1,10 @@
 <div class="row">
 	<div class="col-xs-12">	
          <div class="form-group pull-right">
-			<a href="#" ui-sref="timeSlotType.new"> <span
+			<a href="#" ui-sref="resource.new"> <span
 							class="glyphicon glyphicon-flash"></span> <span
-							translate="crossfitApp.timeSlotType.home.createLabel">Create a
-								new timeSlotType</span>
+							translate="crossfitApp.resource.home.createLabel">Create a
+								new resource</span>
 			</a>
 		</div>
 	</div>
@@ -17,10 +17,10 @@
 </div>
 
 
-<div class="modal fade" id="deleteTimeSlotTypeConfirmation">
+<div class="modal fade" id="deleteResourceConfirmation">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="deleteForm" ng-submit="confirmDelete(timeSlotType.id)">
+                <form name="deleteForm" ng-submit="confirmDelete(resource.id)">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="modal-body">
               		 	<jh-alert-error></jh-alert-error>
-                        <p translate="crossfitApp.timeSlotType.delete.question" translate-values="{id: '{{timeSlotType.id}}'}">Are you sure you want to delete this Member?</p>
+                        <p translate="crossfitApp.resource.delete.question" translate-values="{id: '{{resource.id}}'}">Are you sure you want to delete this Member?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -48,18 +48,18 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th translate="crossfitApp.timeSlotType.name">Nom</th>
-                    <th translate="crossfitApp.timeSlotType.color">Couleur</th>
+                    <th translate="crossfitApp.resource.name">Nom</th>
+                    <th translate="crossfitApp.resource.color">Couleur</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="timeSlotType in timeSlotTypes" >
+                <tr ng-repeat="resource in resources" >
                     <td>
-                    	<a href="#" ui-sref="timeSlotType.edit({id:timeSlotType.id})">{{timeSlotType.name}}</a></td>
-                    <td style="background-color: {{timeSlotType.color}};"></td>
+                    	<a href="#" ui-sref="resource.edit({id:resource.id})">{{resource.name}}</a></td>
+                    <td style="background-color: {{resource.color}};"></td>
                     <td  width="30px">
-						<a ng-click="delete(timeSlotType.id)" href=""> <span
+						<a ng-click="delete(resource.id)" href=""> <span
 								class="glyphicon glyphicon-remove-circle" style="color:red"></span>
 						</a>
                     

@@ -17,12 +17,14 @@
             "members" : "Membres",
             "bookings" : "Mes réservations",
             "timeslots" : "Créneaux",
-            "timeslottype" : "Type de créneaux",
+            "liste" : "Gérer les listes",
+            "timeslottype" : "Type crén.",
             "config" : "Configuration",
             "sql" : "SQL",
             "version" : "Version",
             "language": "Langue",
-            "memberships" : "Abonnements",
+            "memberships" : "Abo.",
+            "resources" : "Res.",
             "config" : "Configuration"
         },
         "form": {
