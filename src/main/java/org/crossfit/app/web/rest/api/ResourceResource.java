@@ -77,7 +77,7 @@ public class ResourceResource {
     }
 
 	protected Resource doGet(Long id) {
-		return resourceRepository.findOne(id);
+		return resourceRepository.findOne(id, this.boxService.findCurrentCrossFitBox());
 	}
 
 	

@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,8 +20,6 @@ import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.AbstractAuditingEntity;
 import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -57,9 +56,8 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional=false)
     private CrossFitBox box;
     
-    @JsonIgnore
-    @OneToMany(cascade={}, orphanRemoval=false)
-    private List<Member> membersAllowedToBook = new ArrayList<>();
+    @OneToMany(mappedBy="resource", cascade=CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
+    private List<ResourceMemberRules> rules = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -99,6 +97,14 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public List<ResourceMemberRules> getRules() {
+		return rules;
+	}
+
+	public void setRules(List<ResourceMemberRules> rules) {
+		this.rules = rules;
 	}
 
 	@Override

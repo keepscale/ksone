@@ -1,0 +1,121 @@
+
+<form name="form" role="form" novalidate ng-submit="save()" show-validation>
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true" ng-click="clear()">&times;</button>
+		<h4 class="modal-title" id="myResourceLabel"
+			translate="crossfitApp.resource.home.createOrEditLabel">Create or
+			edit a Resource</h4>
+	</div>
+	
+	<div class="modal-body">
+		<jh-alert-error></jh-alert-error>
+		<div class="form-group">
+			<label for="id" translate="global.field.id">ID</label> <input
+				type="text" class="form-control" id="id" name="id"
+				ng-model="resource.id" readonly>
+		</div>
+		
+		
+       	<div class="form-group">            
+            <label translate="crossfitApp.resource.name" for="name">Name</label>
+			<input type="text" class="form-control" id="name" name="name"
+				ng-model="resource.name" ng-maxlength=255 required maxlength="255">
+		</div>
+       	<div class="form-group">            
+            <label translate="crossfitApp.resource.description" for="description">Description</label>
+			<input type="text" class="form-control" id="description" name="description"
+				ng-model="resource.description" ng-maxlength=255 required maxlength="255">
+		</div>
+       	<div class="form-group">            
+            <label translate="crossfitApp.resource.color" for="color">Color</label>
+			<input type="color" class="form-control" id="color" name="color" required
+				ng-model="resource.color">
+		</div>
+			
+			
+	   	<div class="row"> 
+	        <div class="col-xs-12">
+	    	  	<div ng-show="form.name.$invalid">
+					<p class="help-block" ng-show="form.name.$error.required"
+						translate="crossfitApp.resource.messages.validate.name.required">The name is required.</p>
+					<p class="help-block" ng-show="form.name.$error.maxlength"
+						translate="crossfitApp.resource.messages.validate.name.maxlength"> The name cannot be longer than 64 characters.</p>
+				</div>
+				
+	    	  	<div ng-show="form.color.$invalid">
+					<p class="help-block" ng-show="form.color.$error.required"
+						translate="crossfitApp.resource.messages.validate.color.required">The color is required.</p>
+				</div>
+	    	
+	    	  	<div ng-show="form.description.$invalid">
+					<p class="help-block" ng-show="form.description.$error.required"
+						translate="crossfitApp.resource.messages.validate.description.required">The description is required.</p>
+					<p class="help-block" ng-show="form.description.$error.maxlength"
+						translate="crossfitApp.resource.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
+				</div>
+			</div>
+		</div>
+			
+		<div class="row form-group">
+	  		<div class="col-xs-12">
+	  			<div class="panel panel-primary">
+					<div class="panel-heading">
+	  					Règles 
+		  				
+		  				<button type="button" class="btn btn-primary" ng-click="addRules()">
+							<span class="glyphicon glyphicon-plus"></span>
+						</button></div>
+					<div class="panel-body">
+			        
+				    	<div ng-repeat="rule in resource.rules"> 
+					    	<div class="panel panel-info">
+  								<div class="panel-body">
+						    		<div class="row">
+								        <div class="col-xs-12"> 
+								        	<div class="row">
+								        		<div class="col-xs-10">
+										        	<div class="form-group">      
+												        <input type="number" class="form-control" id="numberOfSession" name="numberOfSession"
+														placeholder="{{'crossfitApp.membershiprules.numberOfSession.placeholder' | translate}}"
+														ng-model="rule.numberOfSession" required">
+											        </div>
+										        </div>
+								        		<div class="col-xs-2">
+										          	<div class="form-group">
+												         <select class="form-control" name="type" ng-model="rule.type" id="field_type" required>
+															<option value="SUM" translate="crossfitApp.membershiprules.type.SUM">Au Total</option>
+															<option value="SUM_PER_WEEK" translate="crossfitApp.membershiprules.type.SUM_PER_WEEK">Par semaine</option>
+															<option value="SUM_PER_4_WEEKS" translate="crossfitApp.membershiprules.type.SUM_PER_4_WEEKS">Par 4 semaines</option>
+															<option value="SUM_PER_MONTH" translate="crossfitApp.membershiprules.type.SUM_PER_MONTH">Par mois</option>
+														</select>
+													</div>
+										        </div>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+					        </div>
+						</div>
+					</div>
+				</div>		
+			</div>
+	    </div>		
+					
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal"
+				ng-click="clear()">
+				<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+					translate="entity.action.cancel">Cancel</span>
+			</button>
+			<button type="submit"
+				ng-disabled="form.$invalid || form.$submitted"
+				class="btn btn-primary">
+				<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+					translate="entity.action.save">Save</span>
+			</button>
+		</div>
+	</div>
+</form>

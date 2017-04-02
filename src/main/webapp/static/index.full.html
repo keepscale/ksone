@@ -31,7 +31,11 @@
 		<div id="wrapper">
 			<div ui-view="navbar" ng-cloak=""></div>
 			<div id="page-wrapper">
-				<div class="" ui-view="navbarlist"></div>
+				<div class="row">
+					<div class="col-xs-8 col-xs-offset-2">	
+						<div class="" ui-view="navbarlist"></div>
+					</div>
+				</div>
 				<div class="container-fluid">
 					<div class="" ui-view="content"></div>
 					
@@ -175,6 +179,9 @@
 	    
 	    
 	    <script src="scripts/app/resource/resource.js"></script>
+	    <script src="scripts/app/resource/resource.controller.js"></script>
+	    <script src="scripts/app/resource/resource-dialog.controller.js"></script>
+	    <script src="scripts/components/resource/resource.service.js"></script>
     
 		<!--     endbuild -->
     
