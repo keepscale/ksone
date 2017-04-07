@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.springframework.data.domain.Page;
@@ -57,6 +58,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select m from Member m where m.box = :box and m.enabled = false")
     List<Member> findAllUserNotEnabled(@Param("box") CrossFitBox box);
 
+    @Query("select m from Member m where m.box = :box and :role in elements(m.authorities) ")
+    List<Member> findAllUserWithRole(@Param("box") CrossFitBox box, @Param("role") Authority role);
+
+    
     @Modifying(clearAutomatically=true)
 	@Transactional
 	@Query("UPDATE Member m SET m.cardUuid = :cardUuid where m.id = :id")

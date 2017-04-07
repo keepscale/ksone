@@ -130,7 +130,7 @@ public class Resource extends AbstractAuditingEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Resource [id=" + id + ", name=" + name + ", description=" + description + "]";
+		return "Resource [id=" + id + ", name=" + name + ", description=" + description + ", rules="+rules+"]";
 	}
 
 }

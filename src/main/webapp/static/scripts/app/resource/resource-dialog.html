@@ -62,7 +62,7 @@
 	  		<div class="col-xs-12">
 	  			<div class="panel panel-primary">
 					<div class="panel-heading">
-	  					Règles 
+	  					Utilisateurs de la ressource
 		  				
 		  				<button type="button" class="btn btn-primary" ng-click="addRules()">
 							<span class="glyphicon glyphicon-plus"></span>
@@ -70,34 +70,22 @@
 					<div class="panel-body">
 			        
 				    	<div ng-repeat="rule in resource.rules"> 
-					    	<div class="panel panel-info">
-  								<div class="panel-body">
-						    		<div class="row">
-								        <div class="col-xs-12"> 
-								        	<div class="row">
-								        		<div class="col-xs-10">
-										        	<div class="form-group">      
-												        <input type="number" class="form-control" id="numberOfSession" name="numberOfSession"
-														placeholder="{{'crossfitApp.membershiprules.numberOfSession.placeholder' | translate}}"
-														ng-model="rule.numberOfSession" required">
-											        </div>
-										        </div>
-								        		<div class="col-xs-2">
-										          	<div class="form-group">
-												         <select class="form-control" name="type" ng-model="rule.type" id="field_type" required>
-															<option value="SUM" translate="crossfitApp.membershiprules.type.SUM">Au Total</option>
-															<option value="SUM_PER_WEEK" translate="crossfitApp.membershiprules.type.SUM_PER_WEEK">Par semaine</option>
-															<option value="SUM_PER_4_WEEKS" translate="crossfitApp.membershiprules.type.SUM_PER_4_WEEKS">Par 4 semaines</option>
-															<option value="SUM_PER_MONTH" translate="crossfitApp.membershiprules.type.SUM_PER_MONTH">Par mois</option>
-														</select>
-													</div>
-										        </div>
-											</div>
-											
-										</div>
-									</div>
-								</div>
-					        </div>
+        			        <div class="form-group">
+								<div class="row">
+					        		<div class="col-xs-10">				        		
+								         <select class="form-control" name="type" ng-model="rule.member"
+								        	ng-options="m.firstName + ' ' + m.lastName for m in availableMember track by m.id"
+								          id="field_member" required>
+										</select>
+							        </div>
+					        		<div class="col-xs-2">
+						  				<button type="button" class="btn btn-danger" ng-click="deleteRulesAtIndex($index)">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
+							        </div>
+						        </div>
+							</div>
+							
 						</div>
 					</div>
 				</div>		

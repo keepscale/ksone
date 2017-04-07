@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('crossfitApp').controller('ResourceDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Resource', 
-        function($scope, $stateParams, $state, $modalInstance, entity, Resource) {
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Resource', 'Member', 
+        function($scope, $stateParams, $state, $modalInstance, entity, Resource, Member) {
 
         $scope.resource = entity;
+        $scope.availableMember = Member.queryUserTenants();
         
         $scope.load = function(id) {
             Resource.get({id : id}, function(result) {
@@ -32,5 +33,8 @@ angular.module('crossfitApp').controller('ResourceDialogController',
         $scope.addRules = function() {
         	$scope.resource.rules.push({});
         };
-        
+
+        $scope.deleteRulesAtIndex = function(idx) {
+        	$scope.resource.rules.splice(idx, 1);
+        };
 }]);

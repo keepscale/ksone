@@ -14,14 +14,17 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
 import org.crossfit.app.web.rest.dto.BookingDTO;
@@ -63,6 +66,8 @@ public class MemberResource {
 	private MemberService memberService;
 	@Inject
 	private MemberRepository memberRepository;
+	@Inject
+	private AuthorityRepository authorityRepository;
     @Inject
     private CardEventRepository cardEventRepository;
 
@@ -100,6 +105,23 @@ public class MemberResource {
 		MemberDTO result = MemberDTO.MAPPER.apply(memberService.doSave(member));
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("member", member.getId().toString()))
 				.body(result);
+	}
+	
+	/**
+	 * GET /members -> get all the members.
+	 */
+	@RequestMapping(value = "/members/tenants", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<MemberDTO>> getAllMemberTenant() throws URISyntaxException {
+		
+		
+		
+		Authority roleTenant = authorityRepository.findOneByName(AuthoritiesConstants.TENANT);
+		List<Member> findAllTeantUser = memberRepository.findAllUserWithRole(
+				boxService.findCurrentCrossFitBox(), roleTenant);
+		
+		
+		return new ResponseEntity<>(findAllTeantUser.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()),
+				HttpStatus.OK);
 	}
 	
 	/**

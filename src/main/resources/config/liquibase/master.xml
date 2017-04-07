@@ -30,6 +30,7 @@
 
 	<include file="classpath:config/liquibase/changelog/11_added_entity_Resource.xml" relativeToChangelogFile="false"/>
 	<include file="classpath:config/liquibase/changelog/12_added_entity_ResourceMemberRules.xml" relativeToChangelogFile="false"/>
+	<include file="classpath:config/liquibase/changelog/13_modify_entity_ResourceMemberRules.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>

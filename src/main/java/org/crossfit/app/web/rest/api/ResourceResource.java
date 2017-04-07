@@ -2,14 +2,18 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.resources.Resource;
 import org.crossfit.app.domain.resources.ResourceBooking;
+import org.crossfit.app.domain.resources.ResourceMemberRules;
 import org.crossfit.app.repository.resource.ResourceBookingRepository;
 import org.crossfit.app.repository.resource.ResourceRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -51,13 +55,13 @@ public class ResourceResource {
     @RequestMapping(value = "/resources",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Resource>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
+    public ResponseEntity<Collection<Resource>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
                                   @RequestParam(value = "per_page", required = false) Integer limit)
         throws URISyntaxException {
         return new ResponseEntity<>(doFindAll(), HttpStatus.OK);
     }
 
-	protected List<Resource> doFindAll() {
+	protected Set<Resource> doFindAll() {
 		return resourceRepository.findAllByBox(boxService.findCurrentCrossFitBox());
 	}
 
@@ -108,6 +112,9 @@ public class ResourceResource {
 
 	protected Resource doSave(Resource resource) throws BadRequestException {
 		resource.setBox(boxService.findCurrentCrossFitBox());
+		for (ResourceMemberRules rule : resource.getRules()) {
+			rule.setResource(resource);
+		}
 		Resource result = resourceRepository.save(resource);
 		return result;
 	}

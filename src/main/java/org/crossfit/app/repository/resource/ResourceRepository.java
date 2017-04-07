@@ -1,6 +1,6 @@
 package org.crossfit.app.repository.resource;
 
-import java.util.List;
+import java.util.Set;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.resources.Resource;
@@ -13,7 +13,8 @@ import org.springframework.data.repository.query.Param;
  */
 public interface ResourceRepository extends JpaRepository<Resource,Long> {
 
-	List<Resource> findAllByBox(CrossFitBox box);
+	@Query("select r from Resource r left join fetch r.rules where r.box = :box")
+	Set<Resource> findAllByBox(@Param("box") CrossFitBox box);
 
 
 	@Query("select r from Resource r left join fetch r.rules where r.id = :id and r.box = :box")

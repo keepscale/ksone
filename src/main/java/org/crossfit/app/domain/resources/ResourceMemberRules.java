@@ -16,6 +16,8 @@ import org.crossfit.app.domain.Member;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * A MembershipType.
@@ -34,6 +36,7 @@ public class ResourceMemberRules extends AbstractAuditingEntity implements Seria
     private Member member;
 
     @NotNull
+    @JsonIgnore
     @ManyToOne(optional=false, cascade = {})
     private Resource resource;
     
