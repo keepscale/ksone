@@ -33,12 +33,21 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "or 	( true = :includeBloque 	AND m.locked  = true ) "
     		+ ") "
     		+ "and ( "
+    		+ "		(true = :includeAllRole ) "
+    		+ " or exists (select a from Authority a where a in elements( m.authorities ) and a.name in ( :includeRoles ) ) "
+    		+ " or m.authorities is empty "
+    		+ ") "
+    		+ "and ( "
     		+ "		( true = :includeAllMembership ) "
     		+ "or exists ( select s from Subscription s where s.member = m and s.membership.id in ( :includeMembershipsIds ) ) "
+    		+ "or m.subscriptions is empty "
     		+ ") "
     		+ "order by m.enabled DESC, m.locked ASC, m.lastName, m.firstName")
 	Page<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
-			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, @Param("includeAllMembership") boolean includeAllMembership,
+			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, 
+			@Param("includeAllMembership") boolean includeAllMembership,
+			@Param("includeRoles") Set<String> roles, 
+			@Param("includeAllRole") boolean includeAllRole,
 			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
 			Pageable pageable);
 
@@ -50,9 +59,14 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "left join fetch msr.applyForTimeSlotTypes "
     		+ "where m.login = :login and m.box = :box")
     Optional<Member> findOneByLogin(@Param("login") String login, @Param("box") CrossFitBox currentCrossFitBox);
-
     
-    @Query("select m from Member m where m.cardUuid = :cardUuid and m.box = :box")
+    
+    @Query("select m from Member m "
+    		+ "left join fetch m.authorities "
+    		+ "where m.id = :id")
+    Member findOne(@Param("id") Long id);
+
+	@Query("select m from Member m where m.cardUuid = :cardUuid and m.box = :box")
     Optional<Member> findOneByCardUuid(@Param("cardUuid") String cardUuid, @Param("box") CrossFitBox currentCrossFitBox);
 
     @Query("select m from Member m where m.box = :box and m.enabled = false")

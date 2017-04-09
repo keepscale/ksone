@@ -122,7 +122,7 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     private CrossFitBox box;
     
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
             name = "MEMBER_AUTHORITY",
             joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "id")},

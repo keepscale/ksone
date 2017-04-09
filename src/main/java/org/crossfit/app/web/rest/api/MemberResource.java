@@ -133,12 +133,13 @@ public class MemberResource {
 			@RequestParam(value = "per_page", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
+			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, includeActif, includeNotEnabled, includeBloque );
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
 		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
@@ -150,13 +151,14 @@ public class MemberResource {
 	public String getAllAsCSV(
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
+			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, includeActif, includeNotEnabled, includeBloque );
 		
 		StringBuffer sb = new StringBuffer();
 
@@ -180,11 +182,15 @@ public class MemberResource {
 		return sb;
 	}
 	
-	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, String[] includeRoles, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
-				boxService.findCurrentCrossFitBox(), customSearch, Stream.of(includeMembershipsIds).collect(Collectors.toSet()), false,
+				boxService.findCurrentCrossFitBox(), customSearch, 
+				Stream.of(includeMembershipsIds).collect(Collectors.toSet()), 
+				false,
+				Stream.of(includeRoles).collect(Collectors.toSet()), 
+				false,
 				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
 	}
 
@@ -237,7 +243,8 @@ public class MemberResource {
 	protected MemberDTO doGet(Long id) {
 		Member member = memberRepository.findOne(id);		
 		MemberDTO memberDTO = MemberDTO.MAPPER.apply(member);
-		
+
+		memberDTO.setRoles(member.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()));
 		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member).stream().map(s ->{
 			
 			SubscriptionDTO dto = SubscriptionDTO.fullMapper.apply(s);

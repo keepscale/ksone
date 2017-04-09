@@ -1,13 +1,10 @@
 package org.crossfit.app.service;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
@@ -16,7 +13,6 @@ import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
-import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.dto.MemberDTO;
@@ -27,7 +23,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +30,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * Service class for managing users.
@@ -92,13 +86,15 @@ public class MemberService {
 		if (memberdto.getId() == null){
 			
 			member = new Member();
-			member.setAuthorities(new HashSet<Authority>(Arrays.asList(authorityRepository.findOne(AuthoritiesConstants.USER))));
 			member.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		}
 		else{
 			
 			member = memberRepository.findOne(memberdto.getId());
 		}
+	
+		member.getAuthorities().clear();
+		member.getAuthorities().addAll(authorityRepository.findAll(memberdto.getRoles()));
 
 		Optional<Member> findOneByLogin = memberRepository.findOneByLogin(memberdto.getEmail(), currentCrossFitBox);
 		
