@@ -82,7 +82,7 @@ public class CardMemberResource {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		return memberRepository.findAll(
-				boxService.findCurrentCrossFitBox(), customSearch,null, true,
+				boxService.findCurrentCrossFitBox(), customSearch,null, true, null, true,
 				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
 	}
 

@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking',
-        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking) {
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking', 'Authority',
+        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking, Authority) {
 
     	$scope.view = "infoperso";
     	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
         $scope.memberships = Membership.query();
+        $scope.roles = Authority.query();
         
         
 
@@ -80,6 +81,20 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	}
         }
         
+        
+        $scope.toggleSelectedRole = function toggleSelectedRole(role) {
+			var idx = $scope.member.roles.indexOf(role);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.member.roles.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.member.roles.push(role);
+			}
+		};
 
         $scope.loadBooking();
 }]);

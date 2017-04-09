@@ -40,6 +40,7 @@
         	"infoperso" : "Infos Perso",
         	"abonnements" : "Abonnements",
         	"reservations" : "Réservations",
+        	"authority" : "Roles",
         	"firstname" : "Prénom",
         	"firstname.placeholder" : "Prénom",
         	"lastname" : "Nom",
@@ -55,6 +56,16 @@
 			"address.placeholder" : "Adresse",
 			"zipCode.placeholder" : "Code postal",
 			"city.placeholder" : "Ville",
+			"role" : {
+				"ROLE_ADMIN" : "Administrateur",
+				"ROLE_MANAGER" : "Manager",
+				"ROLE_USER" : "Crossfiter",
+				"ROLE_DIRECTOR" : "Directeur",
+				"ROLE_ANONYMOUS" : "Anonyme",
+				"ROLE_ACCESS_CARD" : "Lecteur Carte",
+				"ROLE_TENANT" : "Locataire"
+				
+			},
             "messages": {
 	            "error": {
 	                "fail": "<strong>Une erreur est survenue!</strong> L'adhérent n'a pas été sauvegardé.",

@@ -42,6 +42,7 @@ angular.module('crossfitApp')
                                 	telephonNumber: null, sickNoteEndDate: null, 
                                 	membershipStartDate: null, membershipEndDate: null, 
                                 	level: null, id: null,
+                                	roles : ["ROLE_USER"],
                                 	subscriptions : [
                                 		{
                                     		subscriptionStartDate : new Date()

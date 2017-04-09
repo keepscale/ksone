@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MemberController', function ($scope, $window, Member, Membership, ParseLinks) {
+    .controller('MemberController', function ($scope, $window, Member, Membership, Authority, ParseLinks) {
         $scope.members = [];
         $scope.page = 1;
         $scope.per_page = 20;
@@ -10,12 +10,15 @@ angular.module('crossfitApp')
         $scope.include_bloque = false;
         $scope.memberships = [];
         $scope.selectedMemberships = [];
+        $scope.roles = [];
+        $scope.selectedRoles = ["ROLE_USER", "ROLE_TENANT"];
         
         $scope.loadAll = function() {
             Member.query({
             	page: $scope.page, per_page: $scope.per_page, 
             	search: $scope.searchLike, 
-            	include_memberships: $scope.selectedMemberships,
+            	include_memberships: $scope.selectedMemberships, 
+            	include_roles: $scope.selectedRoles,
             	include_actif: $scope.include_actif,
             	include_not_enabled: $scope.include_not_ennabled,
             	include_bloque: $scope.include_bloque}, 
@@ -95,6 +98,21 @@ angular.module('crossfitApp')
 				$scope.selectedMemberships.push(membershipId);
 			}
 		};
+		
+        
+        $scope.toggleSelectedRole = function toggleSelectedRole(role) {
+			var idx = $scope.selectedRoles.indexOf(role);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.selectedRoles.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.selectedRoles.push(role);
+			}
+		};
 
 					        
 		$scope.export = function() {
@@ -109,6 +127,9 @@ angular.module('crossfitApp')
             for (var i = 0; i < $scope.selectedMemberships.length; i++) {
             	params += "&include_memberships=" + $scope.selectedMemberships[i];
             }
+            for (var i = 0; i < $scope.selectedRoles.length; i++) {
+            	params += "&include_roles=" + $scope.selectedRoles[i];
+            }
         	
             
             
@@ -122,7 +143,12 @@ angular.module('crossfitApp')
                 	if (result[i].id != undefined)
                 		$scope.selectedMemberships.push(result[i].id);
 				}
-                $scope.loadAll();
+                
+                Authority.query({}, function(res){
+                	$scope.roles = res;
+                	$scope.loadAll();
+                	
+                });
             });
         }
         
