@@ -71,10 +71,6 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     @Query("select m from Member m where m.box = :box and m.enabled = false")
     List<Member> findAllUserNotEnabled(@Param("box") CrossFitBox box);
-
-    @Query("select m from Member m where m.box = :box and :role in elements(m.authorities) ")
-    List<Member> findAllUserWithRole(@Param("box") CrossFitBox box, @Param("role") Authority role);
-
     
     @Modifying(clearAutomatically=true)
 	@Transactional

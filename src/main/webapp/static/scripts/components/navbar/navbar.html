@@ -62,6 +62,12 @@
 				title="{{'global.menu.bookings'|translate}}"></span>
 		</a></li>
 		
+		<li ng-class="{active: $state.includes('planning-resources')}"  has-any-role="ROLE_RENTER"
+			ng-switch-when="true"><a ui-sref="planningResourcesToDay"> <span
+				class="glyphicon glyphicon-bed"
+				title="{{'global.menu.planning.resources'|translate}}"></span>
+		</a></li>
+		
 
 	</ul>
 </nav>

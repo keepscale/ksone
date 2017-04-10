@@ -63,7 +63,7 @@
 				"ROLE_DIRECTOR" : "Directeur",
 				"ROLE_ANONYMOUS" : "Anonyme",
 				"ROLE_ACCESS_CARD" : "Lecteur Carte",
-				"ROLE_TENANT" : "Locataire"
+				"ROLE_RENTER" : "Locataire"
 				
 			},
             "messages": {

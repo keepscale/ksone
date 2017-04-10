@@ -5,7 +5,12 @@ angular.module('crossfitApp').controller('ResourceDialogController',
         function($scope, $stateParams, $state, $modalInstance, entity, Resource, Member) {
 
         $scope.resource = entity;
-        $scope.availableMember = Member.queryUserTenants();
+        $scope.availableMember = Member.query({
+        	page: 1, per_page: 500, 
+        	include_roles: ["ROLE_RENTER"],
+        	include_actif: true,
+        	include_not_enabled: true,
+        	include_bloque: false});
         
         $scope.load = function(id) {
             Resource.get({id : id}, function(result) {

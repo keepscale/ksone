@@ -1,0 +1,16 @@
+<div ng-cloak>
+	<div  class="row">
+		<div class="col-lg-6 col-lg-offset-3" >
+					
+	         <select class="form-control" name="type" ng-model="currentResource"
+	        	ng-options="r.name for r in availableResources track by r.id" ng-change="refreshSelectResource(currentResource)" id="field_member" required>
+			</select>
+			
+		</div>
+	</div>
+	<div  class="row">
+		<div class="col-lg-12">
+			<div ui-calendar="uiConfig.calendar" ng-model="eventSources" ></div>
+		</div>
+	</div>
+</div>

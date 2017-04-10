@@ -6,7 +6,7 @@
 	<changeSet id="insert-authority-2" author="lgangloff">
 		
         <insert tableName="AUTHORITY">
-        	<column name="name" value="ROLE_TENANT"></column>
+        	<column name="name" value="ROLE_RENTER"></column>
         </insert>
 
 	</changeSet>

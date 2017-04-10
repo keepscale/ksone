@@ -5,6 +5,7 @@
         "menu": {
             "home": "Accueil",
             "stats": "Stats",
+            "planning.resources": "Planning location",
             "account": {
                 "main": "Compte",
                 "settings": "Profil",

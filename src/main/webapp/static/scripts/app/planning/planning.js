@@ -58,5 +58,40 @@ angular.module('crossfitApp')
 	                        return $translate.refresh();
 	                    }]
 	                }
-	            });
+	            })
+		        .state('planningResourcesToDay', {
+		            parent: 'site',
+		            url: '/planning-resources',
+		            data: {
+		                roles: ['ROLE_RENTER'],
+		                pageTitle: 'crossfitApp.planning.resources.home.title'
+		            },
+		            views: {
+		                'content@': {
+		                    templateUrl: 'scripts/app/planning/planning.resources.html',
+		                    controller: 'PlanningResourcesController'
+		                }
+		            }
+		        })
+		        .state('planning-resources', {
+		            parent: 'planningResourcesToDay',
+		            url: '/:mode/:view/:startDate',
+		            data: {
+		                roles: ['ROLE_RENTER'],
+		                pageTitle: 'crossfitApp.planning.resources.home.title'
+		            },
+		            views: {
+		                'content@': {
+		                    templateUrl: 'scripts/app/planning/planning.resources.html',
+		                    controller: 'PlanningResourcesController'
+		                }
+		            },
+		            resolve: {
+		                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+		                    $translatePartialLoader.addPart('planning');
+		                    $translatePartialLoader.addPart('global');
+		                    return $translate.refresh();
+		                }]
+		            }
+		        });
     });

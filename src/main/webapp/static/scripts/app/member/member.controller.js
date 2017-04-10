@@ -11,7 +11,7 @@ angular.module('crossfitApp')
         $scope.memberships = [];
         $scope.selectedMemberships = [];
         $scope.roles = [];
-        $scope.selectedRoles = ["ROLE_USER", "ROLE_TENANT"];
+        $scope.selectedRoles = ["ROLE_USER", "ROLE_RENTER"];
         
         $scope.loadAll = function() {
             Member.query({
