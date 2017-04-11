@@ -10,13 +10,28 @@ angular.module('crossfitApp')
     	
     	Resource.query({}, function(result){
     		$scope.availableResources = result;
-        	$scope.currentResource = result[0];
+    		if($stateParams.resourceId){
+    			for (var i = 0; i < $scope.availableResources.length; i++) {
+                	 var r = $scope.availableResources[i];
+                	 if (r.id == $stateParams.resourceId){
+                		 $scope.currentResource = r;
+                		 break;
+                	 }
+                }
+    		}
+    		if ($scope.currentResource == null){
+            	$scope.currentResource = result[0];
+    		}
     		$scope.refreshSelectResource($scope.currentResource);
 		});
         $scope.eventSources = [];
         
+        $scope.prepareRent = function(){
+        	$state.go('planning-resources.preparebooking', {resourceId:$scope.currentResource.id});
+        }
         
         $scope.refreshSelectResource = function(resource){
+        	$state.go('planning-resources', {resourceId:$scope.currentResource.id}, {notify:false});
 	    	$scope.loadAll();		
         };
         
