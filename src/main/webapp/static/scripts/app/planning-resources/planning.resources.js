@@ -47,8 +47,8 @@ angular.module('crossfitApp')
 		                },
 		                views: {
 		                    'content@': {
-		                        templateUrl: 'scripts/app/planning-resources/prepare.rent.html',
-		                        controller: 'PrepareRentController'
+		                        templateUrl: 'scripts/app/planning-resources/prepare.booking.html',
+		                        controller: 'PrepareResourceBookingController'
 		                    }
 		                },
 		                resolve: {

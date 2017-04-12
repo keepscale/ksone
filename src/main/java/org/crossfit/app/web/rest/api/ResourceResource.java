@@ -2,24 +2,30 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.resources.Resource;
 import org.crossfit.app.domain.resources.ResourceBooking;
 import org.crossfit.app.domain.resources.ResourceMemberRules;
 import org.crossfit.app.repository.resource.ResourceBookingRepository;
 import org.crossfit.app.repository.resource.ResourceRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.exception.BadRequestException;
+import org.crossfit.app.web.rest.dto.calendar.EventDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -48,6 +54,8 @@ public class ResourceResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private TimeService timeService;
 	
     /**
      * GET  /timeSlotTypes -> get all the timeSlotTypes.
@@ -74,9 +82,7 @@ public class ResourceResource {
     public ResponseEntity<Resource> get(@PathVariable Long id) {
         log.debug("REST request to get TimeSlot : {}", id);
         return Optional.ofNullable(doGet(id))
-            .map(timeSlot -> new ResponseEntity<>(
-                timeSlot,
-                HttpStatus.OK))
+            .map(r -> new ResponseEntity<>(r, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -167,5 +173,45 @@ public class ResourceResource {
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("timeSlotType", id.toString()))
 				.build();
 	}
+	
+	
+	
+
+    /**
+     * GET  /timeSlotTypes/:id -> get the "id" timeSlotTypes.
+     */
+    @RequestMapping(value = "/resources/{id}/planning",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+
+    public ResponseEntity<List<EventSourceDTO>> planning(
+    		@PathVariable Long id,
+    		@RequestParam(value = "start" , required = true) String startStr,
+    		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
+    	
+    	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	DateTime now = timeService.nowAsDateTime(currentCrossFitBox);
+    	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, currentCrossFitBox);
+    	DateTime endAt = "day".equals(viewStr) ? startAt.plusDays(1) : "week".equals(viewStr) ? startAt.plusDays(7) : null;
+    	
+    	if (startAt == null || endAt == null){
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	Resource resource = doGet(id);
+		Set<ResourceBooking> bookings = resourceBookingRepository.findAllBetweenExcluded(resource , startAt, endAt);
+    	
+		
+		EventSourceDTO events = new EventSourceDTO();
+		events.setColor(resource.getColor());
+		events.setEditable(true);
+		events.setEvents(bookings.stream().map(b->{
+			String title =  b.getMember().getFirstName() + " " + b.getMember().getLastName();
+			
+			return new EventDTO(b.getId(), title, b.getStartAt(), b.getEndAt());
+		}).collect(Collectors.toList()));
+
+    	return new ResponseEntity<List<EventSourceDTO>>(Arrays.asList(events), HttpStatus.OK);
+    }
 
 }

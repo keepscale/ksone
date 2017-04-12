@@ -126,6 +126,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, "/api/bookings/**").authenticated()
             .antMatchers(HttpMethod.DELETE, "/api/bookings/**").authenticated()
             .antMatchers(HttpMethod.GET, "/api/timeSlots/**").authenticated()
+            .antMatchers(HttpMethod.POST, "/api/resource-bookings/**").hasAnyAuthority(AuthoritiesConstants.RENTER)
+            .antMatchers("/api/resources/**").hasAnyAuthority(AuthoritiesConstants.RENTER)
             .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers("/private/**").hasAnyAuthority(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers("/protected/**").authenticated()

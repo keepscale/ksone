@@ -90,7 +90,22 @@ public class ResourceBooking extends AbstractAuditingEntity implements Serializa
     public void setEndAt(DateTime endAt) {
         this.endAt = endAt;
     }
+    
+	public Resource getResource() {
+		return resource;
+	}
 
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
 	@Override
     public boolean equals(Object o) {

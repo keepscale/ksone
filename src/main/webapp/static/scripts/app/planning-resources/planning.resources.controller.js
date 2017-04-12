@@ -37,13 +37,12 @@ angular.module('crossfitApp')
         
     	$scope.loadAll = function() {
         	$scope.eventSources.length = 0;
-        	console.log("Affichage du planning " + $scope.currentResource.name)
-        	/*Planning.myPlanning({start:$stateParams.startDate, view:$stateParams.view}, function(result, headers) {
+        	Resource.planning({id:$scope.currentResource.id, start:$stateParams.startDate, view:$stateParams.view}, function(result, headers) {
         		
                 for (var i = 0; i < result.length; i++) {
                 	 $scope.eventSources.push(result[i]);
                 }
-            });*/
+            });
         };
 		
 		if (!$stateParams.startDate){
@@ -66,7 +65,7 @@ angular.module('crossfitApp')
 	    	var start = DateUtils.formatDateAsDate(dStart);
 	    	var end = DateUtils.formatDateAsDate(dEnd);
 	    	
-	        $state.go('planning-resources', {startDate:start, endDate:end, view:view, mode:mode});
+	        $state.go('planning-resources', {startDate:start, view:view, mode:mode});
 	        
 	        return;
 		}

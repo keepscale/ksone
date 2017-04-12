@@ -13,6 +13,11 @@ angular.module('crossfitApp')
             },
             'delete': {
                 method: 'DELETE'
+            },
+            'planning': {
+            	method: 'GET',
+                url: "api/resources/:id/planning", 
+                isArray: true
             }
         });
     });
