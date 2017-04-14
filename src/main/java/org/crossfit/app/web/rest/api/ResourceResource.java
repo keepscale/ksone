@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -18,6 +19,8 @@ import org.crossfit.app.domain.resources.ResourceBooking;
 import org.crossfit.app.domain.resources.ResourceMemberRules;
 import org.crossfit.app.repository.resource.ResourceBookingRepository;
 import org.crossfit.app.repository.resource.ResourceRepository;
+import org.crossfit.app.security.AuthoritiesConstants;
+import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.exception.BadRequestException;
@@ -58,7 +61,7 @@ public class ResourceResource {
 	private TimeService timeService;
 	
     /**
-     * GET  /timeSlotTypes -> get all the timeSlotTypes.
+     * GET  /resources -> get all resources.
      */
     @RequestMapping(value = "/resources",
             method = RequestMethod.GET,
@@ -69,6 +72,19 @@ public class ResourceResource {
         return new ResponseEntity<>(doFindAll(), HttpStatus.OK);
     }
 
+    /**
+     * GET  /resources -> get all resources.
+     */
+    @RequestMapping(value = "/resources/bookable",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Resource>> getAllBookableResource()
+        throws URISyntaxException {
+    	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
+
+        return new ResponseEntity<>(isSuperUser ? doFindAll() : resourceRepository.findAllBookableFor(SecurityUtils.getCurrentMember()), HttpStatus.OK);
+    }
+    
 	protected Set<Resource> doFindAll() {
 		return resourceRepository.findAllByBox(boxService.findCurrentCrossFitBox());
 	}
@@ -166,7 +182,7 @@ public class ResourceResource {
 			}
 		}
 		else{
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 		
 		
@@ -178,7 +194,7 @@ public class ResourceResource {
 	
 
     /**
-     * GET  /timeSlotTypes/:id -> get the "id" timeSlotTypes.
+     * GET  /resources/:id/planning -> get the planning for "id" resource.
      */
     @RequestMapping(value = "/resources/{id}/planning",
             method = RequestMethod.GET,
@@ -201,17 +217,22 @@ public class ResourceResource {
     	Resource resource = doGet(id);
 		Set<ResourceBooking> bookings = resourceBookingRepository.findAllBetweenExcluded(resource , startAt, endAt);
     	
-		
+    	boolean isSuperUser = SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN);
+
 		EventSourceDTO events = new EventSourceDTO();
+		EventSourceDTO eventsDisabled = new EventSourceDTO();
+		eventsDisabled.setColor("#A0A0A0");
+		eventsDisabled.setEditable(false);
 		events.setColor(resource.getColor());
 		events.setEditable(true);
-		events.setEvents(bookings.stream().map(b->{
-			String title =  b.getMember().getFirstName() + " " + b.getMember().getLastName();
-			
-			return new EventDTO(b.getId(), title, b.getStartAt(), b.getEndAt());
-		}).collect(Collectors.toList()));
+		if (isSuperUser)
+			events.setEvents(bookings.stream().map(EventDTO::new).collect(Collectors.toList()));
+		else{
+			events.setEvents(bookings.stream().filter(b->{return b.getMember().equals(SecurityUtils.getCurrentMember());}).map(EventDTO::new).collect(Collectors.toList()));
+			eventsDisabled.setEvents(bookings.stream().filter(b->{return !b.getMember().equals(SecurityUtils.getCurrentMember());}).map(EventDTO::new).collect(Collectors.toList()));
+		}
 
-    	return new ResponseEntity<List<EventSourceDTO>>(Arrays.asList(events), HttpStatus.OK);
+    	return new ResponseEntity<List<EventSourceDTO>>(Arrays.asList(events, eventsDisabled), HttpStatus.OK);
     }
 
 }

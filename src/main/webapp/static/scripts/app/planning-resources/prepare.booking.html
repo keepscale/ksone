@@ -6,56 +6,62 @@
 				Réserver {{currentResource.name}} <br/>
 			</div>
 			<div class="panel-body">
-				<div ng-if="message" class="alert alert-danger">
-					<span ng-if="!errors.length">{{message}}</span>
-					<div ng-repeat="err in errors">
-						<span>{{err.message}}</span><br/>
-						<p ng-repeat="r in err.reasons"><i>{{r.message}}</i></p>
+				<form name="form">
+					<div ng-if="message" class="alert alert-danger">
+						<span ng-if="!errors.length">{{message}}</span>
+						<div ng-repeat="err in errors">
+							<span>{{err.message}}</span><br/>
+							<p ng-repeat="r in err.reasons"><i>{{r.message}}</i></p>
+						</div>
 					</div>
-				</div>
-				
-				<div class="row form-group">
-					<label for="resourceBookingDate">Le</label>
-					<datetimepicker name="resourceBookingDate" how-weeks="false"
-						show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
-						ng-model="resourceBooking.date" required></datetimepicker>
-				</div>
-				
-				<div class="row form-group">
-					<label for="resourceBookingStart">de</label>
-					<datetimepicker name="resourceBookingStart" how-weeks="false" minute-step="15"
-						show-meridian="false" date-format="HH:mm" hidden-time="false" hidden-date="true"
-						ng-model="resourceBooking.startHour"></datetimepicker>
+					
+					<div class="row form-group"  has-any-role="ROLE_MANAGER,ROLE_ADMIN">
+					
+		        		<div class="col-xs-12">
+							<label>Pour</label> 
+							<select class="form-control" name="member"
+								ng-model="selectedMember"
+								ng-options="m.firstName + ' ' + m.lastName for m in availableMember track by m.id"
+								id="field_member" required>
+							</select>
+						</div>
+					</div>
+					<div class="row form-group">
+						<label for="resourceBookingDate">Le</label>
+						<datetimepicker name="resourceBookingDate" how-weeks="false"
+							show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
+							ng-model="resourceBooking.date" required></datetimepicker>
+					</div>
+					
+					<div class="row form-group">
+						<label for="resourceBookingStart">de</label>
+						<datetimepicker name="resourceBookingStart" how-weeks="false" minute-step="15"
+							show-meridian="false" date-format="HH:mm" hidden-time="false" hidden-date="true"
+							ng-model="localStartHour"></datetimepicker>
+							
+						<label for="resourceBookingEnd">à</label>
+						<datetimepicker name="resourceBookingEnd" how-weeks="false" minute-step="15"
+							show-meridian="false" date-format="HH:mm" hidden-time="false" hidden-date="true"
+							ng-model="localEndHour"></datetimepicker>
+					</div>
+					<div class="row form-group has-error" ng-show="isHourIncoherent()">
+						<p class="help-block has-error" >L'heure de fin doit être après l'heure de début</p>
+					</div>
+					
+					<div class="btn-group btn-group-vertical" role="group" style="width: 100%">
+						<button class="btn btn-default" ng-click="saveResourceBooking()"
+							ng-disabled="resourceBooking.id != null">
+							<span class="glyphicon glyphicon-ok"></span>
+							Réserver
+						</button>
 						
-					<label for="resourceBookingEnd">à</label>
-					<datetimepicker name="resourceBookingEnd" how-weeks="false" minute-step="15"
-						show-meridian="false" date-format="HH:mm" hidden-time="false" hidden-date="true"
-						ng-model="resourceBooking.endHour"></datetimepicker>
-				</div>
-				<div class="row form-group has-error" ng-show="isHourIncoherent()">
-					<p class="help-block has-error" >L'heure de fin doit être après l'heure de début</p>
-				</div>
-				
-				<div class="btn-group btn-group-vertical" role="group" style="width: 100%">
-					<button class="btn btn-default" ng-click="saveResourceBooking()"
-						ng-disabled="resourceBooking.id != null">
-						<span class="glyphicon glyphicon-ok"></span>
-						Réserver
-					</button>
-					
-					<button class="btn btn-default" ng-click="cancelResourceBooking()"
-						ng-disabled="resourceBooking.id == null">
+						<button class="btn btn-default" ng-click="goBack()">
+							<span class="glyphicon glyphicon-ban-circle"></span>
+							Retour
+						</button>
 						
-						<span class="glyphicon glyphicon-remove"></span>
-							Annuler ma réservation
-					</button>
-					
-					<button class="btn btn-default" ng-click="goBack()">
-						<span class="glyphicon glyphicon-ban-circle"></span>
-						Retour
-					</button>
-					
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

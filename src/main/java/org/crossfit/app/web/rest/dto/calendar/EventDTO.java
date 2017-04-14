@@ -1,5 +1,6 @@
 package org.crossfit.app.web.rest.dto.calendar;
 
+import org.crossfit.app.domain.resources.ResourceBooking;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -37,6 +38,10 @@ public class EventDTO {
 		this.title = title;
 		this.start = start.withZoneRetainFields(DateTimeZone.UTC);
 		this.end = end.withZoneRetainFields(DateTimeZone.UTC);
+	}
+	
+	public EventDTO(ResourceBooking b){
+		this(b.getId(), b.getMember().getFirstName() + " " + b.getMember().getLastName(), b.getStartAt(), b.getEndAt());
 	}
 
 	public Long getId() {

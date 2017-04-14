@@ -17,8 +17,18 @@ public interface ResourceBookingRepository extends JpaRepository<ResourceBooking
 
 	List<ResourceBooking> findAllByResource(Resource resource);
 
-    @Query("select b from ResourceBooking b left join fetch b.resource where b.resource =:resource AND ( (:start <= b.startAt and b.startAt < :end) or (b.startAt <= :start and :start < b.endAt) )")
+    @Query("select b from ResourceBooking b " 
+    		+ "left join fetch b.resource where b.resource =:resource "
+    		+ "AND ( (:start <= b.startAt and b.startAt < :end) or (b.startAt <= :start and :start < b.endAt) )")
  	Set<ResourceBooking> findAllBetweenExcluded(@Param("resource") Resource resource, @Param("start") DateTime start, @Param("end") DateTime end);
 
+    
+    @Query("select b from ResourceBooking b "
+    		+ "left join fetch b.resource r "
+    		+ "left join fetch r.rules "
+    		+ "left join fetch b.member "
+    		+ "where b.id = :id")
+	ResourceBooking findOne(@Param("id") Long id);
+    
 
 }

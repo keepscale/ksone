@@ -1,0 +1,44 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+	
+		<div class="panel panel-default" style="text-align: center;">
+			<div class="panel-heading">
+				Réservation de {{resourceBooking.resource.name}} par {{resourceBooking.member.firstName}} {{resourceBooking.member.lastName}}<br/>
+			</div>
+			<div class="panel-body">
+				<form name="form">
+					<div ng-if="message" class="alert alert-danger">
+						<span ng-if="!errors.length">{{message}}</span>
+						<div ng-repeat="err in errors">
+							<span>{{err.message}}</span><br/>
+							<p ng-repeat="r in err.reasons"><i>{{r.message}}</i></p>
+						</div>
+					</div>
+					
+					<div class="row form-group">
+					
+		        		<div class="col-xs-12">
+		        			Le {{resourceBooking.startAt | date:'EEEE dd MMM yyyy'}} de {{resourceBooking.startAt | date:'HH:mm'}} à {{resourceBooking.endAt | date:'HH:mm'}}.
+						</div>
+					</div>
+					
+					<div class="btn-group btn-group-vertical" role="group" style="width: 100%">
+						
+						<button class="btn btn-default" ng-click="deleteResourceBooking()"
+							ng-disabled="resourceBooking.id == null">
+							
+							<span class="glyphicon glyphicon-remove"></span>
+								Annuler la réservation
+						</button>
+						
+						<button class="btn btn-default" ng-click="goBack()">
+							<span class="glyphicon glyphicon-ban-circle"></span>
+							Retour
+						</button>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

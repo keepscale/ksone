@@ -8,7 +8,7 @@ angular.module('crossfitApp')
     	var isMobile = $stateParams.mode == 'mobile';    	
     	var viewName = $rootScope.viewName == null ? 'agendaWeek' : $rootScope.viewName;
     	
-    	Resource.query({}, function(result){
+    	Resource.bookableResource({}, function(result){
     		$scope.availableResources = result;
     		if($stateParams.resourceId){
     			for (var i = 0; i < $scope.availableResources.length; i++) {
@@ -98,7 +98,12 @@ angular.module('crossfitApp')
 					},
 					minTime: "06:00:00",
 					selectable: false,
-					selectHelper: false,
+					selectHelper: true,
+					eventClick: function(calEvent, jsEvent, calendar) {
+						if (calEvent.id){
+				            $state.go('planning-resources.editbooking', {resourceId:$scope.currentResource.id, id:calEvent.id});
+						}
+				    },
 				    viewRender : function(calendar, element){
 				    	var startDateCalendar = new Date(calendar.start).toISOString().slice(0, 10);
 				    	var view = calendar.type == ("agendaWeek" ) ? "week" : "day";
