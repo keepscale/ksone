@@ -3,15 +3,12 @@ package org.crossfit.app.web.rest.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.MembershipRules;
-import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.Title;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.core.convert.converter.Converter;
@@ -262,6 +259,31 @@ public class MemberDTO {
 				+ ", telephonNumber=" + telephonNumber + ", email=" + email
 				+ ", locked=" + locked + ", enabled=" + enabled + ", langKey="
 				+ langKey + ", subscriptions=" + subscriptions + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MemberDTO other = (MemberDTO) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 	

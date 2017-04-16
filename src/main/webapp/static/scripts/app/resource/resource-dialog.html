@@ -11,87 +11,131 @@
 	
 	<div class="modal-body">
 		<jh-alert-error></jh-alert-error>
-		<div class="form-group">
-			<label for="id" translate="global.field.id">ID</label> <input
-				type="text" class="form-control" id="id" name="id"
-				ng-model="resource.id" readonly>
-		</div>
 		
 		
-       	<div class="form-group">            
-            <label translate="crossfitApp.resource.name" for="name">Name</label>
-			<input type="text" class="form-control" id="name" name="name"
-				ng-model="resource.name" ng-maxlength=255 required maxlength="255">
-		</div>
-       	<div class="form-group">            
-            <label translate="crossfitApp.resource.description" for="description">Description</label>
-			<input type="text" class="form-control" id="description" name="description"
-				ng-model="resource.description" ng-maxlength=255 required maxlength="255">
-		</div>
-       	<div class="form-group">            
-            <label translate="crossfitApp.resource.color" for="color">Color</label>
-			<input type="color" class="form-control" id="color" name="color" required
-				ng-model="resource.color">
-		</div>
+		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
+			<ul class="nav navbar-nav">
+				<li ng-class="{active:view=='detail'}">
+					<a ng-click="showView('detail')"> 
+						<span>{{'crossfitApp.resource.detail'|translate}}</span>
+					</a>
+				</li>
+				<li ng-class="{active:view=='stats'}">
+					<a ng-click="showView('stats')"> 
+						<span>{{'crossfitApp.resource.stats'|translate}}</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		
+		<div class="row" ng-show="view == 'detail'">
+		  <div class="col-xs-12">
+	   
+			<div class="form-group">
+				<label for="id" translate="global.field.id">ID</label> <input
+					type="text" class="form-control" id="id" name="id"
+					ng-model="resource.id" readonly>
+			</div>
 			
 			
-	   	<div class="row"> 
-	        <div class="col-xs-12">
-	    	  	<div ng-show="form.name.$invalid">
-					<p class="help-block" ng-show="form.name.$error.required"
-						translate="crossfitApp.resource.messages.validate.name.required">The name is required.</p>
-					<p class="help-block" ng-show="form.name.$error.maxlength"
-						translate="crossfitApp.resource.messages.validate.name.maxlength"> The name cannot be longer than 64 characters.</p>
-				</div>
+	       	<div class="form-group">            
+	            <label translate="crossfitApp.resource.name" for="name">Name</label>
+				<input type="text" class="form-control" id="name" name="name"
+					ng-model="resource.name" ng-maxlength=255 required maxlength="255">
+			</div>
+	       	<div class="form-group">            
+	            <label translate="crossfitApp.resource.description" for="description">Description</label>
+				<input type="text" class="form-control" id="description" name="description"
+					ng-model="resource.description" ng-maxlength=255 required maxlength="255">
+			</div>
+	       	<div class="form-group">            
+	            <label translate="crossfitApp.resource.color" for="color">Color</label>
+				<input type="color" class="form-control" id="color" name="color" required
+					ng-model="resource.color">
+			</div>
 				
-	    	  	<div ng-show="form.color.$invalid">
-					<p class="help-block" ng-show="form.color.$error.required"
-						translate="crossfitApp.resource.messages.validate.color.required">The color is required.</p>
-				</div>
-	    	
-	    	  	<div ng-show="form.description.$invalid">
-					<p class="help-block" ng-show="form.description.$error.required"
-						translate="crossfitApp.resource.messages.validate.description.required">The description is required.</p>
-					<p class="help-block" ng-show="form.description.$error.maxlength"
-						translate="crossfitApp.resource.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
-				</div>
-			</div>
-		</div>
-			
-		<div class="row form-group">
-	  		<div class="col-xs-12">
-	  			<div class="panel panel-primary">
-					<div class="panel-heading">
-	  					Utilisateurs de la ressource
-		  				
-		  				<button type="button" class="btn btn-primary" ng-click="addRules()">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button></div>
-					<div class="panel-body">
-			        
-				    	<div ng-repeat="rule in resource.rules"> 
-        			        <div class="form-group">
-								<div class="row">
-					        		<div class="col-xs-10">				        		
-								         <select class="form-control" name="type" ng-model="rule.member"
-								        	ng-options="m.firstName + ' ' + m.lastName for m in availableMember track by m.id"
-								          id="field_member" required>
-										</select>
-							        </div>
-					        		<div class="col-xs-2">
-						  				<button type="button" class="btn btn-danger" ng-click="deleteRulesAtIndex($index)">
-											<span class="glyphicon glyphicon-remove"></span>
-										</button>
-							        </div>
-						        </div>
-							</div>
-							
-						</div>
+				
+		   	<div class="row"> 
+		        <div class="col-xs-12">
+		    	  	<div ng-show="form.name.$invalid">
+						<p class="help-block" ng-show="form.name.$error.required"
+							translate="crossfitApp.resource.messages.validate.name.required">The name is required.</p>
+						<p class="help-block" ng-show="form.name.$error.maxlength"
+							translate="crossfitApp.resource.messages.validate.name.maxlength"> The name cannot be longer than 64 characters.</p>
 					</div>
-				</div>		
-			</div>
-	    </div>		
 					
+		    	  	<div ng-show="form.color.$invalid">
+						<p class="help-block" ng-show="form.color.$error.required"
+							translate="crossfitApp.resource.messages.validate.color.required">The color is required.</p>
+					</div>
+		    	
+		    	  	<div ng-show="form.description.$invalid">
+						<p class="help-block" ng-show="form.description.$error.required"
+							translate="crossfitApp.resource.messages.validate.description.required">The description is required.</p>
+						<p class="help-block" ng-show="form.description.$error.maxlength"
+							translate="crossfitApp.resource.messages.validate.description.maxlength"> The description cannot be longer than 255 characters.</p>
+					</div>
+				</div>
+			</div>
+				
+			<div class="row form-group">
+		  		<div class="col-xs-12">
+		  			<div class="panel panel-primary">
+						<div class="panel-heading">
+		  					Utilisateurs de la ressource
+			  				
+			  				<button type="button" class="btn btn-primary" ng-click="addRules()">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button></div>
+						<div class="panel-body">
+				        
+					    	<div ng-repeat="rule in resource.rules"> 
+	        			        <div class="form-group">
+									<div class="row">
+						        		<div class="col-xs-10">				        		
+									         <select class="form-control" name="type" ng-model="rule.member"
+									        	ng-options="m.firstName + ' ' + m.lastName for m in availableMember track by m.id"
+									          id="field_member" required>
+											</select>
+								        </div>
+						        		<div class="col-xs-2">
+							  				<button type="button" class="btn btn-danger" ng-click="deleteRulesAtIndex($index)">
+												<span class="glyphicon glyphicon-remove"></span>
+											</button>
+								        </div>
+							        </div>
+								</div>
+								
+							</div>
+						</div>
+					</div>		
+				</div>
+		    </div>		
+		 </div>
+	   	</div>		
+
+
+		<div class="row" ng-show="view == 'stats'">
+			<div class="col-xs-12">
+				<table border="1">
+					<thead>
+						<tr>
+							<th>Membres</th>
+							<th ng-repeat="statDate in stats.memberStats[0].dates">{{statDate.date[1] + "/" + statDate.date[0] }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="memberStat in stats.memberStats">
+							<td>{{memberStat.member.firstName}} {{memberStat.member.lastName}}</td>
+							<td ng-repeat="statDate in memberStat.dates">
+								{{statDate.sumOfHours}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			
+	   		</div>
+	   	</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal"
 				ng-click="clear()">

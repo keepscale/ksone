@@ -22,5 +22,10 @@ angular.module('crossfitApp')
                 url: "api/resources/:id/planning", 
                 isArray: true
             }
+            ,
+            'stats': {
+            	method: 'GET',
+                url: "api/resources/:id/stats"
+            }
         });
     });

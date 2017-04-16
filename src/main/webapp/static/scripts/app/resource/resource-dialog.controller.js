@@ -4,6 +4,8 @@ angular.module('crossfitApp').controller('ResourceDialogController',
     ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Resource', 'Member', 
         function($scope, $stateParams, $state, $modalInstance, entity, Resource, Member) {
 
+
+    	$scope.view = "detail";
         $scope.resource = entity;
         $scope.availableMember = Member.query({
         	page: 1, per_page: 500, 
@@ -13,17 +15,15 @@ angular.module('crossfitApp').controller('ResourceDialogController',
         	include_not_enabled: true,
         	include_bloque: false});
         
-        $scope.load = function(id) {
-            Resource.get({id : id}, function(result) {
-                $scope.resource = result;
-            });
-        };
+        Resource.stats({id : $stateParams.id}, function(result) {
+        	$scope.stats = result;
+        });
 
         var onSaveFinished = function (result) {
             $scope.$emit('crossfitApp:resourceUpdate', result);
             $modalInstance.close(result);
         };
-
+        
         $scope.save = function () {
             if ($scope.resource.id != null) {
                 Resource.update($scope.resource, onSaveFinished);
@@ -32,6 +32,10 @@ angular.module('crossfitApp').controller('ResourceDialogController',
             }
         };
 
+        $scope.showView = function(viewname){
+        	$scope.view = viewname;
+        }
+        
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
         };
