@@ -355,14 +355,15 @@
 		              <jsSourceDir>static</jsSourceDir>
 		              <jsSourceFiles>
 		              
-						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
-						<jsSourceFile>/bower_components/jquery/dist/jquery.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/json3/lib/json3.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/angular/angular.min.js</jsSourceFile>
-				        <jsSourceFile>/bower_components/ng-fastclick/dist/index.min.js</jsSourceFile>
+<!-- 						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile> -->
+<!-- 						<jsSourceFile>/bower_components/jquery/dist/jquery.min.js</jsSourceFile> -->
+<!-- 						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.min.js</jsSourceFile> -->
+<!-- 						<jsSourceFile>/bower_components/json3/lib/json3.min.js</jsSourceFile> -->
+<!-- 						<jsSourceFile>/bower_components/angular/angular.min.js</jsSourceFile> -->
+<!-- 				        <jsSourceFile>/bower_components/ng-fastclick/dist/index.min.js</jsSourceFile> -->
 						
-						<jsSourceFile>/bower_components/angular-bootstrap/ui-bootstrap-tpls.js</jsSourceFile>
+<!-- 						<jsSourceFile>/bower_components/angular-bootstrap/ui-bootstrap-tpls.js</jsSourceFile> -->
+						
 						<jsSourceFile>/bower_components/angular-ui-router/release/angular-ui-router.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-resource/angular-resource.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-cookies/angular-cookies.min.js</jsSourceFile>
@@ -391,6 +392,7 @@
 						<jsSourceFile>/scripts/app/app.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/app/version.service.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/auth/auth.service.js</jsSourceFile>
+						<jsSourceFile>/scripts/components/auth/authority.service.js</jsSourceFile>
 						
 					    <jsSourceFile>/scripts/components/auth/principal.service.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/auth/authority.directive.js</jsSourceFile>
@@ -477,12 +479,23 @@
 					    <jsSourceFile>/scripts/app/planning/planning.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/planning/prepare.booking.controller.js</jsSourceFile>
 					    
+						<jsSourceFile>/scripts/app/planning-resources/planning.resources.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/planning-resources/planning.resources.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/planning-resources/prepare.booking.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/planning-resources/edit.booking.controller.js</jsSourceFile>
 					    
 					    
 					    <jsSourceFile>/scripts/app/stats/stats.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/stats/stats.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/stats/stats.service.js</jsSourceFile>
 					    
+				   	    <jsSourceFile>/scripts/app/resource/resource.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/resource/resource.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/resource/resource-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/resource/resource.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/resource/resource.booking.service.js</jsSourceFile>
+    
+    
 		              </jsSourceFiles>
 		              <jsFinalFile>script.js</jsFinalFile>
 		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>

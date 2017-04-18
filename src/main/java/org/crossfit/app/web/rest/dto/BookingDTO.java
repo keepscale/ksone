@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.Member;

@@ -117,23 +117,35 @@
 
 		<div class="row" ng-show="view == 'stats'">
 			<div class="col-xs-12">
-				<table border="1">
-					<thead>
-						<tr>
-							<th>Membres</th>
-							<th ng-repeat="statDate in stats.memberStats[0].dates">{{statDate.date[1] + "/" + statDate.date[0] }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="memberStat in stats.memberStats">
-							<td>{{memberStat.member.firstName}} {{memberStat.member.lastName}}</td>
-							<td ng-repeat="statDate in memberStat.dates">
-								{{statDate.sumOfHours}}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			
+			    <div class="table-responsive">
+			        <table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Membres</th>
+								<th style="text-align: right;" ng-repeat="statDate in stats.memberStats[0].dates">{{statDate.date | date:'MM/yyyy'}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="memberStat in stats.memberStats">
+								<td nowrap>
+									<span class="glyphicon {{isShowStatsDetailOfMember(memberStat.member.id) ? 'glyphicon-minus' : 'glyphicon-plus'}}" 
+										ng-click="toggleStatsDetailOfMember(memberStat.member.id)"></span>
+								
+								{{memberStat.member.firstName}} {{memberStat.member.lastName}}</td>
+								<td nowrap style="text-align: right;" ng-repeat="statDate in memberStat.dates">
+									{{statDate.sumOfHours}} h.
+									<div ng-show="isShowStatsDetailOfMember(memberStat.member.id)">
+										<ul class="list-unstyled">
+											<li ng-repeat="booking in statDate.bookings">
+												{{booking.startAt | date:'EEE dd'}} | {{booking.startAt | date:'HH:mm'}}-{{booking.endAt | date:'HH:mm'}}												
+											</li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 	   		</div>
 	   	</div>
 		<div class="modal-footer">

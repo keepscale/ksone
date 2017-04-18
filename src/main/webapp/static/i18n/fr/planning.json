@@ -4,7 +4,9 @@
             "home": {
                 "title": "Planning"
             }
-        }
+        },
+        
+        "resourceBooking.deleted" : "La réservation a bien été supprimé"
     }
 }
 

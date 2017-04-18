@@ -5,6 +5,7 @@ angular.module('crossfitApp').controller('ResourceDialogController',
         function($scope, $stateParams, $state, $modalInstance, entity, Resource, Member) {
 
 
+    	$scope.memberIdToShowDetail = [];
     	$scope.view = "detail";
         $scope.resource = entity;
         $scope.availableMember = Member.query({
@@ -23,6 +24,19 @@ angular.module('crossfitApp').controller('ResourceDialogController',
             $scope.$emit('crossfitApp:resourceUpdate', result);
             $modalInstance.close(result);
         };
+        
+        $scope.toggleStatsDetailOfMember = function(memberId){
+        	var index = $scope.memberIdToShowDetail.indexOf(memberId);
+        	if (index === -1){
+            	$scope.memberIdToShowDetail.push(memberId);
+        	}
+        	else{
+            	$scope.memberIdToShowDetail.splice(index, 1);
+        	}
+        }
+        $scope.isShowStatsDetailOfMember = function(memberId){
+        	return $scope.memberIdToShowDetail.indexOf(memberId) > -1;
+        }
         
         $scope.save = function () {
             if ($scope.resource.id != null) {

@@ -25,7 +25,7 @@ import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.exception.BadRequestException;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
-import org.crossfit.app.web.rest.dto.resources.Stats;
+import org.crossfit.app.web.rest.dto.resources.ResourceStatsDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.DateTime;
@@ -114,10 +114,10 @@ public class ResourceResource {
     @RequestMapping(value = "/resources/{id}/stats",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Stats> getStats(@PathVariable Long id) {
+    public ResponseEntity<ResourceStatsDTO> getStats(@PathVariable Long id) {
         log.debug("REST request to get stats of resource : {}", id);
         return Optional.ofNullable(resourceBookingRepository.findAllByResource(doGet(id)))
-            .map(resourceBookings -> new ResponseEntity<>(new Stats(resourceBookings), HttpStatus.OK))
+            .map(resourceBookings -> new ResponseEntity<>(new ResourceStatsDTO(resourceBookings), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 	
@@ -199,7 +199,7 @@ public class ResourceResource {
 		}
 		
 		
-		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("timeSlotType", id.toString()))
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("resources", id.toString()))
 				.build();
 	}
 	

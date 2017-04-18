@@ -96,7 +96,6 @@ angular.module('crossfitApp')
 						agenda : 'MMMM',
 						month : 'MMMM'
 					},
-					minTime: "06:00:00",
 					selectable: false,
 					selectHelper: true,
 					eventClick: function(calEvent, jsEvent, calendar) {
