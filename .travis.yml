@@ -33,5 +33,5 @@ deploy:
   on:
     repo: lgangloff/crossfit-2.0
     tags: false
-    branch: master
+    all_branches: true
     
