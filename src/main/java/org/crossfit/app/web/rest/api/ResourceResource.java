@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ import org.crossfit.app.web.rest.dto.resources.ResourceStatsDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -219,10 +221,17 @@ public class ResourceResource {
     		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		DateTimeZone dateTimeZone = timeService.getDateTimeZone(currentCrossFitBox);
     	DateTime now = timeService.nowAsDateTime(currentCrossFitBox);
     	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, currentCrossFitBox);
     	DateTime endAt = "day".equals(viewStr) ? startAt.plusDays(1) : "week".equals(viewStr) ? startAt.plusDays(7) : null;
     	
+    	Function<? super ResourceBooking, ? extends EventDTO> resourceBookingToEventDTO = b->{
+			DateTime start = b.getStartAt().withZone(dateTimeZone);
+			DateTime end = b.getEndAt().withZone(dateTimeZone);
+			return new EventDTO(b.getId(), b.getMember().getFirstName() + " " + b.getMember().getLastName(), start, end);
+		};
+		
     	if (startAt == null || endAt == null){
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
@@ -238,11 +247,12 @@ public class ResourceResource {
 		eventsDisabled.setEditable(false);
 		events.setColor(resource.getColor());
 		events.setEditable(true);
-		if (isSuperUser)
-			events.setEvents(bookings.stream().map(EventDTO::new).collect(Collectors.toList()));
-		else{
-			events.setEvents(bookings.stream().filter(b->{return b.getMember().equals(SecurityUtils.getCurrentMember());}).map(EventDTO::new).collect(Collectors.toList()));
-			eventsDisabled.setEvents(bookings.stream().filter(b->{return !b.getMember().equals(SecurityUtils.getCurrentMember());}).map(EventDTO::new).collect(Collectors.toList()));
+		if (isSuperUser) {
+			
+			events.setEvents(bookings.stream().map(resourceBookingToEventDTO).collect(Collectors.toList()));
+		} else{
+			events.setEvents(bookings.stream().filter(b->{return b.getMember().equals(SecurityUtils.getCurrentMember());}).map(resourceBookingToEventDTO).collect(Collectors.toList()));
+			eventsDisabled.setEvents(bookings.stream().filter(b->{return !b.getMember().equals(SecurityUtils.getCurrentMember());}).map(resourceBookingToEventDTO).collect(Collectors.toList()));
 		}
 
     	return new ResponseEntity<List<EventSourceDTO>>(Arrays.asList(events, eventsDisabled), HttpStatus.OK);

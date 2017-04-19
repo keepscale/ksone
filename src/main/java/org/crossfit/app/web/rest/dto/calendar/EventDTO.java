@@ -40,9 +40,6 @@ public class EventDTO {
 		this.end = end.withZoneRetainFields(DateTimeZone.UTC);
 	}
 	
-	public EventDTO(ResourceBooking b){
-		this(b.getId(), b.getMember().getFirstName() + " " + b.getMember().getLastName(), b.getStartAt(), b.getEndAt());
-	}
 
 	public Long getId() {
 		return id;
