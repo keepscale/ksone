@@ -131,7 +131,7 @@
 		</insert>
 	</changeSet>
 	
-	<changeSet id="data-openshift" author="lgangloff" context="openshift">
+	<changeSet id="data-openshift" author="lgangloff" context="openshift,production">
 		<insert tableName="CROSSFITBOX">
 			<column name="name" value="Crossfit Nancy" />
 			<column name="website_pattern" value="(.*).crossfit-nancy.fr" />

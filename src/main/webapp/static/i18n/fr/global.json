@@ -22,8 +22,7 @@
             "sql" : "SQL",
             "version" : "Version",
             "language": "Langue",
-            "memberships" : "Abonnements",
-            "config" : "Configuration"
+            "memberships" : "Abonnements"
         },
         "form": {
             "username": "Nom d'utilisateur",

@@ -61,32 +61,36 @@
 																  		</button>
 																  																	  																			
 																		<h5>
-																			<a ui-sref="timeSlot.edit({id:slot.id})">
-																				{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-																				{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
-																				{{slot.timeSlotType.name}} 
+																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
+																			{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
+																			{{slot.timeSlotType.name}} 
 																				  
+																			<a ui-sref="timeSlot.edit({id:slot.id})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
+																				<span class="glyphicon glyphicon-pencil"></span>
 																			</a>
 																		</h5>
 																	</div>
 																	<div class="col-xs-3">
-																		<button class="btn btn-sm btn-default pull-right" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
+																		<button class="btn btn-sm btn-default pull-right" has-any-role="ROLE_ADMIN,ROLE_MANAGER" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
 																		<div class="clearfix"></div>
 																	</div>
 																</div>
 															</div>														
 															<ul class="list-group">
 																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
-																	<button class="btn btn-sm btn-default {{booking.checkInDate || !booking.cardUuid ? 'btn-noborder' : ''}}" 
-																		ng-disabled="booking.checkInDate != null || !booking.cardUuid" ng-click="quickCheckIn(booking)"
-																		title="{{booking.checkInDate ? (booking.checkInDate | date:'HH:mm:ss') : booking.cardUuid ? 'Cliquez ici pour valider la réservation' : 'Ce membre n\'a pas de carte !'}}">
-																		
-																		<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
-																	</button>
-																	
-																	<button ng-click="quickDeleteBooking(booking)" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
-																	
-																	<a href="#" ui-sref="member.edit({id:booking.memberId})">{{booking.title}}</a>
+																	<span has-any-role="ROLE_ADMIN,ROLE_MANAGER">
+																		<button class="btn btn-sm btn-default {{booking.checkInDate || !booking.cardUuid ? 'btn-noborder' : ''}}" 
+																			ng-disabled="booking.checkInDate != null || !booking.cardUuid" ng-click="quickCheckIn(booking)"
+																			title="{{booking.checkInDate ? (booking.checkInDate | date:'HH:mm:ss') : booking.cardUuid ? 'Cliquez ici pour valider la réservation' : 'Ce membre n\'a pas de carte !'}}">
+																			
+																			<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
+																		</button>
+																	</span>
+																	<button ng-click="quickDeleteBooking(booking)" has-any-role="ROLE_ADMIN,ROLE_MANAGER" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
+																	{{booking.title}}
+																	<a href="#" ui-sref="member.edit({id:booking.memberId})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
+																				<span class="glyphicon glyphicon-pencil"></span>
+																	</a>
 																</li>
 															</ul>
 														</div>

@@ -522,7 +522,7 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<id>openshift</id>
+			<id>production</id>
 			<dependencies>
 				<dependency>
 					<groupId>org.springframework.boot</groupId>
