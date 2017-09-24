@@ -396,7 +396,7 @@
 						<jsSourceFile>/scripts/app/app.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/app/version.service.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/auth/auth.service.js</jsSourceFile>
-						
+	    				<jsSourceFile>/scripts/components/auth/authority.service.js</jsSourceFile>						
 					    <jsSourceFile>/scripts/components/auth/principal.service.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/auth/authority.directive.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/auth/services/account.service.js</jsSourceFile>
