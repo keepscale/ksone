@@ -32,6 +32,5 @@ deploy:
   file: target/crossfit-$GIT_TAG.jar
   on:
     repo: lgangloff/crossfit-2.0
-    tags: false
     all_branches: true
     
