@@ -50,7 +50,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 	    		+ "	or lower(m.telephonNumber) like :search "
 	    		+ "	or lower(m.login) like :search "
 	    		+ ") "
-	    		+ "order by m.lastName, m.firstName")
+	    		+ "order by s.subscriptionEndDate desc, m.lastName, m.firstName")
 	Page<Subscription> findAllSubscriptionOfMemberLike(@Param("box") CrossFitBox box, @Param("search") String search, Pageable pageable);
 
 	 

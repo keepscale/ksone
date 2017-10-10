@@ -135,10 +135,12 @@
 						</div>
                          <div class="form-group">						       
 					        <div class="radio" ng-repeat="s in quickbookingSubscriptions">
-					       		<label >
+					       		<label ng-class="calculateCssClassQuickAdd(s)">
 					       			<input type="radio" name="selectSubscription"
 									    value="{{s.id}}"
-									    ng-click="selectSubscriptionForQuickBooking(s)">{{s.member.firstName}} {{s.member.lastName}} - {{s.membership.name}}
+									    ng-click="selectSubscriptionForQuickBooking(s)">
+									    {{s.member.firstName}} {{s.member.lastName}} - 
+									    	{{s.membership.name}} ({{s.subscriptionStartDate}} au {{s.subscriptionEndDate}})
 					       		</label>
 				       		</div>
 				       		

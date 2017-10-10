@@ -38,6 +38,15 @@ angular.module('crossfitApp')
         	var panel = $(event.target).parents(".panel");
         	$(panel).toggleClass("close-slot");
         }
+
+        
+        $scope.calculateCssClassQuickAdd = function(subscription){
+        	var now = Date.now();
+        	var end = DateUtils.toUTCDate(new Date(subscription.subscriptionEndDate)).getTime();
+        	
+        	return end > now ? 'actif' : "inactif";
+        	
+        }
         
         $scope.calculateCssClass = function(slot){
         	var now = Date.now();
@@ -81,7 +90,7 @@ angular.module('crossfitApp')
         $scope.searchSubscriptionForQuickBooking = function(){
         	if ($scope.quickbookingLike.length >= 3)
         		Subscription.query({
-              	page: 1, per_page: 5, 
+              	page: 1, per_page: 10, 
               	search: $scope.quickbookingLike}, 
               	function(result, headers) {
             

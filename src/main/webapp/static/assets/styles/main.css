@@ -264,3 +264,10 @@ h1{
 .fc-toolbar {
     margin-bottom: 0px;
 }
+
+#quickAddBooking div.radio .actif{
+	color:green;
+}
+#quickAddBooking div.radio .inactif{
+	color:red;
+}
