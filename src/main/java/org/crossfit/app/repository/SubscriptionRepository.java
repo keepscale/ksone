@@ -3,12 +3,10 @@ package org.crossfit.app.repository;
 import java.util.List;
 import java.util.Set;
 
-import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
-import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,5 +57,11 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 		 		+ "join fetch s.member m "
 		 		+ "where ms.box = :box")
 	 List<Subscription> findAllByBoxWithMembership(@Param("box") CrossFitBox box);
+
+	 @Query("select s from Subscription s "
+	 		+ "join fetch s.membership ms "
+	 		+ "join fetch s.member m "
+	 		+ "where ms.box = :box AND s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate")
+	List<Subscription> findAllByBoxAtDate(@Param("box") CrossFitBox box, @Param("at")  org.joda.time.LocalDate at);
 
 }

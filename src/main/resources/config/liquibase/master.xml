@@ -30,4 +30,8 @@
     
     <include file="classpath:config/liquibase/datas-4.xml" relativeToChangelogFile="false"/>
 
+
+	<include file="classpath:config/liquibase/changelog/12_add_facturation.xml" relativeToChangelogFile="false"/>
+    
+
 </databaseChangeLog>
