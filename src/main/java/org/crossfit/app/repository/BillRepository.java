@@ -6,7 +6,6 @@ import java.util.Set;
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.enumeration.BillStatus;
-import org.crossfit.app.domain.enumeration.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -66,6 +66,13 @@
 				"ROLE_COACH" : "Coach"
 				
 			},
+			
+			"health.enum" : {
+				"NO_CARD" : "Sans Badge",
+				"NO_SUBSCRIPTION" : "Pas d'abonnement",
+				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abonnement de début/fin incohérente",
+				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement"
+			},
             "messages": {
 	            "error": {
 	                "fail": "<strong>Une erreur est survenue!</strong> L'adhérent n'a pas été sauvegardé.",

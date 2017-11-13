@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,6 +57,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class MemberResource {
+
+	public enum HealthIndicator {
+		SUBSCRIPTIONS_OVERLAP, NO_SUBSCRIPTION, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL;
+
+	}
 
 	private final Logger log = LoggerFactory.getLogger(MemberResource.class);
 	@Inject
@@ -294,6 +300,35 @@ public class MemberResource {
 		return ResponseEntity.ok().build();
 	}
 	
+	/**
+	 * GET /members/health -> get all the members.
+	 */
+	@RequestMapping(value = "/members/health", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<HealthIndicator, List<MemberDTO>>> getAllMemberWithBadHealth(){
+		
+		Map<HealthIndicator, List<MemberDTO>> results = new HashMap<>();
+
+		results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 
+				memberService.findAllWithDoubleSubscription()
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		
+		results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 
+				memberService.findAllWithSubscriptionEndBeforeStart()
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		
+		results.put(HealthIndicator.NO_SUBSCRIPTION,
+				memberService.findAllMemberWithNoActiveSubscription()
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		
+		results.put(HealthIndicator.NO_CARD,
+				memberService.findAllMemberWithNoCard()
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		
+		return ResponseEntity.ok(results);
+		
+	}
+
+			
 	
 
 	

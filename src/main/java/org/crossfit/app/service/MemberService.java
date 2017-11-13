@@ -1,7 +1,12 @@
 package org.crossfit.app.service;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -14,16 +19,19 @@ import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +56,9 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     @Inject
+    private SubscriptionRepository subscriptionRepository;
+
+    @Inject
     private PersistentTokenRepository persistentTokenRepository;
 
     @Inject
@@ -59,8 +70,60 @@ public class MemberService {
 	
 	@Autowired
 	private BookingRepository bookingRepository;
+	
+	private static boolean isOverLap(List<Subscription> subscriptions) {
+		List<Subscription> sortedSubs = subscriptions.stream()
+			.sorted((s1,s2)->s1.getSubscriptionStartDate().compareTo(s2.getSubscriptionStartDate()))
+			.collect(Collectors.toList());
+		
+		for (Iterator<Subscription> it = sortedSubs.iterator(); it.hasNext();) {
+			Subscription actual = it.next();
+			if (it.hasNext()) {
+				Subscription next = it.next();
+				if (next.getSubscriptionStartDate().isBefore(actual.getSubscriptionEndDate())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 
+	public List<Member> findAllWithSubscriptionEndBeforeStart() {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		List<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+	
+		return subscriptions.stream()
+				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
+				.entrySet().stream()
+					.filter(e->e.getValue().stream().anyMatch(s->s.getSubscriptionEndDate().isBefore(s.getSubscriptionStartDate())))
+					.map(e->e.getKey())
+					.collect(Collectors.toList());	
+	}
+
+	public List<Member> findAllWithDoubleSubscription() {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		List<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+	
+		return subscriptions.stream()
+				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
+				.entrySet().stream()
+					.filter(e->isOverLap(e.getValue()))
+					.map(e->e.getKey())
+					.collect(Collectors.toList());	
+	}
+	
+	public List<Member> findAllMemberWithNoActiveSubscription(){
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithNoActiveSubscription(box);
+	}
   
+	public List<Member> findAllMemberWithNoCard(){
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithNoCard(box);
+	}
+  
+	
     /**
      * Persistent Token are used for providing automatic authentication, they should be automatically deleted after
      * 30 days.

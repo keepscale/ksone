@@ -84,6 +84,19 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select m from Member m where m.uuid = :uuid")
 	Optional<Member> findOneByUuid(@Param("uuid") String uuid);
 
+    @Query("select m from Member m where m.box = :box "
+    		+ "AND m.enabled = true AND m.locked = false "
+    		+ "and not exists ( "
+    		+ "select s from Subscription s where s.member = m "
+    		+ "and s.subscriptionStartDate <= now() AND now() < s.subscriptionEndDate )")
+	List<Member> findAllMemberWithNoActiveSubscription(@Param("box") CrossFitBox box);
+
+
+    @Query("select m from Member m where m.box = :box "
+    		+ "AND m.enabled = true AND m.locked = false "
+    		+ "and (m.cardUuid is null or m.cardUuid = '') ")
+	List<Member> findAllMemberWithNoCard(@Param("box") CrossFitBox box);
+
     
 
 }

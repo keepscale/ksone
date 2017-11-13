@@ -1,12 +1,15 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MainManagerController', function ($scope, Principal, Planning, Subscription, Booking, DateUtils) {
+    .controller('MainManagerController', function ($scope, Principal, Planning, Subscription, Booking, Member, DateUtils) {
     	$scope.planning = [];
         $scope.page = 0;
         $scope.selectedIndex = 0;
         $scope.quickbooking = {};
         $scope.quickbookingSubscriptions = [];
+        
+        $scope.membersHealths;
+        
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -33,6 +36,10 @@ angular.module('crossfitApp')
             	$scope.page = result.page;
             	$scope.planning = result.days;
             });
+            
+            Member.health({}, function(result, headers){
+            	$scope.membersHealth = result;
+            })
         };
         $scope.toggle = function(event){
         	var panel = $(event.target).parents(".panel");
@@ -131,6 +138,19 @@ angular.module('crossfitApp')
 	        		$scope.loadAll();
 	        	});
         	}
+        }
+        
+        $scope.hasHealthIndicator = function(){
+        	var hasIndicator = false;
+        	if ($scope.membersHealth == null){
+        		return false;
+        	}
+        	Object.keys($scope.membersHealth).forEach(function(key,index) {
+        	    if ($scope.membersHealth[key].length > 0){
+        	    	hasIndicator = true;
+        	    }
+        	});
+        	return hasIndicator;
         }
     });
     

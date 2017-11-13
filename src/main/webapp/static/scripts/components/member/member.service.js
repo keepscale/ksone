@@ -4,6 +4,10 @@ angular.module('crossfitApp')
     .factory('Member', function ($resource, DateUtils) {
         return $resource('api/members/:id', {}, {
             'query': { method: 'GET', isArray: true},
+            'health': { 
+            	method: 'GET', 
+                url: 'api/members/health', 
+                isArray: false},
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {

@@ -17,11 +17,48 @@
 						</a>
 					</div>
 					
-                	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot">
-                	</div>
                 	<div class="row">
 						<div class="col-lg-12">
-						   	<jh-alert></jh-alert>
+			
+							<div class="panel with-nav-tabs panel-info" ng-if="hasHealthIndicator()" has-any-role="ROLE_ADMIN,ROLE_DIRECTOR,ROLE_MANAGER">
+								<div class="panel-heading">
+									<h5>Informations importantes</h5>
+								</div>
+								<div class="panel-body">
+																	
+									<div class="panel panel-danger close-slot" ng-if="hasHealthIndicator()" has-any-role="ROLE_ADMIN,ROLE_DIRECTOR,ROLE_MANAGER">
+						                <div class="panel-heading">
+						                 	<div class="row">		
+											  	<div class="col-xs-12"> 
+											  		<button class="btn btn-sm btn-default pull-left toggle-button" ng-click="toggle($event)">
+											  			<span class="glyphicon"></span>
+											  		</button>
+											  																	  																			
+													<h5>Il y a des incohérences dans les données</h5>
+												</div>
+											</div>
+										</div>
+								
+										<ul class="list-group">
+											<li class="list-group-item three-points-overflow" ng-repeat="(indicator, members) in membersHealth">
+					       						{{'crossfitApp.member.health.enum.' + indicator | translate}}: {{members.length}}
+					       						<br/>
+					       						<span class="label" ng-repeat="member in members">
+
+					       								<a href="#" ui-sref="member.edit({id:member.id})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
+					       									{{member.firstName}} {{member.lastName}}
+					       								</a>
+												</span>
+												
+					       					</li>
+					       				</ul>
+									</div>
+									
+				                	<div class="alert alert-warning"  ng-if="planning.length == 0" translate="main.planning.no.timeslot"></div>
+								
+								   	<jh-alert></jh-alert>
+								</div>
+							</div>
 					    </div>
 					</div>
 					

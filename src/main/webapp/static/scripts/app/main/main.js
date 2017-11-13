@@ -37,6 +37,7 @@ angular.module('crossfitApp')
                         $translatePartialLoader.addPart('main');
                         $translatePartialLoader.addPart('booking');
                         $translatePartialLoader.addPart('global');
+                        $translatePartialLoader.addPart('member');
                         return $translate.refresh();
                     }]
                 }
