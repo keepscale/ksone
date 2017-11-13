@@ -14,7 +14,7 @@
     <property name="floatType" value="real" dbms="postgresql, h2"/>
     <property name="floatType" value="float" dbms="mysql, oracle"/>
 
-    <changeSet id="201609221308" author="lgangloff">
+    <changeSet id="201609221308" author="lgangloff" failOnError="false">
    	
 		<modifyDataType tableName="timeslot" 			columnName="date" newDataType="TIMESTAMP WITH TIME ZONE USING date AT TIME ZONE 'UTC'"/>
 		<modifyDataType tableName="booking" 			columnName="end_at" newDataType="TIMESTAMP WITH TIME ZONE USING end_at AT TIME ZONE 'UTC'"/>
