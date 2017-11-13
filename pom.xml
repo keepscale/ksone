@@ -488,6 +488,11 @@
 					    <jsSourceFile>/scripts/app/stats/stats.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/stats/stats.service.js</jsSourceFile>
 					    
+					    
+					    <jsSourceFile>/scripts/app/bill/bill.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/bill/bill.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/bill/bill.service.js</jsSourceFile>
+					    
 		              </jsSourceFiles>
 		              <jsFinalFile>script.js</jsFinalFile>
 		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>

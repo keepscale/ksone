@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,11 +20,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.BillStatus;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,11 +54,16 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne(optional=false, cascade = {})
     private Member member;
-    
+
     @NotNull        
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BillStatus status;
+
+    @NotNull        
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false)
+    private PaymentMethod paymentMethod;
     
     @Size(max = 36)
     @Column(name = "number", length = 36)
@@ -86,8 +94,16 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
     private String comments;
     
     @JsonIgnore
-    @OneToMany(mappedBy="bill", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy="bill", cascade=CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
     private List<BillLine> lines = new ArrayList<>();
+
+    
+    @JsonIgnore(false)
+	@Override
+	public DateTime getCreatedDate() {
+		// TODO Auto-generated method stub
+		return super.getCreatedDate();
+	}
 
 	public Long getId() {
 		return id;
@@ -119,6 +135,14 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
 
 	public void setStatus(BillStatus status) {
 		this.status = status;
+	}
+	
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 	public String getNumber() {

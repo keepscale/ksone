@@ -1,0 +1,35 @@
+{
+    "crossfitApp": {
+        "bill" : {
+            "home": {
+                "title": "Gestion des facture",
+                "createLabel": "Cr�er une nouvelle facture"
+            },
+            "number" : "N°",
+            "date" : "Date",
+            "to" : "Adhérent",
+            "total" : "Montant",
+            "status" : "Etat",
+            "paymentMethod" : "Mode de paiement",
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer"
+        	},
+            "detail": {
+                "title": "Facture"
+            },
+            "status.enum" : {
+            	"VALIDE" : "Validée",
+            	"ANNULE" : "Annulée",
+            	"DRAFT" : "Brouillon"
+            },
+            "paymentMethod.enum" : {
+            	"CREDIT_CARD" : "CB",
+            	"CASH" : "Espèce",
+            	"BANK_CHECK" : "Chèque",
+            	"DIRECT_DEBIT" : "Prélèvement"
+            }
+        }
+    }
+}
+

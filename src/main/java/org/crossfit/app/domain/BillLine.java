@@ -15,6 +15,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * A MembershipType.
@@ -29,6 +31,7 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
+    @JsonIgnore
     @ManyToOne(optional=false, cascade = {})
     private Bill bill;
 
