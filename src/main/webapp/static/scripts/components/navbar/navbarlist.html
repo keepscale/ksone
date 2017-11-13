@@ -1,0 +1,49 @@
+	<ul class="nav nav-pills" role="navigation" ng-switch="isAuthenticated() &&  ($state.includes('timeSlot') || $state.includes('closedDay') || $state.includes('timeSlotType') || $state.includes('membership'))">
+
+		<li ng-class="{active: $state.includes('timeSlot')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
+			<a ui-sref="timeSlot">
+				<span class="link-min" >{{'global.menu.timeslots.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.timeslots'|translate}}</span>
+			</a>
+		</li>
+		
+		<li ng-class="{active: $state.includes('closedDay')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
+			<a ui-sref="closedDay">
+				<span class="link-min" >{{'global.menu.closedDays.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.closedDays'|translate}}</span>
+			</a>
+		</li>
+
+		<li ng-class="{active: $state.includes('timeSlotType')}"  has-any-role="ROLE_DIRECTOR,ROLE_ADMIN" ng-switch-when="true">
+			<a ui-sref="timeSlotType">
+				<span class="link-min" >{{'global.menu.timeslottype.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.timeslottype'|translate}}</span>
+			</a>
+		</li>
+			
+		<li ng-class="{active: $state.includes('membership')}" has-any-role="ROLE_DIRECTOR,ROLE_ADMIN" ng-switch-when="true">
+			<a ui-sref="membership">  
+				<span class="link-min" >{{'global.menu.memberships.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.memberships'|translate}}</span>
+			</a>
+		</li>
+		
+	</ul>
+	
+
+<style type="text/css">
+
+    .nav .link-full {
+        display: none;
+    }
+    
+	@media (min-width: 500px) {
+	    .nav .link-min {
+	        display: none;
+	    }
+	    .nav .link-full {
+	        display: block;
+	    }
+	}
+
+</style>

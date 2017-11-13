@@ -75,6 +75,10 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
                 'navbar@': {
                     templateUrl: 'scripts/components/navbar/navbar.html',
                     controller: 'NavbarController'
+                },
+                'navbarlist@': {
+                    templateUrl: 'scripts/components/navbar/navbarlist.html',
+                    controller: 'NavbarController'
                 }
             },
             resolve: {

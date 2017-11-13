@@ -14,15 +14,23 @@
                 "logout": "Déconnexion",
                 "register": "Créer un compte"
             },
+            "members.new" : "Nouvel abonné",
             "members" : "Membres",
+            "bills" : "Facturation",
             "bookings" : "Mes réservations",
+            "liste" : "Créneaux, abonnements, types de séance",
             "timeslots" : "Créneaux",
-            "timeslottype" : "Type de créneaux",
+            "timeslots.min" : "Crén.",
+            "closedDays" : "Jour de Ferm.",
+            "closedDays.min" : "Ferm.",
+            "timeslottype" : "Type de crén.",
+            "timeslottype.min" : "Type crén.",
+            "memberships" : "Type d'abo.",
+            "memberships.min" : "Abo.",
             "config" : "Configuration",
             "sql" : "SQL",
             "version" : "Version",
-            "language": "Langue",
-            "memberships" : "Abonnements"
+            "language": "Langue"
         },
         "form": {
             "username": "Nom d'utilisateur",

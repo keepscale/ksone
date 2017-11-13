@@ -5,33 +5,28 @@
 		<li ng-class="{active: $state.includes('member.new')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true">
 			<a ui-sref="member.new">
-				 <span class="glyphicon glyphicon-flash"
-				title="{{'global.menu.config'|translate}}"></span>
+				 <span class="glyphicon glyphicon-plus"
+				title="{{'global.menu.members.new'|translate}}"></span>
 			</a></li>
 			
-		<li ng-class="{active: $state.includes('members')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
+		<li ng-class="{active: $state.includes('member')}" has-any-role="ROLE_MANAGER,ROLE_ADMIN"
 			ng-switch-when="true"><a ui-sref="member"> <span
-				class="glyphicon glyphicon-user"
+				class="glyphicon glyphicon-search"
 				title="{{'global.menu.members'|translate}}"></span>
 		</a></li>
-
-		<li ng-class="{active: $state.includes('timeSlot')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="timeSlot"> <span
-				class="glyphicon glyphicon-time"
-				title="{{'global.menu.timeslots'|translate}}"></span>
-		</a></li>
 		
-		<li ng-class="{active: $state.includes('timeSlotType')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="timeSlotType"> <span
-				class="glyphicon glyphicon-list"
-				title="{{'global.menu.timeslottype'|translate}}"></span>
+		<li ng-class="{active: $state.includes('bills')}" has-any-role="ROLE_COMPTABLE,ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="bills"> <span
+				class="glyphicon glyphicon-euro"
+				title="{{'global.menu.bills'|translate}}"></span>
 		</a></li>
 
-		<li ng-class="{active: $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="membership"> <span
-				class="glyphicon glyphicon-calendar"
-				title="{{'global.menu.memberships'|translate}}"></span>
+		<li ng-class="{active: $state.includes('closedDays') || $state.includes('timeSlot') || $state.includes('timeSlotType') || $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_DIRECTOR,ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="timeSlotType"> <span
+				class="glyphicon glyphicon-cog"
+				title="{{'global.menu.liste'|translate}}"></span>
 		</a></li>
+
 		<li ng-class="{active: $state.includes('account')}"  has-any-role="ROLE_USER,ROLE_MANAGER,ROLE_ADMIN"
 		 ng-switch-when="true" ><a ui-sref="account.edit"> <span class="glyphicon glyphicon-user"
 				ui-sref-active="active"
@@ -65,6 +60,12 @@
 			ng-switch-when="true"><a ui-sref="booking"> <span
 				class="glyphicon glyphicon-time"
 				title="{{'global.menu.bookings'|translate}}"></span>
+		</a></li>
+		
+		<li ng-class="{active: $state.includes('planning-resources')}"  has-any-role="ROLE_RENTER"
+			ng-switch-when="true"><a ui-sref="planningResourcesToDay"> <span
+				class="glyphicon glyphicon-bed"
+				title="{{'global.menu.planning.resources'|translate}}"></span>
 		</a></li>
 		
 

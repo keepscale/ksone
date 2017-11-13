@@ -32,6 +32,13 @@
 			<div ui-view="navbar" ng-cloak=""></div>
 			<div id="page-wrapper">
 				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-lg-6 col-lg-offset-3">	
+							<div class="" ui-view="navbarlist"></div>
+						</div>
+					</div>
+				</div>
+				<div class="container-fluid">
 					<div class="" ui-view="content"></div>
 					
 					<div class="footer" ng-cloak="">
@@ -40,7 +47,7 @@
 				</div>
 			</div>
 		</div>
-
+	   
 	    <script src="script.js?v=@project.version@-@env.TRAVIS_BUILD_NUMBER@"></script>
     
 </body>

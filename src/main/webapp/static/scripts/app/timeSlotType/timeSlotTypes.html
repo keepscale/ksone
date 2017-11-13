@@ -1,82 +1,76 @@
+
 <div class="row">
-	<div class="col-xs-8">
-		<h4 translate="crossfitApp.timeSlotType.home.title">Gestion des type de séance</h4>
-	</div>
-	<div class="col-xs-4">	
-         <div class="form-group pull-right">
-			<a href="#" ui-sref="timeSlotType.new"> <span
-							class="glyphicon glyphicon-flash"></span> <span
-							translate="crossfitApp.timeSlotType.home.createLabel">Create a
-								new timeSlotType</span>
-			</a>
+	<div class="col-xs-12 col-lg-8 col-lg-offset-2">	
+
+		<div class="row">
+			<div class="col-xs-12">	
+		         <div class="form-group pull-right">
+					<a href="#" ui-sref="timeSlotType.new"> <span
+									class="glyphicon glyphicon-flash"></span> <span
+									translate="crossfitApp.timeSlotType.home.createLabel">Create a
+										new timeSlotType</span>
+					</a>
+				</div>
+			</div>
 		</div>
+		
+		<div class="row">
+			<div class="col-lg-12">
+			   	<jh-alert></jh-alert>
+		    </div>
+		</div>
+		
+		
+		<div class="modal fade" id="deleteTimeSlotTypeConfirmation">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <form name="deleteForm" ng-submit="confirmDelete(timeSlotType.id)">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+	                                ng-click="clear()">&times;</button>
+	                        <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
+	                    </div>
+	                    <div class="modal-body">
+	              		 	<jh-alert-error></jh-alert-error>
+	                        <p translate="crossfitApp.timeSlotType.delete.question" translate-values="{id: '{{timeSlotType.id}}'}">Are you sure you want to delete this Member?</p>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+	                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+	                        </button>
+	                        <button type="submit" ng-disabled="deleteForm.$invalid" class="btn btn-danger">
+	                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete">Delete</span>
+	                        </button>
+	                    </div>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	    
+	    
+	    <div class="table-responsive">
+	        <table class="table table-striped">
+	            <thead>
+	                <tr>
+	                    <th translate="crossfitApp.timeSlotType.name">Nom</th>
+	                    <th translate="crossfitApp.timeSlotType.color">Couleur</th>
+	                    <th></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr ng-repeat="timeSlotType in timeSlotTypes" >
+	                    <td>
+	                    	<a href="#" ui-sref="timeSlotType.edit({id:timeSlotType.id})">{{timeSlotType.name}}</a></td>
+	                    <td style="background-color: {{timeSlotType.color}};"></td>
+	                    <td  width="30px">
+							<a ng-click="delete(timeSlotType.id)" href=""> <span
+									class="glyphicon glyphicon-remove-circle" style="color:red"></span>
+							</a>
+	                    
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
 	</div>
 </div>
-
-<div class="row">
-	<div class="col-lg-12">
-	   	<jh-alert></jh-alert>
-    </div>
-</div>
-
-
-<div class="modal fade" id="deleteTimeSlotTypeConfirmation">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="deleteForm" ng-submit="confirmDelete(timeSlotType.id)">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
-                    </div>
-                    <div class="modal-body">
-              		 	<jh-alert-error></jh-alert-error>
-                        <p translate="crossfitApp.timeSlotType.delete.question" translate-values="{id: '{{timeSlotType.id}}'}">Are you sure you want to delete this Member?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" ng-disabled="deleteForm.$invalid" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete">Delete</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th translate="crossfitApp.timeSlotType.name">Nom</th>
-                    <th translate="crossfitApp.timeSlotType.description">Description</th>
-                    <th translate="crossfitApp.timeSlotType.color">Couleur</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="timeSlotType in timeSlotTypes" >
-                    <td>{{timeSlotType.name}}</td>
-                    <td>{{timeSlotType.description}}</td>
-                    <td style="background-color: {{timeSlotType.color}};"></td>
-                    <td>
-                    	<a href="#" ui-sref="timeSlotType.edit({id:timeSlotType.id})"><span
-										class="glyphicon glyphicon-pencil"></span>&nbsp;<span
-										translate="crossfitApp.timeSlotType.action.edit"> Edit</span>
-						</a>
-					</td>
-                    <td>		
-						<a ng-click="delete(timeSlotType.id)" href=""> <span
-								class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
-								translate="crossfitApp.timeSlotType.action.delete"> Delete</span>
-						</a>
-                    
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-

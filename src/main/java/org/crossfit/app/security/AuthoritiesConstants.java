@@ -14,6 +14,9 @@ public final class AuthoritiesConstants {
     //Les stats
     public static final String DIRECTOR = "ROLE_DIRECTOR";
     
+    //La facturation
+    public static final String COMPTABLE = "ROLE_COMPTABLE";
+    
     //Gérer le planning et les résas
     public static final String MANAGER = "ROLE_MANAGER";
     
