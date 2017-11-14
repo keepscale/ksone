@@ -86,7 +86,8 @@
             "save": "Sauvegarder",
             "view": "Voir",
             "lock": "Bloquer",
-            "export": "Export"
+            "export": "Export",
+            "generate": "Génération"
         },
         "detail": {
             "field": "Champs",

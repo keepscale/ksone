@@ -1,6 +1,5 @@
 package org.crossfit.app.repository;
 
-import java.util.List;
 import java.util.Set;
 
 import org.crossfit.app.domain.Bill;
@@ -22,7 +21,7 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
     		+ "from Bill b "
     		+ "where b.box =:box AND b.number like :year "
     		+ "order by b.number desc ")
-	List<Bill> findAllBillNumberLikeForBoxOrderByNumberDesc(@Param("year") String year, @Param("box") CrossFitBox box);
+	Page<Bill> findAllBillNumberLikeForBoxOrderByNumberDesc(@Param("year") String year, @Param("box") CrossFitBox box, Pageable pageable);
 
     
     @Query(

@@ -3,14 +3,20 @@ package org.crossfit.app.web.rest.bills;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.enumeration.BillStatus;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
+import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -33,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class BillResource {
+
 
 	private final Logger log = LoggerFactory.getLogger(BillResource.class);
 	@Inject
@@ -59,6 +66,18 @@ public class BillResource {
 				.headers(HeaderUtil.createEntityCreationAlert("bill", result.getId().toString())).body(result);
 	}
 	
+
+	/**
+	 * PUT /bills/generate -> Generate bill.
+	 */
+	@RequestMapping(value = "/bills/generate", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Integer> create(@Valid @RequestBody BillGenerationParamDTO param) throws URISyntaxException {
+		log.debug("REST request to generate bill : {}", param);
+	
+		int totalBillGenerated = billService.generateBill(param.getSinceDate(), param.getUntilDate(), param.getAtDayOfMonth(), param.getStatus(), param.getPaymentMethod());
+		
+		return ResponseEntity.ok(totalBillGenerated);
+	}
     
 	/**
 	 * GET /bills -> get all the bills.
@@ -82,5 +101,33 @@ public class BillResource {
 		return billService.findBills(customSearch, generatePageRequest);
 	}
 
+	/**
+	 * GET /bills/periods -> get all the bills period.
+	 */
+	@RequestMapping(value = "/bills/periods", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<BillPeriodDTO>> getAllPeriods(){
+		
+		List<BillPeriodDTO> periods = billService.findBills("%", null).getContent().stream().map(BillPeriodDTO::new).sorted((p1,p2)->p1.getShortFormat().compareTo(p2.getShortFormat())).distinct().collect(Collectors.toList());
+		
+		return new ResponseEntity<>(periods, HttpStatus.OK);
+	}
+
+	/**
+	 * GET /bills/paymentMethods -> get all the paymentMethods.
+	 */
+	@RequestMapping(value = "/bills/paymentMethods", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PaymentMethod[]> getPaymentMethods(){
+		return new ResponseEntity<>(PaymentMethod.values(), HttpStatus.OK);
+	}
+	/**
+	 * GET /bills/status -> get all the bills status.
+	 */
+	@RequestMapping(value = "/bills/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<BillStatus[]> getBillStatus(){
+		return new ResponseEntity<>(BillStatus.values(), HttpStatus.OK);
+	}
+
+
+	
 	
 }

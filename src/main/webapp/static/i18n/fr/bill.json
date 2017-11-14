@@ -3,8 +3,9 @@
         "bill" : {
             "home": {
                 "title": "Gestion des facture",
-                "createLabel": "Cr�er une nouvelle facture"
+                "createLabel": "Créer une nouvelle facture"
             },
+            "generate.title" : "Générer les factures des abonnements récurrent",
             "number" : "N°",
             "date" : "Date",
             "to" : "Adhérent",
@@ -13,7 +14,8 @@
             "paymentMethod" : "Mode de paiement",
             "action" : {
             	"edit" : "Modifier",
-            	"delete" : "Supprimer"
+            	"delete" : "Supprimer",
+            	"generate" : "Générer"
         	},
             "detail": {
                 "title": "Facture"
