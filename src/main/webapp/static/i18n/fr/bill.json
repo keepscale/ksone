@@ -15,7 +15,12 @@
             "action" : {
             	"edit" : "Modifier",
             	"delete" : "Supprimer",
-            	"generate" : "Générer"
+            	"generate" : "Générer",
+            	"delete.draft" : "Suppr. brouillon"
+        	},
+        	"delete.draft":{
+        		"question": "Etes vous sur de vouloir supprimer les factures en mode brouillon ?",
+        		"title": "Confirmer la suppression des brouillons"
         	},
             "detail": {
                 "title": "Facture"

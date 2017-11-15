@@ -276,3 +276,39 @@ h1{
 datetimepicker.has-error input{
 	background-color: red;
 }
+
+
+.checkbox-list label {
+  display: block;
+margin: 0 10px;
+}
+
+.checkbox-list span{
+  display: block;
+  border-bottom: 1px solid lightgray;
+  padding: 5px;
+  text-align: center;
+}
+
+.checkbox-list {
+	border: 1px solid lightgray;
+}
+
+.checkbox-list-content {
+	overflow-y: scroll;	
+	height: 80px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -20,7 +20,7 @@ angular.module('crossfitApp')
                 isArray: true
             },
 
-            
+
             'generate': {
                 method: 'PUT',
                 url: 'api/bills/generate',  
@@ -32,6 +32,10 @@ angular.module('crossfitApp')
                     
                     return angular.toJson(data);
                 }
+            },
+            'deleteDraft': {
+                method: 'DELETE',
+                url: 'api/bills/draft'
             },
                 
             'save': {

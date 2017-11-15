@@ -4,7 +4,7 @@ angular.module('crossfitApp')
     .controller('BillController', function ($scope, $window, Bill, Authority, ParseLinks) {
         $scope.bills = [];
         $scope.page = 1;
-        $scope.per_page = 200;
+        $scope.per_page = 100;
         
         $scope.periods = [];
         $scope.generate = {};
@@ -37,7 +37,8 @@ angular.module('crossfitApp')
             	sinceDate: firstDay,
             	untilDate: lastDay
             };
-            $('#resetAccountMemberConfirmation').modal('hide');
+            $('#generateBillsConfirmation').modal('hide');
+            $('#deleteDraftConfirmation').modal('hide');
         };
         
         $scope.loadPage = function(page) {
@@ -76,18 +77,41 @@ angular.module('crossfitApp')
         	$scope.loadAll();
         	$scope.clear();
         }
-        
 
         $scope.prepareGenerate = function (){
             $('#generateBillsConfirmation').modal('show');
         };
+
+
+        $scope.deleteDraft = function (){
+            $('#deleteDraftConfirmation').modal('show');
+        };
+        
+        $scope.confirmDeleteDraft = function (id) {
+            Bill.deleteDraft({},
+                function () {
+	                $scope.reset();
+	                $scope.clear();
+                });
+        };
+        
+
+        
+		$scope.export = function() {
+			var params = "t=1";
+			
+			if ($scope.searchLike != undefined){
+				params += "&search="+$scope.searchLike;
+			}
+            
+			$window.open("api/bills.csv?"+params);
+		};
         
         $scope.confirmGenerateBillsForm = function(){
         	Bill.generate($scope.generate,
                 function (res) {
                     $scope.reset();
                     $scope.clear();
-                    alert(res+" factures ont été générées");
                 });
         };
         

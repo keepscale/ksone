@@ -180,5 +180,11 @@ public class BillService {
 		return billsCounter;
 	}
 
+
+	public void deleteDraftBills() {
+		billRepository.deleteBillsLine(BillStatus.DRAFT);
+		billRepository.deleteBills(BillStatus.DRAFT);
+	}
+
   
 }
