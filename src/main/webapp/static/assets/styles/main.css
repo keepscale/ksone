@@ -271,3 +271,8 @@ h1{
 #quickAddBooking div.radio .inactif{
 	color:red;
 }
+
+
+datetimepicker.has-error input{
+	background-color: red;
+}

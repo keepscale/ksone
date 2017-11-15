@@ -192,7 +192,7 @@
 					</div>
 					<div class="col-xs-3"> 
 															
-			          <datetimepicker name="subscriptionStartDate" how-weeks="false"
+			          <datetimepicker name="subscriptionStartDate" how-weeks="false" ng-class="caculateCssDate(subscription, member.subscriptions[$index-1] )"
 			          show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
 			          		ng-model="subscription.subscriptionStartDate"></datetimepicker>
      	

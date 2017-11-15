@@ -236,7 +236,13 @@ public class MemberResource {
 			dto.setBookingCount(bookingRepository.countBySubscription(s));
 			return dto;
 			
-		}).collect(Collectors.toList())));
+		})
+				.sorted((s1,s2)->{
+					int res = s1.getSubscriptionStartDate().compareTo(s2.getSubscriptionStartDate());
+					res = res != 0 ? res : s1.getSubscriptionEndDate().compareTo(s2.getSubscriptionEndDate()); 
+					return res;
+				})
+				.collect(Collectors.toList())));
 		
 		return memberDTO;
 	}

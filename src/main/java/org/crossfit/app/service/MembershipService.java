@@ -1,12 +1,11 @@
 package org.crossfit.app.service;
 
-import java.util.HashSet;
-
 import javax.inject.Inject;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.MembershipRules;
+import org.crossfit.app.domain.enumeration.MembershipRulesType;
 import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.web.rest.dto.MembershipDTO;
 import org.slf4j.Logger;
@@ -29,6 +28,9 @@ public class MembershipService {
 	@Inject
 	private MembershipRepository membershipRepository;
 
+	public boolean isMembershipPaymentByMonth(Membership membership) {
+		return membership.getMembershipRules().stream().anyMatch(rule->MembershipRulesType.BY_MONTH.contains(rule.getType()));
+	}
 
 	public Membership doSave(MembershipDTO membershipDto) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();

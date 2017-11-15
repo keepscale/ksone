@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,8 @@ public class MemberService {
     @Inject
     private CrossFitBoxSerivce boxService;
     @Inject
+    private MembershipService membershipService;
+    @Inject
     private AuthorityRepository authorityRepository;
     @Inject
 	private MailService mailService;
@@ -91,7 +94,7 @@ public class MemberService {
 
 	public List<Member> findAllWithSubscriptionEndBeforeStart() {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		List<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 	
 		return subscriptions.stream()
 				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
@@ -103,9 +106,11 @@ public class MemberService {
 
 	public List<Member> findAllWithDoubleSubscription() {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		List<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 	
 		return subscriptions.stream()
+				.filter(s->membershipService.isMembershipPaymentByMonth(s.getMembership()))
+//				.filter(s->s.getMember().getId()==1514)
 				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
 				.entrySet().stream()
 					.filter(e->isOverLap(e.getValue()))

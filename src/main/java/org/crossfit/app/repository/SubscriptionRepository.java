@@ -54,14 +54,15 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 	 
 	 @Query("select s from Subscription s "
 		 		+ "join fetch s.membership ms "
+	    		+ "left join fetch ms.membershipRules msr "
 		 		+ "join fetch s.member m "
 		 		+ "where ms.box = :box")
-	 List<Subscription> findAllByBoxWithMembership(@Param("box") CrossFitBox box);
+	 Set<Subscription> findAllByBoxWithMembership(@Param("box") CrossFitBox box);
 
 	 @Query("select s from Subscription s "
 	 		+ "join fetch s.membership ms "
 	 		+ "join fetch s.member m "
 	 		+ "where ms.box = :box AND s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate")
-	List<Subscription> findAllByBoxAtDate(@Param("box") CrossFitBox box, @Param("at")  org.joda.time.LocalDate at);
+	 Set<Subscription> findAllByBoxAtDate(@Param("box") CrossFitBox box, @Param("at")  org.joda.time.LocalDate at);
 
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -44,6 +45,8 @@ public class BillService {
 
     @Inject
     private CrossFitBoxSerivce boxService;
+    @Inject
+    private MembershipService membershipService;
 
 	@Autowired
 	private BillRepository billRepository;
@@ -78,11 +81,10 @@ public class BillService {
 
 		log.info("Genreation des factures au {} avec le statut {}", dateAt, withStatus);
 		
-		List<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDate(box, dateAt);
+		Set<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDate(box, dateAt);
 		
 		Map<Member, List<Subscription>> subscriptionByMember = subscriptionToBill.stream().collect(Collectors.groupingBy(Subscription::getMember));
 		
-		List<MembershipRulesType> typeBillByMonth = Arrays.asList(MembershipRulesType.SUM_PER_4_WEEKS, MembershipRulesType.SUM_PER_MONTH, MembershipRulesType.SUM_PER_WEEK);
 		
 		int counter = 0;
 		for (Member m : subscriptionByMember.keySet()) {
@@ -93,7 +95,7 @@ public class BillService {
 			List<Subscription> subs = subscriptionByMember.get(m);
 			for (Subscription sub : subs) {
 				//Souscription au mois ?
-				if (sub.getMembership().getMembershipRules().stream().anyMatch(rule->typeBillByMonth.contains(rule.getType()))) {
+				if (membershipService.isMembershipPaymentByMonth(sub.getMembership())) {
 					BillLine line = new BillLine();
 					line.setLabel(sub.getMembership().getName());
 					line.setQuantity(1.0);
