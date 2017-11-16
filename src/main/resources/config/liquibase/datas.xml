@@ -9,7 +9,7 @@
 	 <!-- password -->
 	<property name="defaultpwd" value="$2a$10$tZe3DROebycirgLfdojLyOasTa/WnTuG4nIfrqa9DRapvYF9fGUf." />
 
-	<changeSet id="data-dev-1" author="lgangloff" context="dev">
+	<changeSet id="data-dev-1" author="lgangloff" context="dev" failOnError="false">
 		<insert tableName="CROSSFITBOX">
 			<column name="name" value="Crossfit Local" />
 			<column name="website_pattern" value="(.*)" />
