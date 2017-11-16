@@ -39,7 +39,13 @@ angular.module('crossfitApp')
                             entity: function () {
                                 return {
                                 	id: null,
-                                	status : "VALIDE"
+                                	status : "VALIDE",
+                                	effectiveDate: new Date(),
+                                	paymentMethod: 'CREDIT_CARD',
+                                	
+                                	lines: [{
+                                		quantity: 1,
+                                	}]
                             	};
                             }
                         }

@@ -4,9 +4,11 @@
             "home": {
                 "title": "Gestion des facture",
                 "createLabel": "Créer une nouvelle facture",
-                "showBill": "Detail d'une facture"
+                "showBill": "Detail d'une facture",
+                "add": "Créer une facture"
             },
             "generate.title" : "Générer les factures des abonnements récurrent",
+            "quick.select.member.title": "Sélectionner un membre",
             "number" : "N°",
             "date" : "Date",
             "to" : "Adhérent",
@@ -14,10 +16,12 @@
             "status" : "Etat",
             "paymentMethod" : "Mode de paiement",
             "action" : {
+            	"new" : "Nouvelle facture",
             	"edit" : "Modifier",
             	"delete" : "Supprimer",
             	"generate" : "Générer",
-            	"delete.draft" : "Suppr. brouillon"
+            	"delete.draft" : "Suppr. brouillon",
+            	"quickSelect" : "Sélectionner"
         	},
         	"delete.draft":{
         		"question": "Etes vous sur de vouloir supprimer les factures en mode brouillon ?",

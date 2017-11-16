@@ -61,8 +61,7 @@ angular.module('crossfitApp')
         		
         $scope.init = function(){
 
-            
-            Bill.periods({}, function(result, headers) {
+        	Bill.periods({}, function(result, headers) {
             	$scope.periods = result;
             });
 
