@@ -1,6 +1,7 @@
 package org.crossfit.app.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,12 @@ public class MemberService {
 	public List<Member> findAllMemberWithNoCard(){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		return memberRepository.findAllMemberWithNoCard(box);
+	}
+
+
+	public List<Member> findAllMemberWithNoAddress() {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithNoAddress(box);
 	}
   
 	

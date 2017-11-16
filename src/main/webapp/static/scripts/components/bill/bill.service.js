@@ -4,7 +4,20 @@ angular.module('crossfitApp')
     .factory('Bill', function ($resource, DateUtils) {
         return $resource('api/bills/:id', {}, {
             'query': { method: 'GET', isArray: true},
-            'get': { method: 'GET'},
+            'get': { 
+            	method: 'GET',
+            	transformResponse: function (data) {
+                    data = angular.fromJson(data);
+                    
+                    data.effectiveDate = 
+                    	DateUtils.convertLocaleDateFromServer(data.effectiveDate);
+
+                	data.createdBillDate = 
+                		DateUtils.convertDateTimeFromServer(data.createdBillDate);
+                    
+                    return data;
+                }
+            },
             'periods': { 
             	method: 'GET',
                 url: 'api/bills/periods',  

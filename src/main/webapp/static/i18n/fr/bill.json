@@ -3,7 +3,8 @@
         "bill" : {
             "home": {
                 "title": "Gestion des facture",
-                "createLabel": "Créer une nouvelle facture"
+                "createLabel": "Créer une nouvelle facture",
+                "showBill": "Detail d'une facture"
             },
             "generate.title" : "Générer les factures des abonnements récurrent",
             "number" : "N°",

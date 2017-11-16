@@ -71,6 +71,7 @@
 			"health.enum" : {
 				"NO_CARD" : "Sans Badge",
 				"NO_SUBSCRIPTION" : "Pas d'abonnement",
+				"NO_ADDRESS" : "Pas d'adresse",
 				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abonnement de début/fin incohérente",
 				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement"
 			},

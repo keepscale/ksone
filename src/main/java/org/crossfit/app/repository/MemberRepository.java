@@ -97,6 +97,15 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "and (m.cardUuid is null or m.cardUuid = '') ")
 	List<Member> findAllMemberWithNoCard(@Param("box") CrossFitBox box);
 
+    @Query("select m from Member m where m.box = :box "
+    		+ "AND m.enabled = true AND m.locked = false "
+    		+ "and ( "
+    		+ "m.address is null or m.address = ''"
+    		+ "or m.zipCode is null or m.zipCode = ''"
+    		+ "or m.city is null or m.city = ''"
+    		+ ") ")
+	List<Member> findAllMemberWithNoAddress(@Param("box") CrossFitBox box);
+
     
 
 }

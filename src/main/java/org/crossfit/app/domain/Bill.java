@@ -21,6 +21,7 @@ import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
@@ -93,15 +94,11 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
     @Column(name = "comments", length = 255)
     private String comments;
     
-    @JsonIgnore
     @OneToMany(mappedBy="bill", cascade=CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
     private List<BillLine> lines = new ArrayList<>();
 
-    
-    @JsonIgnore(false)
-	@Override
-	public DateTime getCreatedDate() {
-		// TODO Auto-generated method stub
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+	public DateTime getCreatedBillDate() {
 		return super.getCreatedDate();
 	}
 

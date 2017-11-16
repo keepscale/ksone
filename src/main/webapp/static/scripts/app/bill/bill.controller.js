@@ -4,7 +4,7 @@ angular.module('crossfitApp')
     .controller('BillController', function ($scope, $window, Bill, Authority, ParseLinks) {
         $scope.bills = [];
         $scope.page = 1;
-        $scope.per_page = 100;
+        $scope.per_page = 50;
         
         $scope.periods = [];
         $scope.generate = {};
