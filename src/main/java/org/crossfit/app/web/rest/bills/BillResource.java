@@ -2,13 +2,16 @@ package org.crossfit.app.web.rest.bills;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
 import org.crossfit.app.domain.CrossFitBox;
@@ -17,6 +20,8 @@ import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.web.rest.dto.MemberDTO;
+import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -30,6 +35,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,7 +100,23 @@ public class BillResource {
 		
 		return ResponseEntity.ok(totalBillGenerated);
 	}
-    
+
+	/**
+	 * GET /members/{id} -> get a bill.
+	 */
+	@RequestMapping(value = "/bills/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Bill> get(@PathVariable Long id) {
+		log.debug("REST request to get Bill : {}", id);
+		return Optional.ofNullable(doGet(id))
+				.map(bill -> new ResponseEntity<>(bill, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	protected Bill doGet(Long id) {
+		Bill bill = billService.findById(id);
+		return bill;
+	}
+	
 	/**
 	 * GET /bills -> get all the bills.
 	 */

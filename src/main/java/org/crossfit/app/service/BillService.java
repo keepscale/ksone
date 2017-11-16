@@ -186,5 +186,10 @@ public class BillService {
 		billRepository.deleteBills(BillStatus.DRAFT);
 	}
 
+
+	public Bill findById(Long id) {
+		return billRepository.findOneWithEagerRelation(id);
+	}
+
   
 }

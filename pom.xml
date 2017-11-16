@@ -491,6 +491,7 @@
 					    
 					    <jsSourceFile>/scripts/app/bill/bill.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/bill/bill.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/bill/bill-dialog.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/bill/bill.service.js</jsSourceFile>
 					    
 		              </jsSourceFiles>

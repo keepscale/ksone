@@ -4,6 +4,7 @@ angular.module('crossfitApp')
     .factory('Bill', function ($resource, DateUtils) {
         return $resource('api/bills/:id', {}, {
             'query': { method: 'GET', isArray: true},
+            'get': { method: 'GET'},
             'periods': { 
             	method: 'GET',
                 url: 'api/bills/periods',  

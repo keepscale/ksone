@@ -56,7 +56,14 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
 			@Param("includeStatus") Set<BillStatus> includeStatus, 
 			@Param("includeAllStatus") boolean includeAllStatus,
 			Pageable pageable);
-
+    
+    @Query(
+    		value="select b "
+    				+ "from Bill b "
+    	    		+ "left join fetch b.lines "
+    	    		+ "join fetch b.member m "
+    	    		+ "where b.id = :id")
+	Bill findOneWithEagerRelation(@Param("id") Long id);
 
     @Modifying
 	@Transactional
@@ -68,4 +75,6 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
 	@Transactional
 	@Query("delete from BillLine line where exists (select b from Bill b where b.status = :status and line.bill = b)")
 	void deleteBillsLine(@Param("status") BillStatus status);
+
+
 }

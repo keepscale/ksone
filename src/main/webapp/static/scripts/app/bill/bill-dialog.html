@@ -1,0 +1,83 @@
+
+<form name="form" role="form" novalidate ng-submit="save()">
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true" ng-click="clear()">&times;</button>
+		<h4 class="modal-title" id="myBillLabel"
+			translate="crossfitApp.bill.home.showBill">Display a bill</h4>
+	</div>
+	
+	<div class="modal-body">
+		<jh-alert-error></jh-alert-error>
+		
+<!-- 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation"> -->
+<!-- 			<ul class="nav navbar-nav"> -->
+<!-- 				<li ng-class="{active:view=='infoperso'}"> -->
+<!-- 					<a ng-click="showView('infoperso')">  -->
+<!-- 						<span>{{'crossfitApp.member.infoperso'|translate}}</span> -->
+<!-- 					</a> -->
+<!-- 				</li> -->
+<!-- 			</ul> -->
+<!-- 		</nav> -->
+
+		
+		
+		
+		<div class="row" ng-show="view == 'default'">
+		  <div class="col-xs-12">
+		  
+	    	<div class="row form-group"> 
+				<div class="col-xs-12">
+					<input
+						type="text" class="form-control" id="id" name="id"
+						ng-model="bill.id" readonly>
+				</div>
+			</div>
+			
+	    	<div class="row form-group form-inline"> 
+				<div class="col-xs-6 ">
+					<label>N°</label>
+					<input type="text" class="form-control " id="number" name="number"
+						ng-model="bill.number" readonly>
+				</div>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" id="status" name="status"
+						ng-model="bill.status" readonly>
+				</div>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" id="paymentMethod" name="paymentMethod"
+						ng-model="bill.paymentMethod" readonly>
+				</div>
+			</div>
+			
+			
+	    	<div class="row form-group"> 
+				<div class="col-xs-6 ">
+					<input type="text" class="form-control " id="displayName" name="displayName"
+						ng-model="bill.displayName" readonly>
+					<textarea class="form-control" id="displayAddress" name="displayAddress"
+						ng-model="bill.displayAddress" readonly />
+				</div>
+				<div class="col-xs-6">
+					<input type="text" class="form-control " id="effectiveDate" name="effectiveDate"
+						ng-model="bill.effectiveDate" readonly>
+					<input type="text" class="form-control " id="createdDate" name="createdDate"
+						ng-model="bill.createdDate" readonly>
+				</div>
+			</div>
+			
+		  </div>
+		</div>
+		
+		
+    </div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal"
+			ng-click="clear()">
+			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+				translate="entity.action.cancel">Cancel</span>
+		</button>
+	</div>
+</form>

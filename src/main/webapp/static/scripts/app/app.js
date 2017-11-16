@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 'ui.calendar', 'ui.select', 'ngSanitize',
+angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 'ui.calendar',
                'ui.bootstrap', // for modal dialogs
     'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker', 'ng-fastclick', 'nvd3'])
 
