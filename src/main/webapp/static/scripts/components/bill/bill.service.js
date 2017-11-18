@@ -56,11 +56,7 @@ angular.module('crossfitApp')
                 method: 'POST',
                 transformRequest: function (data) {
 
-                    for (var i = 0; i < data.subscriptions.length; i++) {
-						var sub = data.subscriptions[i];
-						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
-						sub.subscriptionEndDate = DateUtils.convertLocaleDateToServer(sub.subscriptionEndDate);
-					}
+                	data.effectiveDate = DateUtils.convertLocaleDateToServer(data.effectiveDate);
                     
                     return angular.toJson(data);
                 }

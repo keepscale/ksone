@@ -1,8 +1,8 @@
 package org.crossfit.app.web.rest.bills;
 
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,12 +12,17 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
+import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.MemberService;
 import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
+import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,24 +56,27 @@ public class BillResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private MemberRepository memberRepository;
 	
 
 	/**
 	 * POST /bills -> Create a new bill.
 	 */
-//	@RequestMapping(value = "/bills", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Bill> create(@Valid @RequestBody Bill bill) throws URISyntaxException {
-//		log.debug("REST request to save bill : {}", bill);
-//		if (bill.getId() != null) {
-//			return ResponseEntity.badRequest().header("Failure", "A new bill cannot already have an ID").body(null);
-//		}
-//		
-//		CrossFitBox box = boxService.findCurrentCrossFitBox();
-//		Bill result = billService.saveAndLockBill(box , bill.getMember(), bill.getStatus(), bill.getPaymentMethod(), bill.getEffectiveDate(), bill.getLines());
-//		
-//		return ResponseEntity.created(new URI("/api/bills/" + result.getId()))
-//				.headers(HeaderUtil.createEntityCreationAlert("bill", result.getId().toString())).body(result);
-//	}
+	@RequestMapping(value = "/bills", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Bill> create(@Valid @RequestBody Bill bill) throws URISyntaxException {
+		log.debug("REST request to save bill : {}", bill);
+		if (bill.getId() != null) {
+			return ResponseEntity.badRequest().header("Failure", "A new bill cannot already have an ID").body(null);
+		}
+		
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Member member = memberRepository.findOne(bill.getMember().getId());
+		Bill result = billService.saveAndLockBill(box , member, bill.getStatus(), bill.getPaymentMethod(), bill.getEffectiveDate(), bill.getLines());
+		
+		return ResponseEntity.created(new URI("/api/bills/" + result.getId()))
+				.headers(HeaderUtil.createEntityCreationAlert("bill", result.getId().toString())).body(result);
+	}
 
 
 	/**

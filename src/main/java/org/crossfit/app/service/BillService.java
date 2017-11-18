@@ -100,7 +100,6 @@ public class BillService {
 					line.setLabel(sub.getMembership().getName());
 					line.setQuantity(1.0);
 					line.setPriceTaxIncl(NumberUtils.toDouble(sub.getMembership().getPrice()));
-					line.setTotalTaxIncl(line.getQuantity() * line.getPriceTaxIncl());
 					lines.add(line);
 				}
 			}
@@ -141,7 +140,10 @@ public class BillService {
 		bill.setDisplayName(to);
 		bill.setDisplayAddress(billAdress);
 		bill.setLines(lines);
+
+		lines.forEach(line->line.setTotalTaxIncl(line.getQuantity() * line.getPriceTaxIncl()));
 		bill.setTotalTaxIncl(lines.stream().map(BillLine::getTotalTaxIncl).reduce(Double::sum).orElse(0.0));
+		
 		lines.forEach(line->line.setBill(bill));
 		
 		int year = bill.getEffectiveDate().getYear();

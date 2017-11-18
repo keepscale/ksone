@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('BillDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member',
-        function($scope, $stateParams, $state, $modalInstance, entity, Bill, Member) {
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member', 'Product', 'Membership',
+        function($scope, $stateParams, $state, $modalInstance, entity, Bill, Member, Product, Membership) {
 
     	$scope.view = "default";
         $scope.bill = entity;
@@ -10,6 +10,24 @@ angular.module('crossfitApp').controller('BillDialogController',
         $scope.paymentMethods = [];
         $scope.status = [];
 
+
+
+        var onSaveFinished = function (result) {
+            $scope.$emit('crossfitApp:billUpdate', result);
+            $modalInstance.close(result);
+            
+            $state.go("bill.edit", {id:result.id})
+        };
+
+        
+        $scope.save = function () {
+            if ($scope.bill.id != null) {
+                alert("Cette facture ne peut pas être modifiée.")
+            } else {
+            	Bill.save($scope.bill, onSaveFinished);
+            }
+        };
+        
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
         };
@@ -40,20 +58,25 @@ angular.module('crossfitApp').controller('BillDialogController',
         	 if ($stateParams.memberId != null) {
              	
  	        	Member.get({id : $stateParams.memberId}, function(member) {
-
- 	            	$scope.bill.member = member;
+ 	        		$scope.bill.member = {id:member.id};
+ 	        		
  	            	$scope.bill.displayAddress = 
- 	            		$scope.bill.member.address + "\n" + 
- 	            		$scope.bill.member.zipCode + " " +
- 	            		$scope.bill.member.city;
+ 	            		member.address + "\n" + 
+ 	            		member.zipCode + " " +
+ 	            		member.city;
  	            	
  	            	$scope.bill.displayName = 
- 	            		$scope.bill.member.title + " " +
- 	            		$scope.bill.member.firstName + " " +
- 	            		$scope.bill.member.lastName;
+ 	            		member.title + " " +
+ 	            		member.firstName + " " +
+ 	            		member.lastName;
  	            	
  	        	});
              }
+        }
+        
+        $scope.selectElementForBillLine = function(line, element){
+        	line.label = element.name;
+        	line.priceTaxIncl = element.price;
         }
         
         $scope.init = function(){
@@ -66,6 +89,14 @@ angular.module('crossfitApp').controller('BillDialogController',
             
             Bill.status({}, function(result, headers) {
             	$scope.status = result;
+            });
+
+            Product.query({}, function (result, headers){
+            	$scope.products = result;
+            });
+
+            Membership.query({}, function (result, headers){
+            	$scope.membership = result;
             });
         }
 

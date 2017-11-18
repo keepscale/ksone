@@ -48,7 +48,7 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
+    @JsonIgnore
     @ManyToOne(optional=false, cascade = {})
     private CrossFitBox box;
     

@@ -51,7 +51,7 @@
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
 										<span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> 
 									</button>
-									<ul class="dropdown-menu">
+									<ul class="dropdown-menu pull-right">
 										<li>
 	                  						<a target="_blank" href ui-sref="member.edit({id:bill.member.id})">
 												Modifier l'adresse
@@ -97,10 +97,10 @@
 					<div class="row form-group">
 						<div class="col-xs-6">
 							<label>Date facture</label>
-							<input type="text" class="form-control " id="effectiveDate" name="effectiveDate"
+							<input type="text" class="form-control " id="effectiveDate" name="effectiveDate" 
 								value="{{bill.effectiveDate | date:'dd/MM/yyyy' }}"  readonly ng-if="bill.id!=null">
 								
-				            <datetimepicker hidden-time="true" ng-if="bill.id==null"
+				            <datetimepicker hidden-time="true" ng-if="bill.id==null" required
 								ng-model="bill.effectiveDate" how-weeks="false" minute-step="30" show-meridian="false" 
 						       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 								
@@ -140,10 +140,38 @@
 						
 						<tbody ng-if="bill.id==null">
 							<tr ng-repeat="line in bill.lines">
-								<td class="form-line"><input type="text" style="width: 60px;" class="form-control" ng-model="line.quantity"/></td>
-								<td><input type="text" class="form-control" ng-model="line.label"></td>
 								<td class="form-line">
-									<input type="text"  style="text-align: right;" class="form-control" ng-model="line.priceTaxIncl">
+									<input type="text" style="width: 60px;" class="form-control" ng-model="line.quantity" ng-minlength=1 ng-maxlength=4 required maxlength="4"/>
+								</td>
+								<td>
+								
+									<div class="input-group">
+									
+										<input type="text" class="form-control" ng-model="line.label" ng-minlength=1 ng-maxlength=200 required maxlength="200">
+									
+										<div class="input-group-btn">
+											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu pull-right" style="overflow-y: scroll; height: 200px;">
+												<li ng-repeat="p in products">
+			                  						<a ng-click="selectElementForBillLine(line, p)">
+			                  							{{p.name}} {{p.price | currency:'€'}}
+													</a>
+												</li>
+          										<li role="separator" class="divider"></li>          										
+												<li ng-repeat="m in membership">
+			                  						<a ng-click="selectElementForBillLine(line, m)">
+			                  							{{m.name}} {{m.price | currency:'€'}}
+													</a>
+												</li>
+											</ul>
+										</div>
+										
+									</div>
+								</td>
+								<td class="form-line">
+									<input type="text"  style="text-align: right;" class="form-control" ng-model="line.priceTaxIncl" ng-minlength=1 ng-maxlength=10 required maxlength="10">
 								</td>
 								<td style="text-align: right; vertical-align: bottom;">
 									<label class="control-label">{{calculateTotal(line) | currency:'€' }}</label>
@@ -185,6 +213,13 @@
 			ng-click="clear()">
 			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
 				translate="entity.action.cancel">Cancel</span>
+		</button>
+		
+		<button type="submit" ng-if="bill.id==null"
+			ng-disabled="form.$invalid"
+			class="btn btn-primary">
+			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+				translate="entity.action.save">Save</span>
 		</button>
 	</div>
 	
