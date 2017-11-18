@@ -1,30 +1,23 @@
 package org.crossfit.app.web.rest.bills;
 
-import java.net.URI;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
-import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.web.rest.dto.MemberDTO;
-import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
-import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.opencsv.CSVWriter;
 
 /**
  * REST controller for managing Bill.
@@ -169,42 +164,56 @@ public class BillResource {
 
 	/**
 	 * GET /bills.csv -> get all the bills in CSV format.
+	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/bills.csv", method = RequestMethod.GET, produces = "text/csv;charset=utf-8")
+	@RequestMapping(value = "/bills.csv", method = RequestMethod.GET, produces = "text/csv;charset=ISO-8859-1")
 	public String getAllAsCSV(
-			@RequestParam(value = "search", required = false) String search) throws URISyntaxException {
+			@RequestParam(value = "search", required = false) String search) throws Exception {
+		
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 
 		List<BillLine> billlines = doFindAll(generatePageRequest, search).getContent().stream().flatMap(b->b.getLines().stream()).collect(Collectors.toList());
 		
-		StringBuffer sb = new StringBuffer();
+		StringWriter sw = new StringWriter();
+		
+		try (CSVWriter writer = new CSVWriter(sw)){
 
-		sb.append("[Id];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[Name];[Address];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[TotalFact]\n");		
-		for (BillLine line : billlines) {
-			append(sb, line.getBill().getId()).append(";");
-			append(sb, line.getBill().getNumber()).append(";");
-			append(sb, line.getBill().getEffectiveDate()).append(";");
-			append(sb, line.getBill().getCreatedDate()).append(";");
-			
-			append(sb, line.getBill().getMember().getId()).append(";");
-			append(sb, line.getBill().getDisplayName()).append(";");
-			append(sb, line.getBill().getDisplayAddress()).append(";");
-			
-			append(sb, line.getBill().getPaymentMethod()).append(";");
-			append(sb, line.getBill().getStatus()).append(";");
-			append(sb, line.getQuantity()).append(";");
-			append(sb, line.getLabel()).append(";");
-			append(sb, line.getPriceTaxIncl()).append(";");
-			append(sb, line.getTotalTaxIncl()).append(";");
-			append(sb, line.getBill().getTotalTaxIncl()).append("\n");
+			String[] header = new StringBuffer("[Id];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[Name];[Address];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[TotalFact]").toString().split(";");		
+			writer.writeNext(header);
+			for (BillLine line : billlines) {
+				StringBuffer sb = new StringBuffer();
+				append(sb, line.getBill().getId()).append(";");
+				append(sb, line.getBill().getNumber()).append(";");
+				append(sb, line.getBill().getEffectiveDate()).append(";");
+				append(sb, line.getBill().getCreatedDate()).append(";");
+				
+				append(sb, line.getBill().getMember().getId()).append(";");
+				append(sb, line.getBill().getDisplayName()).append(";");
+				append(sb, line.getBill().getDisplayAddress()).append(";");
+				
+				append(sb, line.getBill().getPaymentMethod()).append(";");
+				append(sb, line.getBill().getStatus()).append(";");
+				append(sb, line.getQuantity()).append(";");
+				append(sb, line.getLabel()).append(";");
+				append(sb, line.getPriceTaxIncl()).append(";");
+				append(sb, line.getTotalTaxIncl()).append(";");
+				append(sb, line.getBill().getTotalTaxIncl());
+				
+				writer.writeNext(sb.toString().split(";"), false);
+			}
+
+			return sw.getBuffer().toString();
+		} catch (Exception e) {
+			throw e;
 		}
-		return sb.toString();
+		
 	}
 	
 
 	private static final StringBuffer append(StringBuffer sb, Object value){
-		sb.append("\"").append(value == null ? "" : value).append("\"");
+//		sb.append("\"").append(value == null ? "" : value).append("\"");
+		sb.append(value == null ? "" : value);
 		return sb;
 	}
 	

@@ -48,6 +48,7 @@
 		<javax.inject.version>1</javax.inject.version>
 		<assertj-core.version>3.1.0</assertj-core.version>
 		<commons-io.version>2.4</commons-io.version>
+		<opencsv.version>3.9</opencsv.version>
 		<commons-lang.version>3.4</commons-lang.version>
 		<hibernate.version>4.3.10.Final</hibernate.version>
         <usertype-core.version>4.0.0.GA</usertype-core.version>
@@ -143,7 +144,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons-lang.version}</version>
 		</dependency>
-		
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
