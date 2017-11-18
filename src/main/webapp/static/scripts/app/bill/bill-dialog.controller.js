@@ -10,64 +10,9 @@ angular.module('crossfitApp').controller('BillDialogController',
         $scope.paymentMethods = [];
         $scope.status = [];
 
-        $scope.quickMemberLike = "";
-        $scope.quickMemberSelected = {};
-        $scope.quickBillMembers = [];
-
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
         };
-        
-        $scope.showQuickSelectMember = function(){
-            $('#quickSelectMember').modal('show');
-        }
-        $scope.clearQuick = function(){
-
-            $scope.quickMemberLike = "";
-            $scope.quickMemberSelected = {};
-            $scope.quickBillMembers = [];
-            
-            $('#quickSelectMember').modal('hide');
-        }
-        
-        $scope.selectMemberForQuickBill = function(m){
-        	$scope.quickMemberSelected = m;
-        }
-        
-        $scope.searchMemberForQuickBill = function(){
-
-            $scope.quickMemberSelected = {};
-            $scope.quickBillMembers = [];
-            
-        	if ($scope.quickMemberLike.length <=3){
-        		return;
-        	}
-        	 Member.queryQuick({
-             	page: 1, per_page: 10, 
-             	search: $scope.quickMemberLike, 
-             	include_actif: true,
-             	include_not_enabled: true,
-             	include_bloque: false}, 
-             	function(result, headers) {
- 	                $scope.quickBillMembers = result;
-             	});
-        }
-        
-        $scope.quickSelectMember = function(){
-        	$scope.bill.member = $scope.quickMemberSelected;
-        	$scope.bill.displayAddress = 
-        		$scope.bill.member.address + "\n" + 
-        		$scope.bill.member.zipCode + " " +
-        		$scope.bill.member.city;
-        	
-        	$scope.bill.displayName = 
-        		$scope.bill.member.title + " " +
-        		$scope.bill.member.firstName + " " +
-        		$scope.bill.member.lastName;
-        	
-        	$scope.clearQuick();
-        }
-
         
         $scope.calculateTotal = function(line){
         	return line.quantity * line.priceTaxIncl;
@@ -91,9 +36,30 @@ angular.module('crossfitApp').controller('BillDialogController',
         	});
         }
         
+        $scope.refreshMember = function(){
+        	 if ($stateParams.memberId != null) {
+             	
+ 	        	Member.get({id : $stateParams.memberId}, function(member) {
+
+ 	            	$scope.bill.member = member;
+ 	            	$scope.bill.displayAddress = 
+ 	            		$scope.bill.member.address + "\n" + 
+ 	            		$scope.bill.member.zipCode + " " +
+ 	            		$scope.bill.member.city;
+ 	            	
+ 	            	$scope.bill.displayName = 
+ 	            		$scope.bill.member.title + " " +
+ 	            		$scope.bill.member.firstName + " " +
+ 	            		$scope.bill.member.lastName;
+ 	            	
+ 	        	});
+             }
+        }
         
         $scope.init = function(){
 
+        	$scope.refreshMember();
+            
         	Bill.paymentMethods({}, function(result, headers) {
             	$scope.paymentMethods = result;
             });

@@ -26,7 +26,7 @@ angular.module('crossfitApp')
             })
             .state('bill.new', {
                 parent: 'bill',
-                url: '/new',
+                url: '/new/{memberId}',
                 data: {
                     roles: ['ROLE_COMPTABLE', 'ROLE_ADMIN'],
                 },
@@ -39,10 +39,10 @@ angular.module('crossfitApp')
                             entity: function () {
                                 return {
                                 	id: null,
+                                	member_id: $stateParams.memberId,
                                 	status : "VALIDE",
                                 	effectiveDate: new Date(),
-                                	paymentMethod: 'CREDIT_CARD',
-                                	
+                                	paymentMethod: 'CREDIT_CARD',                                	
                                 	lines: [{
                                 		quantity: 1,
                                 	}]

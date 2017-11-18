@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('BillController', function ($scope, $window, Bill, Authority, ParseLinks) {
+    .controller('BillController', function ($scope, $window, $state, Bill, Authority, Member, ParseLinks) {
         $scope.bills = [];
         $scope.page = 1;
         $scope.per_page = 50;
@@ -10,6 +10,11 @@ angular.module('crossfitApp')
         $scope.generate = {};
         $scope.paymentMethods = [];
         $scope.status = [];
+
+
+        $scope.quickMemberLike = "";
+        $scope.quickMemberSelected = {};
+        $scope.quickBillMembers = [];
         
         $scope.loadAll = function() {
             Bill.query({
@@ -95,6 +100,50 @@ angular.module('crossfitApp')
         };
         
 
+
+        $scope.showQuickSelectMember = function(){
+            $('#quickSelectMember').modal('show');
+        }
+        $scope.clearQuick = function(){
+
+            $scope.quickMemberLike = "";
+            $scope.quickMemberSelected = {};
+            $scope.quickBillMembers = [];
+            
+            $('#quickSelectMember').modal('hide');
+        }
+        
+        $scope.selectMemberForQuickBill = function(m){
+        	$scope.quickMemberSelected = m;
+        }
+        
+        $scope.searchMemberForQuickBill = function(){
+
+            $scope.quickMemberSelected = {};
+            $scope.quickBillMembers = [];
+            
+        	if ($scope.quickMemberLike.length <=2){
+        		return;
+        	}
+        	 Member.queryQuick({
+             	page: 1, per_page: 10, 
+             	search: $scope.quickMemberLike, 
+             	include_actif: true,
+             	include_not_enabled: true,
+             	include_bloque: false}, 
+             	function(result, headers) {
+ 	                $scope.quickBillMembers = result;
+             	});
+        }
+        
+        $scope.quickSelectMember = function(){
+        	var memberId = $scope.quickMemberSelected.id;
+        	$scope.clearQuick();
+        	
+	        $state.go('bill.new', {memberId:memberId});
+        }
+        
+        
         
 		$scope.export = function() {
 			var params = "t=1";

@@ -25,7 +25,7 @@
 					    Action <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu pull-right">
-					    <li><a ui-sref="bill.new"translate="crossfitApp.bill.action.new">New bill</a></li>
+					    <li><a href ng-click="showQuickSelectMember()"translate="crossfitApp.bill.action.new">New bill</a></li>
 					    <li><a href ng-click="export()"translate="entity.action.export">Export</a></li>
 					    <li><a href ng-click="prepareGenerate()"translate="entity.action.generate">Génération</a></li>
 					    <li><a href ng-click="deleteDraft()"translate="crossfitApp.bill.action.delete.draft">Supprimer les brouillons</a></li>
@@ -159,6 +159,50 @@
             </div>
         </div>
     </div>
+    
+    
+
+
+	<div class="modal fade" id="quickSelectMember">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <form name="lockForm" ng-submit="quickSelectMember()">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+	                            ng-click="clearQuick()">&times;</button>
+	                    <h4 class="modal-title" translate="crossfitApp.bill.quick.select.member.title">Quick select member operation</h4>
+	                </div>
+	                <div class="modal-body">
+	                	<jh-alert-error></jh-alert-error>
+	                     <div class="form-group">
+					      <input type="text" id="like" name="like" ng-model="quickMemberLike" ng-change="searchMemberForQuickBill()"
+					      	class="form-control" placeholder="Rechercher un adhérent..." autocomplete="false" autofocus="autofocus">
+						</div>
+	                     <div class="form-group"  style="max-height: 200px; overflow-y: scroll;">						       
+					        <div class="radio" ng-repeat="m in quickBillMembers">
+					       		<label>
+					       			<input type="radio" name="selectMember"
+									    value="{{m.id}}"
+									    ng-click="selectMemberForQuickBill(m)">
+									    {{m.firstName}} {{m.lastName}}
+					       		</label>
+				       		</div>
+				       		
+				       		<p ng-if="quickMemberLike.length > 0 && quickBillMembers.length == 0">Aucun résultat</p>
+	   					</div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearQuick()">
+	                        <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+	                    </button>
+	                    <button type="submit" ng-disabled="lockForm.$invalid" class="btn btn-primary">
+	                        <span class="glyphicon glyphicon-add"></span>&nbsp;<span translate="crossfitApp.bill.action.quickSelect">Select</span>
+	                    </button>
+	                </div>
+	            </form>
+	        </div>
+	    </div>
+	 </div>
     
     
     <div class="table-responsive">
