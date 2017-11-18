@@ -1,5 +1,12 @@
 	<ul class="nav nav-pills" role="navigation" ng-switch="isAuthenticated() &&  ($state.includes('timeSlot') || $state.includes('closedDay') || $state.includes('timeSlotType') || $state.includes('membership'))">
 
+		<li ng-class="{active: $state.includes('product')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
+			<a ui-sref="product">
+				<span class="link-min" >{{'global.menu.products.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.products'|translate}}</span>
+			</a>
+		</li>
+		
 		<li ng-class="{active: $state.includes('timeSlot')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
 			<a ui-sref="timeSlot">
 				<span class="link-min" >{{'global.menu.timeslots.min'|translate}}</span>

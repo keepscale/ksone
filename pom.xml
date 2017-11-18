@@ -499,6 +499,11 @@
 					    <jsSourceFile>/scripts/app/bill/bill-dialog.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/bill/bill.service.js</jsSourceFile>
 					    
+					    <jsSourceFile>/scripts/app/product/product.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/product/product.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/product/product-dialog.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/product/product.service.js</jsSourceFile>
+					    
 		              </jsSourceFiles>
 		              <jsFinalFile>script.js</jsFinalFile>
 		              <webappTargetDir>${project.build.directory}/classes/</webappTargetDir>

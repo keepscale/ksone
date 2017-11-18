@@ -181,14 +181,14 @@ public class BillService {
 	}
 
 
-	public void deleteDraftBills() {
-		billRepository.deleteBillsLine(BillStatus.DRAFT);
-		billRepository.deleteBills(BillStatus.DRAFT);
+	public void deleteDraftBills(CrossFitBox box) {
+		billRepository.deleteBillsLine(box, BillStatus.DRAFT);
+		billRepository.deleteBills(box, BillStatus.DRAFT);
 	}
 
 
-	public Bill findById(Long id) {
-		return billRepository.findOneWithEagerRelation(id);
+	public Bill findById(Long id, CrossFitBox box) {
+		return billRepository.findOneWithEagerRelation(id, box);
 	}
 
   

@@ -62,19 +62,19 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
     				+ "from Bill b "
     	    		+ "left join fetch b.lines "
     	    		+ "join fetch b.member m "
-    	    		+ "where b.id = :id")
-	Bill findOneWithEagerRelation(@Param("id") Long id);
+    	    		+ "where b.id = :id and b.box=:box")
+	Bill findOneWithEagerRelation(@Param("id") Long id, @Param("box") CrossFitBox box);
 
     @Modifying
 	@Transactional
-	@Query("delete from Bill b where b.status = :status")
-	void deleteBills(@Param("status") BillStatus status);
+	@Query("delete from Bill b where b.status = :status and b.box=:box")
+	void deleteBills(@Param("box") CrossFitBox box, @Param("status") BillStatus status);
 
 
     @Modifying
 	@Transactional
-	@Query("delete from BillLine line where exists (select b from Bill b where b.status = :status and line.bill = b)")
-	void deleteBillsLine(@Param("status") BillStatus status);
+	@Query("delete from BillLine line where exists (select b from Bill b where b.status = :status and b.box=:box and line.bill = b)")
+	void deleteBillsLine(@Param("box") CrossFitBox box, @Param("status") BillStatus status);
 
 
 }

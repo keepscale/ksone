@@ -78,7 +78,7 @@ public class BillResource {
 	public ResponseEntity<Void> deleteDraft() throws URISyntaxException {
 		log.debug("REST request to delete draft bills");
 	
-		billService.deleteDraftBills();
+		billService.deleteDraftBills(boxService.findCurrentCrossFitBox());
 		
 		return ResponseEntity.ok().build();
 	}
@@ -108,7 +108,7 @@ public class BillResource {
 	}
 
 	protected Bill doGet(Long id) {
-		Bill bill = billService.findById(id);
+		Bill bill = billService.findById(id, boxService.findCurrentCrossFitBox());
 		return bill;
 	}
 	

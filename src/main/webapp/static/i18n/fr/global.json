@@ -19,6 +19,8 @@
             "bills" : "Facturation",
             "bookings" : "Mes réservations",
             "liste" : "Créneaux, abonnements, types de séance",
+            "products" : "Produits",
+            "products.min" : "Prod.",
             "timeslots" : "Créneaux",
             "timeslots.min" : "Crén.",
             "closedDays" : "Jour de Ferm.",

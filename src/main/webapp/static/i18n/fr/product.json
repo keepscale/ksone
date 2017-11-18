@@ -1,0 +1,39 @@
+{
+    "crossfitApp": {
+        "product" : {
+            "home": {
+                "title": "Gestion des produits",
+                "createLabel" : "Ajouter un produit",
+                "createOrEditLabel" : "Créer ou modifier un produit"
+            },
+            "action" : {
+            	"edit" : "Modifier",
+            	"delete" : "Supprimer"
+        	},
+            "deleted": "Le produit a bien été supprimé.",
+            "created": "Le produit a été ajouté.",
+            "updated": "Le produit a bien été mis à jour.",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le produit {{ id }} ?"
+            },
+            "detail": {
+                "title": "Produits"
+            },
+            "name": "Nom",
+            "name.placeholder": "Nom du produit",
+            "price": "Prix",
+            "price.placeholder": "Prix",
+	        "messages" : {
+	        	"validate" : {
+		        	"name" : {
+			        	"required": "Le nom est obligatoire"
+			    	},
+		        	"price" : {
+			        	"required": "Le prix est obligatoire"
+			    	}
+		    	}
+	    	}
+        }
+    }
+}
+

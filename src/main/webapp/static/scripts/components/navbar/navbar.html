@@ -21,8 +21,8 @@
 				title="{{'global.menu.bills'|translate}}"></span>
 		</a></li>
 
-		<li ng-class="{active: $state.includes('closedDays') || $state.includes('timeSlot') || $state.includes('timeSlotType') || $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_DIRECTOR,ROLE_ADMIN"
-			ng-switch-when="true"><a ui-sref="timeSlotType"> <span
+		<li ng-class="{active: $state.includes('product') || $state.includes('closedDays') || $state.includes('timeSlot') || $state.includes('timeSlotType') || $state.includes('membership')}"  has-any-role="ROLE_MANAGER,ROLE_DIRECTOR,ROLE_ADMIN"
+			ng-switch-when="true"><a ui-sref="product"> <span
 				class="glyphicon glyphicon-cog"
 				title="{{'global.menu.liste'|translate}}"></span>
 		</a></li>
