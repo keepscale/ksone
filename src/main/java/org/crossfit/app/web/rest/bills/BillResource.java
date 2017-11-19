@@ -1,14 +1,19 @@
 package org.crossfit.app.web.rest.bills;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
@@ -19,7 +24,7 @@ import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.service.MemberService;
+import org.crossfit.app.service.PdfBill;
 import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -39,7 +44,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.xml.sax.SAXException;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.xmp.XMPException;
 import com.opencsv.CSVWriter;
 
 /**
@@ -113,6 +121,26 @@ public class BillResource {
 		return Optional.ofNullable(doGet(id))
 				.map(bill -> new ResponseEntity<>(bill, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+	
+
+	/**
+	 * GET /members/{id}.pdf -> get a bill in pdf format.
+	 * @throws IOException 
+	 * @throws ParseException 
+	 * @throws XMPException 
+	 * @throws DocumentException 
+	 * @throws TransformerException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 */
+	@RequestMapping(value = "/bills/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
+	public void getToPdf(@PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
+		log.debug("REST request to get PdfBill : {}", id);
+
+		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream());
+		response.flushBuffer();
+
 	}
 
 	protected Bill doGet(Long id) {
