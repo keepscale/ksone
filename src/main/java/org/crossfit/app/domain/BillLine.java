@@ -57,6 +57,25 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     @Column(name = "total_tax_incl")
     private double totalTaxIncl;
 
+    
+    
+	public BillLine(Bill bill, String label, double quantity, double priceTaxExcl, double priceTaxIncl,
+			double totalTaxExcl, double taxPerCent, double totalTaxIncl) {
+		super();
+		this.bill = bill;
+		this.label = label;
+		this.quantity = quantity;
+		this.priceTaxExcl = priceTaxExcl;
+		this.priceTaxIncl = priceTaxIncl;
+		this.totalTaxExcl = totalTaxExcl;
+		this.taxPerCent = taxPerCent;
+		this.totalTaxIncl = totalTaxIncl;
+	}
+
+	public BillLine() {
+		super();
+	}
+
 	public Long getId() {
 		return id;
 	}
