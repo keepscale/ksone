@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -138,7 +139,7 @@ public class BillResource {
 	public void getToPdf(@PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
 		log.debug("REST request to get PdfBill : {}", id);
 
-		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream());
+		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream(), ResourceBundle.getBundle("i18n/messages"));
 		response.flushBuffer();
 
 	}

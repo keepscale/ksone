@@ -54,13 +54,16 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     @Column(name = "tax_per_cent")
     private double taxPerCent;
     
+    @Column(name = "total_tax")
+    private double totalTax;
+    
     @Column(name = "total_tax_incl")
     private double totalTaxIncl;
 
     
     
 	public BillLine(Bill bill, String label, double quantity, double priceTaxExcl, double priceTaxIncl,
-			double totalTaxExcl, double taxPerCent, double totalTaxIncl) {
+			double totalTaxExcl, double taxPerCent, double totalTax, double totalTaxIncl) {
 		super();
 		this.bill = bill;
 		this.label = label;
@@ -69,6 +72,7 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 		this.priceTaxIncl = priceTaxIncl;
 		this.totalTaxExcl = totalTaxExcl;
 		this.taxPerCent = taxPerCent;
+		this.totalTax = totalTax;
 		this.totalTaxIncl = totalTaxIncl;
 	}
 
@@ -147,6 +151,15 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 	public void setTotalTaxIncl(double totalTaxIncl) {
 		this.totalTaxIncl = totalTaxIncl;
 	}
+	
+
+	public double getTotalTax() {
+		return totalTax;
+	}
+
+	public void setTotalTax(double totalTax) {
+		this.totalTax = totalTax;
+	}
 
 	@Override
 	public int hashCode() {
@@ -177,7 +190,7 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 	public String toString() {
 		return "BillLine [id=" + id + ", label=" + label + ", quantity=" + quantity + ", priceTaxExcl=" + priceTaxExcl
 				+ ", priceTaxIncl=" + priceTaxIncl + ", totalTaxExcl=" + totalTaxExcl + ", taxPerCent=" + taxPerCent
-				+ ", totalTaxIncl=" + totalTaxIncl + "]";
+				+ ", totalTax=" + totalTax + ", totalTaxIncl=" + totalTaxIncl + "]";
 	}
     
 }

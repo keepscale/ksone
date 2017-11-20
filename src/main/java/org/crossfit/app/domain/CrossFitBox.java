@@ -36,6 +36,11 @@ public class CrossFitBox implements Serializable {
     @NotNull        
     @Column(name = "name", nullable = false)
     private String name;
+    
+
+    @NotNull        
+    @Column(name = "bill_address", nullable = false)
+    private String billAddress;
 
     @NotNull        
     @Column(name = "website_pattern", nullable = false)
@@ -159,6 +164,14 @@ public class CrossFitBox implements Serializable {
 
 	public void setRedirectToRules(String redirectToRules) {
 		this.redirectToRules = redirectToRules;
+	}
+
+	public String getBillAddress() {
+		return billAddress;
+	}
+
+	public void setBillAddress(String billAddress) {
+		this.billAddress = billAddress;
 	}
 
 	@Override

@@ -76,6 +76,13 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
     @Column(name = "effective_date", nullable = true)
     private LocalDate effectiveDate;
     
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "pay_at_date", nullable = true)
+    private LocalDate payAtDate;
+    
     @Size(max = 120)
     @Column(name = "display_name", length = 120)
     private String displayName;
@@ -86,6 +93,9 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "total_tax_excl")
     private double totalTaxExcl;
+
+    @Column(name = "total_tax")
+    private double totalTax;
     
     @Column(name = "total_tax_incl")
     private double totalTaxIncl;
@@ -205,6 +215,22 @@ public class Bill extends AbstractAuditingEntity implements Serializable {
 
 	public void setLines(List<BillLine> lines) {
 		this.lines = lines;
+	}
+
+	public double getTotalTax() {
+		return totalTax;
+	}
+
+	public void setTotalTax(double totalTax) {
+		this.totalTax = totalTax;
+	}
+
+	public LocalDate getPayAtDate() {
+		return payAtDate;
+	}
+
+	public void setPayAtDate(LocalDate payAtDate) {
+		this.payAtDate = payAtDate;
 	}
 
 	@Override
