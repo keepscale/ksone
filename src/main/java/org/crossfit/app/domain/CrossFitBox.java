@@ -39,7 +39,7 @@ public class CrossFitBox implements Serializable {
     
 
     @NotNull        
-    @Column(name = "bill_address", nullable = false)
+    @Column(name = "bill_address", nullable = true)
     private String billAddress;
 
     @NotNull        

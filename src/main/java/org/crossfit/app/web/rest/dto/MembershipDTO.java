@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import org.crossfit.app.domain.CrossFitBox;
@@ -20,9 +21,12 @@ public class MembershipDTO implements Serializable {
     
     @NotNull        
     private String name;
-
+    
     @NotNull        
-    private String price;
+    private double priceTaxIncl;
+
+    @NotNull     
+    private double taxPerCent;
 
     @NotNull        
     private boolean addByDefault;
@@ -50,15 +54,23 @@ public class MembershipDTO implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
         
+	public double getPriceTaxIncl() {
+		return priceTaxIncl;
+	}
+
+	public void setPriceTaxIncl(double priceTaxIncl) {
+		this.priceTaxIncl = priceTaxIncl;
+	}
+
+	public double getTaxPerCent() {
+		return taxPerCent;
+	}
+
+	public void setTaxPerCent(double taxPerCent) {
+		this.taxPerCent = taxPerCent;
+	}
+
 	public boolean isAddByDefault() {
 		return addByDefault;
 	}

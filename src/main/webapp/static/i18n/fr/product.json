@@ -21,15 +21,20 @@
             },
             "name": "Nom",
             "name.placeholder": "Nom du produit",
-            "price": "Prix",
-            "price.placeholder": "Prix",
+            "priceTaxIncl": "Prix TTC",
+            "priceTaxIncl.placeholder": "Prix TTC",
+            "taxPerCent": "% TVA",
+            "taxPerCent.placeholder": "% TVA",
 	        "messages" : {
 	        	"validate" : {
 		        	"name" : {
 			        	"required": "Le nom est obligatoire"
 			    	},
-		        	"price" : {
+		        	"priceTaxIncl" : {
 			        	"required": "Le prix est obligatoire"
+			    	},
+		        	"taxPerCent" : {
+			        	"required": "La TVA est obligatoire"
 			    	}
 		    	}
 	    	}

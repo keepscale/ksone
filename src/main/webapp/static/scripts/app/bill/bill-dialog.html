@@ -47,7 +47,7 @@
 							<div class="input-group">
 								<input type="text" class="form-control " id="displayName"
 									name="displayName" ng-model="bill.displayName" readonly>
-								<div class="input-group-btn">
+								<div class="input-group-btn" ng-if="bill.id==null">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
 										<span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> 
 									</button>
@@ -105,7 +105,19 @@
 						       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 								
 						</div>
-						<div class="col-xs-6"  ng-if="bill.id!=null">
+						<div class="col-xs-6">
+							<label>Date de paiement</label>
+							<input type="text" class="form-control " id="payAtDate" name="payAtDate" 
+								value="{{bill.payAtDate | date:'dd/MM/yyyy' }}"  readonly ng-if="bill.id!=null">
+								
+				            <datetimepicker hidden-time="true" ng-if="bill.id==null" required
+								ng-model="bill.payAtDate" how-weeks="false" minute-step="30" show-meridian="false" 
+						       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+						</div>
+					</div>
+					
+					<div class="row form-group" ng-if="bill.id!=null">
+						<div class="col-xs-12">
 							<label>Date création</label>
 							<input type="text" class="form-control " id="createdBillDate" name="createdBillDate"
 								value="{{bill.createdBillDate | date:'dd/MM/yyyy \'à\' HH:mm:ss' }}" readonly>
@@ -125,6 +137,7 @@
 								<th style="width: 10px;">Qte</th>
 								<th>Libellé</th>
 								<th style="width: 120px; text-align: right;">Prix TTC</th>
+								<th style="width: 120px; text-align: right;">TVA</th>
 								<th style="width: 120px; text-align: right;">Total TTC</th>
 							</tr>
 						</thead>
@@ -133,6 +146,7 @@
 								<td>{{line.quantity}}</td>
 								<td>{{line.label}}</td>
 								<td style="text-align: right;">{{line.priceTaxIncl | currency:'€' }}</td>
+								<td style="text-align: right;">{{line.taxPerCent + '%' }}</td>
 								<td style="text-align: right;">{{line.totalTaxIncl | currency:'€' }}</td>
 							</tr>
 						</tbody>
@@ -156,13 +170,13 @@
 											<ul class="dropdown-menu pull-right" style="overflow-y: scroll; height: 200px;">
 												<li ng-repeat="p in products">
 			                  						<a ng-click="selectElementForBillLine(line, p)">
-			                  							{{p.name}} {{p.price | currency:'€'}}
+			                  							{{p.name}} {{p.priceTaxIncl | currency:'€'}}
 													</a>
 												</li>
           										<li role="separator" class="divider"></li>          										
 												<li ng-repeat="m in membership">
 			                  						<a ng-click="selectElementForBillLine(line, m)">
-			                  							{{m.name}} {{m.price | currency:'€'}}
+			                  							{{m.name}} {{m.priceTaxIncl | currency:'€'}}
 													</a>
 												</li>
 											</ul>
@@ -173,6 +187,9 @@
 								<td class="form-line">
 									<input type="text"  style="text-align: right;" class="form-control" ng-model="line.priceTaxIncl" ng-minlength=1 ng-maxlength=10 required maxlength="10">
 								</td>
+								<td class="form-line">
+									<input type="number"  style="text-align: right;" class="form-control" ng-model="line.taxPerCent" ng-minlength=1 ng-maxlength=12 required maxlength="12">
+								</td>
 								<td style="text-align: right; vertical-align: bottom;">
 									<label class="control-label">{{calculateTotal(line) | currency:'€' }}</label>
 								</td>
@@ -181,14 +198,14 @@
 						
 						<tfoot ng-if="bill.id!=null">
 							<tr>
-								<th colspan="3" style="text-align: right;">Total:</th>
+								<th colspan="4" style="text-align: right;">Total:</th>
 								<th style="text-align: right;">{{bill.totalTaxIncl | currency:'€'}}</th>
 							</tr>
 						</tfoot>
 						
 						<tfoot ng-if="bill.id==null">
 							<tr>
-								<th colspan="3">
+								<th colspan="4">
 
 									<button class="btn btn-default pull-left" type="button" ng-click="addLine()">+</button>
 										
@@ -209,10 +226,14 @@
     </div>
 
 	<div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal"
-			ng-click="clear()">
+		<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
 			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
 				translate="entity.action.cancel">Cancel</span>
+		</button>
+		
+		<button type="button" class="btn btn-primary" ng-if="bill.id!=null" ng-click="print()">
+			<span class="glyphicon glyphicon-print"></span>&nbsp;<span
+				translate="entity.action.print">Print</span>
 		</button>
 		
 		<button type="submit" ng-if="bill.id==null"

@@ -41,10 +41,13 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
     @NotNull        
     @Column(name = "name", nullable = false)
     private String name;
-
+    
     @NotNull        
-    @Column(name = "price", nullable = false)
-    private String price;
+    @Column(name = "price_tax_incl", nullable=false)
+    private double priceTaxIncl;
+
+    @Column(name = "tax_per_cent")
+    private double taxPerCent;
 
     @NotNull        
     @Column(name = "add_by_default", nullable = false)
@@ -75,14 +78,6 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
 	public int getNbMonthValidity() {
@@ -118,6 +113,23 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
 		this.addByDefault = addByDefault;
 	}
 
+	
+	public double getPriceTaxIncl() {
+		return priceTaxIncl;
+	}
+
+	public void setPriceTaxIncl(double priceTaxIncl) {
+		this.priceTaxIncl = priceTaxIncl;
+	}
+
+	public double getTaxPerCent() {
+		return taxPerCent;
+	}
+
+	public void setTaxPerCent(double taxPerCent) {
+		this.taxPerCent = taxPerCent;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -144,7 +156,7 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
         return "Membership{" +
                 "id=" + id +
                 ", name='" + name + "'" +
-                ", price='" + price + "'" +
+                ", price='" + priceTaxIncl + "'" +
                 '}';
     }
 }

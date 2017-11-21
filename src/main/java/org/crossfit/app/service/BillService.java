@@ -99,13 +99,14 @@ public class BillService {
 					BillLine line = new BillLine();
 					line.setLabel(sub.getMembership().getName());
 					line.setQuantity(1.0);
-					line.setPriceTaxIncl(NumberUtils.toDouble(sub.getMembership().getPrice()));
+					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl());
+					line.setTaxPerCent(sub.getMembership().getTaxPerCent());
 					lines.add(line);
 				}
 			}
 			
 			if (!lines.isEmpty()) {				
-				saveAndLockBill(box, nextBillCounter, m, withStatus, withPaymentMethod, dateAt, lines);
+				saveAndLockBill(box, nextBillCounter, m, withStatus, withPaymentMethod, dateAt, dateAt, lines);
 				nextBillCounter++;
 				counter++;
 			}
@@ -115,21 +116,21 @@ public class BillService {
 
 
 	public Bill saveAndLockBill(CrossFitBox box, Member member, BillStatus status, PaymentMethod paymentMethod,
-			LocalDate effectiveDate, List<BillLine> lines) {
-		return saveAndLockBill(box, null, member, status, paymentMethod, effectiveDate, lines);
+			LocalDate effectiveDate, LocalDate payAtDate, List<BillLine> lines) {
+		return saveAndLockBill(box, null, member, status, paymentMethod, effectiveDate, payAtDate, lines);
 	}
 	
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, List<BillLine> lines) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, LocalDate payAtDate, List<BillLine> lines) {
 		
 		String to = member.getTitle() + " " + member.getFirstName() + " " + member.getLastName();
 		String billAdress = member.getAddress() + "\n" + member.getZipCode() + " " + member.getCity();
 		
-		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, withPaymentMethod, dateAt, lines);
+		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, withPaymentMethod, dateAt, payAtDate, lines);
 
 	}
 
 
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, List<BillLine> lines) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, LocalDate payAtDate, List<BillLine> lines) {
 
 		Bill bill = new Bill();
 		bill.setBox(box);
@@ -137,12 +138,18 @@ public class BillService {
 		bill.setStatus(withStatus);
 		bill.setPaymentMethod(withPaymentMethod);
 		bill.setEffectiveDate(dateAt);
+		bill.setPayAtDate(payAtDate);
 		bill.setDisplayName(to);
 		bill.setDisplayAddress(billAdress);
 		bill.setLines(lines);
 
+		lines.forEach(line->line.setPriceTaxExcl((line.getPriceTaxIncl() * 100) / (100 + line.getTaxPerCent())));
 		lines.forEach(line->line.setTotalTaxIncl(line.getQuantity() * line.getPriceTaxIncl()));
+		lines.forEach(line->line.setTotalTaxExcl((line.getTotalTaxIncl() * 100) / (100 + line.getTaxPerCent())));
+		lines.forEach(line->line.setTotalTax(line.getTotalTaxIncl() - line.getTotalTaxExcl()));		
 		bill.setTotalTaxIncl(lines.stream().map(BillLine::getTotalTaxIncl).reduce(Double::sum).orElse(0.0));
+		bill.setTotalTaxExcl(lines.stream().map(BillLine::getTotalTaxExcl).reduce(Double::sum).orElse(0.0));
+		bill.setTotalTax(bill.getTotalTaxIncl() - bill.getTotalTaxExcl());
 		
 		lines.forEach(line->line.setBill(bill));
 		

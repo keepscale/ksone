@@ -81,7 +81,7 @@ public class BillResource {
 		
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		Member member = memberRepository.findOne(bill.getMember().getId());
-		Bill result = billService.saveAndLockBill(box , member, bill.getStatus(), bill.getPaymentMethod(), bill.getEffectiveDate(), bill.getLines());
+		Bill result = billService.saveAndLockBill(box , member, bill.getStatus(), bill.getPaymentMethod(), bill.getEffectiveDate(), bill.getPayAtDate(), bill.getLines());
 		
 		return ResponseEntity.created(new URI("/api/bills/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("bill", result.getId().toString())).body(result);

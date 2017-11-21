@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('BillDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member', 'Product', 'Membership',
-        function($scope, $stateParams, $state, $modalInstance, entity, Bill, Member, Product, Membership) {
+    ['$scope', '$window', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member', 'Product', 'Membership',
+        function($scope, $window, $stateParams, $state, $modalInstance, entity, Bill, Member, Product, Membership) {
 
     	$scope.view = "default";
         $scope.bill = entity;
@@ -30,6 +30,10 @@ angular.module('crossfitApp').controller('BillDialogController',
         
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
+        };
+
+        $scope.print = function() {
+			$window.open("api/bills/"+$scope.bill.id+".pdf");
         };
         
         $scope.calculateTotal = function(line){
@@ -76,7 +80,8 @@ angular.module('crossfitApp').controller('BillDialogController',
         
         $scope.selectElementForBillLine = function(line, element){
         	line.label = element.name;
-        	line.priceTaxIncl = element.price;
+        	line.priceTaxIncl = element.priceTaxIncl;
+        	line.taxPerCent = element.taxPerCent;
         }
         
         $scope.init = function(){

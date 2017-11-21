@@ -147,15 +147,15 @@ public class PdfBill {
         table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.taxPerCent"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.totalTax"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         for (BillLine line : bill.getLines()) {
             table.addCell(getCell(line.getLabel(), Element.ALIGN_LEFT, font12));
             table.addCell(getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
             table.addCell(getCell(formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
             table.addCell(getCell(formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
-            table.addCell(getCell(formatPrice(line.getTotalTax()), Element.ALIGN_RIGHT, font12));
             table.addCell(getCell(formatPrice(line.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(getCell(formatPrice(line.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         }
 
         table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));

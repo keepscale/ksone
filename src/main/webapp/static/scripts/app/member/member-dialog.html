@@ -187,7 +187,7 @@
 						<select
 							class="form-control" id="field_membership" name="membership"
 							ng-model="subscription.membership" required ng-click="calculateEndDate(subscription)"
-							ng-options='membership as (membership.name + " - " + membership.price) for membership in memberships track by membership.id'>
+							ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
 						</select>
 					</div>
 					<div class="col-xs-3"> 

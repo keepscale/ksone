@@ -106,7 +106,8 @@ public class MembershipResource {
 			MembershipDTO result = new MembershipDTO();
 			result.setId(membership.getId());
 			result.setName(membership.getName());
-			result.setPrice(membership.getPrice());
+			result.setPriceTaxIncl(membership.getPriceTaxIncl());
+			result.setTaxPerCent(membership.getTaxPerCent());
 			result.setAddByDefault(membership.isAddByDefault());
 			result.setNbMonthValidity(membership.getNbMonthValidity());
 			if (withrelation){

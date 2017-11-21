@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <property name="floatType" value="real" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle"/>
+
+
+    <changeSet id="201711211226" author="lgangloff" runOnChange="true">
+
+		<delete tableName="BILL_LINE"></delete>
+		<delete tableName="BILL"></delete>
+
+
+       	<addColumn tableName="BILL">
+
+            <column name="pay_at_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            
+            <column name="total_tax" type="decimal(10,2)">
+            	<constraints nullable="false"/>
+            </column>
+            
+        </addColumn>
+        
+        
+       	<addColumn tableName="BILL_LINE">
+            
+            <column name="total_tax" type="decimal(10,2)">
+            	<constraints nullable="false"/>
+            </column>
+            
+        </addColumn>
+        
+       	<addColumn tableName="CROSSFITBOX">
+            
+            <column name="bill_address" type="varchar(255)"/>
+            
+        </addColumn>
+        
+        <renameColumn tableName="PRODUCT" oldColumnName="price" newColumnName="price_tax_incl"/>
+        
+        
+       	<addColumn tableName="PRODUCT">            
+            <column name="tax_per_cent" type="decimal(10,2)"/>            
+        </addColumn>
+
+
+       	<addColumn tableName="MEMBERSHIP">            
+            <column name="price_tax_incl" type="decimal(10,2)"/>       
+            <column name="tax_per_cent" type="decimal(10,2)"/>            
+        </addColumn>
+        
+        <update tableName="MEMBERSHIP">
+        	<column name="price_tax_incl" valueComputed="to_number(price, '999.990')"></column>
+        	<column name="tax_per_cent" value="20"></column>
+        </update>
+        <dropColumn tableName="MEMBERSHIP" columnName="price"/>
+
+    </changeSet>
+</databaseChangeLog>

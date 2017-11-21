@@ -9,6 +9,7 @@
             	"delete" : "Supprimer"
         	},
         	"name" : "Nom de la box",
+        	"billAddress": "Adresse de facturation",
         	"websitepattern" : "Regexp du site",
         	"adminwebsite" : "Url du site d'admin",
             "bookingwebsite": "Url du site de résa.",

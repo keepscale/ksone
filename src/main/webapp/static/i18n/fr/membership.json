@@ -18,8 +18,11 @@
             },
             "name": "Nom",
             "name.placeholder": "Nom de l'abonnement",
-            "price": "Prix",
-            "price.placeholder": "Prix",
+            "name.table": "Nom de l'abonnement",
+            "priceTaxIncl": "Prix TTC",
+            "priceTaxIncl.placeholder": "Prix TTC",
+            "taxPerCent": "% TVA",
+            "taxPerCent.placeholder": "% TVA",
             "addByDefault" : "Ajouter l'abonnement automatiquement à la création d'un membre",
             "nbMonthValidity" : "mois",
             "nbMaxBooking": "Jusqu'à {{ nbMaxBooking }} réservation à l'avance",
@@ -31,8 +34,11 @@
 		        	"name" : {
 			        	"required": "Le nom est obligatoire"
 			    	},
-		        	"price" : {
+		        	"priceTaxIncl" : {
 			        	"required": "Le prix est obligatoire"
+			    	},
+		        	"taxPerCent" : {
+			        	"required": "La TVA est obligatoire"
 			    	},
 		        	"nbMonthValidity" : {
 			        	"required": "Le nombre de mois valable est obligatoire"

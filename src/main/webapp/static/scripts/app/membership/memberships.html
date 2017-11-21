@@ -53,14 +53,16 @@
 	            <thead>
 	                <tr>
 	                    <th translate="crossfitApp.membership.name.table">Abonnements</th>
-	                    <th translate="crossfitApp.membership.price">Prix</th>
+	                    <th style="text-align: right;" translate="crossfitApp.membership.priceTaxIncl">Prix</th>
+	                    <th style="text-align: right;" translate="crossfitApp.membership.taxPerCent">% TVA</th>
 	                    <th></th>
 	                </tr>
 	            </thead>
 	            <tbody>
 	                <tr ng-repeat="membership in memberships" >
 	                    <td><a href="#" ui-sref="membership.edit({id:membership.id})">{{membership.name}}</a></td>
-	                    <td>{{membership.price}}</td>
+	                    <td align="right">{{membership.priceTaxIncl | currency:'€'}}</td>
+	                    <td align="right">{{membership.taxPerCent + '%'}}</td>
 	                    <td  width="30px">
 							<a ng-click="delete(membership.id)"> <span
 									class="glyphicon glyphicon-remove-circle" style="color:red"></span>

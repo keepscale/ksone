@@ -43,8 +43,11 @@ public class Product extends AbstractAuditingEntity implements Serializable {
     private String name;
 
     @NotNull        
-    @Column(name = "price", nullable = false)
-    private double price;
+    @Column(name = "price_tax_incl", nullable=false)
+    private double priceTaxIncl;
+
+    @Column(name = "tax_per_cent")
+    private double taxPerCent;
 
     @JsonIgnore
     @ManyToOne(optional=false)
@@ -66,12 +69,20 @@ public class Product extends AbstractAuditingEntity implements Serializable {
         this.name = name;
     }
 
-	public double getPrice() {
-		return price;
+	public double getPriceTaxIncl() {
+		return priceTaxIncl;
 	}
 
-	public void setPrice(double price) {
-		this.price = price;
+	public void setPriceTaxIncl(double priceTaxIncl) {
+		this.priceTaxIncl = priceTaxIncl;
+	}
+
+	public double getTaxPerCent() {
+		return taxPerCent;
+	}
+
+	public void setTaxPerCent(double taxPerCent) {
+		this.taxPerCent = taxPerCent;
 	}
 
 	public CrossFitBox getBox() {
@@ -109,8 +120,8 @@ public class Product extends AbstractAuditingEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", price=" + price + "]";
+		return "Product [id=" + id + ", name=" + name + ", priceTaxIncl=" + priceTaxIncl + ", taxPerCent=" + taxPerCent
+				+ "]";
 	}
-
     
 }

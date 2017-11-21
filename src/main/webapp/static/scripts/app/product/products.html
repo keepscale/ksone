@@ -53,14 +53,16 @@
 	            <thead>
 	                <tr>
 	                    <th translate="crossfitApp.product.name">Nom du produit</th>
-	                    <th translate="crossfitApp.product.price">Prix TTC</th>
+	                    <th  style="text-align: right;" translate="crossfitApp.product.priceTaxIncl">Prix TTC</th>
+	                    <th  style="text-align: right;" translate="crossfitApp.product.taxPerCent">Prix TTC</th>
 	                    <th></th>
 	                </tr>
 	            </thead>
 	            <tbody>
 	                <tr ng-repeat="product in products" >
 	                    <td><a href="#" ui-sref="product.edit({id:product.id})">{{product.name}}</a></td>
-	                    <td>{{product.price | currency:'€'}}</td>
+	                    <td  style="text-align: right;" >{{product.priceTaxIncl | currency:'€'}}</td>
+	                    <td  style="text-align: right;" >{{product.taxPerCent  + '%'}}</td>
 	                    <td  width="30px">
 							<a ng-click="delete(product.id)"> <span
 									class="glyphicon glyphicon-remove-circle" style="color:red"></span>
