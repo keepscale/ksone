@@ -140,6 +140,9 @@ public class BillResource {
 		log.debug("REST request to get PdfBill : {}", id);
 
 		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream());
+
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + id + ".pdf\"");
 		response.flushBuffer();
 
 	}
