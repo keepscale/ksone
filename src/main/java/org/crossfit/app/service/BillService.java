@@ -143,9 +143,18 @@ public class BillService {
 		bill.setDisplayAddress(billAdress);
 		bill.setLines(lines);
 
-		lines.forEach(line->line.setPriceTaxExcl((line.getPriceTaxIncl() * 100) / (100 + line.getTaxPerCent())));
+		
 		lines.forEach(line->line.setTotalTaxIncl(line.getQuantity() * line.getPriceTaxIncl()));
-		lines.forEach(line->line.setTotalTaxExcl((line.getTotalTaxIncl() * 100) / (100 + line.getTaxPerCent())));
+		lines.forEach(line->
+			line.setPriceTaxExcl(
+					((100 - line.getTaxPerCent())/100) * line.getPriceTaxIncl()
+			)
+		);
+		lines.forEach(line->
+			line.setTotalTaxExcl(
+				((100 - line.getTaxPerCent())/100) * line.getTotalTaxIncl()
+			)
+		);
 		lines.forEach(line->line.setTotalTax(line.getTotalTaxIncl() - line.getTotalTaxExcl()));		
 		bill.setTotalTaxIncl(lines.stream().map(BillLine::getTotalTaxIncl).reduce(Double::sum).orElse(0.0));
 		bill.setTotalTaxExcl(lines.stream().map(BillLine::getTotalTaxExcl).reduce(Double::sum).orElse(0.0));

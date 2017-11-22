@@ -139,7 +139,7 @@ public class BillResource {
 	public void getToPdf(@PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
 		log.debug("REST request to get PdfBill : {}", id);
 
-		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream(), ResourceBundle.getBundle("i18n/messages"));
+		PdfBill.getBuilder().createPdf(doGet(id), response.getOutputStream());
 		response.flushBuffer();
 
 	}

@@ -44,6 +44,8 @@ import com.itextpdf.xmp.XMPException;
  */
 public class PdfBill {
 
+	private static final String FONTS_CFN_TTF = "fonts/cfn.ttf";
+	private static final String I18N_MESSAGES_BILLS = "i18n/messages-bills";
 	private static final BaseColor TAB_HEADER_COLOR = new BaseColor(87,113,138);
 
     protected Font fontCFN;
@@ -53,10 +55,14 @@ public class PdfBill {
     protected Font font12;
     protected Font font12b;
     protected Font font14;
+
+	private ResourceBundle i18n;
+    
  
     private PdfBill() throws DocumentException, IOException {
+    	i18n = ResourceBundle.getBundle(I18N_MESSAGES_BILLS);
         BaseFont bf = BaseFont.createFont();
-        BaseFont bfCFN = BaseFont.createFont("fonts/cfn.ttf", BaseFont.WINANSI, BaseFont.EMBEDDED);
+        BaseFont bfCFN = BaseFont.createFont(FONTS_CFN_TTF, BaseFont.WINANSI, BaseFont.EMBEDDED);
         BaseFont bfb = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.EMBEDDED);
         fontCFN = new Font(bfCFN, 18);
         fontCFN30 = new Font(bfCFN, 30);
@@ -71,10 +77,11 @@ public class PdfBill {
     	return new PdfBill();
     }
  
-    public String getI18n(ResourceBundle bundle, String key) throws UnsupportedEncodingException {
-    	return new String(bundle.getString(key).getBytes("ISO-8859-1"), "UTF-8");
+    public String getI18n(String key) throws UnsupportedEncodingException {
+//    	return new String(bundle.getString(key).getBytes("ISO-8859-1"), "UTF-8");
+    	return i18n.getString(key);
     }
-    public void createPdf(Bill bill, OutputStream os, ResourceBundle i18n) throws ParserConfigurationException, SAXException, TransformerException, IOException, DocumentException, XMPException, ParseException {
+    public void createPdf(Bill bill, OutputStream os) throws ParserConfigurationException, SAXException, TransformerException, IOException, DocumentException, XMPException, ParseException {
 
         CrossFitBox box = bill.getBox();
         
@@ -88,7 +95,7 @@ public class PdfBill {
 
  
         // header
-        PdfPCell cFactNumberl = new PdfPCell(new Paragraph(getI18n(i18n, "bill.pdf.label.number") + bill.getNumber(), font14));
+        PdfPCell cFactNumberl = new PdfPCell(new Paragraph(getI18n("bill.pdf.label.number") + bill.getNumber(), font14));
         cFactNumberl.setPaddingTop(13);
         cFactNumberl.setBorder(PdfPCell.NO_BORDER);
         cFactNumberl.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -120,11 +127,11 @@ public class PdfBill {
 
         PdfPTable tableInfo = new PdfPTable(2);
         
-        addLineInfo(tableInfo, getI18n(i18n, "bill.pdf.label.effectiveDate"), formatDate(bill.getEffectiveDate(), i18n));
-        addLineInfo(tableInfo, getI18n(i18n, "bill.pdf.label.ref"), bill.getNumber());
-        addLineInfo(tableInfo, getI18n(i18n, "bill.pdf.label.memberId"), bill.getMember().getId()+"");
-        addLineInfo(tableInfo, getI18n(i18n, "bill.pdf.label.paymentMethod"), getI18n(i18n, "bill.pdf.label.paymentMethod."+bill.getPaymentMethod()));
-        addLineInfo(tableInfo, getI18n(i18n, "bill.pdf.label.payAtDate"), formatDate(bill.getPayAtDate(), i18n));
+        addLineInfo(tableInfo, getI18n("bill.pdf.label.effectiveDate"), formatDate(bill.getEffectiveDate(), i18n));
+        addLineInfo(tableInfo, getI18n("bill.pdf.label.ref"), bill.getNumber());
+        addLineInfo(tableInfo, getI18n("bill.pdf.label.memberId"), bill.getMember().getId()+"");
+        addLineInfo(tableInfo, getI18n("bill.pdf.label.paymentMethod"), getI18n("bill.pdf.label.paymentMethod."+bill.getPaymentMethod()));
+        addLineInfo(tableInfo, getI18n("bill.pdf.label.payAtDate"), formatDate(bill.getPayAtDate(), i18n));
 
         table.addCell(tableInfo);
         
@@ -132,7 +139,7 @@ public class PdfBill {
 
         
         if (StringUtils.isNotBlank(bill.getComments())) {
-	        document.add(new Paragraph(getI18n(i18n, "bill.pdf.label.comments"), font12b));
+	        document.add(new Paragraph(getI18n("bill.pdf.label.comments"), font12b));
 	        document.add(new Paragraph(bill.getComments(), font12));
         }
 
@@ -143,12 +150,12 @@ public class PdfBill {
         table.setSpacingBefore(10);
         table.setSpacingAfter(10);
         table.setWidths(new int[]{7, 1, 2, 2, 2, 2});
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.taxPerCent"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.taxPerCent"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         for (BillLine line : bill.getLines()) {
             table.addCell(getCell(line.getLabel(), Element.ALIGN_LEFT, font12));
             table.addCell(getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
@@ -159,15 +166,15 @@ public class PdfBill {
         }
 
         table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.totalTaxExcl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.totalTaxExcl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(formatPrice(bill.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
 
         table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.totalTax"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.totalTax"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(formatPrice(bill.getTotalTax()), Element.ALIGN_RIGHT, font12));        
 
         table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n(i18n, "bill.pdf.label.totalTaxIncl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(getCell(getI18n("bill.pdf.label.totalTaxIncl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         document.add(table);
 
@@ -180,7 +187,7 @@ public class PdfBill {
     }
 
 	private String formatDate(LocalDate date, ResourceBundle i18n) throws UnsupportedEncodingException {
-		return date == null ? "" : date.toString(getI18n(i18n, "bill.pdf.label.date.format"));
+		return date == null ? "" : date.toString(getI18n("bill.pdf.label.date.format"));
 	}
 
 	private void addLineInfo(PdfPTable tableInfo, String label, String value) {

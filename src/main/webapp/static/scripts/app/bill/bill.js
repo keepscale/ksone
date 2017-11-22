@@ -40,7 +40,7 @@ angular.module('crossfitApp')
                                 return {
                                 	id: null,
                                 	member_id: $stateParams.memberId,
-                                	status : "VALIDE",
+                                	status : "DRAFT",
                                 	effectiveDate: new Date(),
                                 	paymentMethod: 'CREDIT_CARD',                                	
                                 	lines: [{
