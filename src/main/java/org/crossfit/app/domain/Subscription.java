@@ -1,32 +1,27 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -39,7 +34,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Subscription extends AbstractAuditingEntity implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -64,6 +64,10 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "subscription_end_date", nullable = false)
     private LocalDate subscriptionEndDate;
 
+    @NotNull        
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false)
+    private PaymentMethod paymentMethod;
     
     public Long getId() {
         return id;
@@ -138,6 +142,13 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 	public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
 		this.subscriptionEndDate = subscriptionEndDate;
 	}
-    
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
     
 }

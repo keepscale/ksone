@@ -36,6 +36,7 @@
 	<include file="classpath:config/liquibase/changelog/13_edit_facturation.xml" relativeToChangelogFile="false"/>
 	<include file="classpath:config/liquibase/changelog/14_add_product.xml" relativeToChangelogFile="false"/>
 	<include file="classpath:config/liquibase/changelog/15_edit_facturation_add_tax.xml" relativeToChangelogFile="false"/>
+	<include file="classpath:config/liquibase/changelog/16_edit_facturation_add_subscription.xml" relativeToChangelogFile="false"/>
     
 
 </databaseChangeLog>

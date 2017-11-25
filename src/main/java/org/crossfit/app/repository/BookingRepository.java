@@ -52,7 +52,13 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 	@Transactional
 	@Query("delete from Booking b where b.subscription.member = :member")
 	void deleteAllByMember(@Param("member") Member member);
-    
+
     Long countBySubscription(Subscription subscription);
+
+	@Query("select count(1) from Booking b where b.subscription = :sub and b.startAt <= :before")
+    Long countBySubscriptionBefore(@Param("sub") Subscription subscription, @Param("before") DateTime beforeIncl);
+
+	@Query("select count(1) from Booking b where b.subscription = :sub and :after <= b.startAt and b.startAt <= :before")
+    Long countBySubscriptionBetween(@Param("sub") Subscription subscription, @Param("after") DateTime startIncl, @Param("before") DateTime endIncl);
 
 }

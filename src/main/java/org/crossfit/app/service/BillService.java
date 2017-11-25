@@ -19,9 +19,10 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.BillStatus;
-import org.crossfit.app.domain.enumeration.MembershipRulesType;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.repository.BillRepository;
+import org.crossfit.app.repository.BillsBucket;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -48,8 +49,12 @@ public class BillService {
     @Inject
     private MembershipService membershipService;
 
+    @Inject
+    private BookingRepository bookingRepository;
+    
 	@Autowired
 	private BillRepository billRepository;
+		
 	@Autowired
 	private SubscriptionRepository subscriptionRepository;
 
@@ -58,55 +63,74 @@ public class BillService {
 		
 		return billRepository.findAll(box, search, new HashSet<>(Arrays.asList(BillStatus.values())), true, pageable);
 	}
-	
 
-	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus, PaymentMethod withPaymentMethod) {
+	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus) {
+		return generateBill(since, until, dayOfMonth, withStatus, billRepository);
+	}
+
+	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus, BillsBucket bucket) {
 
 		log.info("Genreation des factures depuis le {} jusqu'au {} au {} de chaque mois avec le statut {} et le paiement {}", 
-				since, until, dayOfMonth, withStatus, withPaymentMethod);
+				since, until, dayOfMonth, withStatus);
 
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		
 		int counter = 0;
 		since = since.withDayOfMonth(dayOfMonth);
 		while (since.isBefore(until)) {
-			Long nextBillCounter = findLastBillCountNumberInYear(since.getYear(), since.getMonthOfYear(), box) + 1;
+			Long nextBillCounter = findLastBillCountNumberInYear(since.getYear(), since.getMonthOfYear(), box, bucket) + 1;
 			
-			counter = counter + generateBill(since, withStatus, withPaymentMethod, box, nextBillCounter);
+			counter = counter + generateBill(since, withStatus, box, nextBillCounter, bucket);
 			since = since.plusMonths(1);
 		}
 		return counter;
 	}
-	private int generateBill(LocalDate dateAt, BillStatus withStatus, PaymentMethod withPaymentMethod,  CrossFitBox box, Long nextBillCounter) {
+	private int generateBill(LocalDate dateAt, BillStatus withStatus, CrossFitBox box, Long nextBillCounter, BillsBucket bucket) {
 
 		log.info("Genreation des factures au {} avec le statut {}", dateAt, withStatus);
 		
 		Set<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDate(box, dateAt);
 		
 		Map<Member, List<Subscription>> subscriptionByMember = subscriptionToBill.stream().collect(Collectors.groupingBy(Subscription::getMember));
-		
+
+		LocalDate firstDayOfMonth = dateAt.withDayOfMonth(1);
+		LocalDate lastDayOfMonth = firstDayOfMonth.plusMonths(1).minusDays(1);
 		
 		int counter = 0;
 		for (Member m : subscriptionByMember.keySet()) {
 			
 			
-			List<BillLine> lines = new ArrayList<>();
 			
 			List<Subscription> subs = subscriptionByMember.get(m);
 			for (Subscription sub : subs) {
-				//Souscription au mois ?
-				if (membershipService.isMembershipPaymentByMonth(sub.getMembership())) {
-					BillLine line = new BillLine();
-					line.setLabel(sub.getMembership().getName());
-					line.setQuantity(1.0);
+
+				List<BillLine> lines = new ArrayList<>();
+				LocalDate startDateBill = sub.getSubscriptionStartDate().isBefore(firstDayOfMonth) ? firstDayOfMonth : sub.getSubscriptionStartDate();
+				LocalDate endDateBill = sub.getSubscriptionEndDate().isAfter(lastDayOfMonth) ? lastDayOfMonth : sub.getSubscriptionEndDate();
+						
+				BillLine line = new BillLine();
+				line.setLabel(sub.getMembership().getName());
+				line.setQuantity(1.0);
+				if (this.membershipService.isMembershipPaymentByMonth(sub.getMembership())) {
 					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl());
-					line.setTaxPerCent(sub.getMembership().getTaxPerCent());
-					lines.add(line);
 				}
-			}
-			
-			if (!lines.isEmpty()) {				
-				saveAndLockBill(box, nextBillCounter, m, withStatus, withPaymentMethod, dateAt, dateAt, lines);
+				else if (sub.getSubscriptionStartDate().isAfter(firstDayOfMonth.minusDays(1))){
+					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl()); //On facture si la date d'abo est après le mois
+				}
+				else {
+					line.setPriceTaxIncl(0); //On facture pas un truc non recurrent les autres mois
+				}
+				line.setTaxPerCent(sub.getMembership().getTaxPerCent());
+				
+				line.setSubscription(sub, startDateBill, endDateBill);
+				line.setTotalBooking(bookingRepository.countBySubscriptionBefore(sub, endDateBill.toDateTimeAtStartOfDay()));
+				line.setTotalBookingOnPeriod(bookingRepository.countBySubscriptionBetween(sub, startDateBill.toDateTimeAtStartOfDay(), endDateBill.toDateTimeAtStartOfDay()));
+				
+				lines.add(line);
+				
+				LocalDate billDate = dateAt.isBefore(startDateBill) ? startDateBill : dateAt;
+
+				saveAndLockBill(box, nextBillCounter, m, withStatus, billDate, billDate, sub.getPaymentMethod(), lines, bucket);
 				nextBillCounter++;
 				counter++;
 			}
@@ -117,26 +141,26 @@ public class BillService {
 
 	public Bill saveAndLockBill(CrossFitBox box, Member member, BillStatus status, PaymentMethod paymentMethod,
 			LocalDate effectiveDate, LocalDate payAtDate, List<BillLine> lines) {
-		return saveAndLockBill(box, null, member, status, paymentMethod, effectiveDate, payAtDate, lines);
+		return saveAndLockBill(box, null, member, status, effectiveDate, payAtDate, paymentMethod, lines, billRepository);
 	}
 	
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, LocalDate payAtDate, List<BillLine> lines) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, List<BillLine> lines, BillsBucket bucket) {
 		
 		String to = member.getTitle() + " " + member.getFirstName() + " " + member.getLastName();
 		String billAdress = member.getAddress() + "\n" + member.getZipCode() + " " + member.getCity();
 		
-		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, withPaymentMethod, dateAt, payAtDate, lines);
+		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, dateAt, payAtDate, paymentMethod, lines, bucket);
 
 	}
 
 
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, PaymentMethod withPaymentMethod, LocalDate dateAt, LocalDate payAtDate, List<BillLine> lines) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, List<BillLine> lines, BillsBucket bucket) {
 
 		Bill bill = new Bill();
 		bill.setBox(box);
 		bill.setMember(member);
 		bill.setStatus(withStatus);
-		bill.setPaymentMethod(withPaymentMethod);
+		bill.setPaymentMethod(paymentMethod);
 		bill.setEffectiveDate(dateAt);
 		bill.setPayAtDate(payAtDate);
 		bill.setDisplayName(to);
@@ -164,7 +188,7 @@ public class BillService {
 		
 		int year = bill.getEffectiveDate().getYear();
 		int month = bill.getEffectiveDate().getMonthOfYear();
-		Long billsCounter = nextBillCounter == null ? findLastBillCountNumberInYear(year, month, bill.getBox())+1 : nextBillCounter;
+		Long billsCounter = nextBillCounter == null ? findLastBillCountNumberInYear(year, month, bill.getBox(), bucket)+1 : nextBillCounter;
 		
 		
 		//YYYY-MM-000000
@@ -175,15 +199,15 @@ public class BillService {
 		
 		log.trace("Facture de {}€ pour {}: {}", bill.getTotalTaxIncl(), bill.getDisplayName(), bill);
 		
-		return billRepository.save(bill);
+		return bucket.save(bill);
 	}
 	
-	private Long findLastBillCountNumberInYear(int year, int month, CrossFitBox box) {
+	private Long findLastBillCountNumberInYear(int year, int month, CrossFitBox box, BillsBucket bucket) {
 		String yearStr = year + "";
 		
 		//YYYY-MM-000000
 		String startNumber = yearStr + "%";   
-		Page<Bill> billsByNumberDesc = billRepository.findAllBillNumberLikeForBoxOrderByNumberDesc(startNumber, box, new PageRequest(0, 1));
+		Page<Bill> billsByNumberDesc = bucket.findAllBillNumberLikeForBoxOrderByNumberDesc(startNumber, box, new PageRequest(0, 1));
 		
 		Optional<Bill> lastBill = !billsByNumberDesc.hasContent() ? Optional.empty() : Optional.of(billsByNumberDesc.getContent().get(0));
 		

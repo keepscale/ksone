@@ -7,15 +7,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.crossfit.app.domain.util.CustomLocalDateSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
@@ -26,7 +34,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class BillLine extends AbstractAuditingEntity implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -59,6 +72,28 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     
     @Column(name = "total_tax_incl")
     private double totalTaxIncl;
+
+    @ManyToOne(optional=true, cascade = {})
+    @JoinColumn(name = "opt_subscription_id", nullable = true)
+	private Subscription subscription;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "subscription_start", nullable = true)
+	private LocalDate subscriptionStart;
+    
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "subscription_end", nullable = true)
+	private LocalDate subscriptionEnd;
+	
+	@Transient
+	private Long totalBooking;
+	@Transient
+	private Long totalBookingOnPeriod;
 
     
     
@@ -192,5 +227,37 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 				+ ", priceTaxIncl=" + priceTaxIncl + ", totalTaxExcl=" + totalTaxExcl + ", taxPerCent=" + taxPerCent
 				+ ", totalTax=" + totalTax + ", totalTaxIncl=" + totalTaxIncl + "]";
 	}
-    
+
+	public void setSubscription(Subscription sub, LocalDate deb, LocalDate end) {
+		this.subscription = sub;
+		this.subscriptionStart = deb;
+		this.subscriptionEnd = end;
+	}
+
+	public void setTotalBooking(Long totalBooking) {
+		this.totalBooking = totalBooking;
+	}
+	public void setTotalBookingOnPeriod(Long totalBooking) {
+		this.totalBookingOnPeriod = totalBooking;
+	}
+
+	public Subscription getSubscription() {
+		return subscription;
+	}
+
+	public LocalDate getSubscriptionStart() {
+		return subscriptionStart;
+	}
+
+	public LocalDate getSubscriptionEnd() {
+		return subscriptionEnd;
+	}
+
+	public Long getTotalBooking() {
+		return totalBooking;
+	}
+
+	public Long getTotalBookingOnPeriod() {
+		return totalBookingOnPeriod;
+	}
 }

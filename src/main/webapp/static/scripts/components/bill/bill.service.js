@@ -36,16 +36,8 @@ angular.module('crossfitApp')
 
 
             'generate': {
-                method: 'PUT',
-                url: 'api/bills/generate',  
-                timeout: 5 * 60 * 1000,
-                transformRequest: function (data) {
-
-                	data.sinceDate = DateUtils.convertLocaleDateToServer(data.sinceDate);
-                	data.untilDate = DateUtils.convertLocaleDateToServer(data.untilDate);
-                    
-                    return angular.toJson(data);
-                }
+                method: 'GET',
+                url: 'api/bills/generate'
             },
             'deleteDraft': {
                 method: 'DELETE',

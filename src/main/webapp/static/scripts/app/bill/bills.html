@@ -93,18 +93,6 @@
 							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 							</div>
 						</div>
-						
-						<div class="form-group">
-    						<label for="paymentMethod" class="col-xs-4 control-label">Moyen de paiement </label>	
-							
-   							<div class="col-xs-6">
-							  <select class="form-control" id="paymentMethod" ng-model="generate.paymentMethod">
-							    <option ng-repeat="paymentMethod in paymentMethods" value="{{paymentMethod}}"> 
-									{{'crossfitApp.bill.paymentMethod.enum.' + paymentMethod | translate }}
-								</option>
-							  </select>
-						 	</div>
-					 	</div>
 					 	
 						
 						<div class="form-group">
@@ -119,6 +107,17 @@
 						 	</div>
 					 	</div>
 
+						
+						<div class="form-group">
+    						<label for="destination" class="col-xs-4 control-label">Destination de la génération</label>	
+							
+   							<div class="col-xs-6">
+							  <select class="form-control" id="destination" ng-model="generate.dest">
+							    <option value="CSV">Excel</option>
+							    <option value="DATABASE">Base de donnée</option>
+							  </select>
+						 	</div>
+					 	</div>
 
                     </div>
                     <div class="modal-footer">

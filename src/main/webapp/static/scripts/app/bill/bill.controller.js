@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('BillController', function ($scope, $window, $state, Bill, Authority, Member, ParseLinks) {
+    .controller('BillController', function ($scope, $window, $state, Bill, Authority, Member, ParseLinks, DateUtils) {
         $scope.bills = [];
         $scope.page = 1;
         $scope.per_page = 50;
@@ -156,7 +156,17 @@ angular.module('crossfitApp')
 		};
         
         $scope.confirmGenerateBillsForm = function(){
-        	Bill.generate($scope.generate,
+        	var params = $scope.generate;
+        	
+
+
+        	params.sinceDate = DateUtils.formatDateAsDate(params.sinceDate);
+        	params.untilDate = DateUtils.formatDateAsDate(params.untilDate);
+        	
+        	if (params.dest == "CSV"){
+    			$window.open("api/bills/generate?sinceDate="+params.sinceDate+"&untilDate="+params.untilDate+"&atDayOfMonth="+params.atDayOfMonth+"&status="+params.status+"&dest="+params.dest);
+        	}
+        	Bill.generate($scope.params,
                 function (res) {
                     $scope.reset();
                     $scope.clear();

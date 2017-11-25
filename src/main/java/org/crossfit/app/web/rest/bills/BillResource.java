@@ -1,13 +1,16 @@
 package org.crossfit.app.web.rest.bills;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -22,17 +25,21 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.PdfBill;
-import org.crossfit.app.web.rest.dto.bills.BillGenerationParamDTO;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -57,6 +64,34 @@ import com.opencsv.CSVWriter;
 @RestController
 @RequestMapping("/api")
 public class BillResource {
+	public enum DetinationGeneration {
+    	CSV, DATABASE
+	}
+
+	public class InMemoryBillRepository implements BillsBucket{
+
+		private List<Bill> bills = new ArrayList<>();
+		
+		@Override
+		public Page<Bill> findAllBillNumberLikeForBoxOrderByNumberDesc(String like, CrossFitBox box,
+				Pageable pageable) {
+			
+			return new PageImpl<>(bills.stream()
+					.filter(b->{
+						return b.getBox().equals(box) && b.getNumber().startsWith(like.replace("%", ""));
+					})
+					.sorted(Comparator.comparing(Bill::getNumber))
+					.collect(Collectors.toList()));
+			
+		}
+
+		@Override
+		public Bill save(Bill bill) {
+			bills.add(bill);
+			return bill;
+		}
+
+	}
 
 
 	private final Logger log = LoggerFactory.getLogger(BillResource.class);
@@ -103,14 +138,43 @@ public class BillResource {
 
 	/**
 	 * PUT /bills/generate -> Generate bill.
+	 * @param since 
+	 * @param until 
+	 * @param atDayOfMonth 
+	 * @param status 
+	 * @param dest 
+	 * @throws Exception 
 	 */
-	@RequestMapping(value = "/bills/generate", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Integer> create(@Valid @RequestBody BillGenerationParamDTO param) throws URISyntaxException {
-		log.debug("REST request to generate bill : {}", param);
+	@RequestMapping(value = "/bills/generate", method = RequestMethod.GET)
+	public void generate(HttpServletResponse response, 
+			@RequestParam(value = "sinceDate", required = true) String sinceStr, 
+			@RequestParam(value = "untilDate", required = true) String untilStr, 
+			@RequestParam(value = "atDayOfMonth", required = true) int atDayOfMonth, 
+			@RequestParam(value = "status", required = true) BillStatus status, 
+			@RequestParam(value = "dest", required = true) DetinationGeneration dest) throws Exception {
+		log.debug("REST request to generate bill : {}", dest);
 	
-		int totalBillGenerated = billService.generateBill(param.getSinceDate(), param.getUntilDate(), param.getAtDayOfMonth(), param.getStatus(), param.getPaymentMethod());
+				
+		LocalDate since = ISODateTimeFormat.dateTimeParser().parseDateTime(sinceStr).toLocalDate();
+		LocalDate until = ISODateTimeFormat.dateTimeParser().parseDateTime(untilStr).toLocalDate();
 		
-		return ResponseEntity.ok(totalBillGenerated);
+		if (dest == DetinationGeneration.CSV) {
+			InMemoryBillRepository billsBucket = new InMemoryBillRepository();
+			billService.generateBill(since, until, atDayOfMonth, status, billsBucket);
+			
+			OutputStreamWriter sw = new OutputStreamWriter(response.getOutputStream());
+			writeToCSV(billsBucket.bills, sw);
+			
+			response.setCharacterEncoding("ISO-8859-1");
+			response.setContentType("text/csv;charset=ISO-8859-1");
+			response.setHeader("Content-Disposition", "attachment; filename=\"bills-" + since + "-" + until + ".csv\"");
+			response.flushBuffer();
+			
+		}
+		else {
+			billService.generateBill(since, until, atDayOfMonth, status);
+		}
+		
 	}
 
 	/**
@@ -213,48 +277,66 @@ public class BillResource {
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 
-		List<BillLine> billlines = doFindAll(generatePageRequest, search).getContent().stream().flatMap(b->b.getLines().stream()).collect(Collectors.toList());
+		List<Bill> bills = doFindAll(generatePageRequest, search).getContent();
 		
 		StringWriter sw = new StringWriter();
 		
-		try (CSVWriter writer = new CSVWriter(sw)){
+		
+		writeToCSV(bills, sw);
+		
+		
+		return sw.toString();
+	}
 
-			String[] header = new StringBuffer("[Id];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[Name];[Address];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[TotalFact]").toString().split(";");		
-			writer.writeNext(header);
+
+	private void writeToCSV(List<Bill> bills, Writer sw) throws Exception {
+		List<BillLine> billlines = bills.stream().flatMap(b->b.getLines().stream()).collect(Collectors.toList());
+		try (CSVWriter writer = new CSVWriter(sw, ';')){
+			String[] header = new StringBuffer("[IdFact];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[MemberName];[MemberAddress];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[start];[end];[totalBookingOnPeriod];[totalBooking];[TotalFact]").toString().split(";");		
+			writer.writeNext(header, false);
 			for (BillLine line : billlines) {
-				StringBuffer sb = new StringBuffer();
-				append(sb, line.getBill().getId()).append(";");
-				append(sb, line.getBill().getNumber()).append(";");
-				append(sb, line.getBill().getEffectiveDate()).append(";");
-				append(sb, line.getBill().getCreatedDate()).append(";");
+				String[] columns = new String[header.length];
 				
-				append(sb, line.getBill().getMember().getId()).append(";");
-				append(sb, line.getBill().getDisplayName()).append(";");
-				append(sb, line.getBill().getDisplayAddress()).append(";");
+				columns[0] = toString(line.getBill().getId());
+				columns[1] = toString(line.getBill().getNumber());
+				columns[2] = toString(line.getBill().getEffectiveDate());
+				columns[3] = toString(line.getBill().getCreatedDate());
 				
-				append(sb, line.getBill().getPaymentMethod()).append(";");
-				append(sb, line.getBill().getStatus()).append(";");
-				append(sb, line.getQuantity()).append(";");
-				append(sb, line.getLabel()).append(";");
-				append(sb, line.getPriceTaxIncl()).append(";");
-				append(sb, line.getTotalTaxIncl()).append(";");
-				append(sb, line.getBill().getTotalTaxIncl());
+				columns[4] = toString(line.getBill().getMember().getId());
+				columns[5] = toString(line.getBill().getDisplayName());
+				columns[6] = toString(line.getBill().getDisplayAddress());
 				
-				writer.writeNext(sb.toString().split(";"), false);
+				columns[7] = toString(line.getBill().getPaymentMethod());
+				columns[8] = toString(line.getBill().getStatus());
+				columns[9] = toString(line.getQuantity());
+				columns[10] = toString(line.getLabel());
+				columns[11] = toString(line.getPriceTaxIncl());
+				columns[12] = toString(line.getTotalTaxIncl());
+				columns[13] = toString(line.getSubscriptionStart());
+				columns[14] = toString(line.getSubscriptionEnd());
+				columns[15] = toString(line.getTotalBookingOnPeriod());
+				columns[16] = toString(line.getTotalBooking());
+				columns[17] = toString(line.getBill().getTotalTaxIncl());
+				
+				writer.writeNext(columns, false);
 			}
-
-			return sw.getBuffer().toString();
 		} catch (Exception e) {
 			throw e;
 		}
-		
 	}
 	
 
-	private static final StringBuffer append(StringBuffer sb, Object value){
+	private static final String toString(Object value){
 //		sb.append("\"").append(value == null ? "" : value).append("\"");
-		sb.append(value == null ? "" : value);
-		return sb;
+		if (value == null)
+			return "";
+		else if (value instanceof LocalDate) {
+			return ((LocalDate) value).toString("dd/MM/yyyy");
+		}
+		else if (value instanceof DateTime) {
+			return ((DateTime) value).toString("dd/MM/yyyy HH:mm:ss");
+		}
+		return value.toString().replaceAll("\n", " ");
 	}
 	
 }
