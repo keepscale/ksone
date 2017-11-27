@@ -41,7 +41,7 @@
 								
 										<ul class="list-group">
 											<li class="list-group-item three-points-overflow" ng-repeat="(indicator, members) in membersHealth">
-					       						{{'crossfitApp.member.health.enum.' + indicator | translate}}: {{members.length}}
+					       						{{'crossfitApcp.member.health.enum.' + indicator | translate}}: {{members.length}}
 					       						<br/>
 					       						<span class="label" ng-repeat="member in members">
 
@@ -69,7 +69,8 @@
 							  		<a href="#" ng-click="prev()"><</a>
 							  </li>
 							  <li role="presentation" ng-class="{'active': $index==selectedIndex}" ng-repeat="day in planning">
-							  		<a href="#" ng-click="select($index)">{{day.date | date:'EEE dd MMM'}}</a>
+							  		<a href="#" class="visible-sm-block visible-md-block visible-lg-block" ng-click="select($index)">{{day.date | date:'EEE dd MMM'}}</a>
+							  		<a href="#" class="hidden-sm hidden-md hidden-lg" ng-click="select($index)">{{day.date | date:'EEE dd'}}</a>
 							  </li>
 							  <li role="presentation">
 							  		<a href="#" ng-click="next()">></a>
@@ -97,24 +98,41 @@
 																  			<span class="glyphicon"></span>
 																  		</button>
 																  																	  																			
-																		<h5>
+																		<h5 class="visible-sm-block visible-md-block visible-lg-block">
 																			{{slot.start | date:'HH:mm'}} - {{slot.end | date:'HH:mm'}} | 
-																			{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waitingBookings.length > 0 ? ' (+' + slot.waitingBookings.length + ')' : ''}} |
+																			{{slot.bookings.length}}/{{slot.maxAttendees}} inscrits {{slot.waintingNotifs.length > 0 ? ' (+' + slot.waintingNotifs.length + ')' : ''}} |
 																			{{slot.timeSlotType.name}} 
 																				  
 																			<a ui-sref="timeSlot.edit({id:slot.id})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
 																				<span class="glyphicon glyphicon-pencil"></span>
 																			</a>
 																		</h5>
+																		<h6 class="hidden-sm hidden-md hidden-lg">
+																			{{slot.start | date:'HH:mm'}} | {{slot.bookings.length}}/{{slot.maxAttendees}} {{slot.waintingNotifs.length > 0 ? ' (+' + slot.waintingNotifs.length + ')' : ''}}
+																		</h6>
 																	</div>
 																	<div class="col-xs-3">
-																		<button class="btn btn-sm btn-default pull-right" has-any-role="ROLE_ADMIN,ROLE_MANAGER" ng-click="showQuickAddBooking(slot)"><span class="glyphicon glyphicon-plus"></span></button>
+																		<button class="btn btn-sm btn-default pull-right" has-any-role="ROLE_ADMIN,ROLE_MANAGER" ng-click="showQuickAddBooking(slot)">
+																			<span class="glyphicon glyphicon-plus"></span>
+																		</button>
 																		<div class="clearfix"></div>
 																	</div>
 																</div>
 															</div>														
 															<ul class="list-group">
+																<li class="list-group-item three-points-overflow" ng-repeat="wait in slot.waintingNotifs">
+																	<span class="glyphicon glyphicon-time" title="En attente"></span>
+																	{{wait.firstName}} {{wait.lastName}}
+																	
+																	<a href="#" ui-sref="member.edit({id:wait.id})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
+																				<span class="glyphicon glyphicon-pencil"></span>
+																	</a>
+																</li>
 																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
+																	<button ng-click="quickDeleteBooking(booking)" has-any-role="ROLE_ADMIN,ROLE_MANAGER" class="btn btn-xs btn-danger pull-right hidden-xs">
+																		<span class="glyphicon glyphicon-remove">
+																	</span></button>
+																	
 																	<span has-any-role="ROLE_ADMIN,ROLE_MANAGER">
 																		<button class="btn btn-sm btn-default {{booking.checkInDate || !booking.cardUuid ? 'btn-noborder' : ''}}" 
 																			ng-disabled="booking.checkInDate != null || !booking.cardUuid" ng-click="quickCheckIn(booking)"
@@ -123,7 +141,6 @@
 																			<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
 																		</button>
 																	</span>
-																	<button ng-click="quickDeleteBooking(booking)" has-any-role="ROLE_ADMIN,ROLE_MANAGER" class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove"></span></button>
 																	{{booking.title}}
 																	<a href="#" ui-sref="member.edit({id:booking.memberId})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
 																				<span class="glyphicon glyphicon-pencil"></span>

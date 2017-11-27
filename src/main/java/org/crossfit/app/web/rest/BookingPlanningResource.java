@@ -16,10 +16,12 @@ import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlotExclusion;
+import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotExclusionRepository;
+import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
@@ -63,6 +65,9 @@ public class BookingPlanningResource {
 
     @Inject
     private TimeSlotService timeSlotService;
+
+    @Inject
+    private TimeSlotNotificationRepository timeSlotNotificationRepository;
     
     @Inject
     private CrossFitBoxSerivce boxService;
@@ -113,8 +118,10 @@ public class BookingPlanningResource {
         			cardEventRepository.findAllBetweenBookingStartDate(currentCrossFitBox, start, end));
     		log.debug("{} cardevents entre {} et {}", cardEvents.size(), start, end);
         	
+			List<TimeSlotNotification> allNotifications = timeSlotNotificationRepository.findAll();
+			
 			Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
-        			start, end, closedDays, timeSlotExclusions, bookings, cardEvents, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
+        			start, end, closedDays, timeSlotExclusions, bookings, allNotifications, cardEvents, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
         	
         	days = slotInstancesStream
         		.collect(Collectors.groupingBy(TimeSlotInstanceDTO::getDate))
@@ -188,7 +195,7 @@ public class BookingPlanningResource {
 		
 		
     	List<EventSourceDTO> eventSources = timeSlotService.findAllTimeSlotInstance(
-    			startAt, endAt, closedDays, timeSlotExclusions, bookings, new ArrayList<>(), BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
+    			startAt, endAt, closedDays, timeSlotExclusions, bookings, new ArrayList<>(), new ArrayList<>(), BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
     	.collect(Collectors.groupingBy(slotInstance ->{
     		Integer max = slotInstance.getMaxAttendees();
     		Integer count = slotInstance.getTotalBooking();

@@ -8,7 +8,6 @@ import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -29,14 +28,17 @@ public class TimeSlotInstanceDTO {
 
 	private List<BookingDTO> bookings = new ArrayList<>();
 	
+	private List<MemberDTO> waintingNotifs = new ArrayList<>();
+	
 	private TimeSlotInstanceStatus timeSlotStatus;
 	
 	private int totalBooking;
 		
-	public TimeSlotInstanceDTO(DateTime date, TimeSlot slot) {
+	public TimeSlotInstanceDTO(DateTime date, TimeSlot slot, List<MemberDTO> notifs) {
 		super();
 		this.date = date;
 		this.slot = slot;
+		this.waintingNotifs = notifs;
 	}
 
 	public Long getId() {
@@ -78,6 +80,9 @@ public class TimeSlotInstanceDTO {
 		return bookings;
 	}
 
+	public List<MemberDTO> getWaintingNotifs() {
+		return waintingNotifs;
+	}
 
 	public void setBookings(List<BookingDTO> bookings) {
 		this.bookings = bookings;

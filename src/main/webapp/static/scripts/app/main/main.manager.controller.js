@@ -32,7 +32,7 @@ angular.module('crossfitApp')
         $scope.loadAll = function() {
             $scope.quickbooking = {};
             $scope.quickbookingSubscriptions = [];
-            Planning.boxPlanning({page: $scope.page, per_page: 2}, function(result, headers) {
+            Planning.boxPlanning({page: $scope.page, per_page: 10}, function(result, headers) {
             	$scope.page = result.page;
             	$scope.planning = result.days;
             });

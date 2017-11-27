@@ -20,9 +20,11 @@ import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
+import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
@@ -54,7 +56,7 @@ public class TimeSlotService {
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
 			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions, DateTimeZone timeZone){
-		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), new ArrayList<>(), b->{return null;}, timeZone);
+		return findAllTimeSlotInstance(start, end, closedDays, timeSlotExclusions, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), b->{return null;}, timeZone);
 	}
     
 	/**
@@ -70,7 +72,7 @@ public class TimeSlotService {
 	public Stream<TimeSlotInstanceDTO> findAllTimeSlotInstance(
 			DateTime start, DateTime end, 
 			List<ClosedDay> closedDays, Collection<TimeSlotExclusion> timeSlotExclusions,
-			List<Booking> bookings, List<CardEvent> cardEvents, Function<Booking, BookingDTO> bookingMapper, DateTimeZone timeZone){
+			List<Booking> bookings, List<TimeSlotNotification> allNotifications, List<CardEvent> cardEvents, Function<Booking, BookingDTO> bookingMapper, DateTimeZone timeZone){
 
 		List<TimeSlotInstanceDTO> timeSlotInstances = new ArrayList<>();
 		
@@ -90,11 +92,17 @@ public class TimeSlotService {
 		
 		while(!start.isAfter(end)){
 			final DateTime startF = start;
+			
 			List<TimeSlotInstanceDTO> slotInstanceOfDay = allSlots.stream()
 				.filter( isSlotInDay(startF, timeZone))
 				.filter( isSlotVisibleAt(startF))
 				.filter( isSlotNotInAnTimeSlotExclusion(startF, timeSlotExclusionsByTimeSlot))
-				.map(slot -> {return new TimeSlotInstanceDTO(startF, slot);})
+				.map(slot -> {
+					List<MemberDTO> notifs = allNotifications.stream()
+							.filter(ts->ts.getTimeSlot().equals(slot) && ts.getDate().isEqual(startF.toLocalDate()))
+							.map(ts->MemberDTO.MAPPER.apply(ts.getMember()))
+							.collect(Collectors.toList());
+					return new TimeSlotInstanceDTO(startF, slot, notifs);})
 				.collect(Collectors.toList());
 			
 			timeSlotInstances.addAll(slotInstanceOfDay);
