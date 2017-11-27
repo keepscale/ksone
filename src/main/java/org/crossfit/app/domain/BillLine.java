@@ -57,13 +57,15 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     
     @Column(name = "price_tax_excl")
     private double priceTaxExcl;
-    
+
+    @NotNull
     @Column(name = "price_tax_incl")
     private double priceTaxIncl;
     
     @Column(name = "total_tax_excl")
     private double totalTaxExcl;    
 
+    @NotNull
     @Column(name = "tax_per_cent")
     private double taxPerCent;
     

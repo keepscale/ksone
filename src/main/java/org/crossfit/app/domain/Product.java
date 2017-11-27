@@ -46,7 +46,8 @@ public class Product extends AbstractAuditingEntity implements Serializable {
     @Column(name = "price_tax_incl", nullable=false)
     private double priceTaxIncl;
 
-    @Column(name = "tax_per_cent")
+    @NotNull
+    @Column(name = "tax_per_cent", nullable = false)
     private double taxPerCent;
 
     @JsonIgnore
