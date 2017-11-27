@@ -7,6 +7,7 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
+import org.joda.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -62,7 +63,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 	 @Query("select s from Subscription s "
 	 		+ "join fetch s.membership ms "
 	 		+ "join fetch s.member m "
-	 		+ "where ms.box = :box AND s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate")
-	 Set<Subscription> findAllByBoxAtDate(@Param("box") CrossFitBox box, @Param("at")  org.joda.time.LocalDate at);
+	 		+ "where ms.box = :box "
+	 		+ "AND ( (s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate) OR (s.subscriptionStartDate <= :at2 AND :at2 < s.subscriptionEndDate) )")
+	 Set<Subscription> findAllByBoxAtDateOrAtDate(@Param("box") CrossFitBox box, @Param("at")  LocalDate at, @Param("at2")  LocalDate orAt);
 
 }

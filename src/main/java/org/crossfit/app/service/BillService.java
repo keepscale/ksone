@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
+import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
@@ -24,6 +25,7 @@ import org.crossfit.app.repository.BillRepository;
 import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,13 +90,16 @@ public class BillService {
 	private int generateBill(LocalDate dateAt, BillStatus withStatus, CrossFitBox box, Long nextBillCounter, BillsBucket bucket) {
 
 		log.info("Genreation des factures au {} avec le statut {}", dateAt, withStatus);
-		
-		Set<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDate(box, dateAt);
-		
-		Map<Member, List<Subscription>> subscriptionByMember = subscriptionToBill.stream().collect(Collectors.groupingBy(Subscription::getMember));
 
 		LocalDate firstDayOfMonth = dateAt.withDayOfMonth(1);
 		LocalDate lastDayOfMonth = firstDayOfMonth.plusMonths(1).minusDays(1);
+		
+		Set<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDateOrAtDate(box, firstDayOfMonth, lastDayOfMonth);
+		
+		Set<Booking> bookings = bookingRepository.findAllStartBetween(box, LocalDate.parse("1970-01-01").toDateTimeAtStartOfDay() , lastDayOfMonth.plusDays(1).toDateTimeAtStartOfDay());
+		
+		Map<Member, List<Subscription>> subscriptionByMember = subscriptionToBill.stream().collect(Collectors.groupingBy(Subscription::getMember));
+
 		
 		int counter = 0;
 		for (Member m : subscriptionByMember.keySet()) {
@@ -114,8 +119,9 @@ public class BillService {
 				if (this.membershipService.isMembershipPaymentByMonth(sub.getMembership())) {
 					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl());
 				}
-				else if (sub.getSubscriptionStartDate().isAfter(firstDayOfMonth.minusDays(1))){
-					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl()); //On facture si la date d'abo est après le mois
+				else if (new Interval(startDateBill.toDateTimeAtStartOfDay(), endDateBill.plusDays(1).toDateTimeAtStartOfDay())
+						.contains(sub.getSubscriptionStartDate().toDateTimeAtStartOfDay())){
+					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl()); //On facture si la date d'abo est avant la date de fin de periode
 				}
 				else {
 					line.setPriceTaxIncl(0); //On facture pas un truc non recurrent les autres mois
@@ -123,9 +129,13 @@ public class BillService {
 				line.setTaxPerCent(sub.getMembership().getTaxPerCent());
 				
 				line.setSubscription(sub, startDateBill, endDateBill);
-				line.setTotalBooking(bookingRepository.countBySubscriptionBefore(sub, endDateBill.toDateTimeAtStartOfDay()));
-				line.setTotalBookingOnPeriod(bookingRepository.countBySubscriptionBetween(sub, startDateBill.toDateTimeAtStartOfDay(), endDateBill.toDateTimeAtStartOfDay()));
+				line.setTotalBooking(bookings.parallelStream().filter(b->b.getSubscription().equals(sub)).count());
+				line.setTotalBookingOnPeriod(bookings.parallelStream().filter(b->b.getSubscription().equals(sub) 
+						&& b.getStartAt().isAfter(startDateBill.toDateTimeAtStartOfDay())).count());
 				
+//				line.setTotalBooking(bookingRepository.countBySubscriptionBefore(sub, endDateBill.toDateTimeAtStartOfDay()));
+//				line.setTotalBookingOnPeriod(bookingRepository.countBySubscriptionBetween(sub, startDateBill.toDateTimeAtStartOfDay(), endDateBill.toDateTimeAtStartOfDay()));
+//				
 				lines.add(line);
 				
 				LocalDate billDate = dateAt.isBefore(startDateBill) ? startDateBill : dateAt;

@@ -81,14 +81,14 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
     @Column(name = "subscription_start", nullable = true)
-	private LocalDate subscriptionStart;
+	private LocalDate periodStart;
     
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
     @Column(name = "subscription_end", nullable = true)
-	private LocalDate subscriptionEnd;
+	private LocalDate periodEnd;
 	
 	@Transient
 	private Long totalBooking;
@@ -230,8 +230,8 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 
 	public void setSubscription(Subscription sub, LocalDate deb, LocalDate end) {
 		this.subscription = sub;
-		this.subscriptionStart = deb;
-		this.subscriptionEnd = end;
+		this.periodStart = deb;
+		this.periodEnd = end;
 	}
 
 	public void setTotalBooking(Long totalBooking) {
@@ -245,12 +245,12 @@ public class BillLine extends AbstractAuditingEntity implements Serializable {
 		return subscription;
 	}
 
-	public LocalDate getSubscriptionStart() {
-		return subscriptionStart;
+	public LocalDate getPeriodStart() {
+		return periodStart;
 	}
 
-	public LocalDate getSubscriptionEnd() {
-		return subscriptionEnd;
+	public LocalDate getPeriodEnd() {
+		return periodEnd;
 	}
 
 	public Long getTotalBooking() {

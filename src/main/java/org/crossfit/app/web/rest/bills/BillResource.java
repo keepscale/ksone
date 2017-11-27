@@ -1,7 +1,6 @@
 package org.crossfit.app.web.rest.bills;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
@@ -162,11 +161,11 @@ public class BillResource {
 			InMemoryBillRepository billsBucket = new InMemoryBillRepository();
 			billService.generateBill(since, until, atDayOfMonth, status, billsBucket);
 			
-			OutputStreamWriter sw = new OutputStreamWriter(response.getOutputStream());
+			StringWriter sw = new StringWriter();
 			writeToCSV(billsBucket.bills, sw);
 			
-			response.setCharacterEncoding("ISO-8859-1");
 			response.setContentType("text/csv;charset=ISO-8859-1");
+			response.getOutputStream().write(sw.toString().getBytes("ISO-8859-1"));
 			response.setHeader("Content-Disposition", "attachment; filename=\"bills-" + since + "-" + until + ".csv\"");
 			response.flushBuffer();
 			
@@ -292,7 +291,7 @@ public class BillResource {
 	private void writeToCSV(List<Bill> bills, Writer sw) throws Exception {
 		List<BillLine> billlines = bills.stream().flatMap(b->b.getLines().stream()).collect(Collectors.toList());
 		try (CSVWriter writer = new CSVWriter(sw, ';')){
-			String[] header = new StringBuffer("[IdFact];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[MemberName];[MemberAddress];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[start];[end];[totalBookingOnPeriod];[totalBooking];[TotalFact]").toString().split(";");		
+			String[] header = new StringBuffer("[IdFact];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[MemberName];[MemberAddress];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[SubscriptionStart];[SubscriptionEnd];[PeriodStart];[PeriodEnd];[totalBookingOnPeriod];[totalBooking];[TotalFact]").toString().split(";");		
 			writer.writeNext(header, false);
 			for (BillLine line : billlines) {
 				String[] columns = new String[header.length];
@@ -312,11 +311,13 @@ public class BillResource {
 				columns[10] = toString(line.getLabel());
 				columns[11] = toString(line.getPriceTaxIncl());
 				columns[12] = toString(line.getTotalTaxIncl());
-				columns[13] = toString(line.getSubscriptionStart());
-				columns[14] = toString(line.getSubscriptionEnd());
-				columns[15] = toString(line.getTotalBookingOnPeriod());
-				columns[16] = toString(line.getTotalBooking());
-				columns[17] = toString(line.getBill().getTotalTaxIncl());
+				columns[13] = toString(line.getSubscription().getSubscriptionStartDate());
+				columns[14] = toString(line.getSubscription().getSubscriptionEndDate());
+				columns[15] = toString(line.getPeriodStart());
+				columns[16] = toString(line.getPeriodEnd());
+				columns[17] = toString(line.getTotalBookingOnPeriod());
+				columns[18] = toString(line.getTotalBooking());
+				columns[19] = toString(line.getBill().getTotalTaxIncl());
 				
 				writer.writeNext(columns, false);
 			}
@@ -336,6 +337,7 @@ public class BillResource {
 		else if (value instanceof DateTime) {
 			return ((DateTime) value).toString("dd/MM/yyyy HH:mm:ss");
 		}
+		
 		return value.toString().replaceAll("\n", " ");
 	}
 	
