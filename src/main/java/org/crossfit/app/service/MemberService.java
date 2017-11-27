@@ -107,6 +107,21 @@ public class MemberService {
 					.collect(Collectors.toList());	
 	}
 
+
+	public List<Member> findAllWithSubscriptionEndNotAtEndMonth() {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+		 
+		 Stream<Subscription> stream = subscriptions.stream();
+		 stream = stream.filter(s->membershipService.isMembershipPaymentByMonth(s.getMembership()));
+		 stream = stream.filter(s->s.getSubscriptionEndDate().getDayOfMonth() != s.getSubscriptionEndDate().dayOfMonth().withMaximumValue().getDayOfMonth());
+		 
+		return stream.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
+				.entrySet().stream()
+					.map(e->e.getKey())
+					.collect(Collectors.toList());	
+	}
+	
 	public List<Member> findAllWithDoubleSubscription(HealthIndicator health) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);

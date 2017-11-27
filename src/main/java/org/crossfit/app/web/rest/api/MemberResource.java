@@ -59,7 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberResource {
 
 	public enum HealthIndicator {
-		SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL;
+		SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL, SUBSCRIPTIONS_NOT_END_AT_END_MONTH;
 
 	}
 
@@ -351,6 +351,10 @@ public class MemberResource {
 		
 		results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 
 				memberService.findAllWithSubscriptionEndBeforeStart()
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+
+		results.put(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH, 
+				memberService.findAllWithSubscriptionEndNotAtEndMonth()
 				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
 		
 		results.put(HealthIndicator.NO_SUBSCRIPTION,
