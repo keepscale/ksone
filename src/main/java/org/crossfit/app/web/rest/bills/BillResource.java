@@ -291,7 +291,7 @@ public class BillResource {
 	private void writeToCSV(List<Bill> bills, Writer sw) throws Exception {
 		List<BillLine> billlines = bills.stream().flatMap(b->b.getLines().stream()).collect(Collectors.toList());
 		try (CSVWriter writer = new CSVWriter(sw, ';')){
-			String[] header = new StringBuffer("[IdFact];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[MemberName];[MemberAddress];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[SubscriptionStart];[SubscriptionEnd];[PeriodStart];[PeriodEnd];[totalBookingOnPeriod];[totalBooking];[TotalFact]").toString().split(";");		
+			String[] header = new StringBuffer("[FactId];[FactNumber];[EffectiveDate];[CreatedDate];[MemberId];[MemberName];[MemberAddress];[Payment];[Status];[Quantity];[Label];[UnitPrice];[TotalPrice];[SubscriptionId];[SubscriptionStart];[SubscriptionEnd];[PeriodStart];[PeriodEnd];[totalBookingOnPeriod];[totalBooking];[TotalFact]").toString().split(";");		
 			writer.writeNext(header, false);
 			for (BillLine line : billlines) {
 				String[] columns = new String[header.length];
@@ -311,13 +311,14 @@ public class BillResource {
 				columns[10] = toString(line.getLabel());
 				columns[11] = toString(line.getPriceTaxIncl());
 				columns[12] = toString(line.getTotalTaxIncl());
-				columns[13] = toString(line.getSubscription().getSubscriptionStartDate());
-				columns[14] = toString(line.getSubscription().getSubscriptionEndDate());
-				columns[15] = toString(line.getPeriodStart());
-				columns[16] = toString(line.getPeriodEnd());
-				columns[17] = toString(line.getTotalBookingOnPeriod());
-				columns[18] = toString(line.getTotalBooking());
-				columns[19] = toString(line.getBill().getTotalTaxIncl());
+				columns[13] = toString(line.getSubscription().getId());
+				columns[14] = toString(line.getSubscription().getSubscriptionStartDate());
+				columns[15] = toString(line.getSubscription().getSubscriptionEndDate());
+				columns[16] = toString(line.getPeriodStart());
+				columns[17] = toString(line.getPeriodEnd());
+				columns[18] = toString(line.getTotalBookingOnPeriod());
+				columns[19] = toString(line.getTotalBooking());
+				columns[20] = toString(line.getBill().getTotalTaxIncl());
 				
 				writer.writeNext(columns, false);
 			}

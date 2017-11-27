@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ import org.crossfit.app.repository.PersistentTokenRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
+import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
@@ -105,14 +107,23 @@ public class MemberService {
 					.collect(Collectors.toList());	
 	}
 
-	public List<Member> findAllWithDoubleSubscription() {
+	public List<Member> findAllWithDoubleSubscription(HealthIndicator health) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 	
-		return subscriptions.stream()
-				.filter(s->membershipService.isMembershipPaymentByMonth(s.getMembership()))
+		 
 //				.filter(s->s.getMember().getId()==1514)
-				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
+				
+		 
+		 Stream<Subscription> stream = subscriptions.stream();
+		 if (health == HealthIndicator.SUBSCRIPTIONS_OVERLAP){
+			 stream = stream.filter(s->membershipService.isMembershipPaymentByMonth(s.getMembership()));
+		 }
+		 else  if (health == HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT){
+			 stream = stream.filter(s->!membershipService.isMembershipPaymentByMonth(s.getMembership()));
+		 }
+		 
+		return stream.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
 				.entrySet().stream()
 					.filter(e->isOverLap(e.getValue()))
 					.map(e->e.getKey())

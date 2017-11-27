@@ -59,7 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberResource {
 
 	public enum HealthIndicator {
-		SUBSCRIPTIONS_OVERLAP, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL;
+		SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL;
 
 	}
 
@@ -342,7 +342,11 @@ public class MemberResource {
 		Map<HealthIndicator, List<MemberDTO>> results = new HashMap<>();
 
 		results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 
-				memberService.findAllWithDoubleSubscription()
+				memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP)
+				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+
+		results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, 
+				memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT)
 				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
 		
 		results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 

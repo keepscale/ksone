@@ -112,7 +112,9 @@ public class BillService {
 				List<BillLine> lines = new ArrayList<>();
 				LocalDate startDateBill = sub.getSubscriptionStartDate().isBefore(firstDayOfMonth) ? firstDayOfMonth : sub.getSubscriptionStartDate();
 				LocalDate endDateBill = sub.getSubscriptionEndDate().isAfter(lastDayOfMonth) ? lastDayOfMonth : sub.getSubscriptionEndDate();
-						
+
+				LocalDate billDate = dateAt.isBefore(startDateBill) ? startDateBill : dateAt;
+				
 				BillLine line = new BillLine();
 				line.setLabel(sub.getMembership().getName());
 				line.setQuantity(1.0);
@@ -122,6 +124,7 @@ public class BillService {
 				else if (new Interval(startDateBill.toDateTimeAtStartOfDay(), endDateBill.plusDays(1).toDateTimeAtStartOfDay())
 						.contains(sub.getSubscriptionStartDate().toDateTimeAtStartOfDay())){
 					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl()); //On facture si la date d'abo est avant la date de fin de periode
+					billDate = sub.getSubscriptionStartDate();
 				}
 				else {
 					line.setPriceTaxIncl(0); //On facture pas un truc non recurrent les autres mois
@@ -138,7 +141,6 @@ public class BillService {
 //				
 				lines.add(line);
 				
-				LocalDate billDate = dateAt.isBefore(startDateBill) ? startDateBill : dateAt;
 
 				saveAndLockBill(box, nextBillCounter, m, withStatus, billDate, billDate, sub.getPaymentMethod(), lines, bucket);
 				nextBillCounter++;

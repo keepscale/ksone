@@ -73,7 +73,8 @@
 				"NO_SUBSCRIPTION" : "Pas d'abonnement",
 				"NO_ADDRESS" : "Pas d'adresse",
 				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abonnement de début/fin incohérente",
-				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement"
+				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement",
+				"SUBSCRIPTIONS_OVERLAP_NON_RECURRENT" : "Chevauchement d'abonnement non récurrent"
 			},
             "messages": {
 	            "error": {
