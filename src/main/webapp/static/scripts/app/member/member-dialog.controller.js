@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking', 'Authority',
-        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking, Authority) {
+    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking', 'Authority', 'Bill',
+        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking, Authority, Bill) {
 
     	$scope.view = "infoperso";
     	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
         $scope.memberships = Membership.query();
         $scope.roles = Authority.query();
+        $scope.paymentMethods = Bill.paymentMethods();
         
         
 

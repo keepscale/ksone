@@ -233,6 +233,7 @@ public class MemberService {
         	s.setMembership(dto.getMembership());
         	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
+        	s.setPaymentMethod(dto.getPaymentMethod());
         	
 			member.getSubscriptions().add(s);
 		}

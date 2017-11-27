@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Function;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.joda.time.LocalDate;
@@ -33,6 +37,7 @@ public class SubscriptionDTO implements Serializable {
 		dto.setMembership(s.getMembership());
 		dto.setSubscriptionStartDate(s.getSubscriptionStartDate());
 		dto.setSubscriptionEndDate(s.getSubscriptionEndDate());
+		dto.setPaymentMethod(s.getPaymentMethod());
 		
 		return dto;
 	};
@@ -50,6 +55,9 @@ public class SubscriptionDTO implements Serializable {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
     private LocalDate subscriptionEndDate;
+
+    @NotNull
+    private PaymentMethod paymentMethod;
 
     private Long bookingCount;
     private int maxCount;
@@ -124,6 +132,14 @@ public class SubscriptionDTO implements Serializable {
 
 	public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
 		this.subscriptionEndDate = subscriptionEndDate;
+	}
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
     
     

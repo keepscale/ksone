@@ -19,6 +19,7 @@ angular.module('crossfitApp')
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         $translatePartialLoader.addPart('member');
+                        $translatePartialLoader.addPart('bill');
                         $translatePartialLoader.addPart('global');
                         return $translate.refresh();
                     }]
