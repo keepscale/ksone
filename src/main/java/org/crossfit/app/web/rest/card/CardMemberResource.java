@@ -92,8 +92,8 @@ public class CardMemberResource {
 		
 		start = start < 0 ? 0 : start;
 		end = end >= members.size() ? members.size()-1 : end;
-		
-		return new PageImpl<>(members.subList(start, end), generatePageRequest, members.size());
+
+		return new PageImpl<>(members.isEmpty() ? members : members.subList(start, end), generatePageRequest, members.size());
 	}
 
 
