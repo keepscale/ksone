@@ -41,10 +41,15 @@ angular.module('crossfitApp')
             	$scope.membersHealthCount = result;
             })
         };
+
+        $scope.toggle = function(event){
+        	var panel = $(event.target).parents(".panel");
+        	$(panel).toggleClass("close-slot");
+        }
         
         $scope.forceOpenedSlot = [];
         
-        $scope.toggle = function(slot){
+        $scope.forceOpen = function(slot){
         	var idx = $scope.forceOpenedSlot.indexOf(slot.start);
 
 			// Is currently selected
