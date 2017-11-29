@@ -36,6 +36,7 @@
             	"DRAFT" : "Brouillon"
             },
             "paymentMethod.enum" : {
+            	"NA" : "Non Applicable",
             	"CREDIT_CARD" : "CB",
             	"CASH" : "Espèce",
             	"BANK_CHECK" : "Chèque",
