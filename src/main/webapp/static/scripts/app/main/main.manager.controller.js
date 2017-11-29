@@ -41,9 +41,21 @@ angular.module('crossfitApp')
             	$scope.membersHealthCount = result;
             })
         };
-        $scope.toggle = function(event){
-        	var panel = $(event.target).parents(".panel");
-        	$(panel).toggleClass("close-slot");
+        
+        $scope.forceOpenedSlot = [];
+        
+        $scope.toggle = function(slot){
+        	var idx = $scope.forceOpenedSlot.indexOf(slot.start);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.forceOpenedSlot.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.forceOpenedSlot.push(slot.start);
+			}
         }
 
         
@@ -68,6 +80,9 @@ angular.module('crossfitApp')
         		style = "close-slot"
         	}
         	else{
+        		style = "open-slot";
+        	}
+        	if ($scope.forceOpenedSlot.indexOf(slot.start) > -1){
         		style = "open-slot";
         	}
         	if (slot.bookings.length == 0){
