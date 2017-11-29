@@ -66,8 +66,7 @@
 				"ROLE_COMPTABLE" : "Comptable",
 				"ROLE_COACH" : "Coach"
 				
-			},
-			
+			},			
 			"health.enum" : {
 				"NO_CARD" : "Sans Badge",
 				"NO_SUBSCRIPTION" : "Pas d'abonnement",
@@ -76,6 +75,15 @@
 				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement",
 				"SUBSCRIPTIONS_OVERLAP_NON_RECURRENT" : "Chevauchement d'abonnement non récurrent",
 				"SUBSCRIPTIONS_NOT_END_AT_END_MONTH" : "Abonnement ne se terminant pas en fin de mois"
+			},			
+			"health.enum.min" : {
+				"NO_CARD" : "Sans Badge",
+				"NO_SUBSCRIPTION" : "Pas d'abo.",
+				"NO_ADDRESS" : "Pas d'adresse",
+				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abo. début/fin",
+				"SUBSCRIPTIONS_OVERLAP" : "Chev. d'abo.",
+				"SUBSCRIPTIONS_OVERLAP_NON_RECURRENT" : "Chev. d'abo. non récu.",
+				"SUBSCRIPTIONS_NOT_END_AT_END_MONTH" : "Abo. pas en fin de mois"
 			},
             "messages": {
 	            "error": {

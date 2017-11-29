@@ -60,6 +60,11 @@ angular.module('crossfitApp')
                 method: 'PUT',
                 url: 'api/members/:id/lock', 
                 params : {id: '@id'}
+            },
+            'healthIndicators': { 
+            	method: 'GET',
+                url: 'api/members/healthIndicators',  
+                isArray: true
             }
         });
     });

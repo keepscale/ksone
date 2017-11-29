@@ -28,8 +28,13 @@
 		
 		<div class="row">
 		
-			<div class="col-xs-10">
+			<div class="col-xs-12">
 			
+								
+				<div class="form-group pull-right form-inline">
+					<label>{{totalMember}} membres</label>
+				</div>
+				
 				<div class="form-group pull-left" style="padding: 0 0 20px 0;">
 				
 					<div class="checkbox-list">
@@ -77,11 +82,20 @@
 
 					</div>
 				</div>	
-			</div>
-			<div class="col-xs-2">					
-				<div class="form-group pull-right form-inline">
-					<label>{{totalMember}} membres</label>
-				</div>
+				
+				<div class="form-group pull-left" style="padding: 0 20px;">
+					<div class="checkbox-list">
+						<span class="checkbox-title">Incohérence</span>
+						<div class="checkbox-list-content">
+							<label ng-repeat="hi in healthIndicators">
+							  <input type="checkbox" value="{{hi}}"
+								    ng-checked="selectedhealthIndicators.indexOf(hi) > -1"
+			  						ng-click="toggleSelectedHealthIndicator(hi)"> {{'crossfitApp.member.health.enum.min.' + hi | translate}}
+							</label>
+						</div>
+
+					</div>
+				</div>	
 			</div>
 		</div>
 	</form>		

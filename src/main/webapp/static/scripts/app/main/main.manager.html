@@ -40,16 +40,8 @@
 										</div>
 								
 										<ul class="list-group">
-											<li class="list-group-item three-points-overflow" ng-repeat="(indicator, members) in membersHealth">
-					       						{{'crossfitApp.member.health.enum.' + indicator | translate}}: {{members.length}}
-					       						<br/>
-					       						<span class="label" ng-repeat="member in members">
-
-					       								<a href="#" ui-sref="member.edit({id:member.id})" has-any-role="ROLE_ADMIN,ROLE_MANAGER">
-					       									{{member.firstName}} {{member.lastName}}
-					       								</a>
-												</span>
-												
+											<li class="list-group-item three-points-overflow" ng-repeat="(indicator, count) in membersHealthCount">
+					       						{{'crossfitApp.member.health.enum.' + indicator | translate}}: {{count}}
 					       					</li>
 					       				</ul>
 									</div>

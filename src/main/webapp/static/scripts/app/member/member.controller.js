@@ -12,6 +12,8 @@ angular.module('crossfitApp')
         $scope.selectedMemberships = [];
         $scope.roles = [];
         $scope.selectedRoles = ["ROLE_USER"];
+        $scope.healthIndicators = [];
+        $scope.selectedHealthIndicators = [];
         
         $scope.loadAll = function() {
             Member.query({
@@ -19,6 +21,7 @@ angular.module('crossfitApp')
             	search: $scope.searchLike, 
             	include_memberships: $scope.selectedMemberships, 
             	include_roles: $scope.selectedRoles,
+            	with_healthindicators: $scope.selectedHealthIndicators,
             	include_actif: $scope.include_actif,
             	include_not_enabled: $scope.include_not_ennabled,
             	include_bloque: $scope.include_bloque}, 
@@ -113,6 +116,21 @@ angular.module('crossfitApp')
 				$scope.selectedRoles.push(role);
 			}
 		};
+		
+        
+        $scope.toggleSelectedHealthIndicator = function toggleSelectedHealthIndicator(hi) {
+			var idx = $scope.selectedHealthIndicators.indexOf(hi);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.selectedHealthIndicators.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.selectedHealthIndicators.push(hi);
+			}
+		};
 
 					        
 		$scope.export = function() {
@@ -129,6 +147,9 @@ angular.module('crossfitApp')
             }
             for (var i = 0; i < $scope.selectedRoles.length; i++) {
             	params += "&include_roles=" + $scope.selectedRoles[i];
+            }
+            for (var i = 0; i < $scope.selectedHealthIndicators.length; i++) {
+            	params += "&with_healthindicators=" + $scope.selectedHealthIndicators[i];
             }
         	
             
@@ -150,6 +171,10 @@ angular.module('crossfitApp')
                 	
                 });
             });
+        	
+        	Member.healthIndicators({}, function(result){
+        		$scope.healthIndicators = result;
+        	});
         }
         
         $scope.init();

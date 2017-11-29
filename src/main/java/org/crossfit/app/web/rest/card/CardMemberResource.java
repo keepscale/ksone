@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -81,9 +82,18 @@ public class CardMemberResource {
 	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
-		return memberRepository.findAll(
+		List<Member> members =  memberRepository.findAll(
 				boxService.findCurrentCrossFitBox(), customSearch,null, true, null, true,
-				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
+				includeActif, includeNotEnabled, includeBloque);
+
+		
+		int start = generatePageRequest.getPageNumber() * generatePageRequest.getPageSize();
+		int end = (generatePageRequest.getPageNumber()+1) * generatePageRequest.getPageSize();
+		
+		start = start < 0 ? 0 : start;
+		end = end >= members.size() ? members.size()-1 : end;
+		
+		return new PageImpl<>(members.subList(start, end), generatePageRequest, members.size());
 	}
 
 

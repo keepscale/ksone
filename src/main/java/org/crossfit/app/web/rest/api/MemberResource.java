@@ -3,12 +3,14 @@ package org.crossfit.app.web.rest.api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +38,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -137,12 +140,13 @@ public class MemberResource {
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
 			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
+			@RequestParam(value = "with_healthindicators", required = false) HealthIndicator[] withHealthIndicators,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque );
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
 		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
@@ -155,13 +159,14 @@ public class MemberResource {
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
 			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
+			@RequestParam(value = "with_healthindicators", required = false) HealthIndicator[] withHealthIndicators,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque );
 		
 		StringBuffer sb = new StringBuffer();
 
@@ -188,22 +193,37 @@ public class MemberResource {
 
 	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, boolean includeAllRoles,
 			boolean includeActif, boolean includeNotEnabled, boolean includeBloque) {
-		return doFindAll(generatePageRequest, search, includeAllMemberships, new Long[]{} , includeAllRoles, new String[]{} , includeActif, includeNotEnabled, includeBloque);
+		return doFindAll(generatePageRequest, search, includeAllMemberships, new Long[]{} , includeAllRoles, new String[]{} , null, includeActif, includeNotEnabled, includeBloque);
 	}
-	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, String[] includeRoles, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
-		return doFindAll(generatePageRequest, search, false, includeMembershipsIds, false, includeRoles, includeActif, includeNotEnabled, includeBloque);
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, String[] includeRoles, HealthIndicator[] withHealthIndicators, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+		return doFindAll(generatePageRequest, search, false, includeMembershipsIds, false, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque);
 	}
 		
-	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, Long[] includeMembershipsIds, boolean includeAllRoles, String[] includeRoles, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, Long[] includeMembershipsIds, boolean includeAllRoles, String[] includeRoles, HealthIndicator[] withHealthIndicators, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
-		return memberRepository.findAll(
+		List<Member> members = memberRepository.findAll(
 				boxService.findCurrentCrossFitBox(), customSearch, 
 				Stream.of(includeMembershipsIds != null && includeMembershipsIds.length > 0 ? includeMembershipsIds : new Long[]{-1L}).collect(Collectors.toSet()), 
 				includeAllMemberships,
 				Stream.of(includeRoles != null && includeRoles.length > 0 ? includeRoles : new String[]{""}).collect(Collectors.toSet()), 
 				includeAllRoles,
-				includeActif, includeNotEnabled, includeBloque, generatePageRequest);
+				includeActif, includeNotEnabled, includeBloque);
+		
+		if (withHealthIndicators != null && withHealthIndicators.length > 0) {
+			Map<HealthIndicator, List<Member>> calculateHealthIndicators = calculateHealthIndicators(withHealthIndicators);
+			Set<Member> memberConcernedByHealth = calculateHealthIndicators.values().stream().flatMap(l->l.stream()).collect(Collectors.toSet());
+			members.removeIf(m->!memberConcernedByHealth.contains(m));
+		}
+		
+		
+		int start = generatePageRequest.getPageNumber() * generatePageRequest.getPageSize();
+		int end = (generatePageRequest.getPageNumber()+1) * generatePageRequest.getPageSize();
+		
+		start = start < 0 ? 0 : start;
+		end = end >= members.size() ? members.size()-1 : end;
+		
+		return new PageImpl<>(members.subList(start, end), generatePageRequest, members.size());
 	}
 
 	/**
@@ -334,43 +354,70 @@ public class MemberResource {
 	}
 	
 	/**
+	 * GET /members/healthIndicators -> get all the paymentMethods.
+	 */
+	@RequestMapping(value = "/members/healthIndicators", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<HealthIndicator[]> getHealthIndicators(){
+		return new ResponseEntity<>(HealthIndicator.values(), HttpStatus.OK);
+	}
+	
+	/**
 	 * GET /members/health -> get all the members.
 	 */
 	@RequestMapping(value = "/members/health", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<HealthIndicator, List<MemberDTO>>> getAllMemberWithBadHealth(){
+	public ResponseEntity<Map<HealthIndicator, Integer>> getAllMemberWithBadHealth(){
 		
-		Map<HealthIndicator, List<MemberDTO>> results = new HashMap<>();
+		Map<HealthIndicator, List<Member>> results = calculateHealthIndicators(HealthIndicator.values());
+		
+		Map<HealthIndicator, Integer> resultsdto = results.entrySet().stream()
+		        .collect(Collectors.toMap(
+		                e -> e.getKey(),
+		                e -> e.getValue().size()
+		            ));
+		return ResponseEntity.ok(resultsdto);
+	}
 
-		results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 
-				memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP)
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
 
-		results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, 
-				memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT)
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
-		
-		results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 
-				memberService.findAllWithSubscriptionEndBeforeStart()
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+	private Map<HealthIndicator, List<Member>> calculateHealthIndicators(HealthIndicator[] forHealthIndicators) {
+		Map<HealthIndicator, List<Member>> results = new HashMap<>();
 
-		results.put(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH, 
-				memberService.findAllWithSubscriptionEndNotAtEndMonth()
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		List<HealthIndicator> asList = Arrays.asList(forHealthIndicators);
 		
-		results.put(HealthIndicator.NO_SUBSCRIPTION,
-				memberService.findAllMemberWithNoActiveSubscription()
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
+		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_OVERLAP)) {
+			results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 
+					memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP));
+		}
 
-		results.put(HealthIndicator.NO_CARD,
-				memberService.findAllMemberWithNoCard()
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
-		
-		results.put(HealthIndicator.NO_ADDRESS,
-				memberService.findAllMemberWithNoAddress()
-				.stream().map(MemberDTO.MAPPER).collect(Collectors.toList()));
-		
-		return ResponseEntity.ok(results);
-		
+		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT)) {
+			results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, 
+					memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT));
+		}
+
+		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL)) {
+			results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 
+					memberService.findAllWithSubscriptionEndBeforeStart());
+		}
+
+		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH)) {
+			results.put(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH, 
+					memberService.findAllWithSubscriptionEndNotAtEndMonth());
+		}
+
+		if (asList.contains(HealthIndicator.NO_SUBSCRIPTION)) {
+			results.put(HealthIndicator.NO_SUBSCRIPTION,
+					memberService.findAllMemberWithNoActiveSubscription());
+		}
+
+		if (asList.contains(HealthIndicator.NO_CARD)) {
+			results.put(HealthIndicator.NO_CARD,
+					memberService.findAllMemberWithNoCard());
+		}
+
+		if (asList.contains(HealthIndicator.NO_ADDRESS)) {
+			results.put(HealthIndicator.NO_ADDRESS,
+					memberService.findAllMemberWithNoAddress());
+		}
+		return results;
 	}
 
 			

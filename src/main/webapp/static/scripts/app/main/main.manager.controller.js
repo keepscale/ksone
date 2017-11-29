@@ -8,7 +8,7 @@ angular.module('crossfitApp')
         $scope.quickbooking = {};
         $scope.quickbookingSubscriptions = [];
         
-        $scope.membersHealths;
+        $scope.membersHealthCount;
         
         Principal.identity().then(function(account) {
             $scope.account = account;
@@ -38,7 +38,7 @@ angular.module('crossfitApp')
             });
             
             Member.health({}, function(result, headers){
-            	$scope.membersHealth = result;
+            	$scope.membersHealthCount = result;
             })
         };
         $scope.toggle = function(event){
@@ -142,11 +142,11 @@ angular.module('crossfitApp')
         
         $scope.hasHealthIndicator = function(){
         	var hasIndicator = false;
-        	if ($scope.membersHealth == null){
+        	if ($scope.membersHealthCount == null){
         		return false;
         	}
-        	Object.keys($scope.membersHealth).forEach(function(key,index) {
-        	    if ($scope.membersHealth[key].length > 0){
+        	Object.keys($scope.membersHealthCount).forEach(function(key,index) {
+        	    if ($scope.membersHealthCount[key] > 0){
         	    	hasIndicator = true;
         	    }
         	});

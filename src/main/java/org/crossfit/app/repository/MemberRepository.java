@@ -6,8 +6,6 @@ import java.util.Set;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -42,13 +40,12 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "or m.subscriptions is empty "
     		+ ") "
     		+ "order by m.enabled DESC, m.locked ASC, m.lastName, m.firstName")
-	Page<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
+	List<Member> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
 			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, 
 			@Param("includeAllMembership") boolean includeAllMembership,
 			@Param("includeRoles") Set<String> roles, 
 			@Param("includeAllRole") boolean includeAllRole,
-			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque, 
-			Pageable pageable);
+			@Param("includeActif") boolean includeActif,@Param("includeNotEnabled")boolean includeNotEnabled, @Param("includeBloque")boolean includeBloque);
 
     @Query("select m from Member m "
     		+ "left join fetch m.authorities "
