@@ -9,7 +9,10 @@
             	"delete" : "Supprimer"
         	},
         	"name" : "Nom de la box",
+        	"billname": "Nom de facturation",
         	"billAddress": "Adresse de facturation",
+        	"billlogoUrl": "URL Logo sur les factures",
+        	"billFooter": "Message aux pieds des factures",
         	"websitepattern" : "Regexp du site",
         	"adminwebsite" : "Url du site d'admin",
             "bookingwebsite": "Url du site de résa.",

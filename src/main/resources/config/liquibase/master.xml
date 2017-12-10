@@ -38,6 +38,7 @@
 	<include file="classpath:config/liquibase/changelog/15_edit_facturation_add_tax.xml" relativeToChangelogFile="false"/>
 	<include file="classpath:config/liquibase/changelog/16_edit_facturation_add_subscription.xml" relativeToChangelogFile="false"/>
    	<include file="classpath:config/liquibase/changelog/17_edit_facturation_not_null_tax_per_cent.xml" relativeToChangelogFile="false"/>
+   	<include file="classpath:config/liquibase/changelog/18_edit_box_add_bill_info.xml" relativeToChangelogFile="false"/>
     
 
 </databaseChangeLog>

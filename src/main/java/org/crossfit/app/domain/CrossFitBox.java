@@ -36,11 +36,18 @@ public class CrossFitBox implements Serializable {
     @NotNull        
     @Column(name = "name", nullable = false)
     private String name;
-    
 
-    @NotNull        
+    @Column(name = "bill_name", nullable = false)
+    private String billName;
+
     @Column(name = "bill_address", nullable = true)
     private String billAddress;
+
+    @Column(name = "bill_logo_url", nullable = true)
+    private String billLogoUrl;
+    
+    @Column(name = "bill_footer", nullable = true)
+    private String billFooter;
 
     @NotNull        
     @Column(name = "website_pattern", nullable = false)
@@ -166,12 +173,36 @@ public class CrossFitBox implements Serializable {
 		this.redirectToRules = redirectToRules;
 	}
 
+	public String getBillName() {
+		return billName;
+	}
+
+	public void setBillName(String billName) {
+		this.billName = billName;
+	}
+
 	public String getBillAddress() {
 		return billAddress;
 	}
 
 	public void setBillAddress(String billAddress) {
 		this.billAddress = billAddress;
+	}
+
+	public String getBillLogoUrl() {
+		return billLogoUrl;
+	}
+
+	public void setBillLogoUrl(String billLogoUrl) {
+		this.billLogoUrl = billLogoUrl;
+	}
+
+	public String getBillFooter() {
+		return billFooter;
+	}
+
+	public void setBillFooter(String billFooter) {
+		this.billFooter = billFooter;
 	}
 
 	@Override

@@ -102,8 +102,12 @@ public class PdfBill {
         
         PdfPCell seller = new PdfPCell();
         seller.setBorder(PdfPCell.NO_BORDER);
-		seller.addElement(new Paragraph(box.getName(), fontCFN));
-        seller.addElement(new Paragraph(box.getBillAddress(), font12));
+        if (StringUtils.isNotEmpty(box.getBillName())) {
+    		seller.addElement(new Paragraph(box.getBillName(), fontCFN));
+        }
+        if (StringUtils.isNotEmpty(box.getBillAddress())) {
+            seller.addElement(new Paragraph(box.getBillAddress(), font12));
+        }
 
         
         // Address seller / buyer
@@ -114,12 +118,12 @@ public class PdfBill {
         
         document.add(table);
 
-        document.add(new Phrase("\n"));
         
         table = new PdfPTable(2);
         table.setWidthPercentage(100);
         PdfPCell cDest = new PdfPCell();
         cDest.setBorder(PdfPCell.NO_BORDER);
+        cDest.addElement(new Phrase("\n"));
         cDest.addElement(new Paragraph(bill.getDisplayName(), font12b));
         cDest.addElement(new Paragraph(bill.getDisplayAddress(), font12));
         table.addCell(cDest);
@@ -143,12 +147,10 @@ public class PdfBill {
 	        document.add(new Paragraph(bill.getComments(), font12));
         }
 
-        document.add(new Phrase("\n"));
         // line items
         table = new PdfPTable(6);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10);
-        table.setSpacingAfter(10);
         table.setWidths(new int[]{7, 1, 2, 2, 2, 2});
         table.addCell(getCell(getI18n("bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n("bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
@@ -157,7 +159,11 @@ public class PdfBill {
         table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         for (BillLine line : bill.getLines()) {
-            table.addCell(getCell(line.getLabel(), Element.ALIGN_LEFT, font12));
+        	String label = line.getLabel();
+        	if (line.getSubscription() != null && MembershipService.isMembershipPaymentByMonth(line.getSubscription().getMembership())) {
+        		label += " ("+ formatDate(line.getPeriodStart(), i18n) + " au " + formatDate(line.getPeriodEnd(), i18n) + ")";
+        	}
+            table.addCell(getCell(label, Element.ALIGN_LEFT, font12));
             table.addCell(getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
             table.addCell(getCell(formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
             table.addCell(getCell(formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
@@ -178,10 +184,16 @@ public class PdfBill {
         table.addCell(getCell(formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         document.add(table);
 
-        Image img = Image.getInstance(new URL(bill.getBox().getLogoUrl()));
-        img.setAlignment(Element.ALIGN_CENTER);
-        document.add(img);
+        if (StringUtils.isNotBlank(box.getBillLogoUrl())){
+            Image img = Image.getInstance(new URL(box.getBillLogoUrl()));
+            img.setAlignment(Element.ALIGN_CENTER);
+            document.add(img);
+        }
 
+        if (StringUtils.isNotEmpty(box.getBillFooter())) {
+            document.add(new Paragraph(box.getBillFooter(), font12));
+        }
+                
         // step 5
         document.close();
     }

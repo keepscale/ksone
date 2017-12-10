@@ -60,7 +60,10 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
     @Query(
     		value="select b "
     				+ "from Bill b "
-    	    		+ "left join fetch b.lines "
+    	    		+ "left join fetch b.lines line "
+    				+ "left join fetch line.subscription s "
+    		 		+ "left join fetch s.membership ms "
+    	    		+ "left join fetch ms.membershipRules msr "
     	    		+ "join fetch b.member m "
     	    		+ "where b.id = :id and b.box=:box")
 	Bill findOneWithEagerRelation(@Param("id") Long id, @Param("box") CrossFitBox box);

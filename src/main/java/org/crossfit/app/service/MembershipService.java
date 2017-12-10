@@ -28,7 +28,7 @@ public class MembershipService {
 	@Inject
 	private MembershipRepository membershipRepository;
 
-	public boolean isMembershipPaymentByMonth(Membership membership) {
+	public static boolean isMembershipPaymentByMonth(Membership membership) {
 		return membership.getMembershipRules().stream().anyMatch(rule->MembershipRulesType.BY_MONTH.contains(rule.getType()));
 	}
 
