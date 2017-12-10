@@ -2,6 +2,7 @@ package org.crossfit.app.event;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -75,13 +76,14 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 			if (notifs != null && !notifs.isEmpty()){
 				log.debug("Recherche des resa au {} -> {}", bookingStartAt, bookingEndAt);
 				
-				int bookingCount = bookingRepository.findAllAt(box, bookingStartAt, bookingEndAt).size();
+				Set<Booking> bookings = bookingRepository.findAllAt(box, bookingStartAt, bookingEndAt);
+				int bookingCount = bookings.size();
 				if (bookingCount < optTimeSlot.get().getMaxAttendees()){
 					mailService.sendNotification(notifs);	
 					notificationRepository.delete(notifs);
 				}
 				else{
-					log.info("Une resa a ete supprimée, mais le nombre d'inscrit est encore au dessus: {} >= {}", bookingCount, optTimeSlot.get().getMaxAttendees());
+					log.info("Une resa a ete supprimée, mais le nombre d'inscrit est encore au dessus: {} >= {} [{}]", bookingCount, optTimeSlot.get().getMaxAttendees(), bookings);
 				}
 			}		
 		}

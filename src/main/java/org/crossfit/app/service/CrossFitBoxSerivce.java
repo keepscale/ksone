@@ -60,12 +60,12 @@ public class CrossFitBoxSerivce {
 		if (!box.isPresent() && boxs.size() > 0 ){
 			log.warn("Aucune box n'est recensée à l'adresse "+ request.getServerName());
 			if (boxs.size() == 1){
-				log.debug("Une seule box dans la base, on l'utilise");
+				log.trace("Une seule box dans la base, on l'utilise");
 				box = Optional.ofNullable(boxs.get(0));
 			}
 		}
 
-		log.debug("Current CorssFitBox: {}", box.isPresent() ? box.get().getName() + " ("+box.get().getWebsitepattern()+")" : "null");
+		log.trace("Current CorssFitBox: {}", box.isPresent() ? box.get().getName() + " ("+box.get().getWebsitepattern()+")" : "null");
 		
 		
 		if (!box.isPresent()){
