@@ -49,7 +49,8 @@ angular.module('crossfitApp')
         
         $scope.forceOpenedSlot = [];
         
-        $scope.forceOpen = function(slot){
+        $scope.forceOpen = function(event, slot){
+        	$scope.toggle(event);
         	var idx = $scope.forceOpenedSlot.indexOf(slot.start);
 
 			// Is currently selected
@@ -82,7 +83,7 @@ angular.module('crossfitApp')
         		style = "active-slot";
         	}
         	else if ( start < now ){
-        		style = "close-slot"
+        		style = "close-slot";
         	}
         	else{
         		style = "open-slot";
