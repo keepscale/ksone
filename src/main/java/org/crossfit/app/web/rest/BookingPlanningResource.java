@@ -30,6 +30,7 @@ import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO.EventSourceType;
 import org.crossfit.app.web.rest.dto.planning.PlanningDTO;
 import org.crossfit.app.web.rest.dto.planning.PlanningDayDTO;
 import org.joda.time.DateTime;
@@ -77,6 +78,7 @@ public class BookingPlanningResource {
     
     @Inject
     private TimeSlotExclusionRepository timeSlotExclusionRepository;
+
 
     /**
      * GET  /bookings -> get all the bookings.
@@ -224,10 +226,24 @@ public class BookingPlanningResource {
     						+ " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
 
     				
-					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
+					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, slotInstance.getTimeSlotType().getName(), slotInstance.getStart(), slotInstance.getEnd());
     			}).collect(Collectors.toList());
 			
-			EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
+			EventSourceType type = EventSourceType.BOOKABLE;
+			switch (status) {
+			case NO_ABLE:
+				type = EventSourceType.PAST;
+				break;
+			case BOOKED:
+				type = EventSourceType.BOOKED;
+				break;
+			case FULL:
+				type = EventSourceType.FULL;
+				break;
+			default:
+				break;
+			}
+			EventSourceDTO evt = new EventSourceDTO(type ); //On met cette liste d'évènement dans EventSource
         	evt.setEditable(status == TimeSlotStatus.NO_ABLE ? false : true);
 			evt.setEvents(events);
 			evt.setColor(status.color);

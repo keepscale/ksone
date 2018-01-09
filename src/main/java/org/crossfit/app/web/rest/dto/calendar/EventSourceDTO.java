@@ -2,8 +2,23 @@ package org.crossfit.app.web.rest.dto.calendar;
 
 import java.util.List;
 
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO.EventSourceType;
+
 public class EventSourceDTO {
 
+	public enum EventSourceType {
+		CLOSED_DAY, EXCLUSION, BOOKABLE, BOOKED, PAST, FULL;
+	}
+
+	public EventSourceDTO() {
+		super();
+	}
+	public EventSourceDTO(EventSourceType type) {
+		super();
+		this.type = type;
+	}
+
+	private EventSourceType type;
 	private List<EventDTO> events;
 
 
@@ -31,6 +46,12 @@ public class EventSourceDTO {
 		this.events = events;
 	}
 
+	public EventSourceType getType() {
+		return type;
+	}
+	public void setType(EventSourceType type) {
+		this.type = type;
+	}
 	public String getColor() {
 		return color;
 	}

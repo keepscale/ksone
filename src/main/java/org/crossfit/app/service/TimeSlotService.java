@@ -28,6 +28,7 @@ import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
+import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO.EventSourceType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -150,10 +151,10 @@ public class TimeSlotService {
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay.getName(), closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
+			return new EventDTO(closeDay.getName(), "CLOSE_DAY", closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
 
 		}).collect(Collectors.toList());
-		EventSourceDTO evtCloseDay = new EventSourceDTO();
+		EventSourceDTO evtCloseDay = new EventSourceDTO(EventSourceType.CLOSED_DAY);
     	evtCloseDay.setEditable(false);
     	evtCloseDay.setEvents(closedDaysAsDTO);
     	evtCloseDay.setColor("#A0A0A0");
@@ -171,10 +172,10 @@ public class TimeSlotService {
 							
 					+ " ("+ timeSlot.getMaxAttendees() + ")";
 			
-			return new EventDTO(title, timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
+			return new EventDTO(title, timeSlot.getTimeSlotType().getName(), timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
 
 		}).collect(Collectors.toList());
-		EventSourceDTO evt = new EventSourceDTO();
+		EventSourceDTO evt = new EventSourceDTO(EventSourceType.EXCLUSION);
     	evt.setEditable(false);
     	evt.setEvents(timeSlotExclusionsAsDTO);
     	evt.setColor("#A0A0A0");

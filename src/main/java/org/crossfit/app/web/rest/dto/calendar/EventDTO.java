@@ -1,11 +1,13 @@
 package org.crossfit.app.web.rest.dto.calendar;
 
+import org.crossfit.app.domain.TimeSlotType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 public class EventDTO {
 
 	private final Long id;
+	private String type;
 	private final String title;
 	private final DateTime start;
 	private final DateTime end;
@@ -27,14 +29,15 @@ public class EventDTO {
 
 	*/
 
-	public EventDTO(String title, DateTime start, DateTime end) {
-		this(null, title, start, end);
+	public EventDTO(String title, String type, DateTime start, DateTime end) {
+		this(null, title, type, start, end);
 	}	
 
-	public EventDTO(Long id, String title, DateTime start, DateTime end) {
+	public EventDTO(Long id, String title,  String type, DateTime start, DateTime end) {
 		super();
 		this.id = id;
 		this.title = title;
+		this.type = type;
 		this.start = start.withZoneRetainFields(DateTimeZone.UTC);
 		this.end = end.withZoneRetainFields(DateTimeZone.UTC);
 	}
@@ -62,6 +65,15 @@ public class EventDTO {
 	public void setColor(String color) {
 		this.color = color;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	/*
 	public String getBackgroundColor() {
 		return backgroundColor;

@@ -272,7 +272,7 @@ public class TimeSlotResource {
 	    						+ " ("+ slotInstance.getMaxAttendees() + ")";
 
 	    				
-						return new EventDTO( slotInstance.getId(), title, slotInstance.getStart(), slotInstance.getEnd());
+						return new EventDTO( slotInstance.getId(), title, slotInstance.getTimeSlotType().getName(), slotInstance.getStart(), slotInstance.getEnd());
 	    			}).collect(Collectors.toList());
 				
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
