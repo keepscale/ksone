@@ -160,7 +160,7 @@ public class PdfBill {
         table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         for (BillLine line : bill.getLines()) {
         	String label = line.getLabel();
-        	if (line.getSubscription() != null && MembershipService.isMembershipPaymentByMonth(line.getSubscription().getMembership())) {
+        	if (line.getSubscription() != null && line.getPeriodStart() != null) {
         		label += " ("+ formatDate(line.getPeriodStart(), i18n) + " au " + formatDate(line.getPeriodEnd(), i18n) + ")";
         	}
             table.addCell(getCell(label, Element.ALIGN_LEFT, font12));

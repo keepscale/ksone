@@ -8,6 +8,7 @@ angular.module('crossfitApp')
         
         $scope.periods = [];
         $scope.generate = {};
+		$scope.isGenerating = false;
         $scope.paymentMethods = [];
         $scope.status = [];
 
@@ -39,8 +40,8 @@ angular.module('crossfitApp')
             	atDayOfMonth: 1,
             	status: 'DRAFT',
             	paymentMethod: 'DIRECT_DEBIT',
-            	sinceDate: firstDay,
-            	untilDate: lastDay
+            	sinceDateFull: firstDay,
+            	untilDateFull: lastDay
             };
             $('#generateBillsConfirmation').modal('hide');
             $('#deleteDraftConfirmation').modal('hide');
@@ -160,14 +161,16 @@ angular.module('crossfitApp')
         	
 
 
-        	params.sinceDate = DateUtils.formatDateAsDate(params.sinceDate);
-        	params.untilDate = DateUtils.formatDateAsDate(params.untilDate);
+        	params.sinceDate = DateUtils.formatDateAsDate(params.sinceDateFull);
+        	params.untilDate = DateUtils.formatDateAsDate(params.untilDateFull);
         	
         	if (params.dest == "CSV"){
     			$window.open("api/bills/generate?sinceDate="+params.sinceDate+"&untilDate="+params.untilDate+"&atDayOfMonth="+params.atDayOfMonth+"&status="+params.status+"&dest="+params.dest);
         	}
-        	Bill.generate($scope.params,
+        	$scope.isGenerating = true;
+        	Bill.generate(params,
                 function (res) {
+        			$scope.isGenerating = false;
                     $scope.reset();
                     $scope.clear();
                 });

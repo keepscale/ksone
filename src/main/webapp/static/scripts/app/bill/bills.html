@@ -79,7 +79,7 @@
 						  									 
     						<div class="col-sm-4">
 					            <datetimepicker hidden-time="true" id="genSinceDate"
-									ng-model="generate.sinceDate" how-weeks="false" minute-step="30" show-meridian="false" 
+									ng-model="generate.sinceDateFull" how-weeks="false" minute-step="30" show-meridian="false" 
 							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 							</div>
 						</div>
@@ -89,7 +89,7 @@
 						  									 
     						<div class="col-sm-4">
 					            <datetimepicker hidden-time="true" id="genSinceDate"
-									ng-model="generate.untilDate" how-weeks="false" minute-step="30" show-meridian="false" 
+									ng-model="generate.untilDateFull" how-weeks="false" minute-step="30" show-meridian="false" 
 							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 							</div>
 						</div>
@@ -119,12 +119,17 @@
 						 	</div>
 					 	</div>
 
+
+						<div class="form-group" ng-if="isGenerating" style="text-align:center;">
+    						<span class="glyphicon glyphicon-refresh spinning"></span> Génération en cours, veuillez patienter...
+					 	</div>
+					 	
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                        <button type="button" ng-disabled="isGenerating" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
                             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
                         </button>
-                        <button type="submit" ng-disabled="generateBillsForm.$invalid" class="btn btn-danger">
+                        <button type="submit" ng-disabled="generateBillsForm.$invalid || isGenerating" class="btn btn-danger">
                             <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="crossfitApp.bill.action.generate">Generate</span>
                         </button>
                     </div>

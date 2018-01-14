@@ -1,10 +1,12 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
 import java.util.Set;
 
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.enumeration.BillStatus;
+import org.joda.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,7 +48,9 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
     @Query(
     		value="select b "
     				+ "from Bill b "
-    	    		+ "left join fetch b.lines "
+    	    		+ "left join fetch b.lines line "
+    				+ "left join fetch line.subscription s "
+    		 		+ "left join fetch s.membership ms "
     	    		+ "join fetch b.member m "
     	    		+ BILL_QUERY
     	    		+ "order by b.number desc ", 
@@ -56,6 +60,15 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
 			@Param("includeStatus") Set<BillStatus> includeStatus, 
 			@Param("includeAllStatus") boolean includeAllStatus,
 			Pageable pageable);
+
+    @Query(
+    		value="select b "
+    				+ "from Bill b "
+    	    		+ "left join fetch b.lines line "
+    				+ "left join fetch line.subscription s "
+    	    		+ "join fetch b.member m "
+    	    		+ "where b.box=:box and (:start <= b.effectiveDate AND b.effectiveDate <= :end)")
+	List<Bill> findAll(@Param("box") CrossFitBox box, @Param("start") LocalDate periodStart, @Param("end") LocalDate periodEnd);
     
     @Query(
     		value="select b "
@@ -63,7 +76,6 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
     	    		+ "left join fetch b.lines line "
     				+ "left join fetch line.subscription s "
     		 		+ "left join fetch s.membership ms "
-    	    		+ "left join fetch ms.membershipRules msr "
     	    		+ "join fetch b.member m "
     	    		+ "where b.id = :id and b.box=:box")
 	Bill findOneWithEagerRelation(@Param("id") Long id, @Param("box") CrossFitBox box);
@@ -78,6 +90,8 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
 	@Transactional
 	@Query("delete from BillLine line where exists (select b from Bill b where b.status = :status and b.box=:box and line.bill = b)")
 	void deleteBillsLine(@Param("box") CrossFitBox box, @Param("status") BillStatus status);
+    
+    
 
 
 }

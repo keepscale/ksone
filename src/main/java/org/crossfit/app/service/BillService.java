@@ -94,6 +94,8 @@ public class BillService {
 		LocalDate firstDayOfMonth = dateAt.withDayOfMonth(1);
 		LocalDate lastDayOfMonth = firstDayOfMonth.plusMonths(1).minusDays(1);
 		
+		List<Bill> existingBillsOnPeriod = billRepository.findAll(box, firstDayOfMonth, lastDayOfMonth);
+		
 		Set<Subscription> subscriptionToBill = subscriptionRepository.findAllByBoxAtDateOrAtDate(box, firstDayOfMonth, lastDayOfMonth);
 		
 		Set<Booking> bookings = bookingRepository.findAllStartBetween(box, LocalDate.parse("1970-01-01").toDateTimeAtStartOfDay() , lastDayOfMonth.plusDays(1).toDateTimeAtStartOfDay());
@@ -108,7 +110,12 @@ public class BillService {
 			
 			List<Subscription> subs = subscriptionByMember.get(m);
 			for (Subscription sub : subs) {
-
+				Optional<Bill> existingBill = existingBillsOnPeriod.stream().filter(bill->bill.getLines().stream().anyMatch(line->sub.equals(line.getSubscription()))).findFirst();
+				if (existingBill.isPresent()) {
+					log.info("L'abonnement {} - {} de {} a deja une facture {}", sub.getId(), sub.getMembership().getName(), m.getLogin(), existingBill.get().getNumber());
+					continue;
+				}
+				
 				List<BillLine> lines = new ArrayList<>();
 				LocalDate startDateBill = sub.getSubscriptionStartDate().isBefore(firstDayOfMonth) ? firstDayOfMonth : sub.getSubscriptionStartDate();
 				LocalDate endDateBill = sub.getSubscriptionEndDate().isAfter(lastDayOfMonth) ? lastDayOfMonth : sub.getSubscriptionEndDate();
@@ -118,7 +125,7 @@ public class BillService {
 				BillLine line = new BillLine();
 				line.setLabel(sub.getMembership().getName());
 				line.setQuantity(1.0);
-				if (this.membershipService.isMembershipPaymentByMonth(sub.getMembership())) {
+				if (MembershipService.isMembershipPaymentByMonth(sub.getMembership())) {
 					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl());
 				}
 				else if (new Interval(startDateBill.toDateTimeAtStartOfDay(), endDateBill.plusDays(1).toDateTimeAtStartOfDay())
@@ -128,6 +135,8 @@ public class BillService {
 				}
 				else {
 					line.setPriceTaxIncl(0); //On facture pas un truc non recurrent les autres mois
+					log.info("L'abonnement {} - {} de {} n'est pas recurrent et n'est pas sur la periode. Pas de facture", sub.getId(), sub.getMembership().getName(),  m.getLogin());
+					continue; //On ne la sauvegarde même pas
 				}
 				line.setTaxPerCent(sub.getMembership().getTaxPerCent());
 				

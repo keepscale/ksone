@@ -33,9 +33,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
     		+ "where s.id = :id")
 	Subscription findOneWithRules(@Param("id") Long id);
 
-    @Query("select s from Subscription s where s.member = :member and s.subscriptionEndDate is null")
-	Subscription findActiveByMember(@Param("member") Member member);
-
 	List<Subscription> findAllByMembership(Membership membership);
    
 	

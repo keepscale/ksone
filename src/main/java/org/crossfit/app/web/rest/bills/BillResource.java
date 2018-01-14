@@ -37,6 +37,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -211,7 +212,8 @@ public class BillResource {
 	}
 
 	protected Bill doGet(Long id) {
-		Bill bill = billService.findById(id, boxService.findCurrentCrossFitBox());
+		Bill bill = 
+				this.cleanMembershipRules().convert(billService.findById(id, boxService.findCurrentCrossFitBox()));
 		return bill;
 	}
 	
@@ -234,7 +236,19 @@ public class BillResource {
 	protected Page<Bill> doFindAll(Pageable generatePageRequest, String search) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
-		return billService.findBills(customSearch, generatePageRequest);
+		return billService.findBills(customSearch, generatePageRequest).map(cleanMembershipRules());
+	}
+
+
+	private Converter<? super Bill, ? extends Bill> cleanMembershipRules() {
+		return bill->{
+			if (bill !=null)
+				bill.getLines().stream().forEach(line->{
+					if (line.getSubscription() != null)
+						line.getSubscription().getMembership().setMembershipRules(null);
+				});
+			return bill;
+		};
 	}
 
 	/**

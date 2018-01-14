@@ -1,5 +1,5 @@
 
-<form name="form" role="form" novalidate ng-submit="save()">
+<form name="form" role="form" novalidate ng-submit="save()" class="bill">
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
@@ -144,7 +144,7 @@
 						<tbody ng-if="bill.id!=null">
 							<tr ng-repeat="line in bill.lines">
 								<td>{{line.quantity}}</td>
-								<td>{{line.label}}</td>
+								<td>{{line.label}}<span ng-if="line.periodStart"> ({{line.periodStart | date:'dd/MM/yyyy' }} au {{line.periodEnd | date:'dd/MM/yyyy' }})</span></td>
 								<td style="text-align: right;">{{line.priceTaxIncl | currency:'€' }}</td>
 								<td style="text-align: right;">{{line.taxPerCent + '%' }}</td>
 								<td style="text-align: right;">{{line.totalTaxIncl | currency:'€' }}</td>
@@ -162,6 +162,7 @@
 									<div class="input-group">
 									
 										<input type="text" class="form-control" ng-model="line.label" ng-minlength=1 ng-maxlength=200 required maxlength="200">
+										
 									
 										<div class="input-group-btn">
 											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
@@ -174,15 +175,19 @@
 													</a>
 												</li>
           										<li role="separator" class="divider"></li>          										
-												<li ng-repeat="m in membership">
-			                  						<a ng-click="selectElementForBillLine(line, m)">
-			                  							{{m.name}} {{m.priceTaxIncl | currency:'€'}}
+												<li ng-repeat="s in member.subscriptions">
+			                  						<a ng-click="selectSubscriptionForBillLine(line, s)" 
+			                  							ng-if="calculateCssClassSubscription(s) == 'actif'"
+			                  							ng-class="calculateCssClassSubscription(s)">
+			                  							{{s.membership.name}} ({{s.subscriptionStartDate | date:'dd/MM/yyyy'}} au {{s.subscriptionEndDate | date:'dd/MM/yyyy'}}) - {{s.membership.priceTaxIncl | currency:'€'}}
 													</a>
 												</li>
 											</ul>
 										</div>
 										
 									</div>
+									<span ng-if="line.subscription">{{line.subscription.id}} - ({{line.periodStart | date:'dd/MM/yyyy'}} au {{line.periodEnd | date:'dd/MM/yyyy'}})</span>
+									
 								</td>
 								<td class="form-line">
 									<input type="text"  style="text-align: right;" class="form-control" ng-model="line.priceTaxIncl" ng-minlength=1 ng-maxlength=10 required maxlength="10">

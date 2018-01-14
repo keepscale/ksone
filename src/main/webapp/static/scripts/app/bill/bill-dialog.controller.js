@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('BillDialogController',
-    ['$scope', '$window', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member', 'Product', 'Membership',
-        function($scope, $window, $stateParams, $state, $modalInstance, entity, Bill, Member, Product, Membership) {
+    ['$scope', '$window', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Bill', 'Member', 'Product', 'Membership','DateUtils',
+        function($scope, $window, $stateParams, $state, $modalInstance, entity, Bill, Member, Product, Membership, DateUtils) {
 
     	$scope.view = "default";
         $scope.bill = entity;
@@ -62,6 +62,7 @@ angular.module('crossfitApp').controller('BillDialogController',
         	 if ($stateParams.memberId != null) {
              	
  	        	Member.get({id : $stateParams.memberId}, function(member) {
+ 	        		$scope.member = member;
  	        		$scope.bill.member = {id:member.id};
  	        		
  	            	$scope.bill.displayAddress = 
@@ -77,11 +78,29 @@ angular.module('crossfitApp').controller('BillDialogController',
  	        	});
              }
         }
+
+        $scope.calculateCssClassSubscription = function(subscription){
+        	var now = $scope.bill.effectiveDate;
+        	var end = DateUtils.toUTCDate(new Date(subscription.subscriptionEndDate)).getTime();
+        	var start = DateUtils.toUTCDate(new Date(subscription.subscriptionStartDate)).getTime();
+        	
+        	return end >= now && now >= start ? 'actif' : "inactif";	
+        }
         
         $scope.selectElementForBillLine = function(line, element){
         	line.label = element.name;
         	line.priceTaxIncl = element.priceTaxIncl;
         	line.taxPerCent = element.taxPerCent;
+        }
+        
+        $scope.selectSubscriptionForBillLine = function(line, subscription){
+        	$scope.selectElementForBillLine(line, subscription.membership);
+
+        	var firstDay = new Date($scope.bill.effectiveDate.getFullYear(), $scope.bill.effectiveDate.getMonth(), 1);
+        	var lastDay  = new Date($scope.bill.effectiveDate.getFullYear(), $scope.bill.effectiveDate.getMonth() + 1, 0);
+        	line.subscription = subscription;
+        	line.periodStart = subscription.subscriptionStartDate < firstDay ? firstDay : subscription.subscriptionStartDate;
+        	line.periodEnd = subscription.subscriptionEndDate > lastDay ? lastDay : subscription.subscriptionEndDate;
         }
         
         $scope.init = function(){
