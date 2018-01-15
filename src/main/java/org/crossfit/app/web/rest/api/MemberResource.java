@@ -170,13 +170,14 @@ public class MemberResource {
 		
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("[Id];[Title];[FirstName];[LastName];[Email];[Telephon];[Address];[ZipCode];[City]\n");		
+		sb.append("[Id];[Title];[FirstName];[LastName];[Email];[CardNumber];[Telephon];[Address];[ZipCode];[City]\n");		
 		for (Member m : page) {
 			append(sb, m.getId()).append(";");
 			append(sb, m.getTitle()).append(";");
 			append(sb, m.getFirstName()).append(";");
 			append(sb, m.getLastName()).append(";");
 			append(sb, m.getLogin()).append(";");
+			append(sb, m.getCardUuid()).append(";");
 			append(sb, m.getTelephonNumber()).append(";");
 			append(sb, m.getAddress()).append(";");
 			append(sb, m.getZipCode()).append(";");
