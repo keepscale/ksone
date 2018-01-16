@@ -11,9 +11,18 @@ angular.module('crossfitApp')
                     
                     data.effectiveDate = 
                     	DateUtils.convertLocaleDateFromServer(data.effectiveDate);
+                    
+                    data.payAtDate = 
+                    	DateUtils.convertLocaleDateFromServer(data.payAtDate);
 
                 	data.createdBillDate = 
                 		DateUtils.convertDateTimeFromServer(data.createdBillDate);
+                	
+
+                    for (var i = 0; i < data.lines.length; i++) {
+                    	data.lines[i].periodStart = DateUtils.convertLocaleDateFromServer(data.lines[i].periodStart);
+                    	data.lines[i].periodEnd = DateUtils.convertLocaleDateFromServer(data.lines[i].periodEnd);
+					}
                     
                     return data;
                 }
@@ -49,9 +58,37 @@ angular.module('crossfitApp')
                 transformRequest: function (data) {
 
                 	data.effectiveDate = DateUtils.convertLocaleDateToServer(data.effectiveDate);
+
+                    
+                    data.payAtDate = 
+                    	DateUtils.convertLocaleDateToServer(data.payAtDate);
+
+
+                    for (var i = 0; i < data.lines.length; i++) {
+                    	data.lines[i].periodStart = DateUtils.convertLocaleDateToServer(data.lines[i].periodStart);
+                    	data.lines[i].periodEnd = DateUtils.convertLocaleDateToServer(data.lines[i].periodEnd);
+					}
                     
                     return angular.toJson(data);
                 }
-            }
+            },
+
+            'update': {
+                method: 'PUT',
+                transformRequest: function (data) {
+                	data.effectiveDate = DateUtils.convertLocaleDateToServer(data.effectiveDate);
+
+                    data.payAtDate = 
+                    	DateUtils.convertLocaleDateToServer(data.payAtDate);
+
+
+                    for (var i = 0; i < data.lines.length; i++) {
+                    	data.lines[i].periodStart = DateUtils.convertLocaleDateToServer(data.lines[i].periodStart);
+                    	data.lines[i].periodEnd = DateUtils.convertLocaleDateToServer(data.lines[i].periodEnd);
+					}
+                    
+                    return angular.toJson(data);
+                }
+            },
         });
     });

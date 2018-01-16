@@ -20,9 +20,17 @@ angular.module('crossfitApp').controller('BillDialogController',
         };
 
         
+        $scope.delete = function(){
+        	Bill.delete({id: $scope.bill.id}, onSaveFinished);
+        }
+        $scope.saveAndValidate = function(){
+        	$scope.bill.status = "VALIDE";
+        	$scope.save();
+        }
+        
         $scope.save = function () {
             if ($scope.bill.id != null) {
-                alert("Cette facture ne peut pas être modifiée.")
+            	Bill.update($scope.bill, onSaveFinished);
             } else {
             	Bill.save($scope.bill, onSaveFinished);
             }
@@ -66,7 +74,7 @@ angular.module('crossfitApp').controller('BillDialogController',
  	        		$scope.bill.member = {id:member.id};
  	        		
  	            	$scope.bill.displayAddress = 
- 	            		member.address + "\n" + 
+ 	            		(member.address == null ? "" : (member.address + "\n") ) + 
  	            		member.zipCode + " " +
  	            		member.city;
  	            	
@@ -77,6 +85,14 @@ angular.module('crossfitApp').controller('BillDialogController',
  	            	
  	        	});
              }
+        	 else{
+        		$scope.bill.$promise.then(function(bill){
+
+      	        	Member.get({id : bill.member.id}, function(member) {
+      	        		$scope.member = member;
+      	        	});
+        		});
+        	 }
         }
 
         $scope.calculateCssClassSubscription = function(subscription){

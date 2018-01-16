@@ -90,7 +90,8 @@
             "view": "Voir",
             "lock": "Bloquer",
             "export": "Export",
-            "generate": "Génération..."
+            "generate": "Génération...",
+            "saveAndValidate" : "Sauvegarder et Valider"
         },
         "detail": {
             "field": "Champs",

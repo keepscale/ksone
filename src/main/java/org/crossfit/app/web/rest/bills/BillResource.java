@@ -24,12 +24,14 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.exception.bill.UnableToDeleteBill;
 import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.PdfBill;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
+import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
@@ -176,9 +178,24 @@ public class BillResource {
 		}
 		
 	}
+	
 
 	/**
-	 * GET /members/{id} -> get a bill.
+	 * DELETE /bills/{id} -> delete a bill.
+	 */
+	@RequestMapping(value = "/bills/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		log.debug("REST request to delete  Bill : {}", id);
+		try {
+			billService.deleteBillById(id, boxService.findCurrentCrossFitBox());
+		} catch (UnableToDeleteBill e) {
+	        throw new CustomParameterizedException("La facture ne peut pas être supprimée car n'est pas dans le statut brouillon.");
+		}
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("bill", id.toString())).build();
+	}
+
+	/**
+	 * GET /bills/{id} -> get a bill.
 	 */
 	@RequestMapping(value = "/bills/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Bill> get(@PathVariable Long id) {

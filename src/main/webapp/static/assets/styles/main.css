@@ -273,6 +273,11 @@ h1{
 }
 
 
+.bill .datetimepicker-wrapper > input{
+    width: 100px;
+}
+
+
 datetimepicker.has-error input{
 	background-color: red;
 }

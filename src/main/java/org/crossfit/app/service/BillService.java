@@ -21,6 +21,7 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.exception.bill.UnableToDeleteBill;
 import org.crossfit.app.repository.BillRepository;
 import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.BookingRepository;
@@ -168,7 +169,10 @@ public class BillService {
 	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, List<BillLine> lines, BillsBucket bucket) {
 		
 		String to = member.getTitle() + " " + member.getFirstName() + " " + member.getLastName();
-		String billAdress = member.getAddress() + "\n" + member.getZipCode() + " " + member.getCity();
+		
+		String billAdress = StringUtils.isNotBlank(member.getAddress()) ? member.getAddress() + "\n" : "";
+		billAdress +=  StringUtils.isNotBlank(member.getZipCode()) ? member.getZipCode() + " " : "";
+		billAdress +=  StringUtils.isNotBlank(member.getCity()) ? member.getCity() : "";
 		
 		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, dateAt, payAtDate, paymentMethod, lines, bucket);
 
@@ -248,11 +252,22 @@ public class BillService {
 		billRepository.deleteBillsLine(box, BillStatus.DRAFT);
 		billRepository.deleteBills(box, BillStatus.DRAFT);
 	}
+	
+	public void deleteBillById(Long id, CrossFitBox box) throws UnableToDeleteBill {
+		Bill billToDelete = this.findById(id, box);
+		if (billToDelete != null && billToDelete.getStatus() == BillStatus.DRAFT) {
+			billRepository.delete(billToDelete);
+		}
+		else {
+			throw new UnableToDeleteBill(billToDelete);
+		}
+	}
 
 
 	public Bill findById(Long id, CrossFitBox box) {
 		return billRepository.findOneWithEagerRelation(id, box);
 	}
+
 
   
 }

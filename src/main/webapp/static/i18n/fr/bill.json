@@ -23,6 +23,7 @@
             	"delete.draft" : "Suppr. brouillon",
             	"quickSelect" : "Sélectionner"
         	},
+        	"deleted": "La facture a bien été supprimée",
         	"delete.draft":{
         		"question": "Etes vous sur de vouloir supprimer les factures en mode brouillon ?",
         		"title": "Confirmer la suppression des brouillons"

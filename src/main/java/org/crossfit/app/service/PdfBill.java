@@ -86,7 +86,7 @@ public class PdfBill {
         CrossFitBox box = bill.getBox();
         
         // step 1
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        Document document = new Document(PageSize.A4, 20, 20, 50, 50);
         // step 2
         PdfWriter writer = PdfWriter.getInstance(document, os);
         writer.setPdfVersion(PdfWriter.VERSION_1_7);
@@ -151,7 +151,7 @@ public class PdfBill {
         table = new PdfPTable(6);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10);
-        table.setWidths(new int[]{7, 1, 2, 2, 2, 2});
+        table.setWidths(new int[]{55, 5, 10, 10, 12, 12});
         table.addCell(getCell(getI18n("bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n("bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         table.addCell(getCell(getI18n("bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
