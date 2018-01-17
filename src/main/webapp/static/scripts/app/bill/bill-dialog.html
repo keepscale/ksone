@@ -69,8 +69,16 @@
 					</div>
 					<div class="row form-group">
 						<div class="col-xs-12">
-							<textarea class="form-control" id="displayAddress" name="displayAddress"
+							<textarea class="form-control" id="displayAddress" name="displayAddress" ng-maxlength=255
 								ng-model="bill.displayAddress" readonly></textarea>
+                  			
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-xs-12">
+							<label>Commentaires</label>
+							<textarea class="form-control" id="comments" name="comments" ng-maxlength=255
+								ng-model="bill.comments"></textarea>
                   			
 						</div>
 					</div>

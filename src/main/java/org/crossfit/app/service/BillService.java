@@ -151,7 +151,7 @@ public class BillService {
 				lines.add(line);
 				
 
-				saveAndLockBill(box, nextBillCounter, m, withStatus, billDate, billDate, sub.getPaymentMethod(), lines, bucket);
+				saveAndLockBill(box, nextBillCounter, m, withStatus, billDate, billDate, sub.getPaymentMethod(), null, lines, bucket);
 				nextBillCounter++;
 				counter++;
 			}
@@ -161,11 +161,11 @@ public class BillService {
 
 
 	public Bill saveAndLockBill(CrossFitBox box, Member member, BillStatus status, PaymentMethod paymentMethod,
-			LocalDate effectiveDate, LocalDate payAtDate, List<BillLine> lines) {
-		return saveAndLockBill(box, null, member, status, effectiveDate, payAtDate, paymentMethod, lines, billRepository);
+			LocalDate effectiveDate, LocalDate payAtDate, String comments, List<BillLine> lines) {
+		return saveAndLockBill(box, null, member, status, effectiveDate, payAtDate, paymentMethod, comments, lines, billRepository);
 	}
 	
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, List<BillLine> lines, BillsBucket bucket) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket bucket) {
 		
 		String to = member.getTitle() + " " + member.getFirstName() + " " + member.getLastName();
 		
@@ -173,17 +173,18 @@ public class BillService {
 		billAdress +=  StringUtils.isNotBlank(member.getZipCode()) ? member.getZipCode() + " " : "";
 		billAdress +=  StringUtils.isNotBlank(member.getCity()) ? member.getCity() : "";
 		
-		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, dateAt, payAtDate, paymentMethod, lines, bucket);
+		return this.saveAndLockBill(box, nextBillCounter, member, to, billAdress, withStatus, dateAt, payAtDate, paymentMethod, comments, lines, bucket);
 
 	}
 
 
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, List<BillLine> lines, BillsBucket bucket) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket bucket) {
 
 		Bill bill = new Bill();
 		bill.setBox(box);
 		bill.setMember(member);
 		bill.setStatus(withStatus);
+		bill.setComments(comments);
 		bill.setPaymentMethod(paymentMethod);
 		bill.setEffectiveDate(dateAt);
 		bill.setPayAtDate(payAtDate);
@@ -240,6 +241,7 @@ public class BillService {
 			throw new UnableToUpdateBillException(bill);
 		}
 
+		actualBill.setComments(bill.getComments());
 		actualBill.setStatus(bill.getStatus());
 		actualBill.setEffectiveDate(bill.getEffectiveDate());
 		actualBill.setPayAtDate(bill.getPayAtDate());
