@@ -21,7 +21,8 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.exception.bill.UnableToDeleteBill;
+import org.crossfit.app.exception.bill.UnableToDeleteBillException;
+import org.crossfit.app.exception.bill.UnableToUpdateBillException;
 import org.crossfit.app.repository.BillRepository;
 import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.BookingRepository;
@@ -49,8 +50,6 @@ public class BillService {
 
     @Inject
     private CrossFitBoxSerivce boxService;
-    @Inject
-    private MembershipService membershipService;
 
     @Inject
     private BookingRepository bookingRepository;
@@ -193,6 +192,26 @@ public class BillService {
 		bill.setLines(lines);
 
 		
+		reCalculateTotal(bill);
+		
+		int year = bill.getEffectiveDate().getYear();
+		int month = bill.getEffectiveDate().getMonthOfYear();
+		Long billsCounter = nextBillCounter == null ? findLastBillCountNumberInYear(year, month, bill.getBox(), bucket)+1 : nextBillCounter;
+		
+		
+		//YYYY-MM-000000
+		bill.setNumber(
+				StringUtils.leftPad(year+"",  		 4, '0') + "-" + 
+				StringUtils.leftPad(month+"", 		 2, '0') + "-" +
+				StringUtils.leftPad(billsCounter+"", 6, '0'));
+		
+		log.trace("Facture de {}€ pour {}: {}", bill.getTotalTaxIncl(), bill.getDisplayName(), bill);
+		
+		return bucket.save(bill);
+	}
+
+	private void reCalculateTotal(Bill bill) {
+		List<BillLine> lines = bill.getLines();
 		lines.forEach(line->line.setTotalTaxIncl(line.getQuantity() * line.getPriceTaxIncl()));
 		lines.forEach(line->
 			line.setPriceTaxExcl(
@@ -210,21 +229,38 @@ public class BillService {
 		bill.setTotalTax(bill.getTotalTaxIncl() - bill.getTotalTaxExcl());
 		
 		lines.forEach(line->line.setBill(bill));
+	}
+	
+
+
+	public Bill updateBill(CrossFitBox box, Bill bill) throws UnableToUpdateBillException{
+		Bill actualBill = billRepository.findOne(bill.getId());
 		
-		int year = bill.getEffectiveDate().getYear();
-		int month = bill.getEffectiveDate().getMonthOfYear();
-		Long billsCounter = nextBillCounter == null ? findLastBillCountNumberInYear(year, month, bill.getBox(), bucket)+1 : nextBillCounter;
+		if (actualBill.getStatus() != BillStatus.DRAFT) {
+			throw new UnableToUpdateBillException(bill);
+		}
+
+		actualBill.setStatus(bill.getStatus());
+		actualBill.setEffectiveDate(bill.getEffectiveDate());
+		actualBill.setPayAtDate(bill.getPayAtDate());
+		actualBill.setPaymentMethod(bill.getPaymentMethod());
 		
+		actualBill.getLines().removeIf(actualLine->!bill.getLines().contains(actualLine)); //On supprime les lignes qui ne sont plus présente
+		actualBill.getLines().forEach(lineToUpdate->{ //On met a jour les lignes qui vont bien
+			Optional<BillLine> optline = bill.getLines().stream().filter(l->l.equals(lineToUpdate)).findFirst();
+			if (optline.isPresent()) {
+				BillLine line = optline.get();
+				lineToUpdate.setQuantity(line.getQuantity());
+				lineToUpdate.setLabel(line.getLabel());
+				lineToUpdate.setPriceTaxIncl(line.getPriceTaxIncl());
+				lineToUpdate.setSubscription(line.getSubscription(), line.getPeriodStart(), line.getPeriodEnd());
+				lineToUpdate.setTaxPerCent(line.getTaxPerCent());
+			}			
+		});
+		actualBill.getLines().addAll(bill.getLines().stream().filter(line->line.getId()==null).collect(Collectors.toList())); //On ajoute les nouvelles lignes
 		
-		//YYYY-MM-000000
-		bill.setNumber(
-				StringUtils.leftPad(year+"",  		 4, '0') + "-" + 
-				StringUtils.leftPad(month+"", 		 2, '0') + "-" +
-				StringUtils.leftPad(billsCounter+"", 6, '0'));
-		
-		log.trace("Facture de {}€ pour {}: {}", bill.getTotalTaxIncl(), bill.getDisplayName(), bill);
-		
-		return bucket.save(bill);
+		reCalculateTotal(actualBill);
+		return billRepository.save(actualBill);
 	}
 	
 	private Long findLastBillCountNumberInYear(int year, int month, CrossFitBox box, BillsBucket bucket) {
@@ -253,13 +289,13 @@ public class BillService {
 		billRepository.deleteBills(box, BillStatus.DRAFT);
 	}
 	
-	public void deleteBillById(Long id, CrossFitBox box) throws UnableToDeleteBill {
+	public void deleteBillById(Long id, CrossFitBox box) throws UnableToDeleteBillException {
 		Bill billToDelete = this.findById(id, box);
 		if (billToDelete != null && billToDelete.getStatus() == BillStatus.DRAFT) {
 			billRepository.delete(billToDelete);
 		}
 		else {
-			throw new UnableToDeleteBill(billToDelete);
+			throw new UnableToDeleteBillException(billToDelete);
 		}
 	}
 

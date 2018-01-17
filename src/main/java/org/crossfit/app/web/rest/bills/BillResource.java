@@ -24,7 +24,8 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.BillStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.exception.bill.UnableToDeleteBill;
+import org.crossfit.app.exception.bill.UnableToDeleteBillException;
+import org.crossfit.app.exception.bill.UnableToUpdateBillException;
 import org.crossfit.app.repository.BillsBucket;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
@@ -107,6 +108,28 @@ public class BillResource {
 	
 
 	/**
+	 * PUT /bills -> Update a bill.
+	 */
+	@RequestMapping(value = "/bills", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Bill> update(@Valid @RequestBody Bill bill) throws URISyntaxException {
+		log.debug("REST request to update bill : {}", bill);
+		if (bill.getId() == null) {
+			return create(bill);
+		}
+		
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Bill result;
+		try {
+			result = billService.updateBill(box , bill);
+		} catch (UnableToUpdateBillException e) {
+	        throw new CustomParameterizedException("La facture ne peut pas être mise à jour car n'est pas dans le statut brouillon.");
+		}
+
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("bill", bill.getId().toString()))
+				.body(result);
+	}
+	
+	/**
 	 * POST /bills -> Create a new bill.
 	 */
 	@RequestMapping(value = "/bills", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -188,7 +211,7 @@ public class BillResource {
 		log.debug("REST request to delete  Bill : {}", id);
 		try {
 			billService.deleteBillById(id, boxService.findCurrentCrossFitBox());
-		} catch (UnableToDeleteBill e) {
+		} catch (UnableToDeleteBillException e) {
 	        throw new CustomParameterizedException("La facture ne peut pas être supprimée car n'est pas dans le statut brouillon.");
 		}
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("bill", id.toString())).build();
