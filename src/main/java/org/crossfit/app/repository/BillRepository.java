@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Spring Data JPA repository for the Bill entity.
  */
-public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket {
+public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket<Bill> {
 
     @Query(
     		"select b "

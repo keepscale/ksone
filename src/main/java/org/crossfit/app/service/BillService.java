@@ -178,7 +178,7 @@ public class BillService {
 	}
 
 
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket bucket) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, String to, String billAdress, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket<Bill> bucket) {
 
 		Bill bill = new Bill();
 		bill.setBox(box);

@@ -71,7 +71,7 @@ public class BillResource {
     	CSV, DATABASE
 	}
 
-	public class InMemoryBillRepository implements BillsBucket{
+	public class InMemoryBillRepository implements BillsBucket<Bill>{
 
 		private List<Bill> bills = new ArrayList<>();
 		
