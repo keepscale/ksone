@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MemberController', function ($scope, $window, Member, Membership, Authority, ParseLinks) {
+    .controller('MemberController', function ($scope, $window, Member, Membership, Authority,DateUtils, ParseLinks) {
         $scope.members = [];
         $scope.page = 1;
         $scope.per_page = 20;
@@ -14,6 +14,10 @@ angular.module('crossfitApp')
         $scope.selectedRoles = ["ROLE_USER"];
         $scope.healthIndicators = [];
         $scope.selectedHealthIndicators = [];
+        $scope.selectedCustomCriteria = [];
+        $scope.customCriteria = {
+    		expire: new Date()
+        }
         
         $scope.loadAll = function() {
             Member.query({
@@ -22,6 +26,8 @@ angular.module('crossfitApp')
             	include_memberships: $scope.selectedMemberships, 
             	include_roles: $scope.selectedRoles,
             	with_healthindicators: $scope.selectedHealthIndicators,
+            	with_customcriteria: $scope.selectedCustomCriteria,
+            	with_customcriteria_expire: DateUtils.formatDateAsDate($scope.customCriteria.expire),
             	include_actif: $scope.include_actif,
             	include_not_enabled: $scope.include_not_ennabled,
             	include_bloque: $scope.include_bloque}, 
@@ -116,7 +122,7 @@ angular.module('crossfitApp')
 				$scope.selectedRoles.push(role);
 			}
 		};
-		
+
         
         $scope.toggleSelectedHealthIndicator = function toggleSelectedHealthIndicator(hi) {
 			var idx = $scope.selectedHealthIndicators.indexOf(hi);
@@ -129,6 +135,20 @@ angular.module('crossfitApp')
 			// Is newly selected
 			else {
 				$scope.selectedHealthIndicators.push(hi);
+			}
+		};
+        
+        $scope.toggleSelectedCustomCriteria = function toggleSelectedCustomCriteria(criteria) {
+			var idx = $scope.selectedCustomCriteria.indexOf(criteria);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.selectedCustomCriteria.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.selectedCustomCriteria.push(criteria);
 			}
 		};
 
@@ -151,6 +171,12 @@ angular.module('crossfitApp')
             for (var i = 0; i < $scope.selectedHealthIndicators.length; i++) {
             	params += "&with_healthindicators=" + $scope.selectedHealthIndicators[i];
             }
+
+            for (var i = 0; i < $scope.selectedCustomCriteria.length; i++) {
+            	params += "&with_customcriteria=" + $scope.selectedCustomCriteria[i];
+            }
+            
+        	params += "&with_customcriteria_expire=" + DateUtils.formatDateAsDate($scope.customCriteria.expire);
         	
             
             

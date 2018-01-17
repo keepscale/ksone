@@ -51,8 +51,8 @@
 							</label>
 						</div>
 					</div>
-
 				</div>
+				
 				<div class="form-group pull-left" style="padding: 0 20px;">
 					<div class="checkbox-list">
 						<span class="checkbox-title">Abonnements</span>
@@ -93,7 +93,26 @@
 			  						ng-click="toggleSelectedHealthIndicator(hi)"> {{'crossfitApp.member.health.enum.min.' + hi | translate}}
 							</label>
 						</div>
-
+					</div>
+				</div>	
+				
+				
+				<div class="form-group pull-left" style="padding: 0 20px;">
+					<div class="checkbox-list">
+						<span class="checkbox-title">Autres critères</span>
+						<div class="checkbox-list-content">
+							<div style="display: block">
+									<label style="float: left; margin-top: 5px;">
+									  <input type="checkbox" value="EXPIRE"
+										    ng-checked="selectedCustomCriteria.indexOf('EXPIRE') > -1"
+					  						ng-click="toggleSelectedCustomCriteria('EXPIRE')"> Abo. expiré au 
+					  						
+									</label>
+						            <datetimepicker hidden-time="true"
+										ng-model="customCriteria.expire" how-weeks="false" minute-step="30" show-meridian="false" 
+								       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+							</div>
+						</div>
 					</div>
 				</div>	
 			</div>
@@ -179,8 +198,7 @@
 							<span translate="crossfitApp.member.action.reset"> Reset</span>
 						</button>
 		  				<button type="button" class="btn btn-danger btn-primary" ng-click="lock(member.id)">
-							<span class="glyphicon glyphicon-remove-circle">
-							</span>
+							<span>Bloquer</span>
 						</button>
 						
 					</td>

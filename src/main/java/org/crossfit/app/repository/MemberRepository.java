@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -85,8 +86,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "AND m.enabled = true AND m.locked = false "
     		+ "and not exists ( "
     		+ "select s from Subscription s where s.member = m "
-    		+ "and s.subscriptionStartDate <= now() AND now() < s.subscriptionEndDate )")
-	List<Member> findAllMemberWithNoActiveSubscription(@Param("box") CrossFitBox box);
+    		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate )")
+	List<Member> findAllMemberWithNoSubscriptionAtDate(@Param("box") CrossFitBox box, @Param("at") LocalDate at);
 
 
     @Query("select m from Member m where m.box = :box "

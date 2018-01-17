@@ -68,6 +68,8 @@ public class MemberService {
     @Inject
     private CrossFitBoxSerivce boxService;
     @Inject
+    private TimeService timeService;
+    @Inject
     private MembershipService membershipService;
     @Inject
     private AuthorityRepository authorityRepository;
@@ -145,11 +147,17 @@ public class MemberService {
 					.collect(Collectors.toList());	
 	}
 	
-	public List<Member> findAllMemberWithNoActiveSubscription(){
+	public List<Member> findAllMemberWithNoActiveSubscriptionAtNow(){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		return memberRepository.findAllMemberWithNoActiveSubscription(box);
+		return findAllMemberWithNoActiveSubscriptionAtDate(timeService.nowAsLocalDate(box));
 	}
-  
+
+	
+	public List<Member> findAllMemberWithNoActiveSubscriptionAtDate(LocalDate date){
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithNoSubscriptionAtDate(box, date);
+	}
+	
 	public List<Member> findAllMemberWithNoCard(){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		return memberRepository.findAllMemberWithNoCard(box);

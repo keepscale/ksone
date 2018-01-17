@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
@@ -28,6 +29,7 @@ import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
@@ -35,6 +37,7 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -65,10 +68,15 @@ public class MemberResource {
 		SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL, SUBSCRIPTIONS_NOT_END_AT_END_MONTH;
 
 	}
+	public enum CustomCriteria {
+		EXPIRE
+	}
 
 	private final Logger log = LoggerFactory.getLogger(MemberResource.class);
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private TimeService timeService;
 	@Inject
 	private MemberService memberService;
 	@Inject
@@ -141,12 +149,14 @@ public class MemberResource {
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
 			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
 			@RequestParam(value = "with_healthindicators", required = false) HealthIndicator[] withHealthIndicators,
+			@RequestParam(value = "with_customcriteria", required = false) CustomCriteria[] withCustomCriteria,
+			@RequestParam(value = "with_customcriteria_expire", required = false) String withCustomCriteriaExpireAt,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, withCustomCriteria, withCustomCriteriaExpireAt, includeActif, includeNotEnabled, includeBloque );
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/members", offset, limit);
 		return new ResponseEntity<>(page.map(MemberDTO.CONVERTER).getContent(), headers, HttpStatus.OK);
 	}
@@ -160,13 +170,15 @@ public class MemberResource {
 			@RequestParam(value = "include_memberships", required = false) Long[] includeMembershipsIds,
 			@RequestParam(value = "include_roles", required = false) String[] includeRoles,
 			@RequestParam(value = "with_healthindicators", required = false) HealthIndicator[] withHealthIndicators,
+			@RequestParam(value = "with_customcriteria", required = false) CustomCriteria[] withCustomCriteria,
+			@RequestParam(value = "with_customcriteria_expire", required = false) String withCustomCriteriaExpireAt,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
 			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 		
-		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque );
+		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, withCustomCriteria, withCustomCriteriaExpireAt, includeActif, includeNotEnabled, includeBloque );
 		
 		StringBuffer sb = new StringBuffer();
 
@@ -194,17 +206,20 @@ public class MemberResource {
 
 	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, boolean includeAllRoles,
 			boolean includeActif, boolean includeNotEnabled, boolean includeBloque) {
-		return doFindAll(generatePageRequest, search, includeAllMemberships, new Long[]{} , includeAllRoles, new String[]{} , null, includeActif, includeNotEnabled, includeBloque);
+		return doFindAll(generatePageRequest, search, includeAllMemberships, new Long[]{} , includeAllRoles, new String[]{} , null, null, null, includeActif, includeNotEnabled, includeBloque);
 	}
-	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, String[] includeRoles, HealthIndicator[] withHealthIndicators, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
-		return doFindAll(generatePageRequest, search, false, includeMembershipsIds, false, includeRoles, withHealthIndicators, includeActif, includeNotEnabled, includeBloque);
+	protected Page<Member> doFindAll(Pageable generatePageRequest, String search, Long[] includeMembershipsIds, String[] includeRoles, HealthIndicator[] withHealthIndicators, 
+			CustomCriteria[] withCustomCriteria, String withCustomCriteriaExpireAt, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+		return doFindAll(generatePageRequest, search, false, includeMembershipsIds, false, includeRoles, withHealthIndicators,withCustomCriteria, withCustomCriteriaExpireAt,  includeActif, includeNotEnabled, includeBloque);
 	}
 		
-	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, Long[] includeMembershipsIds, boolean includeAllRoles, String[] includeRoles, HealthIndicator[] withHealthIndicators, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
+	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, Long[] includeMembershipsIds, boolean includeAllRoles, String[] includeRoles, HealthIndicator[] withHealthIndicators, 
+			CustomCriteria[] withCustomCriteria, String withCustomCriteriaExpireAt, boolean includeActif,boolean includeNotEnabled,boolean includeBloque) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		List<Member> members = memberRepository.findAll(
-				boxService.findCurrentCrossFitBox(), customSearch, 
+				currentCrossFitBox, customSearch, 
 				Stream.of(includeMembershipsIds != null && includeMembershipsIds.length > 0 ? includeMembershipsIds : new Long[]{-1L}).collect(Collectors.toSet()), 
 				includeAllMemberships,
 				Stream.of(includeRoles != null && includeRoles.length > 0 ? includeRoles : new String[]{""}).collect(Collectors.toSet()), 
@@ -215,6 +230,17 @@ public class MemberResource {
 			Map<HealthIndicator, List<Member>> calculateHealthIndicators = calculateHealthIndicators(withHealthIndicators);
 			Set<Member> memberConcernedByHealth = calculateHealthIndicators.values().stream().flatMap(l->l.stream()).collect(Collectors.toSet());
 			members.removeIf(m->!memberConcernedByHealth.contains(m));
+		}
+		
+		if (withCustomCriteria != null && withCustomCriteria.length > 0) {
+
+			List<CustomCriteria> withCustomCriteriaAsList = Arrays.asList(withCustomCriteria);
+			if (withCustomCriteriaAsList.contains(CustomCriteria.EXPIRE) && StringUtils.isNotBlank(withCustomCriteriaExpireAt)) {
+		    	DateTime atDate = timeService.parseDate("yyyy-MM-dd", withCustomCriteriaExpireAt, currentCrossFitBox);
+				Set<Member> membersWithNoSub = memberService.findAllMemberWithNoActiveSubscriptionAtDate(atDate.toLocalDate()).stream().collect(Collectors.toSet());
+				members.removeIf(m->!membersWithNoSub.contains(m));
+			}
+			
 		}
 		
 		
@@ -406,7 +432,7 @@ public class MemberResource {
 
 		if (asList.contains(HealthIndicator.NO_SUBSCRIPTION)) {
 			results.put(HealthIndicator.NO_SUBSCRIPTION,
-					memberService.findAllMemberWithNoActiveSubscription());
+					memberService.findAllMemberWithNoActiveSubscriptionAtNow());
 		}
 
 		if (asList.contains(HealthIndicator.NO_CARD)) {

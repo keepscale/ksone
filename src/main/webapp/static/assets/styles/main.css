@@ -288,7 +288,7 @@ datetimepicker.has-error input{
 margin: 0 10px;
 }
 
-.checkbox-list span{
+.checkbox-list > span{
   display: block;
   border-bottom: 1px solid lightgray;
   padding: 5px;
