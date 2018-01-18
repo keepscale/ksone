@@ -1,6 +1,15 @@
 'use strict';
 
-angular.module('crossfitApp')
+angular.module('crossfitApp').directive('ngIndeterminate', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attributes) {
+            attributes.$observe('ngIndeterminate', function(value) {
+                element.prop('indeterminate', scope.$eval(value));
+            });
+        }
+    };
+})
     .controller('BillController', function ($scope, $window, $state, Bill, Authority, Member, ParseLinks, DateUtils) {
         $scope.bills = [];
         $scope.page = 1;
@@ -11,7 +20,9 @@ angular.module('crossfitApp')
 		$scope.isGenerating = false;
         $scope.paymentMethods = [];
         $scope.status = [];
+        $scope.selectedStatus = [];
 
+        $scope.selectedBillsId = [];
 
         $scope.quickMemberLike = "";
         $scope.quickMemberSelected = {};
@@ -20,6 +31,7 @@ angular.module('crossfitApp')
         $scope.loadAll = function() {
             Bill.query({
             	page: $scope.page, per_page: $scope.per_page, 
+            	include_status: $scope.selectedStatus, 
             	search: $scope.searchLike}, 
             	function(result, headers) {
           
@@ -31,6 +43,40 @@ angular.module('crossfitApp')
             	});
             
         };
+
+        $scope.toggleSelectAllBills = function(){
+        	if ($scope.selectedBillsId.length > 0)
+        		$scope.selectedBillsId = [];
+        	else
+        		$scope.selectedBillsId = $scope.bills.map(b=>b.id);
+        }
+        
+        $scope.selectAll = function(status){
+
+            $scope.selectedBillsId = [];
+
+            for (var i = 0; i < $scope.bills.length; i++) {
+            	if ($scope.bills[i].status == status){
+            		$scope.selectedBillsId.push($scope.bills[i].id);
+            	}
+            }
+        }
+
+        $scope.toggleSelected = function(tab, val) {
+			var idx = tab.indexOf(val);
+
+			// Is currently selected
+			if (idx > -1) {
+				tab.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				tab.push(val);
+			}
+			
+			console.log(tab);
+		};
     	
         $scope.clear = function(){
         	var date = new Date();
@@ -54,6 +100,7 @@ angular.module('crossfitApp')
         $scope.reset = function() {
             $scope.page = 1;
             $scope.bills = [];
+            $scope.selectedBillsId = [];
             $scope.loadAll();
         };
         $scope.search = function() {
@@ -76,13 +123,22 @@ angular.module('crossfitApp')
             });
             
             Bill.status({}, function(result, headers) {
+        		$scope.selectedStatus = result.slice(0);
             	$scope.status = result;
+            	
+
+            	$scope.loadAll();
+            	$scope.clear();
             });
             
-        	$scope.loadAll();
-        	$scope.clear();
         }
-
+        $scope.validateSelectedBills = function(){
+        	
+        	Bill.validateBills($scope.selectedBillsId, function(res){
+        		$scope.refresh();
+        	})
+        	
+        }
         $scope.prepareGenerate = function (){
             $('#generateBillsConfirmation').modal('show');
         };
@@ -152,6 +208,10 @@ angular.module('crossfitApp')
 			if ($scope.searchLike != undefined){
 				params += "&search="+$scope.searchLike;
 			}
+
+            for (var i = 0; i < $scope.selectedStatus.length; i++) {
+            	params += "&include_status=" + $scope.selectedStatus[i];
+            }
             
 			$window.open("api/bills.csv?"+params);
 		};

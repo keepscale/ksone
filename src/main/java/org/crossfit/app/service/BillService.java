@@ -60,17 +60,17 @@ public class BillService {
 	@Autowired
 	private SubscriptionRepository subscriptionRepository;
 
-	public Page<Bill> findBills(String search, Pageable pageable) {
+	public Page<Bill> findBills(String search, BillStatus[] includeStatus, Pageable pageable) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		
-		return billRepository.findAll(box, search, new HashSet<>(Arrays.asList(BillStatus.values())), true, pageable);
+		return billRepository.findAll(box, search, new HashSet<>(Arrays.asList(includeStatus == null ? BillStatus.values() : includeStatus)), false, pageable);
 	}
 
 	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus) {
 		return generateBill(since, until, dayOfMonth, withStatus, billRepository);
 	}
 
-	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus, BillsBucket bucket) {
+	public int generateBill(LocalDate since, LocalDate until, int dayOfMonth, BillStatus withStatus, BillsBucket<Bill> bucket) {
 
 		log.info("Genreation des factures depuis le {} jusqu'au {} au {} de chaque mois avec le statut {} et le paiement {}", 
 				since, until, dayOfMonth, withStatus);
@@ -87,7 +87,7 @@ public class BillService {
 		}
 		return counter;
 	}
-	private int generateBill(LocalDate dateAt, BillStatus withStatus, CrossFitBox box, Long nextBillCounter, BillsBucket bucket) {
+	private int generateBill(LocalDate dateAt, BillStatus withStatus, CrossFitBox box, Long nextBillCounter, BillsBucket<Bill> bucket) {
 
 		log.info("Genreation des factures au {} avec le statut {}", dateAt, withStatus);
 
@@ -165,7 +165,7 @@ public class BillService {
 		return saveAndLockBill(box, null, member, status, effectiveDate, payAtDate, paymentMethod, comments, lines, billRepository);
 	}
 	
-	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket bucket) {
+	private Bill saveAndLockBill(CrossFitBox box, Long nextBillCounter, Member member, BillStatus withStatus, LocalDate dateAt, LocalDate payAtDate, PaymentMethod paymentMethod, String comments, List<BillLine> lines, BillsBucket<Bill> bucket) {
 		
 		String to = member.getTitle() + " " + member.getFirstName() + " " + member.getLastName();
 		
@@ -265,7 +265,7 @@ public class BillService {
 		return billRepository.save(actualBill);
 	}
 	
-	private Long findLastBillCountNumberInYear(int year, int month, CrossFitBox box, BillsBucket bucket) {
+	private Long findLastBillCountNumberInYear(int year, int month, CrossFitBox box, BillsBucket<Bill> bucket) {
 		String yearStr = year + "";
 		
 		//YYYY-MM-000000
@@ -301,6 +301,20 @@ public class BillService {
 		}
 	}
 
+
+	public void validateBillsId(Long[] billsId) {
+		List<Bill> billsToValidate = billRepository.findAll(Arrays.asList(billsId));
+		
+		log.info("Validating {} bills", billsToValidate.size());
+		
+		for (Bill bill : billsToValidate) {
+			if (bill.getStatus() == BillStatus.DRAFT) {
+				bill.setStatus(BillStatus.VALIDE);
+			}
+		}
+		
+		billRepository.save(billsToValidate);
+	}
 
 	public Bill findById(Long id, CrossFitBox box) {
 		return billRepository.findOneWithEagerRelation(id, box);

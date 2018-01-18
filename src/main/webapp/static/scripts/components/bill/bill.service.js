@@ -52,7 +52,12 @@ angular.module('crossfitApp')
                 method: 'DELETE',
                 url: 'api/bills/draft'
             },
-                
+            
+            'validateBills' : {
+                method: 'POST',
+                url: 'api/bills/validate'
+            },          
+            
             'save': {
                 method: 'POST',
                 transformRequest: function (data) {

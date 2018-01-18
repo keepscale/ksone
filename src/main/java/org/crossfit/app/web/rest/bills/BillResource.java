@@ -31,6 +31,7 @@ import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.BillService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.PdfBill;
+import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
 import org.crossfit.app.web.rest.dto.bills.BillPeriodDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -127,6 +128,19 @@ public class BillResource {
 
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("bill", bill.getId().toString()))
 				.body(result);
+	}
+	
+
+	/**
+	 * POST /bills/validate-> Validate all bills id.
+	 */
+	@RequestMapping(value = "/bills/validate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> validate(@Valid @RequestBody Long[] billsId) throws URISyntaxException {
+		log.debug("Number of bills id to validate: " + billsId.length);
+		
+		billService.validateBillsId(billsId);
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	/**
@@ -264,19 +278,20 @@ public class BillResource {
 	public ResponseEntity<List<Bill>> getAll(
 			@RequestParam(value = "page", required = false) Integer offset,
 			@RequestParam(value = "per_page", required = false) Integer limit,
-			@RequestParam(value = "search", required = false) String search) throws URISyntaxException {
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "include_status", required = false) BillStatus[] includeStatus) throws URISyntaxException {
 		
 		Pageable generatePageRequest = PaginationUtil.generatePageRequest(offset, limit);
 		
-		Page<Bill> page = doFindAll(generatePageRequest, search);
+		Page<Bill> page = doFindAll(generatePageRequest, search, includeStatus);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bills", offset, limit);
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
 	
-	protected Page<Bill> doFindAll(Pageable generatePageRequest, String search) {
+	protected Page<Bill> doFindAll(Pageable generatePageRequest, String search, BillStatus[] includeStatus) {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
-		return billService.findBills(customSearch, generatePageRequest).map(cleanMembershipRules());
+		return billService.findBills(customSearch, includeStatus, generatePageRequest).map(cleanMembershipRules());
 	}
 
 
@@ -297,7 +312,7 @@ public class BillResource {
 	@RequestMapping(value = "/bills/periods", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<BillPeriodDTO>> getAllPeriods(){
 		
-		List<BillPeriodDTO> periods = billService.findBills("%", null).getContent().stream().map(BillPeriodDTO::new).sorted((p1,p2)->p1.getShortFormat().compareTo(p2.getShortFormat())).distinct().collect(Collectors.toList());
+		List<BillPeriodDTO> periods = billService.findBills("%", BillStatus.values(), null).getContent().stream().map(BillPeriodDTO::new).sorted((p1,p2)->p1.getShortFormat().compareTo(p2.getShortFormat())).distinct().collect(Collectors.toList());
 		
 		return new ResponseEntity<>(periods, HttpStatus.OK);
 	}
@@ -325,12 +340,13 @@ public class BillResource {
 	 */
 	@RequestMapping(value = "/bills.csv", method = RequestMethod.GET, produces = "text/csv;charset=ISO-8859-1")
 	public String getAllAsCSV(
+			@RequestParam(value = "include_status", required = false) BillStatus[] includeStatus,
 			@RequestParam(value = "search", required = false) String search) throws Exception {
 		
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 
-		List<Bill> bills = doFindAll(generatePageRequest, search).getContent();
+		List<Bill> bills = doFindAll(generatePageRequest, search, includeStatus).getContent();
 		
 		StringWriter sw = new StringWriter();
 		

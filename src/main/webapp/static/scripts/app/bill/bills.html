@@ -34,21 +34,29 @@
 				</div>
 			</div>
 		</div>
-				
+		
 		<div class="row">
-			<div class="col-xs-8 col-lg-10">
-				<!-- >div class="form-group">
-				  <label for="sel1">De la période:</label>
-				  <select class="form-control" id="sel1">
-				  	<option>Choisissez une période</option>
-				    <option ng-repeat="period in periods" value="{{period.shortFormat}}">{{period.longFormat}}</option>
-				  </select>
-				</div-->
-			</div>
-			<div class="col-xs-4 col-lg-2">
-				<div class="form-group pull-right">
-					<label class="control-label">{{totalBill}} factures</label>
+		
+			<div class="col-xs-12">
+								
+				<div class="form-group pull-right form-inline">
+					<label>{{totalBill}} factures</label>
 				</div>
+			
+				<div class="form-group pull-left">
+					<div class="checkbox-list">
+						<span class="checkbox-title">Statut</span>
+						<div class="checkbox-list-content">
+							<label ng-repeat="s in status">
+							  <input type="checkbox" value="{{s}}"
+								    ng-checked="selectedStatus.indexOf(s) > -1"
+			  						ng-click="toggleSelected(selectedStatus, s)"> {{'crossfitApp.bill.status.enum.' + s | translate}}
+							</label>
+						</div>
+	
+					</div>
+				</div>	
+			
 			</div>
 		</div>
 	</form>		
@@ -209,24 +217,71 @@
 	 </div>
     
     
+    <div class="row table-action">
+    	<div class="col-xs-12">
+			<div style="display: inline-table;">
+				<div class="input-group pull-left">
+					<span class="input-group-addon">
+						<input type="checkbox" 
+							ng-indeterminate="{{selectedBillsId.length > 0 && selectedBillsId.length != bills.length}}"
+							ng-checked="selectedBillsId.length > 0"
+	  						ng-click="toggleSelectAllBills()">
+					</span>
+					<div class="input-group-btn" ng-if="bill.id==null">
+						<button type="button" class="btn btn-default dropdown-toggle"
+							data-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false">
+							<span class="caret"></span> <span class="sr-only">Toggle
+								Dropdown</span>
+						</button>
+						<ul class="dropdown-menu">   										
+							<li ng-repeat="s in status">
+								<a href ng-click="selectAll(s)">
+									{{'crossfitApp.bill.status.enum.' + s | translate }}
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				
+				
+	   			<button type="button" ng-if="selectedBillsId.length > 0"
+					 ng-click="validateSelectedBills()" style="margin-left: 10px;"
+					class="btn btn-default pull-left">
+					<span>Valider les {{selectedBillsId.length}} factures sélectionnées</span>
+				</button>
+			
+			</div>
+    	</div>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th style="width: 30px; text-align: center;">
+
+					</th>
+                    <th translate="crossfitApp.bill.status">Status</th>
                     <th translate="crossfitApp.bill.number">Facture n°</th>
                     <th translate="crossfitApp.bill.date">Date</th>
                     <th translate="crossfitApp.bill.to">Adhérent</th>
-                    <th translate="crossfitApp.bill.status">Status</th>
                     <th translate="crossfitApp.bill.paymentMethod">Payment Method</th>
                     <th translate="crossfitApp.bill.total">Total TTC</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="bill in bills">
+                	<td style="text-align: center;">
+                	
+                		<input type="checkbox" value="{{bill.id}}"
+								    ng-checked="selectedBillsId.indexOf(bill.id) > -1"
+			  						ng-click="toggleSelected(selectedBillsId, bill.id)">
+			  						
+ 						</td>
+					<td> {{'crossfitApp.bill.status.enum.' + bill.status | translate }}</td>
                     <td> <a href="#" ui-sref="bill.edit({id:bill.id})"> {{bill.number}}</a></td>
 					<td> {{bill.effectiveDate | date:'yyyy-MM-dd' }}</td>
                     <td> <a href="#" ui-sref="member.edit({id:bill.member.id})"> {{bill.displayName}}</a></td>
-					<td> {{'crossfitApp.bill.status.enum.' + bill.status | translate }}</td>
 					<td> {{'crossfitApp.bill.paymentMethod.enum.' + bill.paymentMethod | translate }}</td>
 					<td> {{bill.totalTaxIncl | currency:'€' }}</td>
                 </tr>

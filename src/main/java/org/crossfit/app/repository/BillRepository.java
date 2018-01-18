@@ -53,7 +53,7 @@ public interface BillRepository extends JpaRepository<Bill,Long>, BillsBucket<Bi
     		 		+ "left join fetch s.membership ms "
     	    		+ "join fetch b.member m "
     	    		+ BILL_QUERY
-    	    		+ "order by b.number desc ", 
+    	    		+ "order by b.status, b.number desc ", 
     		countQuery = "select count(b) from Bill b  join b.member m " + BILL_QUERY)
 	Page<Bill> findAll(
 			@Param("box") CrossFitBox box, @Param("search") String search, 
