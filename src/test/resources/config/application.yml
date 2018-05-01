@@ -30,7 +30,7 @@ spring:
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
-            hibernate.hbm2ddl.auto: validate
+            hibernate.hbm2ddl.auto: none
     
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7

@@ -15,8 +15,8 @@
     <property name="floatType" value="float" dbms="mysql, oracle"/>
 
 
-    <changeSet id="201703211622" author="lgangloff">
-
+    <changeSet id="201703211622" author="lgangloff" >
+    	<validCheckSum>7:e08658d5da5059d24fd671fa41443701</validCheckSum> 
       
        
        	<addColumn tableName="MEMBER">
@@ -27,7 +27,7 @@
 
 		<customChange class="org.crossfit.app.liquibase.GenerateMemberUUID"></customChange>
 
-		<addNotNullConstraint tableName="MEMBER" columnName="uuid"/>
+		<addNotNullConstraint tableName="MEMBER" columnName="uuid" columnDataType="varchar(36)"/>
 		<addUniqueConstraint tableName="MEMBER" columnNames="uuid" constraintName="member_uuid_uk"/>
 
     </changeSet>

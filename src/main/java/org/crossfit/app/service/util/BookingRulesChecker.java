@@ -168,26 +168,26 @@ public class BookingRulesChecker {
 				List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
 				
 				long bookingsCount = 0;
-				DateTime deb = now;
+				DateTime deb = bookingToTest.getStartAt();
 				switch (rule.getType()) {
 					case SUM: //somme total des resa
 						bookingsCount = bookingsForRules.size();
 						break;
 
 					case SUM_PER_WEEK: //somme total des resa de la semaine passe
-						deb = now.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
+						deb = bookingToTest.getStartAt().withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
 						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(1), bookingsForRules, rule);
 						break;
 						
 					case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
-						Optional<Booking> previousBookingBeforeNow = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule) && b.getStartAt().isBefore(now)).max(Comparator.comparing((Booking::getStartAt)));
-						DateTime deb4Week = previousBookingBeforeNow.map(Booking::getStartAt).orElse(now);
+						Optional<Booking> previousBookingBeforeNow = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule) && b.getStartAt().isBefore(bookingToTest.getStartAt())).max(Comparator.comparing((Booking::getStartAt)));
+						DateTime deb4Week = previousBookingBeforeNow.map(Booking::getStartAt).orElse(bookingToTest.getStartAt());
 						deb = deb4Week.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay();
 						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(4), bookingsForRules, rule);
 						break;
 						
 					case SUM_PER_MONTH: //somme total des resa du mois passe
-						deb = now.withDayOfMonth(1).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
+						deb = bookingToTest.getStartAt().withDayOfMonth(1).withTimeAtStartOfDay(); 
 						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusMonths(1), bookingsForRules, rule);
 						break;
 				}

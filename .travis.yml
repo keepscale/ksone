@@ -16,7 +16,7 @@ before_install:
 install: "/bin/true"
 
 script:
-- mvn clean package -Pproduction -DskipTests=true
+- mvn clean package -Pproduction
 
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"

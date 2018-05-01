@@ -15,8 +15,10 @@
     <property name="floatType" value="float" dbms="mysql, oracle"/>
 
 
-    <changeSet id="201711211226" author="lgangloff" runOnChange="true">
+    <changeSet id="201711211226" author="lgangloff" runOnChange="false">
 
+    	<validCheckSum>7:839ee9b8ac3ea8ea71d65e56eb16803f</validCheckSum> 
+    	
 		<delete tableName="BILL_LINE"></delete>
 		<delete tableName="BILL"></delete>
 
@@ -60,12 +62,18 @@
             <column name="price_tax_incl" type="decimal(10,2)"/>       
             <column name="tax_per_cent" type="decimal(10,2)"/>            
         </addColumn>
-        
+
+    </changeSet>
+    
+    <changeSet id="201711211226-1" author="lgangloff" runOnChange="false" failOnError="false" context="!test">
         <update tableName="MEMBERSHIP">
         	<column name="price_tax_incl" valueComputed="to_number(price, '999.990')"></column>
         	<column name="tax_per_cent" value="20"></column>
         </update>
-        <dropColumn tableName="MEMBERSHIP" columnName="price"/>
-
     </changeSet>
+    
+    <changeSet id="201711211226-2" author="lgangloff" runOnChange="false" failOnError="false">
+        <dropColumn tableName="MEMBERSHIP" columnName="price"/>
+    </changeSet>
+    
 </databaseChangeLog>

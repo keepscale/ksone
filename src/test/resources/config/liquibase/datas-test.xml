@@ -28,6 +28,7 @@
 			<column name="enabled" value="true"/>
 			<column name="locked" value="false"/>
 
+			<column name="uuid" value="abcd-efcd" />
 			<column name="title" value="MS" />
 			<column name="first_name" value="webmaster" />
 			<column name="last_name" value="crossfit-local" />
@@ -53,6 +54,7 @@
 			<column name="enabled" value="true"/>
 			<column name="locked" value="false"/>
 
+			<column name="uuid" value="abcd-azer" />
 			<column name="title" value="MS" />
 			<column name="first_name" value="manager" />
 			<column name="last_name" value="crossfit-local" />
@@ -76,6 +78,7 @@
 			<column name="enabled" value="true"/>
 			<column name="locked" value="false"/>
 
+			<column name="uuid" value="abcd-plop" />
 			<column name="title" value="MS" />
 			<column name="first_name" value="Joe" />
 			<column name="last_name" value="Bar" />
@@ -98,6 +101,7 @@
 			<column name="enabled" value="true"/>
 			<column name="locked" value="false"/>
 			
+			<column name="uuid" value="abcd-yeah" />
 			<column name="title" value="MS" />
 			<column name="first_name" value="Jean" />
 			<column name="last_name" value="Manche'sek" />
@@ -121,6 +125,7 @@
 			<column name="enabled" value="true"/>
 			<column name="locked" value="false"/>
 			
+			<column name="uuid" value="abcd-yopl" />
 			<column name="title" value="MS" />
 			<column name="first_name" value="Ed" />
 			<column name="last_name" value="Lapoignée" />
@@ -221,7 +226,8 @@
 			<column name="name" value="Séance découverte" />
 			<column name="add_by_default" value="true" />
 			<column name="nb_month_validity" value="12" />
-			<column name="price" value="0 €" />
+			<column name="price_tax_incl" value="0" />
+			<column name="tax_per_cent" value="20" />
 			<column name="created_by" value="system" />
 		</insert>
 		
@@ -248,7 +254,8 @@
 			<column name="id" valueComputed="2" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Fondations" />
-			<column name="price" value="50 €" />
+			<column name="price_tax_incl" value="50" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="2" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -277,7 +284,8 @@
 			<column name="id" valueComputed="3" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Drop in" />
-			<column name="price" value="15 €" />
+			<column name="price_tax_incl" value="15" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="6" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -311,7 +319,8 @@
 			<column name="id" valueComputed="4" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Carte 10 séances" />
-			<column name="price" value="130 €" />
+			<column name="price_tax_incl" value="130" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="12" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -346,7 +355,8 @@
 			<column name="id" value="5" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Double" />
-			<column name="price" value="55 €" />
+			<column name="price_tax_incl" value="55" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="12" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -378,7 +388,8 @@
 			<column name="id" value="6" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Triplet" />
-			<column name="price" value="70 €" />
+			<column name="price_tax_incl" value="70" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="12" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -429,7 +440,8 @@
 			<column name="id" value="7" />	
 			<column name="box_id" value="1" />		
 			<column name="name" value="Unlimited" />
-			<column name="price" value="85 €" />
+			<column name="price_tax_incl" value="85" />
+			<column name="tax_per_cent" value="20" />
 			<column name="nb_month_validity" value="12" />
 			<column name="created_by" value="system" />
 		</insert>
@@ -467,6 +479,44 @@
 		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
 			<column name="membership_rules_id" value="9" />		
 			<column name="timeslottype_id" value="5" />
+		</insert>
+		
+		
+		
+		
+		
+		
+		
+		
+		<insert tableName="MEMBERSHIP">
+			<column name="id" value="8" />	
+			<column name="box_id" value="1" />		
+			<column name="name" value="5 par mois" />
+			<column name="price_tax_incl" value="70" />
+			<column name="tax_per_cent" value="20" />
+			<column name="nb_month_validity" value="12" />
+			<column name="created_by" value="system" />
+		</insert>
+		
+		<insert tableName="MEMBERSHIP_RULES">
+			<column name="id" value="10" />
+			<column name="membership_id" value="8" />	
+			<column name="number_of_session" value="5" />
+			<column name="type" value="SUM_PER_MONTH" />
+			<column name="nb_max_booking" value="10" />
+			<column name="nb_max_day_booking" value="14" />
+			<column name="nb_hours_at_least_to_book" value="24" />
+			<column name="nb_hours_at_least_to_cancel" value="6" />
+		</insert>
+		
+		
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" value="10" />		
+			<column name="timeslottype_id" value="3" />
+		</insert>
+		<insert tableName="MEMBERSHIP_RULES_TIMESLOTTYPE">
+			<column name="membership_rules_id" value="10" />			
+			<column name="timeslottype_id" value="4" />
 		</insert>
 	</changeSet>
 	

@@ -17,10 +17,10 @@
 
     <changeSet id="201711280015" author="lgangloff" runOnChange="true">
 
-		<addNotNullConstraint tableName="MEMBERSHIP" columnName="tax_per_cent" defaultNullValue="20.0"/>
-		<addNotNullConstraint tableName="MEMBERSHIP" columnName="price_tax_incl" defaultNullValue="0.0"/>
-		<addNotNullConstraint tableName="PRODUCT" columnName="tax_per_cent" defaultNullValue="20.0"/>
-		<addNotNullConstraint tableName="PRODUCT" columnName="price_tax_incl" defaultNullValue="0.0"/>
+		<addNotNullConstraint tableName="MEMBERSHIP" columnName="tax_per_cent" defaultNullValue="20.0" columnDataType="decimal(10,2)"/>
+		<addNotNullConstraint tableName="MEMBERSHIP" columnName="price_tax_incl" defaultNullValue="0.0" columnDataType="decimal(10,2)"/>
+		<addNotNullConstraint tableName="PRODUCT" columnName="tax_per_cent" defaultNullValue="20.0" columnDataType="decimal(10,2)"/>
+		<addNotNullConstraint tableName="PRODUCT" columnName="price_tax_incl" defaultNullValue="0.0" columnDataType="decimal(10,2)"/>
         
         
     </changeSet>

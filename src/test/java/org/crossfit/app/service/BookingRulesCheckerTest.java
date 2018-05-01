@@ -52,8 +52,9 @@ public class BookingRulesCheckerTest {
 	@Inject
 	private TimeSlotTypeRepository timeSlotTypeRepository;
 	
-	
+
 	private Membership ABO_TRIPLE;
+	private Membership ABO_5_PAR_MOIS;
 	private TimeSlotType WOD;
 	private TimeSlotType OPENBOX;
 	private Member aMember;
@@ -62,12 +63,13 @@ public class BookingRulesCheckerTest {
 	public void initTest() {
 		aMember = memberRepository.findOne(1L);
 		ABO_TRIPLE = membershipRepository.findOne(6L, crossFitBoxSerivce.findCurrentCrossFitBox());
+		ABO_5_PAR_MOIS = membershipRepository.findOne(8L, crossFitBoxSerivce.findCurrentCrossFitBox());
 		WOD = timeSlotTypeRepository.findOne(3L);
 		OPENBOX = timeSlotTypeRepository.findOne(5L);
 	}
 
 	@Test
-	public void test() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+	public void testRegleParSemaine() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
 
 		Subscription sTriple = new Subscription();
 		sTriple.setMember(aMember);
@@ -112,6 +114,45 @@ public class BookingRulesCheckerTest {
 		}
 
 		checker.findSubscription(aMember, WOD, parseDateTime("2016-10-24T09:00:00"), 5); //On doit pouvoir reserver le lundi dans 2 semaines
+
+	}
+	
+
+	@Test
+	public void testRegleParMois() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+
+		Subscription sTripleParMois = new Subscription();
+		sTripleParMois.setMember(aMember);
+		sTripleParMois.setMembership(ABO_5_PAR_MOIS);
+		Set<Subscription> subscriptions = new HashSet<Subscription>();
+		subscriptions.add(sTripleParMois);
+		
+		List<Booking> bookings = new ArrayList<Booking>();
+
+		
+		bookings.add(createBooking("2016-10-12T14:00:00", sTripleParMois, WOD));		//mercredi
+		bookings.add(createBooking("2016-10-14T14:00:00", sTripleParMois, WOD));		//vendredi
+		bookings.add(createBooking("2016-10-17T14:00:00", sTripleParMois, WOD)); 		//lundi d'apres
+		bookings.add(createBooking("2016-10-18T14:00:00", sTripleParMois, WOD)); 		//mardi d'apres
+		bookings.add(createBooking("2016-10-19T14:00:00", sTripleParMois, WOD)); 		//mercredi d'apres
+		bookings.add(createBooking("2016-10-25T14:00:00", sTripleParMois, WOD)); 		//mardi d'apres
+
+		bookings.add(createBooking("2016-11-02T14:00:00", sTripleParMois, WOD)); 		//mercredi mois après
+		bookings.add(createBooking("2016-11-04T14:00:00", sTripleParMois, WOD)); 		//vendredi mois après
+		
+		DateTime now = parseDateTime("2016-10-19T14:00:00"); 					//On est mercredi
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+
+		//On ne doit plus pouvoir réserver car on a fait les 5 résa sur le mois
+		try {
+			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-24T09:00:00"), 5);
+			Assert.fail("Pas le 24, car déjà 5 résa");
+		} catch (Exception e) {
+			log.debug("Exception nomale: ", e);
+		}
+		
+		//Par contre, on doit pouvoir réserver dès le 1er du mois suivant (mardi 1 nov 2016)
+		checker.findSubscription(aMember, WOD, parseDateTime("2016-11-01T14:00:00"), 5); 
 
 	}
 
