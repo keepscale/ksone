@@ -15,10 +15,10 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.BookingEvent;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
@@ -39,6 +39,7 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.dto.BookingEventDTO;
 import org.crossfit.app.web.rest.dto.BookingStatusDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -48,6 +49,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -55,6 +57,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,6 +103,11 @@ public class BookingResource {
     @Inject
 	private TimeSlotNotificationRepository notificationRepository;
 
+    @Inject
+	private EventBus eventBus;
+    @Autowired
+    private SimpMessagingTemplate template;
+    
     /**
      * GET  /bookings -> get all the bookings.
      */
@@ -509,6 +517,9 @@ public class BookingResource {
 		log.debug("Booking a sauvegarder ou a preparer: {}", b);
     	if(!prepare){
 	        Booking result = bookingRepository.save(b);
+	        BookingEvent bookingEvent = BookingEvent.createdBooking(now, SecurityUtils.getCurrentMember(), result, currentCrossFitBox);
+			eventBus.notify("booking-created", Event.wrap(bookingEvent));
+            template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
     		log.debug("Booking sauvegarde: {}", b);
 	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
     	}

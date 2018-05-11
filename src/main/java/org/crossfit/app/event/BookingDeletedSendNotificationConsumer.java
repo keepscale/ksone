@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.crossfit.app.domain.Booking;
+import org.crossfit.app.domain.BookingEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
@@ -18,7 +19,6 @@ import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.MailService;
 import org.crossfit.app.service.TimeService;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.slf4j.Logger;
@@ -29,9 +29,9 @@ import reactor.bus.Event;
 import reactor.fn.Consumer;
 
 @Service
-public class BookingReceiver implements Consumer<Event<Booking>> {
+public class BookingDeletedSendNotificationConsumer implements Consumer<Event<BookingEvent>> {
 
-	private final Logger log = LoggerFactory.getLogger(BookingReceiver.class);
+	private final Logger log = LoggerFactory.getLogger(BookingDeletedSendNotificationConsumer.class);
 
 	@Inject
 	private TimeSlotNotificationRepository notificationRepository;
@@ -44,8 +44,8 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
     @Inject
     private TimeService timeService;
 
-	public void accept(Event<Booking> event) {
-		Booking booking = event.getData();
+	public void accept(Event<BookingEvent> event) {
+		Booking booking = event.getData().getBooking();
 		CrossFitBox box = booking.getBox();
 		
 		
@@ -59,8 +59,13 @@ public class BookingReceiver implements Consumer<Event<Booking>> {
 		log.debug("Suppression d'une resa {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", booking, start, end, timeSlotType.getId(), box.getId());
 
 		LocalDate localDate = bookingStartAt.toLocalDate();
-		log.debug("Recherche des demandes de notif pour le {}", localDate);
 		List<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAllByDate(localDate);
+
+		log.debug("Recherche des demandes de notif pour le {} => {} demandes de notifs", localDate, notifAtBookingDate.size());
+		
+		if (notifAtBookingDate.isEmpty()) {
+			return;
+		}
 		
 		List<Long> timeSlotIds = notifAtBookingDate.stream().map(TimeSlotNotification::getTimeSlot).map(TimeSlot::getId).collect(Collectors.toList());
 		List<TimeSlot> possibleTimeSlotMatch = timeSlotRepository.findAll(timeSlotIds);

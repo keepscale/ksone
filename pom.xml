@@ -244,6 +244,17 @@
 		    <artifactId>ical4j</artifactId>
 		    <version>2.0.0</version>
 		</dependency>
+		
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		</dependency>
+		 
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -370,6 +381,8 @@
 		              <jsSourceDir>static</jsSourceDir>
 		              <jsSourceFiles>
 		              
+						<jsSourceFile>/bower_components/sockjs-client/dist/sockjs.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/stomp-websocket/lib/stomp.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
 						<jsSourceFile>/bower_components/jquery/dist/jquery.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.min.js</jsSourceFile>
@@ -405,6 +418,7 @@
 		              
 						<jsSourceFile>/scripts/app/app.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/app/version.service.js</jsSourceFile>
+						<jsSourceFile>/scripts/components/event/event.booking.service.js</jsSourceFile>
 						<jsSourceFile>/scripts/components/auth/auth.service.js</jsSourceFile>
 	    				<jsSourceFile>/scripts/components/auth/authority.service.js</jsSourceFile>						
 					    <jsSourceFile>/scripts/components/auth/principal.service.js</jsSourceFile>

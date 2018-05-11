@@ -59,7 +59,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
     })
     .config(function ($compileProvider, $stateProvider, $urlRouterProvider, $httpProvider, $locationProvider, $translateProvider, tmhDynamicLocaleProvider, httpRequestInterceptorCacheBusterProvider) {
 
-    	$stateProvider.VERSION = "4";
+    	$stateProvider.VERSION = "5";
         
         //enable CSRF
         $httpProvider.defaults.xsrfCookieName = 'CSRF-TOKEN';

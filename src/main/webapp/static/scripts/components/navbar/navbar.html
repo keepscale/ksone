@@ -28,10 +28,37 @@
 		</a></li>
 
 		<li ng-class="{active: $state.includes('account')}"  has-any-role="ROLE_USER,ROLE_MANAGER,ROLE_ADMIN"
-		 ng-switch-when="true" ><a ui-sref="account.edit"> <span class="glyphicon glyphicon-user"
-				ui-sref-active="active"
-				title="{{account.firstName}} {{account.lastName}}"><!-- {{account.firstName | limitTo: 8}} --> </span>
-		</a></li>
+		 ng-switch-when="true" >
+			 <a ui-sref="account.edit"> 
+			 	<span class="glyphicon glyphicon-user"
+					ui-sref-active="active"
+					title="{{account.firstName}} {{account.lastName}}">
+					<!-- {{account.firstName | limitTo: 8}} --> 
+				</span>
+			</a>
+		</li>
+		<li class="last-booking" has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
+			 <a ng-class="{'new-event': hasNewEvent()}" href="" ng-click="displayLastEvent()"
+			 	class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 
+			 	<span class="glyphicon glyphicon-bell">
+				</span>
+				<span class="badge">{{newEventCount}}</span>
+				
+			</a>
+			<ul class="dropdown-menu">
+				<li ng-show="events.length == 0">
+			       	<a href="">Encore aucune inscription aujourd'hui</a>					
+				</li>
+				<li ng-repeat="event in events">
+			       	<a href="" ng-class="{'alert-info': $index < eventHighLightCount}">
+			       		{{event.eventDate | date:"HH:mm:ss"}} - 
+			       		{{ event.eventType == 'CREATED' ? 'Inscription' : 'Désinscription'}} de {{event.bookingOwnerDisplayName}}
+			       		pour la séance de {{event.bookingStartDate | date:"HH:mm"}}
+			       		{{ event.userLogin != event.bookingOwnerLogin ? '(Par '+event.userDisplayName+')' : '' }}
+		       		</a>
+				</li>
+			</ul>
+		</li>
 
 		<li ui-sref-active="active" ng-switch-when="true"><a href=""
 			ng-click="logout()"> <span class="glyphicon glyphicon-log-out"

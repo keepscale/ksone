@@ -10,7 +10,8 @@ import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.crossfit.app.event.BookingReceiver;
+import org.crossfit.app.event.BookingDeletedSendNotificationConsumer;
+import org.crossfit.app.event.BookingEventConsumer;
 import org.crossfit.app.event.CheckingCardReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,11 @@ public class Application implements CommandLineRunner{
     private Environment env;
 
 	@Autowired
-	private BookingReceiver bookingReceiver;
+	private BookingDeletedSendNotificationConsumer bookingDeletedSendNotificationConsumer;
 
+	@Autowired
+	private BookingEventConsumer bookingEventConsumer;
+	
 	@Autowired
 	private CheckingCardReceiver checkingCardReceiver;
 	
@@ -59,7 +63,10 @@ public class Application implements CommandLineRunner{
 
     @Override
 	public void run(String... arg0) throws Exception {
-		eventBus.on($("booking"), bookingReceiver);
+		eventBus.on($("booking-deleted"), bookingDeletedSendNotificationConsumer);
+		eventBus.on($("booking-deleted"), bookingEventConsumer);
+		eventBus.on($("booking-created"), bookingEventConsumer);
+		
 		eventBus.on($("checkingcard"), checkingCardReceiver);
 	}
 

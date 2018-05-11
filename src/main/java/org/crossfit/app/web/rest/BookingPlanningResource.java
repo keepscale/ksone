@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -79,6 +80,30 @@ public class BookingPlanningResource {
     @Inject
     private TimeSlotExclusionRepository timeSlotExclusionRepository;
 
+
+    @RequestMapping(value = "/private/lastbookingtoday",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookingDTO>> getLastBookingOfToday(
+    		@RequestParam(value = "page" , required = false, defaultValue = "0") Integer index,
+            @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer nbDaysToDisplay) throws URISyntaxException {
+
+    	CrossFitBox box = boxService.findCurrentCrossFitBox();
+    	
+    	DateTime now = timeService.nowAsDateTime(box);
+    	DateTime endOfNow = now.withHourOfDay(0).plusDays(1);
+    	
+    	List<BookingDTO> bookings = 
+    			bookingRepository.findAllAt(box, now, endOfNow)
+			    	.stream()
+			    	//.filter(b->b.getCreatedDate().isAfter(now))
+			    	.sorted(Comparator.comparing(Booking::getCreatedDate).reversed())
+			    	.map(BookingDTO.adminMapper)
+			    	.collect(Collectors.toList());
+
+    	return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+    
 
     /**
      * GET  /bookings -> get all the bookings.
