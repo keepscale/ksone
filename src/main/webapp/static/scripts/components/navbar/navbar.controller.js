@@ -16,22 +16,38 @@ angular.module('crossfitApp')
             $state.go('home');
         };
         
+    	
+    	$scope.getLastCheckEventDate = function(){
+    		var val = $window.localStorage.getItem("LastCheckEventDate");
+    		if (val){
+    			return val;
+    		}
+    		else{
+    			return $scope.updateLastCheckEventDate();
+    		}
+    	}
+    	
+    	$scope.updateLastCheckEventDate = function(){
+    		var d = new Date();
+    		$window.localStorage.setItem("LastCheckEventDate", d);
+    		return d;
+    	}
+        
         $scope.events = [];
-        $scope.lastCheckEventDate = new Date();
-        $scope.previousCheckEventDate = $scope.lastCheckEventDate;
+        $scope.previousCheckEventDate = $scope.getLastCheckEventDate();
         $scope.stompClient = null;
     	$scope.statusWS = "CLOSED";
         
-        
         $scope.newEventCount = function(){
-        	var count = $scope.events.filter(event=>event.eventDate > $scope.lastCheckEventDate).length;
+        	var d = $scope.getLastCheckEventDate();
+        	var count = $scope.events.filter(event=>event.eventDate > d).length;
         	return count;
         }
         
         $scope.displayLastEvent = function(){
         	$scope.loadEvents();
-            $scope.previousCheckEventDate = $scope.lastCheckEventDate;
-    		$scope.lastCheckEventDate = new Date();
+            $scope.previousCheckEventDate = $scope.getLastCheckEventDate();
+            $scope.updateLastCheckEventDate();
         }
 
         $scope.loadEvents = function(){
