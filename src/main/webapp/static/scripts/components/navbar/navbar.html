@@ -38,11 +38,11 @@
 			</a>
 		</li>
 		<li class="last-booking" has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
-			 <a ng-class="{'new-event': hasNewEvent()}" href="" ng-click="displayLastEvent()"
+			 <a ng-class="{'new-event': newEventCount() > 0}" href="" ng-click="displayLastEvent()"
 			 	class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 
-			 	<span class="glyphicon glyphicon-bell">
-				</span>
-				<span class="badge">{{newEventCount}}</span>
+			 	<span class="glyphicon glyphicon-bell ws-{{statusWS}}"
+					title="{{wsMessage}}"></span>
+				<span class="badge">{{newEventCount()}}</span>
 				
 			</a>
 			<ul class="dropdown-menu">
@@ -50,9 +50,10 @@
 			       	<a href="">Encore aucune inscription aujourd'hui</a>					
 				</li>
 				<li ng-repeat="event in events">
-			       	<a href="" ng-class="{'alert-info': $index < eventHighLightCount}">
+			       	<a href="" ng-class="{'alert-info': event.eventDate > previousCheckEventDate}">
 			       		{{event.eventDate | date:"HH:mm:ss"}} - 
-			       		{{ event.eventType == 'CREATED' ? 'Inscription' : 'Désinscription'}} de {{event.bookingOwnerDisplayName}}
+			       		{{ event.eventType == 'CREATED' ? 'Inscription' : event.eventType == 'DELETED' ? 'Désinscription' : event.eventType}} 
+			       		de {{event.bookingOwnerDisplayName}}
 			       		pour la séance de {{event.bookingStartDate | date:"HH:mm"}}
 			       		{{ event.userLogin != event.bookingOwnerLogin ? '(Par '+event.userDisplayName+')' : '' }}
 		       		</a>

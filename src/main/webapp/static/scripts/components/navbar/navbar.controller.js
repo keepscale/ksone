@@ -16,53 +16,96 @@ angular.module('crossfitApp')
             $state.go('home');
         };
         
-        $scope.newEventCount = 0;
-        $scope.eventHighLightCount = 0;
+        $scope.events = [];
+        $scope.lastCheckEventDate = new Date();
+        $scope.previousCheckEventDate = $scope.lastCheckEventDate;
+        $scope.stompClient = null;
+    	$scope.statusWS = "CLOSED";
         
         
-        $scope.hasNewEvent = function(){
-        	return $scope.newEventCount > 0;
+        $scope.newEventCount = function(){
+        	var count = $scope.events.filter(event=>event.eventDate > $scope.lastCheckEventDate).length;
+        	return count;
         }
         
         $scope.displayLastEvent = function(){
-    		$scope.eventHighLightCount = $scope.newEventCount;
-    		$scope.newEventCount = 0;
-        }
-        
-
-        $scope.newBookingEvent = function(bookingEvent){
-        	bookingEvent.bookingStartDate = DateUtils.convertDateTimeFromServer(bookingEvent.bookingStartDate);
-        	var now = new Date();
-        	
-        	if (bookingEvent.bookingStartDate > now && now.toDateString() === bookingEvent.bookingStartDate.toDateString()){
-            	//console.log(bookingEvent);
-            	$scope.newEventCount = $scope.newEventCount + 1;
-            	EventBooking.query(function(result, headers){
-            		$scope.events = result;
-            	});
-                $scope.$apply() 
-        	}
-        	else{
-        		//console.log("bookingEvent n'est pas aujourd'hui");
-        	}
-        	
-        	
-        }        
-
-        $scope.connect = function() {
-            var socket = new SockJS('/ws');
-            var stompClient = Stomp.over(socket);  
-            stompClient.connect({}, function(frame) {
-                stompClient.subscribe('/topic/bookings', function(messageOutput) {
-                	$scope.newBookingEvent(JSON.parse(messageOutput.body));
-                });
-            });
+        	$scope.loadEvents();
+            $scope.previousCheckEventDate = $scope.lastCheckEventDate;
+    		$scope.lastCheckEventDate = new Date();
         }
 
-        if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH'])){
-            $scope.connect();
+        $scope.loadEvents = function(){
         	EventBooking.query(function(result, headers){
-        		$scope.events = result;
+        		$scope.events = result;        		
         	});
         }
-    });
+
+
+        $scope.connectWebsocket = function() {
+            if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH'])){
+
+            	$scope.statusWS = "PENDING";
+            	$scope.wsMessage = "Connexion...";
+	            $scope.stompClient = Stomp.over(new SockJS('/ws'));
+	            $scope.stompClient.connect({}, 
+            		function(frame) { //Tout ce qui arrive dans cette fonction n'est pas géré par angular
+		            	$scope.statusWS = "CONNECTED";
+		            	$scope.wsMessage = "Connecté";
+		            	$scope.loadEvents();
+	                    $scope.$apply();
+		            	$scope.stompClient.subscribe('/topic/bookings', function(messageOutput) {
+		                	var bookingEvent = JSON.parse(messageOutput.body);
+		                	bookingEvent.bookingStartDate = DateUtils.convertDateTimeFromServer(bookingEvent.bookingStartDate);
+		                	var now = new Date();
+		                	
+		                	//Si la réservation concerne une date future et concerne aujourd'hui, on reload les events
+		                	if (bookingEvent.bookingStartDate > now 
+		                			&& now.toDateString() === bookingEvent.bookingStartDate.toDateString()){
+		                    	$scope.loadEvents();
+			                    $scope.$apply();
+		                	}
+		                	else{
+		                		//console.log("bookingEvent n'est pas aujourd'hui");
+		                	}
+		                	
+		                });
+		            }, 
+		            function(error){
+		            	console.log(error);
+		            	$scope.statusWS = "ERROR";
+		            	$scope.wsMessage = "Erreur: " + error;
+		                $scope.$apply() 
+		            }
+		        );
+            }
+        }
+        
+        $scope.closeWebsocket = function() {
+        	if ($scope.statusWS == "CONNECTED"){
+            	$scope.stompClient.disconnect(function() {
+                	$scope.statusWS = "CLOSED";
+                	$scope.wsMessage = "Déconnecter";
+                    $scope.$apply() 
+        	    });
+        	}
+        	else{
+        		$scope.statusWS = "CLOSED";
+            	$scope.wsMessage = "Déconnecter";
+        	}
+        }        
+
+		$scope.connectWebsocket();
+		
+		function handleVisibilityChange() {
+			if (document.hidden) {
+				$scope.closeWebsocket();
+                $scope.$apply() 
+			}
+			else  {
+				$scope.connectWebsocket();
+                $scope.$apply() 
+			}
+		}
+
+    	document.addEventListener("visibilitychange", handleVisibilityChange, false);
+});

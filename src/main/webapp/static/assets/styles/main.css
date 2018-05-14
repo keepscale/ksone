@@ -54,6 +54,16 @@ navbar-collapse.collapse {
 .navbar-nav > li > a{
   padding: 20px;
 }
+
+.navbar-nav .ws-PENDING{
+	color: #fbe12b;
+}
+.navbar-nav .ws-ERROR{
+	color: red;
+}
+.navbar-nav .ws-CONNECTED{
+	color: #7ae44f;
+}
 	
 @media (max-width: 767px) {
 	.navbar-nav .open .dropdown-menu{		
