@@ -41,6 +41,7 @@ angular.module('crossfitApp')
         }
 
 
+        $scope.timeToReconnect = 1000;
         $scope.connectWebsocket = function() {
             if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH'])){
 
@@ -74,7 +75,17 @@ angular.module('crossfitApp')
 		            	console.log(error);
 		            	$scope.statusWS = "ERROR";
 		            	$scope.wsMessage = "Erreur: " + error;
-		                $scope.$apply() 
+		                $scope.$apply();
+		                
+
+		                if ($scope.timeToReconnect/1000 < 10){
+		                	console.log("Tentative de reconnection dans " + $scope.timeToReconnect + "ms (encore " + (10-($scope.timeToReconnect/1000)) + " tentatives)");
+							window.setTimeout(function(){
+								$scope.closeWebsocket();
+								$scope.connectWebsocket();
+				                $scope.$apply() 
+							}, $scope.timeToReconnect+=1000);
+		                }
 		            }
 		        );
             }
@@ -84,13 +95,13 @@ angular.module('crossfitApp')
         	if ($scope.statusWS == "CONNECTED"){
             	$scope.stompClient.disconnect(function() {
                 	$scope.statusWS = "CLOSED";
-                	$scope.wsMessage = "Déconnecter";
+                	$scope.wsMessage = "Déconnecté";
                     $scope.$apply() 
         	    });
         	}
         	else{
         		$scope.statusWS = "CLOSED";
-            	$scope.wsMessage = "Déconnecter";
+            	$scope.wsMessage = "Déconnecté";
         	}
         }        
 
@@ -101,9 +112,11 @@ angular.module('crossfitApp')
 				$scope.closeWebsocket();
                 $scope.$apply() 
 			}
-			else  {
-				$scope.connectWebsocket();
-                $scope.$apply() 
+			else {
+				window.setTimeout(function(){
+					$scope.connectWebsocket();
+	                $scope.$apply() 
+				}, 2000);
 			}
 		}
 
