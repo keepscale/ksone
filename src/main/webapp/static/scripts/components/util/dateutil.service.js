@@ -70,8 +70,8 @@ angular.module('crossfitApp')
 	}
 	
 	this.toUTCDate = function(d){
-		return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 
-				d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
+		return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 
+				d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()));
 	}
       
     });

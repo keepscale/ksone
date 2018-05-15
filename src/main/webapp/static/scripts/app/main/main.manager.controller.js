@@ -74,7 +74,7 @@ angular.module('crossfitApp')
         }
         
         $scope.calculateCssClass = function(slot){
-        	var now = Date.now();
+        	var now =  DateUtils.toUTCDate(new Date()).getTime();
         	var start = DateUtils.toUTCDate(new Date(slot.start)).getTime();
         	var end = DateUtils.toUTCDate(new Date(slot.end)).getTime();
         	
