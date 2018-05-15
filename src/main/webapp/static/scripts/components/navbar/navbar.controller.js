@@ -26,7 +26,7 @@ angular.module('crossfitApp')
     	$scope.getLastCheckEventDate = function(){
     		var val = $window.localStorage.getItem("LastCheckEventDate");
     		if (val){
-    			return val;
+    			return new Date(val);
     		}
     		else{
     			return $scope.updateLastCheckEventDate();
@@ -44,6 +44,12 @@ angular.module('crossfitApp')
         $scope.stompClient = null;
     	$scope.statusWS = "CLOSED";
         
+    	
+    	$scope.newEventCountToDisplay = function(){
+    		var count = $scope.newEventCount();
+    		return count < 10 ? count : "9+";
+    	}
+    	
         $scope.newEventCount = function(){
         	var d = $scope.getLastCheckEventDate();
         	var count = $scope.events.filter(event=>event.eventDate > d).length;

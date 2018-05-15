@@ -80,7 +80,7 @@ public class BookingEventResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookingEventDTO>> getLastBookingEventOfToday(
     		@RequestParam(value = "page" , required = false, defaultValue = "0") Integer index,
-            @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer nbElements) throws URISyntaxException {
+            @RequestParam(value = "per_page", required = false, defaultValue = "10") Integer nbElements) throws URISyntaxException {
 
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	
@@ -91,11 +91,12 @@ public class BookingEventResource {
     	List<BookingEventDTO> bookingEvents = 
     			bookingEventRepository.findAllByBookingStartBetween(box, nowMinusOneHours, endOfNow)
 			    	.stream()
+			    	.filter(event->event.getEventDate().isAfter(now.withHourOfDay(0))) //On ne veut que les évènements créés après 0h du jour courant
 			    	.sorted(Comparator.comparing(BookingEvent::getEventDate).reversed())
 			    	.map(BookingEventDTO.mapper)
 			    	.collect(Collectors.toList());
 
-    	log.debug("Recherche des derniers evenements de résa survenue entre {} et {} => {} evenements.", nowMinusOneHours, endOfNow, bookingEvents.size()); 
+    	log.debug("Recherche des derniers evenements de résa pour un créneau entre {} et {} => {} evenements.", nowMinusOneHours, endOfNow, bookingEvents.size()); 
     	
     	int fromIndex = index * nbElements;
 		int toIndex = (index+1) * nbElements;
