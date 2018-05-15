@@ -9,10 +9,12 @@ angular.module('crossfitApp')
                 isArray: true,
                 transformResponse: function (data) {
                     var events = angular.fromJson(data);
-                    for (var i = 0; i < events.length; i++) {
-                    	var event = events[i];
-                    	event.bookingStartDate = DateUtils.convertDateTimeFromServer(event.bookingStartDate);
-                    	event.eventDate = DateUtils.convertDateTimeFromServer(event.eventDate);
+                    if (events){
+                        for (var i = 0; i < events.length; i++) {
+                        	var event = events[i];
+                        	event.bookingStartDate = DateUtils.convertDateTimeFromServer(event.bookingStartDate);
+                        	event.eventDate = DateUtils.convertDateTimeFromServer(event.eventDate);
+                        }
                     }
                     return events;
                 }

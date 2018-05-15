@@ -59,7 +59,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
     })
     .config(function ($compileProvider, $stateProvider, $urlRouterProvider, $httpProvider, $locationProvider, $translateProvider, tmhDynamicLocaleProvider, httpRequestInterceptorCacheBusterProvider) {
 
-    	$stateProvider.VERSION = "6";
+    	$stateProvider.VERSION = "7";
         
         //enable CSRF
         $httpProvider.defaults.xsrfCookieName = 'CSRF-TOKEN';
@@ -78,7 +78,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
                 },
                 'navbarlist@': {
                     templateUrl: 'scripts/components/navbar/navbarlist.html?v='+$stateProvider.VERSION,
-                    controller: 'NavbarController'
+                    controller: 'NavbarListController'
                 }
             },
             resolve: {

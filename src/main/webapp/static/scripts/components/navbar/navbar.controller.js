@@ -1,6 +1,12 @@
 'use strict';
 
 angular.module('crossfitApp')
+	.controller('NavbarListController', function ($scope, $location, $state, $window, DateUtils, Auth, Principal, EventBooking) {
+		Principal.identity().then(function(account) {
+            $scope.account = account;
+            $scope.isAuthenticated = Principal.isAuthenticated;
+        });
+	})
     .controller('NavbarController', function ($scope, $location, $state, $window, DateUtils, Auth, Principal, EventBooking) {
     	
     	Principal.identity().then(function(account) {
@@ -59,7 +65,7 @@ angular.module('crossfitApp')
 
         $scope.timeToReconnect = 1000;
         $scope.connectWebsocket = function() {
-            if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH'])){
+            if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH']) && $scope.statusWS === "CLOSED"){
 
             	$scope.statusWS = "PENDING";
             	$scope.wsMessage = "Connexion...";
@@ -88,7 +94,6 @@ angular.module('crossfitApp')
 		                });
 		            }, 
 		            function(error){
-		            	console.log(error);
 		            	$scope.statusWS = "ERROR";
 		            	$scope.wsMessage = "Erreur: " + error;
 		                $scope.$apply();
@@ -97,9 +102,9 @@ angular.module('crossfitApp')
 		                if ($scope.timeToReconnect/1000 < 10){
 		                	console.log("Tentative de reconnection dans " + $scope.timeToReconnect + "ms (encore " + (10-($scope.timeToReconnect/1000)) + " tentatives)");
 							window.setTimeout(function(){
-								$scope.closeWebsocket();
-								$scope.connectWebsocket();
-				                $scope.$apply() 
+								$scope.closeWebsocket(function(){
+									$scope.connectWebsocket();
+								});
 							}, $scope.timeToReconnect+=1000);
 		                }
 		            }
@@ -107,26 +112,20 @@ angular.module('crossfitApp')
             }
         }
         
-        $scope.closeWebsocket = function() {
-        	if ($scope.statusWS == "CONNECTED"){
-            	$scope.stompClient.disconnect(function() {
-                	$scope.statusWS = "CLOSED";
-                	$scope.wsMessage = "Déconnecté";
-                    $scope.$apply() 
-        	    });
-        	}
-        	else{
-        		$scope.statusWS = "CLOSED";
+        $scope.closeWebsocket = function(callback) {
+        	$scope.stompClient.disconnect(function() {
+            	$scope.statusWS = "CLOSED";
             	$scope.wsMessage = "Déconnecté";
-        	}
+                $scope.$apply()
+                callback();
+    	    });
         }        
 
-		$scope.connectWebsocket();
+		
 		
 		function handleVisibilityChange() {
 			if (document.hidden) {
 				$scope.closeWebsocket();
-                $scope.$apply() 
 			}
 			else {
 				window.setTimeout(function(){
@@ -136,5 +135,6 @@ angular.module('crossfitApp')
 			}
 		}
 
+        $scope.connectWebsocket();
     	document.addEventListener("visibilitychange", handleVisibilityChange, false);
 });
