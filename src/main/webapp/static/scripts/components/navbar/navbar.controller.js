@@ -6,6 +6,7 @@ angular.module('crossfitApp')
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
+        $scope.$state = $state;
 	})
     .controller('NavbarController', function ($scope, $location, $state, $window, DateUtils, Auth, Principal, EventBooking) {
     	
