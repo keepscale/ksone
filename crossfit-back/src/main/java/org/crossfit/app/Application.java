@@ -1,7 +1,5 @@
 package org.crossfit.app;
 
-import static reactor.bus.selector.Selectors.$;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,6 +24,8 @@ import org.springframework.core.env.Environment;
 import com.jcabi.manifests.Manifests;
 
 import reactor.bus.EventBus;
+import static reactor.bus.selector.Selectors.$;
+
 
 @SpringBootApplication
 @EnableAutoConfiguration

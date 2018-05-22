@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -267,7 +268,7 @@ public class BillResource {
 
 	protected Bill doGet(Long id) {
 		Bill bill = 
-				this.cleanMembershipRules().convert(billService.findById(id, boxService.findCurrentCrossFitBox()));
+				this.cleanMembershipRules().apply(billService.findById(id, boxService.findCurrentCrossFitBox()));
 		return bill;
 	}
 	
@@ -295,7 +296,9 @@ public class BillResource {
 	}
 
 
-	private Converter<? super Bill, ? extends Bill> cleanMembershipRules() {
+
+
+	private Function<? super Bill, ? extends Bill> cleanMembershipRules() {
 		return bill->{
 			if (bill !=null)
 				bill.getLines().stream().forEach(line->{

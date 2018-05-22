@@ -235,7 +235,7 @@ public class BillService {
 
 
 	public Bill updateBill(CrossFitBox box, Bill bill) throws UnableToUpdateBillException{
-		Bill actualBill = billRepository.findOne(bill.getId());
+		Bill actualBill = billRepository.getOne(bill.getId());
 		
 		if (actualBill.getStatus() != BillStatus.DRAFT) {
 			throw new UnableToUpdateBillException(bill);
@@ -303,7 +303,7 @@ public class BillService {
 
 
 	public void validateBillsId(Long[] billsId) {
-		List<Bill> billsToValidate = billRepository.findAll(Arrays.asList(billsId));
+		List<Bill> billsToValidate = billRepository.findAllById(Arrays.asList(billsId));
 		
 		log.info("Validating {} bills", billsToValidate.size());
 		
@@ -313,7 +313,7 @@ public class BillService {
 			}
 		}
 		
-		billRepository.save(billsToValidate);
+		billRepository.saveAll(billsToValidate);
 	}
 
 	public Bill findById(Long id, CrossFitBox box) {

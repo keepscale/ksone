@@ -144,7 +144,7 @@ public class MembershipResource {
 		if (membership.getBox().equals(boxService.findCurrentCrossFitBox())){
 			List<Subscription> subscriptions = subscriptionRepository.findAllByMembership(membership);
 			if (subscriptions.isEmpty()){
-				membershipRepository.delete(id);
+				membershipRepository.deleteById(id);
 			}
 			else{
 	    		throw new CustomParameterizedException("Il existe des adhésions à cet abonnement");

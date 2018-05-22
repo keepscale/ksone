@@ -171,7 +171,7 @@ public class CustomPersistentRememberMeServices extends
         }
         String presentedSeries = cookieTokens[0];
         String presentedToken = cookieTokens[1];
-        PersistentToken token = persistentTokenRepository.findOne(presentedSeries);
+        PersistentToken token = persistentTokenRepository.getOne(presentedSeries);
 
         if (token == null) {
             // No series match, so we can't authenticate using this cookie

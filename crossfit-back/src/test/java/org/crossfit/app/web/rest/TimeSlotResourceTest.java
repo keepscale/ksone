@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.crossfit.app.Application;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
 import org.crossfit.app.repository.TimeSlotExclusionRepository;
@@ -33,8 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockServletContext;
@@ -55,9 +53,8 @@ import org.springframework.web.context.WebApplicationContext;
  */
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest
+@SpringBootTest
 public class TimeSlotResourceTest {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -129,7 +126,7 @@ public class TimeSlotResourceTest {
         timeSlot.setStartTime(DEFAULT_START_TIME);
         timeSlot.setEndTime(DEFAULT_END_TIME);
         timeSlot.setMaxAttendees(DEFAULT_MAX_ATTENDEES);
-        timeSlot.setTimeSlotType(timeSlotTypeRepository.findOne(1L));
+        timeSlot.setTimeSlotType(timeSlotTypeRepository.getOne(1L));
     }
 
     @Test

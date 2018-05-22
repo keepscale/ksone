@@ -76,7 +76,7 @@ public class TimeSlotTypeResource {
     }
 
 	protected TimeSlotType doGet(Long id) {
-		return timeSlotTypeRepository.findOne(id);
+		return timeSlotTypeRepository.getOne(id);
 	}
 
 	
@@ -146,7 +146,7 @@ public class TimeSlotTypeResource {
 		if (timeSlotTypeToDel.getBox().equals(boxService.findCurrentCrossFitBox())){
 			List<TimeSlot> slots = timeSlotRepository.findAllByTimeSlotType(timeSlotTypeToDel);
 			if (slots.isEmpty()){
-				timeSlotTypeRepository.delete(id);
+				timeSlotTypeRepository.deleteById(id);
 			}
 			else{
 	    		throw new CustomParameterizedException("Il existe des créneaux utilisant ce type");

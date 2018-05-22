@@ -33,6 +33,7 @@ import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -62,11 +63,12 @@ public class StatsResource {
 
     /**
      * GET  /membership
+     * @throws JSONException 
      */
     @RequestMapping(value = "/membership",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String membership() {
+    public String membership() throws JSONException {
         log.debug("REST request to get membership stats");
         LocalDate start = new LocalDate(0);
         LocalDate end = new LocalDate();

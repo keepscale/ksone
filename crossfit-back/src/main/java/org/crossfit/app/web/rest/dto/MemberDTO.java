@@ -43,7 +43,7 @@ public class MemberDTO {
          
 		return dto;
 	};
-	public static final Converter<Member, MemberDTO> CONVERTER = (m) ->{return MAPPER.apply(m);};
+	public static final Function<Member, MemberDTO> CONVERTER = (m) ->{return MAPPER.apply(m);};
 
 	
     private Long id;

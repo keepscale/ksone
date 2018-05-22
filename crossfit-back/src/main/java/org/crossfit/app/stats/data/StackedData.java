@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadablePartial;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StackedData {
@@ -32,7 +33,7 @@ public class StackedData {
 		datas.get(name).add(new DateSumPair(startMonthInclus, countSubscriptionAt));
 	}
 	
-	public JSONArray toJson(){
+	public JSONArray toJson() throws JSONException{
 		JSONArray array = new JSONArray();
 		for (Entry<String, List<DateSumPair>> entry : datas.entrySet()) {
 			JSONArray values = new JSONArray();

@@ -145,7 +145,7 @@ public class SubscriptionResource {
 	
 
 	protected Subscription doGet(Long id) {
-		return subscriptionRepository.findOne(id);
+		return subscriptionRepository.getOne(id);
 	}
 
 	/**
@@ -160,6 +160,6 @@ public class SubscriptionResource {
 	}
 
 	protected void doDelete(Long id) {
-		subscriptionRepository.delete(id);
+		subscriptionRepository.deleteById(id);
 	}
 }

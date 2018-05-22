@@ -68,7 +68,7 @@ public class BookingDeletedSendNotificationConsumer implements Consumer<Event<Bo
 		}
 		
 		List<Long> timeSlotIds = notifAtBookingDate.stream().map(TimeSlotNotification::getTimeSlot).map(TimeSlot::getId).collect(Collectors.toList());
-		List<TimeSlot> possibleTimeSlotMatch = timeSlotRepository.findAll(timeSlotIds);
+		List<TimeSlot> possibleTimeSlotMatch = timeSlotRepository.findAllById(timeSlotIds);
 
 		Optional<TimeSlot> optTimeSlot = possibleTimeSlotMatch.stream().filter(t->{
 	    	return t.getTimeSlotType().equals(timeSlotType) && t.getStartTime().equals(start) && t.getEndTime().equals(end);
@@ -85,7 +85,7 @@ public class BookingDeletedSendNotificationConsumer implements Consumer<Event<Bo
 				int bookingCount = bookings.size();
 				if (bookingCount < optTimeSlot.get().getMaxAttendees()){
 					mailService.sendNotification(notifs);	
-					notificationRepository.delete(notifs);
+					notificationRepository.deleteAll(notifs);
 				}
 				else{
 					log.info("Une resa a ete supprimée, mais le nombre d'inscrit est encore au dessus: {} >= {} [{}]", bookingCount, optTimeSlot.get().getMaxAttendees(), bookings);

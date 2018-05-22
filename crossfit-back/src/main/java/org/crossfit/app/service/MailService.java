@@ -9,14 +9,15 @@ import javax.inject.Inject;
 
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.TimeSlotNotification;
-import org.crossfit.app.mail.CrossfitMailSender;
+import org.crossfit.app.mail.MailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 /**
  * Service for sending e-mails.
@@ -30,8 +31,8 @@ public class MailService {
 
 	private final Logger log = LoggerFactory.getLogger(MailService.class);
 
-	@Inject
-	private CrossfitMailSender mailSender;
+	@Autowired
+	private MailSender mailSender;
 
 	@Inject
 	private MessageSource messageSource;

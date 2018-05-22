@@ -39,7 +39,7 @@ public class RecoverResource {
      */
     @RequestMapping(value = "/password",
             method = RequestMethod.POST)
-    public ResponseEntity<Void> recoverPassword(@RequestBody String email) {
+    public ResponseEntity<Object> recoverPassword(@RequestBody String email) {
         log.debug("REST request to recover password for email " + email);
 
         

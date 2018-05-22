@@ -205,7 +205,7 @@ public class MemberService {
 		}
 	
 		member.getAuthorities().clear();
-		member.getAuthorities().addAll(authorityRepository.findAll(memberdto.getRoles()));
+		member.getAuthorities().addAll(authorityRepository.findAllById(memberdto.getRoles()));
 
 		Optional<Member> findOneByLogin = memberRepository.findOneByLogin(memberdto.getEmail(), currentCrossFitBox);
 		

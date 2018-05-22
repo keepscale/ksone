@@ -98,7 +98,7 @@ public class CrossFitBoxResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CrossFitBox> get(@PathVariable Long id) {
         log.debug("REST request to get CrossFitBox : {}", id);
-        return Optional.ofNullable(crossFitBoxRepository.findOne(id))
+        return Optional.ofNullable(crossFitBoxRepository.getOne(id))
             .map(crossFitBox -> new ResponseEntity<>(
                 crossFitBox,
                 HttpStatus.OK))
@@ -113,7 +113,7 @@ public class CrossFitBoxResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete CrossFitBox : {}", id);
-        crossFitBoxRepository.delete(id);
+        crossFitBoxRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("crossFitBox", id.toString())).build();
     }
     

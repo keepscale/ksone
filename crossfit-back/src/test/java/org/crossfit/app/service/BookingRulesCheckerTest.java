@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.crossfit.app.Application;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Membership;
@@ -27,17 +26,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest
+@SpringBootTest
 public class BookingRulesCheckerTest {
 
     private static final Logger log = LoggerFactory.getLogger(BookingRulesCheckerTest.class);
@@ -61,11 +58,11 @@ public class BookingRulesCheckerTest {
 
 	@Before
 	public void initTest() {
-		aMember = memberRepository.findOne(1L);
+		aMember = memberRepository.getOne(1L);
 		ABO_TRIPLE = membershipRepository.findOne(6L, crossFitBoxSerivce.findCurrentCrossFitBox());
 		ABO_5_PAR_MOIS = membershipRepository.findOne(8L, crossFitBoxSerivce.findCurrentCrossFitBox());
-		WOD = timeSlotTypeRepository.findOne(3L);
-		OPENBOX = timeSlotTypeRepository.findOne(5L);
+		WOD = timeSlotTypeRepository.getOne(3L);
+		OPENBOX = timeSlotTypeRepository.getOne(5L);
 	}
 
 	@Test

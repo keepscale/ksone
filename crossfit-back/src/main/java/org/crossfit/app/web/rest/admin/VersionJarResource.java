@@ -92,7 +92,7 @@ public class VersionJarResource {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		log.debug("REST request to delete VersionJar : {}", id);
-		versionJarRepository.delete(id);
+		versionJarRepository.deleteById(id);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("versionJar", id.toString())).build();
 	}
     
