@@ -15,7 +15,7 @@ spring:
         active: local
     datasource:
         driverClassName: org.postgresql.Driver        
-        url: jdbc:postgresql://localhost:5432/crossfit
+        url: jdbc:postgresql://localhost:5432/crossfit-workouts
         username: postgres
         password: password
         test-on-borrow: true
