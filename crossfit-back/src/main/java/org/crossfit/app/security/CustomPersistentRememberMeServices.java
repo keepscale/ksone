@@ -2,31 +2,27 @@ package org.crossfit.app.security;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.crossfit.app.domain.PersistentToken;
-import org.crossfit.app.exception.UserNotActivatedException;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.CookieTheftException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.
@@ -52,14 +48,12 @@ import org.springframework.transaction.annotation.Transactional;
  * couldn't be cleanly extended.
  * <p/>
  */
-@Service
-public class CustomPersistentRememberMeServices extends
-        AbstractRememberMeServices {
+public class CustomPersistentRememberMeServices extends AbstractRememberMeServices {
 
     private final Logger log = LoggerFactory.getLogger(CustomPersistentRememberMeServices.class);
 
-    // Token is valid for one month
-    private static final int TOKEN_VALIDITY_DAYS = 365;
+    // Token is valid for 3 months
+    private static final int TOKEN_VALIDITY_DAYS = 90;
 
     private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * TOKEN_VALIDITY_DAYS;
 
@@ -68,6 +62,7 @@ public class CustomPersistentRememberMeServices extends
     private static final int DEFAULT_TOKEN_LENGTH = 16;
 
     private SecureRandom random;
+
 
     @Inject
     private PersistentTokenRepository persistentTokenRepository;
@@ -78,19 +73,23 @@ public class CustomPersistentRememberMeServices extends
     @Inject
     private CrossFitBoxSerivce boxService;
     
-    @Inject
-    public CustomPersistentRememberMeServices(Environment env, org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
-        super(env.getProperty("security.rememberme.key"), userDetailsService);
+
+    
+    @Autowired
+    public CustomPersistentRememberMeServices(String key, org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, MemberRepository userRepository, CrossFitBoxSerivce boxService) {
+        super(key, userDetailsService);
         random = new SecureRandom();
+        this.persistentTokenRepository = tokenRepository;
+        this.memberRepository = userRepository;
+        this.boxService = boxService;
     }
 
     @Override
-    @Transactional
     protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) {
 
         PersistentToken token = getPersistentToken(cookieTokens);
         String login = token.getMember().getLogin();
-
+        
         // Token also matches, so login is valid. Update the token value, keeping the *same* series number.
         log.debug("Refreshing persistent login token for user '{}', series '{}'", login, token.getSeries());
         token.setTokenDate(new LocalDate());
@@ -104,12 +103,8 @@ public class CustomPersistentRememberMeServices extends
             log.error("Failed to update token: ", e);
             throw new RememberMeAuthenticationException("Autologin failed due to data access problem", e);
         }
-        try {
-			return getUserDetailsService().loadUserByUsername(login);
-		} catch (UserNotActivatedException e) {
-            log.error("Failed to update token: ", e);
-            throw new RememberMeAuthenticationException("Autologin failed due to data access problem", e);
-		}
+        
+		return getUserDetailsService().loadUserByUsername(login);
     }
 
     @Override
@@ -119,10 +114,10 @@ public class CustomPersistentRememberMeServices extends
         
 
         log.debug("Creating new persistent login for user {}", login);
-        PersistentToken token = memberRepository.findOneByLogin(login, boxService.findCurrentCrossFitBox()).map(m -> {
+        PersistentToken token = memberRepository.findOneByLogin(login, boxService.findCurrentCrossFitBox()).map(user -> {
             PersistentToken t = new PersistentToken();
             t.setSeries(generateSeriesData());
-            t.setMember(m);
+            t.setMember(user);
             t.setTokenValue(generateTokenData());
             t.setTokenDate(new LocalDate());
             t.setIpAddress(request.getRemoteAddr());
@@ -144,7 +139,6 @@ public class CustomPersistentRememberMeServices extends
      * current user, so when he logs out from one browser, all his other sessions are destroyed.
      */
     @Override
-    @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String rememberMeCookie = extractRememberMeCookie(request);
         if (rememberMeCookie != null && rememberMeCookie.length() != 0) {
@@ -171,12 +165,8 @@ public class CustomPersistentRememberMeServices extends
         }
         String presentedSeries = cookieTokens[0];
         String presentedToken = cookieTokens[1];
-        PersistentToken token = persistentTokenRepository.getOne(presentedSeries);
-
-        if (token == null) {
-            // No series match, so we can't authenticate using this cookie
-            throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);
-        }
+        PersistentToken token = persistentTokenRepository.findById(presentedSeries)
+        		.orElseThrow(()->{return new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);});
 
         // We have a match for this user/series combination
         log.info("presentedToken={} / tokenValue={}", presentedToken, token.getTokenValue());
@@ -196,13 +186,13 @@ public class CustomPersistentRememberMeServices extends
     private String generateSeriesData() {
         byte[] newSeries = new byte[DEFAULT_SERIES_LENGTH];
         random.nextBytes(newSeries);
-        return new String(Base64.encode(newSeries));
+        return new String(Base64.getEncoder().encode(newSeries));
     }
 
     private String generateTokenData() {
         byte[] newToken = new byte[DEFAULT_TOKEN_LENGTH];
         random.nextBytes(newToken);
-        return new String(Base64.encode(newToken));
+        return new String(Base64.getEncoder().encode(newToken));
     }
 
     private void addCookie(PersistentToken token, HttpServletRequest request, HttpServletResponse response) {

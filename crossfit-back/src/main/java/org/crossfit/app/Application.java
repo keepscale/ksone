@@ -28,7 +28,7 @@ import static reactor.bus.selector.Selectors.$;
 
 
 @SpringBootApplication
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 public class Application implements CommandLineRunner{
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);

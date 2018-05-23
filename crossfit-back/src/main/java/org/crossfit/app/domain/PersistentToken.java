@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Persistent tokens are used by Spring Security to automatically log in users.
  *
- * @see org.crossfit.app.security.CustomPersistentRememberMeServices
+ * @see org.crossfit.app.security.CustomPersistentRememberMeServicesOld
  */
 @Entity
 @Table(name = "PERSISTENT_TOKEN")

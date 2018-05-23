@@ -1,6 +1,7 @@
 package org.crossfit.app.config;
 
-import org.apache.commons.lang3.CharEncoding;
+import java.nio.charset.StandardCharsets;
+
 import org.crossfit.app.mail.LogMailSender;
 import org.crossfit.app.mail.MailSender;
 import org.crossfit.app.mail.SendGridMailSender;
@@ -30,7 +31,7 @@ public class MailConfiguration {
         emailTemplateResolver.setPrefix("mails/");
         emailTemplateResolver.setSuffix(".html");
         emailTemplateResolver.setTemplateMode("HTML5");
-        emailTemplateResolver.setCharacterEncoding(CharEncoding.UTF_8);
+        emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         emailTemplateResolver.setOrder(1);
         return emailTemplateResolver;
     }

@@ -27,7 +27,7 @@
     </appender>
 -->
 
-    <logger name="org.crossfit.app" level="${logback.loglevel}"/>
+    <logger name="org.crossfit.app" level="INFO"/>
 
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
@@ -42,20 +42,19 @@
     <logger name="org.bson" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
 <!--     <logger name="org.hibernate.type" level="TRACE"/> -->
-    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.boot" level="INFO"/>
     <logger name="org.thymeleaf" level="INFO"/>
     <logger name="org.xnio" level="WARN"/>
     <logger name="springfox" level="WARN"/>
     <logger name="liquibase" level="WARN"/>
     <logger name="sun.rmi.transport" level="WARN"/>
-    <logger name="org.crossfit.app.service.util.BookingRulesChecker" level="${logback.loglevel}"/>
     <logger name="net.fortuna.ical4j" level="INFO"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <root level="${logback.loglevel}">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
 
