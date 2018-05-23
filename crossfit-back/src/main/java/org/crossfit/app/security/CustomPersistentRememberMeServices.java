@@ -16,6 +16,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
+import org.springframework.stereotype.Service;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.
@@ -48,6 +50,7 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
  * couldn't be cleanly extended.
  * <p/>
  */
+@Service
 public class CustomPersistentRememberMeServices extends AbstractRememberMeServices {
 
     private final Logger log = LoggerFactory.getLogger(CustomPersistentRememberMeServices.class);
@@ -76,7 +79,7 @@ public class CustomPersistentRememberMeServices extends AbstractRememberMeServic
 
     
     @Autowired
-    public CustomPersistentRememberMeServices(String key, org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, MemberRepository userRepository, CrossFitBoxSerivce boxService) {
+    public CustomPersistentRememberMeServices(@Value("security.rememberme.key")String key, org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, MemberRepository userRepository, CrossFitBoxSerivce boxService) {
         super(key, userDetailsService);
         random = new SecureRandom();
         this.persistentTokenRepository = tokenRepository;
