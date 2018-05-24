@@ -1,0 +1,94 @@
+id;shortname;fullname;type;created_by
+1;Air Bike (Assault Bike);Air Bike (Assault Bike);OTHER;liquibase
+2;Air Squat;Air Squat;SQUAT;liquibase
+3;Back Extension (Hip Extension);Back Extension (Hip Extension);OTHER;liquibase
+4;Back Squat;Back Squat;SQUAT;liquibase
+5;Back Tuck;Back Tuck;OTHER;liquibase
+6;Backward Roll;Backward Roll;OTHER;liquibase
+7;Ball Slam;Ball Slam;OTHER;liquibase
+8;Bear Crawl;Bear Crawl;OTHER;liquibase
+9;Bench Press;Bench Press;PRESS;liquibase
+10;Bent Over Row;Bent Over Row;OTHER;liquibase
+11;Bike (Bicycle);Bike (Bicycle);OTHER;liquibase
+12;Box Jump;Box Jump;OTHER;liquibase
+13;Box Step-Up;Box Step-Up;OTHER;liquibase
+14;Broad-Jump;Broad-Jump;OTHER;liquibase
+15;Burpee;Burpee;OTHER;liquibase
+16;Clean;Clean;OTHER;liquibase
+17;Curl;Curl;OTHER;liquibase
+18;Deadlift;Deadlift;LIFT;liquibase
+19;Dip (Ring Dip / Tricep Dip);Dip (Ring Dip / Tricep Dip);OTHER;liquibase
+20;Double-Under;Double-Under;OTHER;liquibase
+21;Dumbbell Swing;Dumbbell Swing;OTHER;liquibase
+22;Farmer's Carry;Farmer's Carry;OTHER;liquibase
+23;Fireman's Carry;Fireman's Carry;OTHER;liquibase
+24;Floor Wipers;Floor Wipers;OTHER;liquibase
+25;Flutter Kick;Flutter Kick;OTHER;liquibase
+26;Forward Roll;Forward Roll;OTHER;liquibase
+27;Front Squat;Front Squat;SQUAT;liquibase
+28;GHD Sit-Up;GHD Sit-Up;OTHER;liquibase
+29;Goblet Squat;Goblet Squat;SQUAT;liquibase
+30;Good Mornings;Good Mornings;OTHER;liquibase
+31;Grasshopper;Grasshopper;OTHER;liquibase
+32;Ground-to-Overhead;Ground-to-Overhead;OTHER;liquibase
+33;Hack Squat;Hack Squat;SQUAT;liquibase
+34;Handstand Hold;Handstand Hold;GYMNASTIC;liquibase
+35;Handstand Push-Up;Handstand Push-Up;GYMNASTIC;liquibase
+36;Handstand Walk;Handstand Walk;GYMNASTIC;liquibase
+37;Hang Hold;Hang Hold;OTHER;liquibase
+38;Heel Clap;Heel Clap;OTHER;liquibase
+39;Hollow Hold;Hollow Hold;OTHER;liquibase
+40;Hollow Rock;Hollow Rock;OTHER;liquibase
+41;Jerk;Jerk;OTHER;liquibase
+42;Jumping Jack;Jumping Jack;OTHER;liquibase
+43;Kettlebell Swing;Kettlebell Swing;OTHER;liquibase
+44;Kettlebell Tater;Kettlebell Tater;OTHER;liquibase
+45;Knees-to-Elbows;Knees-to-Elbows;OTHER;liquibase
+46;L-Sit;L-Sit;OTHER;liquibase
+47;Lateral Jump;Lateral Jump;OTHER;liquibase
+48;Lower from Inverted Hang;Lower from Inverted Hang;OTHER;liquibase
+49;Lunge;Lunge;OTHER;liquibase
+50;Man Maker;Man Maker;OTHER;liquibase
+51;Monkey Bar Traverse;Monkey Bar Traverse;OTHER;liquibase
+52;Mountain Climber;Mountain Climber;OTHER;liquibase
+53;Muscle-Up;Muscle-Up;OTHER;liquibase
+54;Overhead Squat;Overhead Squat;SQUAT;liquibase
+55;Paddleboard;Paddleboard;OTHER;liquibase
+56;Parallette Pass-Through;Parallette Pass-Through;OTHER;liquibase
+57;Pegboard Ascent;Pegboard Ascent;OTHER;liquibase
+58;Pistol;Pistol;OTHER;liquibase
+59;Plank Hold;Plank Hold;OTHER;liquibase
+60;Pull-Up;Pull-Up;OTHER;liquibase
+61;Push Press;Push Press;OTHER;liquibase
+62;Push-Up;Push-Up;OTHER;liquibase
+63;Ring Row;Ring Row;OTHER;liquibase
+64;Rope Climb;Rope Climb;OTHER;liquibase
+65;Row;Row;OTHER;liquibase
+66;Run;Run;OTHER;liquibase
+67;Russian Twist;Russian Twist;OTHER;liquibase
+68;Shoulder-to-Overhead;Shoulder-to-Overhead;OTHER;liquibase
+69;Single-Under;Single-Under;OTHER;liquibase
+70;Sit-Up;Sit-Up;OTHER;liquibase
+71;Ski (Erg Machine);Ski (Erg Machine);OTHER;liquibase
+72;Sled Pull;Sled Pull;OTHER;liquibase
+73;Sled Push (Prowler Push);Sled Push (Prowler Push);OTHER;liquibase
+74;Snatch;Snatch;OLYMPIC_LIFTING;liquibase
+75;Snatch Balance;Snatch Balance;OLYMPIC_LIFTING;liquibase
+76;Sots Press;Sots Press;OTHER;liquibase
+77;Strict Press (Shoulder Press);Strict Press (Shoulder Press);OTHER;liquibase
+78;Sumo Deadlift High-Pull;Sumo Deadlift High-Pull;LIFT;liquibase
+79;Superman Hold;Superman Hold;OTHER;liquibase
+80;Swim;Swim;OTHER;liquibase
+81;Thruster;Thruster;OTHER;liquibase
+82;Tire Flip;Tire Flip;OTHER;liquibase
+83;Toes-to-Bar;Toes-to-Bar;OTHER;liquibase
+84;Triple-Under;Triple-Under;OTHER;liquibase
+85;Tuck Jump;Tuck Jump;OTHER;liquibase
+86;Tuck Up;Tuck Up;OTHER;liquibase
+87;Turkish Get-Up;Turkish Get-Up;OTHER;liquibase
+88;Up-Down;Up-Down;OTHER;liquibase
+89;V-Up;V-Up;OTHER;liquibase
+90;Wall Ball Shot;Wall Ball Shot;OTHER;liquibase
+91;Wall Climb;Wall Climb;OTHER;liquibase
+92;Wall Sit;Wall Sit;OTHER;liquibase
+93;Weighted Walk / Run;Weighted Walk / Run;OTHER;liquibase
