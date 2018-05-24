@@ -4,17 +4,13 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.AbstractAuditingEntity;
-import org.crossfit.app.domain.workouts.enumeration.MovementType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -22,36 +18,23 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Member.
  */
 @Entity
-@Table(name = "MOVEMENT")
+@Table(name = "EQUIPMENT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Movement extends AbstractAuditingEntity implements Serializable {
+public class Equipment extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    @NotNull        
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private MovementType type;
+	@Size(max = 255)
+	@Column(name = "shortname", length = 255)
+	private String shortname;
 
-    @Size(max = 255)
-    @Column(name = "shortname", length = 255)
-    private String shortname;
-
-    @Size(max = 255)
-    @Column(name = "fullname", length = 255)
-    private  String fullname;
-
-    @Size(max = 512)
-    @Column(name = "link", length = 512)
-    private  String link;
-    
-    @Size(max = 512)
-    @Column(name = "video_link", length = 512)
-    private  String videoLink;
+	@Size(max = 255)
+	@Column(name = "fullname", length = 255)
+	private String fullname;
 
 	public Long getId() {
 		return id;
@@ -59,14 +42,6 @@ public class Movement extends AbstractAuditingEntity implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public MovementType getType() {
-		return type;
-	}
-
-	public void setType(MovementType type) {
-		this.type = type;
 	}
 
 	public String getShortname() {
@@ -85,14 +60,6 @@ public class Movement extends AbstractAuditingEntity implements Serializable {
 		this.fullname = fullname;
 	}
 
-	public String getVideoLink() {
-		return videoLink;
-	}
-
-	public void setVideoLink(String videoLink) {
-		this.videoLink = videoLink;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -109,7 +76,7 @@ public class Movement extends AbstractAuditingEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Movement other = (Movement) obj;
+		Equipment other = (Equipment) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -117,7 +84,5 @@ public class Movement extends AbstractAuditingEntity implements Serializable {
 			return false;
 		return true;
 	}
-    
-    
-    
+
 }

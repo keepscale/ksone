@@ -1,0 +1,39 @@
+id;shortname;fullname;created_by
+1;AbMat;AbMat;liquibase
+2;Air Bike (Assault Bike);Air Bike (Assault Bike);liquibase
+3;Axle Bar;Axle Bar;liquibase
+4;Barbell;Barbell;liquibase
+5;Bench;Bench;liquibase
+6;Bike (Bicycle);Bike (Bicycle);liquibase
+7;Box;Box;liquibase
+8;Dead Ball (D-Ball);Dead Ball (D-Ball);liquibase
+9;Dip Bars;Dip Bars;liquibase
+10;Dumbbell(s);Dumbbell(s);liquibase
+11;GHD Machine;GHD Machine;liquibase
+12;Jump Rope;Jump Rope;liquibase
+13;Keg;Keg;liquibase
+14;Kettlebell(s);Kettlebell(s);liquibase
+15;Log;Log;liquibase
+16;Medicine Ball (Wall Ball);Medicine Ball (Wall Ball);liquibase
+17;Monkey Bars;Monkey Bars;liquibase
+18;Paddleboard;Paddleboard;liquibase
+19;Parallettes;Parallettes;liquibase
+20;Peg Board;Peg Board;liquibase
+21;Plate(s);Plate(s);liquibase
+22;Pool / Open Water;Pool / Open Water;liquibase
+23;Pull-Up Bar;Pull-Up Bar;liquibase
+24;PVC Pipe;PVC Pipe;liquibase
+25;Rings;Rings;liquibase
+26;Rope;Rope;liquibase
+27;Rower;Rower;liquibase
+28;Sandbag;Sandbag;liquibase
+29;SkiErg;SkiErg;liquibase
+30;Slam Ball;Slam Ball;liquibase
+31;Sled (Prowler);Sled (Prowler);liquibase
+32;Tire;Tire;liquibase
+33;Treadmill;Treadmill;liquibase
+34;Wall (Obstacle);Wall (Obstacle);liquibase
+35;Weight Rack;Weight Rack;liquibase
+36;Weight Vest;Weight Vest;liquibase
+37;Wheel Barrow;Wheel Barrow;liquibase
+38;Yoke;Yoke;liquibase
