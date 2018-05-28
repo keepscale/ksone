@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Principal } from '../auth/principal.service';
+import { AppService } from '../../app.service';
 
 
 @Component({
@@ -20,11 +21,12 @@ export class LoginComponent implements OnInit {
   private status: string;
 
 
-  constructor(private authService: AuthService,  private router: Router, private principal: Principal) { }
+  constructor(private authService: AuthService,  private router: Router, private principal: Principal, private appService:AppService) { }
 
   ngOnInit() {
     this.rememberme = true;
     this.loginFailed = false;
+    this.appService.setTitle("Authentication");
   }
 
   onLogin() {
