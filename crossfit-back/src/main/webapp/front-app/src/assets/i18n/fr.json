@@ -1,0 +1,12 @@
+{
+	"app": {
+		"menu": {
+			"WOD": "WOD",
+			"home": "Accueil",
+			"logout": "Déconnexion"
+		},
+		"title": {
+			"menu": ""
+		}
+	}
+}

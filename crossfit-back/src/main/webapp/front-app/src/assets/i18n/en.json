@@ -1,0 +1,12 @@
+{
+	"app": {
+		"menu": {
+			"WOD": "",
+			"home": "",
+			"logout": ""
+		},
+		"title": {
+			"menu": ""
+		}
+	}
+}
