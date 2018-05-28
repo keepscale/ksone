@@ -8,5 +8,19 @@
 		"title": {
 			"menu": ""
 		}
+	},
+	"login": {
+		"connect": {
+			"button": "Se connecter"
+		},
+		"password": {
+			"placeholder": "Mot de passe"
+		},
+		"rememberme": {
+			"label": "Se couvenir de moi"
+		},
+		"username": {
+			"placeholder": "Email"
+		}
 	}
 }
