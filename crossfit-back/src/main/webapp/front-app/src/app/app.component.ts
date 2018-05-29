@@ -45,7 +45,7 @@ export class AppComponent {
 
 
   isAuthenticated(){
-    return this.principal.isAuthenticated() || true;
+    return this.principal.isAuthenticated() || false;
   }
 
   isInRole(roleName: string): boolean{

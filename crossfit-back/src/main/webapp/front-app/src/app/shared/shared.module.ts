@@ -15,7 +15,7 @@ import { AuthGuard, RoleManagerGuard, RoleAdminGuard } from './auth/auth.guard'
 import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
 
 const loginRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,12 +29,13 @@ const loginRoutes: Routes = [
     TranslateModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule
+    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule
   ],
   exports: [
     CommonModule, HttpModule, FormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
-    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule
+    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
+    MatProgressBarModule
   ],
   providers:[
 	  AuthGuard,

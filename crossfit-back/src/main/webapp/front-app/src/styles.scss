@@ -9,4 +9,15 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-  
+
+.form-container > * {
+    width: 100%;
+}
+.form-footer{
+    margin-top: 5px;
+    text-align: right;
+}
+
+.form-footer mat-progress-bar{
+    margin-top: 5px;
+}
