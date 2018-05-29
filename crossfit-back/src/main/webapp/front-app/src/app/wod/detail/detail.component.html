@@ -1,24 +1,34 @@
 <div class="wod-container">
 
-    <form novalidate (ngSubmit)="onSubmitWod()">
+    <form novalidate (ngSubmit)="onSubmit()">
   
       <div class="form-container">      
         <mat-form-field>
           <input matInput placeholder="{{'wod.name.placeholder' | translate}}"  [(ngModel)]="wod.name" name="wod.name">
         </mat-form-field>
 
-        <mat-radio-group>
-            <mat-radio-button *ngFor="let score of availableWodScore" value="score">{{'wod.score.' + score | translate}}</mat-radio-button>
-        </mat-radio-group>
-  
+        <div>
+          <mat-radio-group [(ngModel)]="wod.score" name="wod.score">
+              <mat-radio-button *ngFor="let score of availableWodScore" value="score">
+                {{'wod.score.' + score | translate}}
+              </mat-radio-button>
+          </mat-radio-group>
+
+
+          <mat-radio-group [(ngModel)]="wod.category" name="wod.category">
+              <mat-radio-button *ngFor="let cat of availableWodCategories" value="cat">
+                {{'wod.category.' + cat | translate}}
+              </mat-radio-button>
+          </mat-radio-group>
+        </div>
         <mat-form-field>
-          <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  [(ngModel)]="wod.description" name="wod.description" rows="10"></textarea>
+          <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  [(ngModel)]="wod.description" name="wod.description" rows="3"></textarea>
         </mat-form-field>
   
       </div>
   
       <div class="form-footer">
-        <submit-button [i18n]="'login.connect.button'"></submit-button>
+        <submit-button></submit-button>
   
         <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'" ></mat-progress-bar>
       </div>

@@ -1,8 +1,9 @@
 export class Wod{
+    private id: number;
     private name: string;
     
-	private category:string;
-    private score:string;
+	category:string;
+    score:string;
     
 	private description:string;
 	private link:string;
@@ -10,5 +11,9 @@ export class Wod{
     
 
     constructor(){
+    }
+
+    public getId():number{
+        return this.id;
     }
 }
