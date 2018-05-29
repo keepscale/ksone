@@ -10,9 +10,6 @@
 		}
 	},
 	"login": {
-		"connect": {
-			"button": "Se connecter"
-		},
 		"password": {
 			"placeholder": "Mot de passe"
 		},
@@ -21,6 +18,23 @@
 		},
 		"username": {
 			"placeholder": "Email"
+		}
+	},
+	"wod": {
+		"add": {
+			"button": {
+				"label": "Ajouter un wod"
+			}
+		},
+		"description": {
+			"placeholder": "Description du wod"
+		},
+		"name": {
+			"placeholder": "Nom du wod"
+		},
+		"score": {
+			"test": "For Time",
+			"test2": "For Round"
 		}
 	}
 }
