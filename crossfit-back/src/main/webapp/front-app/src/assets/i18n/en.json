@@ -10,9 +10,6 @@
 		}
 	},
 	"login": {
-		"connect": {
-			"button": ""
-		},
 		"password": {
 			"placeholder": ""
 		},
@@ -20,6 +17,19 @@
 			"label": ""
 		},
 		"username": {
+			"placeholder": ""
+		}
+	},
+	"wod": {
+		"add": {
+			"button": {
+				"label": ""
+			}
+		},
+		"description": {
+			"placeholder": ""
+		},
+		"name": {
 			"placeholder": ""
 		}
 	}
