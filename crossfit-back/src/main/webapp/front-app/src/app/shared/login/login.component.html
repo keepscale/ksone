@@ -1,18 +1,28 @@
+<div class="login-container">
 
-<h1 class="mat-h1">Authentification</h1>
+  <h1 class="mat-h1">Authentification</h1>
 
-<form class="login-form">
-  <mat-form-field class="full-width">
-    <input matInput placeholder="{{'login.username.placeholder' | translate}}"  [(ngModel)]="username" name="username">
-  </mat-form-field>
+  <form novalidate (ngSubmit)="onLogin()">
 
-  <mat-form-field class="full-width">
-    <input matInput type="password" placeholder="{{'login.password.placeholder' | translate}}" [(ngModel)]="password" name="password">
-  </mat-form-field>
+    <div class="form-container">      
+      <mat-form-field class="full-width">
+        <input matInput placeholder="{{'login.username.placeholder' | translate}}"  [(ngModel)]="username" name="username">
+      </mat-form-field>
 
-  <mat-checkbox [(ngModel)]="rememberme" name="rememberme">{{'login.rememberme.label' | translate}}</mat-checkbox>
+      <mat-form-field class="full-width">
+        <input matInput type="password" placeholder="{{'login.password.placeholder' | translate}}" [(ngModel)]="password" name="password">
+      </mat-form-field>
 
-  <div class="footer">
-    <button mat-raised-button color="primary" (click)="onLogin()">{{'login.connect.button' | translate}}</button>
-  </div>
-</form>
+      <mat-checkbox [(ngModel)]="rememberme" name="rememberme">{{'login.rememberme.label' | translate}}</mat-checkbox>
+
+    </div>
+
+    <div class="form-footer">
+      <submit-button [i18n]="'login.connect.button'"></submit-button>
+
+      <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'" ></mat-progress-bar>
+    </div>
+
+  </form>
+
+</div>

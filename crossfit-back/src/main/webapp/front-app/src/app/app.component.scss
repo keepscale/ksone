@@ -24,6 +24,9 @@
     width: 100%;
   }
 }
+.sidenav-content{
+  min-height: 100vh;
+}
 
 h1 {
   font-size: 20px;
@@ -31,7 +34,7 @@ h1 {
   
 // stretch to screen size in fullscreen mode
 .app-content {
-  padding: 32px;
+  padding: 10px;
   box-sizing: border-box;
   width: 100%;
   height: 100%;

@@ -7,11 +7,11 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SubmitButtonComponent implements OnInit {
 
-  @Input('status')
-  private status: string;
-
   @Input('value')
   private buttonValue = "Sauvegarder";
+  
+  @Input('i18n')
+  private i18n = "";
 
   @Input('disabled')
   private disabled = false;
