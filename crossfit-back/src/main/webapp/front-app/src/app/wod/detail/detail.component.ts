@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Wod } from '../domain/wod.model';
+import { WodService } from '../wod.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-detail',
@@ -8,15 +11,52 @@ import { Wod } from '../domain/wod.model';
 })
 export class DetailComponent implements OnInit {
   
-  private availableWodScore: String[] = ["test", "test2"];
-
+  private availableWodScore: String[];
+  private availableWodCategories: String[];
+  private status: string;
+  private error: string;
   private wod: Wod;
 
-  constructor() {
-    this.wod = new Wod();
-  }
+  constructor(
+    private service: WodService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location) { }
 
   ngOnInit() {
+    this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
+    this.service.getScores().subscribe(res=>this.availableWodScore=res);
+    let id = this.route.snapshot.paramMap.get('id');
+    if (!id){
+      this.wod = new Wod();
+    }
+    else{
+      this.service.get(id).subscribe(w=>{
+          this.wod = w;
+        },
+        err=>{
+          this.router.navigate(["wod"]);
+        }
+      )
+    }
+  }
+
+
+  onSubmit() {
+    this.status = "wait";
+    this.service.save(this.wod).subscribe(
+      success=>{
+        this.status = "success";
+        setTimeout (() => {
+          this.router.navigate(["wod"]);
+        }, 1000)
+      },
+      e=>{
+        this.status = "error";
+        this.error = e.error;
+      }
+    );
+    
   }
 
 }
