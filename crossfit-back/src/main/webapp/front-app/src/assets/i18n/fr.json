@@ -33,8 +33,16 @@
 			"placeholder": "Nom du wod"
 		},
 		"score": {
-			"test": "For Time",
-			"test2": "For Round"
+			"FOR_LOAD": "For Load",
+			"FOR_TIME": "For Time",
+			"FOR_ROUNDS_REPS" : "For Rounds/Reps"
+		},
+		"category": {
+			"BENCHMARK": "Référence",
+			"QUALIFIER": "Qualificatif",
+			"GIRL" : "Girl",
+			"HEROES" : "Heroe",
+			"CUSTOM" : "Personnalisé"
 		}
 	}
 }

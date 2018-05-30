@@ -15,7 +15,10 @@ import { AuthGuard, RoleManagerGuard, RoleAdminGuard } from './auth/auth.guard'
 import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
+  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule } from '@angular/material';
+import { TextInputAutocompleteModule } from './text-input-autocomplete/text-input-container.module';
+
 
 const loginRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,13 +32,14 @@ const loginRoutes: Routes = [
     TranslateModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule
+    MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule,
+    ReactiveFormsModule, MatSelectModule, TextInputAutocompleteModule
   ],
   exports: [TranslateModule,
     CommonModule, HttpModule, FormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
-    MatProgressBarModule, MatRadioModule
+    MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextInputAutocompleteModule
   ],
   providers:[
 	  AuthGuard,

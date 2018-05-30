@@ -14,16 +14,33 @@
               </mat-radio-button>
           </mat-radio-group>
 
-
           <mat-radio-group [(ngModel)]="wod.category" name="wod.category">
               <mat-radio-button *ngFor="let cat of availableWodCategories" value="cat">
                 {{'wod.category.' + cat | translate}}
               </mat-radio-button>
           </mat-radio-group>
         </div>
-        <mat-form-field>
-          <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  [(ngModel)]="wod.description" name="wod.description" rows="3"></textarea>
-        </mat-form-field>
+        
+        <div>
+          <mat-form-field>
+            <text-input-autocomplete>
+              <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="3"
+              textInputAutocomplete
+              [findChoices]="fnFindChoices"
+              [getChoiceLabel]="getChoiceLabel"></textarea>
+            </text-input-autocomplete>
+          </mat-form-field>
+
+          <mat-chip-list class="mat-chip-list-stacked">
+            <mat-chip *ngFor="let m of wod.movements" selected="true">
+              {{m.fullname}}
+            </mat-chip>
+            <mat-chip *ngFor="let e of wod.equipments" selected="true">
+              {{e.fullname}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+
   
       </div>
   
