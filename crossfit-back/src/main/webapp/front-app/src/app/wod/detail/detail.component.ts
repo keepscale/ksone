@@ -45,21 +45,23 @@ export class DetailComponent implements OnInit {
         }
       )
     }
-    this.fnFindChoices = obj => this.findChoices(obj);
   }
 
-  fnFindChoices: Function;
-
-  findChoices(searchText: string) {
+  completeFilter(searchText: string) {
     return this.availableMovements.filter(mov =>
       mov.fullname.toLowerCase().includes(searchText.toLowerCase())
-    )
-    .slice(0, 5)
-    .map(m=>m.fullname);
+    );
   }
 
-  getChoiceLabel(choice: string) {
-    return `${choice} `;
+  displayOptionComplete(option: any) {
+    return option.fullname;
+  }
+
+  onSelectOption(option: any){
+    console.log(option);
+    if (option instanceof Movement){
+      this.wod.movements.push(option);
+    }
   }
 
   onSubmit() {
