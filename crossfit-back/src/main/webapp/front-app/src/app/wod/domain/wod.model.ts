@@ -1,15 +1,20 @@
+import { Movement } from "./movement.model";
+import { Equipment } from "./equipment.model";
+
 export class Wod{
     private id: number;
     private name: string;
     
-	category:string;
-    score:string;
+	private category:string;
+    private score:string;
     
 	private description:string;
 	private link:string;
     private videoLink:string;
     
-
+    private movements:Movement[];
+    private equipments:Equipment[];
+    
     constructor(){
     }
 

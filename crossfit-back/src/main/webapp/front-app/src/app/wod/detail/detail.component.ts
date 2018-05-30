@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Wod } from '../domain/wod.model';
 import { WodService } from '../wod.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Movement } from '../domain/movement.model';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
 
 @Component({
   selector: 'app-detail',
@@ -11,8 +14,10 @@ import { Location } from '@angular/common';
 })
 export class DetailComponent implements OnInit {
   
+  
   private availableWodScore: String[];
   private availableWodCategories: String[];
+  private availableMovements: Movement[];
   private status: string;
   private error: string;
   private wod: Wod;
@@ -26,6 +31,7 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
     this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
     this.service.getScores().subscribe(res=>this.availableWodScore=res);
+    this.service.getMovements().subscribe(res=>this.availableMovements=res);
     let id = this.route.snapshot.paramMap.get('id');
     if (!id){
       this.wod = new Wod();
@@ -39,8 +45,22 @@ export class DetailComponent implements OnInit {
         }
       )
     }
+    this.fnFindChoices = obj => this.findChoices(obj);
   }
 
+  fnFindChoices: Function;
+
+  findChoices(searchText: string) {
+    return this.availableMovements.filter(mov =>
+      mov.fullname.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .slice(0, 5)
+    .map(m=>m.fullname);
+  }
+
+  getChoiceLabel(choice: string) {
+    return `${choice} `;
+  }
 
   onSubmit() {
     this.status = "wait";
