@@ -21,17 +21,15 @@
           </mat-radio-group>
         </div>
         
-        <div>
           <mat-form-field>
-            <text-input-autocomplete>
               <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="3"
-              textInputAutocomplete
-              [findChoices]="fnFindChoices"
-              [getChoiceLabel]="getChoiceLabel"></textarea>
-            </text-input-autocomplete>
+              textComplete
+              [optionsFilter]="completeFilter.bind(this)"
+              [optionDisplay]="displayOptionComplete"
+              (optionSelected)="onSelectOption.bind(this)"></textarea>
           </mat-form-field>
 
-          <mat-chip-list class="mat-chip-list-stacked">
+          <mat-chip-list>
             <mat-chip *ngFor="let m of wod.movements" selected="true">
               {{m.fullname}}
             </mat-chip>
@@ -39,7 +37,6 @@
               {{e.fullname}}
             </mat-chip>
           </mat-chip-list>
-        </div>
 
   
       </div>

@@ -13,11 +13,11 @@ import {
 } from '@angular/core';
 import getCaretCoordinates from 'textarea-caret';
 import { takeUntil } from 'rxjs/operators';
-import { TextInputAutocompleteMenuComponent } from './text-input-autocomplete-menu.component';
+import { TextCompleteMenuComponent } from './text-complete-menu.component';
 import { Subject } from 'rxjs';
 
-export interface ChoiceSelectedEvent {
-  choice: any;
+export interface OptionSelectedEvent {
+  option: any;
   insertedAt: {
     start: number;
     end: number;
@@ -26,9 +26,9 @@ export interface ChoiceSelectedEvent {
 
 @Directive({
   selector:
-    'textarea[textInputAutocomplete],input[type="text"][textInputAutocomplete]'
+    'textarea[textComplete],input[type="text"][textComplete]'
 })
-export class TextInputAutocompleteDirective implements OnDestroy {
+export class TextCompleteDirective implements OnDestroy {
 
   /**
    * The regular expression that will match the search text after the trigger character
@@ -37,9 +37,9 @@ export class TextInputAutocompleteDirective implements OnDestroy {
 
   /**
    * The menu component to show with available options.
-   * You can extend the built in `TextInputAutocompleteMenuComponent` component to use a custom template
+   * You can extend the built in `TextCompleteMenuComponent` component to use a custom template
    */
-  @Input() menuComponent = TextInputAutocompleteMenuComponent;
+  @Input() menuComponent = TextCompleteMenuComponent;
 
   /**
    * Called when the options menu is shown
@@ -54,22 +54,22 @@ export class TextInputAutocompleteDirective implements OnDestroy {
   /**
    * Called when a choice is selected
    */
-  @Output() choiceSelected = new EventEmitter<ChoiceSelectedEvent>();
+  @Output() optionSelected = new EventEmitter<OptionSelectedEvent>();
 
   /**
-   * A function that accepts a search string and returns an array of choices. Can also return a promise.
+   * A function that accepts a search string and returns an array of options. Can also return a promise.
    */
-  @Input() findChoices:Function;
+  @Input() optionsFilter: ((value: string) => any[]) | null = null;
 
   /**
-   * A function that formats the selected choice once selected.
+   * A function that formats the option in options list.
    */
-  @Input() getChoiceLabel: (choice: any) => string = choice => choice;
+  @Input() optionDisplay: (option: any) => string = option => option;
 
   /* tslint:disable member-ordering */
   private menu:
     | {
-        component: ComponentRef<TextInputAutocompleteMenuComponent>;
+        component: ComponentRef<TextCompleteMenuComponent>;
         triggerCharacterPosition: number;
         lastCaretPosition?: number;
       }
@@ -86,8 +86,21 @@ export class TextInputAutocompleteDirective implements OnDestroy {
 
   @HostListener('keypress', ['$event.key'])
   onKeypress(key: string) {
-    this.showMenu();
+    console.log(key);
+    if (key.match(/^[a-z]+$/)){
+      this.showMenu();
+    }
   }
+
+  @HostListener('document:keydown.Esc', ['$event'])
+  onEsc(event: KeyboardEvent) {
+    this.hideMenu();
+  }
+  @HostListener('document:keydown.Space', ['$event'])
+  onSpace(event: KeyboardEvent) {
+    this.hideMenu();
+  }
+
 
   @HostListener('input', ['$event.target.value'])
   onChange(value: string) {
@@ -104,22 +117,17 @@ export class TextInputAutocompleteDirective implements OnDestroy {
           this.hideMenu();
         } else {
           this.menu.component.instance.searchText = searchText;
-          this.menu.component.instance.choices = [];
-          this.menu.component.instance.choiceLoadError = undefined;
-          this.menu.component.instance.choiceLoading = true;
+          this.menu.component.instance.options = [];
           this.menu.component.changeDetectorRef.detectChanges();
-          Promise.resolve(this.findChoices(searchText))
-            .then(choices => {
+          Promise.resolve(this.optionsFilter(searchText))
+            .then(options => {
               if (this.menu) {
-                this.menu.component.instance.choices = choices;
-                this.menu.component.instance.choiceLoading = false;
+                this.menu.component.instance.options = options;
                 this.menu.component.changeDetectorRef.detectChanges();
               }
             })
             .catch(err => {
               if (this.menu) {
-                this.menu.component.instance.choiceLoading = false;
-                this.menu.component.instance.choiceLoadError = err;
                 this.menu.component.changeDetectorRef.detectChanges();
               }
             });
@@ -137,9 +145,7 @@ export class TextInputAutocompleteDirective implements OnDestroy {
 
   private showMenu() {
     if (!this.menu) {
-      const menuFactory = this.componentFactoryResolver.resolveComponentFactory<
-        TextInputAutocompleteMenuComponent
-      >(this.menuComponent);
+      const menuFactory = this.componentFactoryResolver.resolveComponentFactory<TextCompleteMenuComponent>(this.menuComponent);
       this.menu = {
         component: this.viewContainerRef.createComponent(
           menuFactory,
@@ -160,10 +166,11 @@ export class TextInputAutocompleteDirective implements OnDestroy {
         left
       };
       this.menu.component.changeDetectorRef.detectChanges();
-      this.menu.component.instance.selectChoice
+      this.menu.component.instance.optionDisplay = this.optionDisplay;
+      this.menu.component.instance.selectOption
         .pipe(takeUntil(this.menuHidden$))
-        .subscribe(choice => {
-          const label = this.getChoiceLabel(choice);
+        .subscribe(option => {
+          const label = this.optionDisplay(option);
           const textarea: HTMLTextAreaElement = this.elm.nativeElement;
           const value: string = textarea.value;
           const startIndex = this.menu!.triggerCharacterPosition;
@@ -178,8 +185,8 @@ export class TextInputAutocompleteDirective implements OnDestroy {
           const setCursorAt = (start + label).length;
           textarea.setSelectionRange(setCursorAt, setCursorAt);
           textarea.focus();
-          this.choiceSelected.emit({
-            choice,
+          this.optionSelected.emit({
+            option,
             insertedAt: {
               start: startIndex,
               end: startIndex + label.length
