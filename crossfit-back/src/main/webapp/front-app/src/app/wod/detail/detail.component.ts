@@ -7,6 +7,8 @@ import { Movement } from '../domain/movement.model';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
+import { Equipment } from '../domain/equipment.model';
+import { Taggable } from '../domain/taggable.model';
 
 @Component({
   selector: 'app-detail',
@@ -19,6 +21,7 @@ export class DetailComponent implements OnInit {
   private availableWodScore: String[];
   private availableWodCategories: String[];
   private availableMovements: Movement[] = [];
+  private availableEquipments: Equipment[] = [];
   private status: string;
   private error: string;
   private wod: Wod;
@@ -32,13 +35,8 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
     this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
     this.service.getScores().subscribe(res=>this.availableWodScore=res);
-    this.service.getMovements().subscribe(res=>{
-      for (var m of res){
-          var mov = new Movement();
-          Object.assign(mov, m);
-          this.availableMovements.push(mov);
-      }
-    });
+    this.service.getMovements().subscribe(res=>this.availableMovements=res);
+    this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     if (!id){
       this.wod = new Wod();
@@ -55,19 +53,27 @@ export class DetailComponent implements OnInit {
   }
 
   completeFilter(searchText: string) {
-    return this.availableMovements.filter(mov =>
-      mov.fullname.toLowerCase().includes(searchText.toLowerCase())
-    );
+    console.log(searchText);
+    if (searchText.length === 0){
+      return [];
+    }
+    return (this.availableMovements).map(m=>m as Taggable).concat(this.availableEquipments.map(m=>m as Taggable)).filter(m=>{
+        return searchText.length === 1 ?
+        m.fullname.toLowerCase().startsWith(searchText.toLowerCase()) : m.fullname.toLowerCase().includes(searchText.toLowerCase());
+      });
   }
 
-  displayOptionComplete(option: any) {
+  displayOptionComplete(option: Taggable) {
     return option.fullname;
   }
 
   onSelectOption(event: OptionSelectedEvent){
     console.log( typeof event.option);
-    if (event.option instanceof Movement){
+    if (event.option.type){
       this.wod.movements.push(event.option);
+    }
+    else{
+      this.wod.equipments.push(event.option);
     }
   }
 
