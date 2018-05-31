@@ -11,4 +11,7 @@ export class Movement{
     get fullname() {
         return this._fullname;
     }
+    set fullname(fullname:string) {
+        this._fullname = fullname;
+    }
 }

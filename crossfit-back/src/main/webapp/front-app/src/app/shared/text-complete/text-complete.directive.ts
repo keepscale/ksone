@@ -86,7 +86,6 @@ export class TextCompleteDirective implements OnDestroy {
 
   @HostListener('keypress', ['$event.key'])
   onKeypress(key: string) {
-    console.log(key);
     if (key.match(/^[a-z]+$/)){
       this.showMenu();
     }
