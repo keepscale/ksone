@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Wod } from './domain/wod.model';
 import { Movement } from './domain/movement.model';
 import { Equipment } from './domain/equipment.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class WodService {
   getMovements(){
     return this.http.get<Movement[]>("/api/wod/movements");
   }
-  getEquipments(){
+  getEquipments():Observable<Equipment[]>{
     return this.http.get<Equipment[]>("/api/wod/equipments");
   }
 }

@@ -9,10 +9,10 @@ import { Subject } from 'rxjs';
       [style.top.px]="position?.top"
       [style.left.px]="position?.left">
       <li 
-        (click)="selectOption.next(o)"
         *ngFor="let o of options"
         [class.active]="activeOption === o">
         <a
+          (click)="selectOption.next(o)"
           href="javascript:;">
           {{ optionDisplay(o) }}
         </a>
@@ -33,15 +33,14 @@ import { Subject } from 'rxjs';
       z-index: 999;
       box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);
     }
-    .dropdown-menu li{
-      padding: 5px;
-    }
     .dropdown-menu li.active, .dropdown-menu li:hover{
       background-color: lightgray;
       cursor: pointer;
     }
     .dropdown-menu li a{
-      text-decoration: none;
+      text-decoration: none;    
+      display: block;
+      padding: 10px;
     }
   `
   ]
