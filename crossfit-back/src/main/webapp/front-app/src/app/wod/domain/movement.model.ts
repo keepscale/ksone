@@ -1,6 +1,8 @@
-export class Movement{
-    private id: number;
-    private _fullname: string;
+import { Taggable } from "./taggable.model";
+
+export class Movement implements Taggable{
+    id: number;
+    _fullname: string;
 
     constructor(){
     }

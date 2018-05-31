@@ -30,11 +30,23 @@
           </mat-form-field>
 
           <mat-chip-list>
-            <mat-chip *ngFor="let m of wod.movements" selected="true">
-              {{m.fullname}}
-            </mat-chip>
-            <mat-chip *ngFor="let e of wod.equipments" selected="true">
+            <mat-chip *ngFor="let e of wod.equipments" 
+              [color]="primary"
+              [selectable]="false"
+              [removable]="true" 
+              (removed)="remove(e)">
               {{e.fullname}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+          <mat-chip-list>
+            <mat-chip *ngFor="let m of wod.movements" 
+            [color]="primary"
+            [selectable]="false"
+            [removable]="true" 
+            (removed)="remove(m)">
+              {{m.fullname}}
+              <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
           </mat-chip-list>
 
