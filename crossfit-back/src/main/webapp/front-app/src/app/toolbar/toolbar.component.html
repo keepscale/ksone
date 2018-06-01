@@ -1,0 +1,53 @@
+<mat-toolbar color="primary"> 
+
+  <mat-toolbar-row *ngIf="!showSearchToolBar">
+    <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="toggleSideNav()"
+      *ngIf="isHandset$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+
+    <span>{{title}}</span>
+
+    <span class="spacer"></span>
+
+    <div class="right-action">
+      <button mat-icon-button *ngIf="showSearchButton" (click)="showSearchToolBar=true">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="overflow-menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>dialpad</mat-icon>
+          <span>Redial</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar-row>
+
+
+
+  <mat-toolbar-row *ngIf="showSearchToolBar">
+    <button mat-button mat-icon-button aria-label="Back" (click)="showSearchToolBar=false">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    
+
+    <mat-form-field [floatLabel]="'never'">        
+        <input #searchInput matInput type="text" placeholder="{{searchPlaceHolder}}" 
+          [(ngModel)]="searchText" />
+        <button mat-button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
+          <mat-icon>close</mat-icon>
+        </button>
+        <button mat-button matSuffix mat-icon-button aria-label="Search" (click)="search()">
+          <mat-icon>search</mat-icon>
+        </button>
+    </mat-form-field>
+    
+  </mat-toolbar-row>
+</mat-toolbar>

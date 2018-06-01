@@ -11,8 +11,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './shared/auth/auth.guard';
 import { SharedModule } from './shared/shared.module';
-import { AppService } from './app.service';
 import { WodModule } from './wod/wod.module';
+import { ToolbarModule } from './toolbar/toolbar.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -48,11 +48,11 @@ const appRoutes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     LayoutModule,
-    MatToolbarModule,
     MatSidenavModule,
-    WodModule
+    WodModule,
+    ToolbarModule
   ],
   bootstrap: [AppComponent],
-  providers: [AppService]
+  providers: []
 })
 export class AppModule { }

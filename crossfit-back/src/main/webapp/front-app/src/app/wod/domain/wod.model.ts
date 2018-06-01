@@ -2,23 +2,19 @@ import { Movement } from "./movement.model";
 import { Equipment } from "./equipment.model";
 
 export class Wod{
-    private id: number;
-    private name: string;
+    public id: number;
+    public name: string;
     
-	private category:string;
-    private score:string;
+	public category:string;
+    public score:string;
     
-	private description:string;
-	private link:string;
-    private videoLink:string;
+	public description:string;
+	public link:string;
+    public videoLink:string;
     
-    movements:Movement[] = [];
-    equipments:Equipment[] = [];
+    public movements:Movement[] = [];
+    public equipments:Equipment[] = [];
     
     constructor(){
-    }
-
-    public getId():number{
-        return this.id;
     }
 }

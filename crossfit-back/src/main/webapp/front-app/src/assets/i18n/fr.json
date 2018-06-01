@@ -7,6 +7,9 @@
 		},
 		"title": {
 			"menu": ""
+		},
+		"toolbar": {
+			"search.placeholder": "Rechercher"
 		}
 	},
 	"login": {
@@ -18,7 +21,8 @@
 		},
 		"username": {
 			"placeholder": "Email"
-		}
+		},
+		"connect.button": "Se connecter"
 	},
 	"wod": {
 		"add": {
@@ -27,17 +31,22 @@
 			}
 		},
 		"description": {
-			"placeholder": "Description du wod"
+			"placeholder": "Wod"
+		},
+		"warmup": {
+			"placeholder": "Warm-up"
 		},
 		"name": {
 			"placeholder": "Nom du wod"
 		},
 		"score": {
-			"FOR_LOAD": "For Load",
+			"placeholder": "Score",
+			"FOR_LOAD": "Charge Max",
 			"FOR_TIME": "For Time",
 			"FOR_ROUNDS_REPS" : "For Rounds/Reps"
 		},
 		"category": {
+			"placeholder": "Type de Wod",
 			"BENCHMARK": "Référence",
 			"QUALIFIER": "Qualificatif",
 			"GIRL" : "Girl",

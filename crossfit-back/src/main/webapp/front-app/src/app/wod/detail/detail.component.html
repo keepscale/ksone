@@ -2,49 +2,49 @@
 
     <form novalidate (ngSubmit)="onSubmit()">
   
-      <div class="form-container">      
+      <div class="form-container">
         <mat-form-field>
           <input matInput placeholder="{{'wod.name.placeholder' | translate}}"  [(ngModel)]="wod.name" name="wod.name">
         </mat-form-field>
 
         <div>
-          <mat-radio-group [(ngModel)]="wod.score" name="wod.score">
-              <mat-radio-button *ngFor="let score of availableWodScore" value="score">
-                {{'wod.score.' + score | translate}}
-              </mat-radio-button>
-          </mat-radio-group>
+          <mat-form-field>
+            <mat-select  placeholder="{{'wod.score.placeholder' | translate}}" [(ngModel)]="wod.score" name="wod.score">
+                <mat-option *ngFor="let score of availableWodScore" [value]="score">
+                  {{'wod.score.' + score | translate}}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-          <mat-radio-group [(ngModel)]="wod.category" name="wod.category">
-              <mat-radio-button *ngFor="let cat of availableWodCategories" value="cat">
-                {{'wod.category.' + cat | translate}}
-              </mat-radio-button>
-          </mat-radio-group>
+          <mat-form-field>
+            <mat-select  placeholder="{{'wod.category.placeholder' | translate}}" [(ngModel)]="wod.category" name="wod.category">
+                <mat-option *ngFor="let cat of availableWodCategories" [value]="cat">
+                  {{'wod.category.' + cat | translate}}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         
           <mat-form-field>
-              <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="3"
+            <textarea matInput placeholder="{{'wod.warmup.placeholder' | translate}}"  rows="2"  [(ngModel)]="wod.warmup" name="wod.warmup"
+            textComplete
+            [optionsFilter]="completeFilter.bind(this)"
+            [optionDisplay]="displayOptionComplete"
+            (optionSelected)="onSelectOption($event)"></textarea>
+          </mat-form-field> 
+          <mat-form-field>
+              <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="10"  [(ngModel)]="wod.description" name="wod.description"
               textComplete
               [optionsFilter]="completeFilter.bind(this)"
               [optionDisplay]="displayOptionComplete"
               (optionSelected)="onSelectOption($event)"></textarea>
           </mat-form-field>
-
-          <mat-chip-list>
-            <mat-chip *ngFor="let e of wod.equipments" 
-              [color]="primary"
-              [selectable]="false"
-              [removable]="true" 
-              (removed)="remove(e)">
-              {{e.fullname}}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
           <mat-chip-list>
             <mat-chip *ngFor="let m of wod.movements" 
             [color]="primary"
             [selectable]="false"
             [removable]="true" 
-            (removed)="remove(m)">
+            (removed)="removeMovement(m)">
               {{m.fullname}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>

@@ -16,7 +16,7 @@ import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
-  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule } from '@angular/material';
+  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule } from '@angular/material';
 import { TextCompleteModule } from './text-complete/text-complete.module';
   
 
@@ -33,13 +33,14 @@ const loginRoutes: Routes = [
     MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule,
-    ReactiveFormsModule, MatSelectModule, TextCompleteModule
+    ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule
   ],
   exports: [TranslateModule,
     CommonModule, HttpModule, FormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
-    MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule
+    MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
+    MatMenuModule
   ],
   providers:[
 	  AuthGuard,
