@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from '../app.service';
+import { ToolBarService } from '../toolbar/toolbar.service';
 
 @Component({
   selector: 'app-home',
@@ -8,10 +8,10 @@ import { AppService } from '../app.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private appService: AppService) { }
+  constructor(private toolbar: ToolBarService) { }
 
   ngOnInit() {
-    this.appService.setTitle("Accueil");
+    this.toolbar.setTitle("Accueil");
   }
 
 }

@@ -109,7 +109,7 @@ export class TextCompleteDirective implements OnDestroy {
         this.hideMenu();
       } else {
         const searchText = value.slice(
-          this.menu.triggerCharacterPosition + 1,
+          this.menu.triggerCharacterPosition,
           cursor
         );
         if (!searchText.match(this.searchRegexp)) {

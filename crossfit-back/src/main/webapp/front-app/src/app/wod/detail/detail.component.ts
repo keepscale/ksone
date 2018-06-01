@@ -9,6 +9,7 @@ import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
 import { Equipment } from '../domain/equipment.model';
 import { Taggable } from '../domain/taggable.model';
+import { ToolBarService } from '../../toolbar/toolbar.service';
 
 @Component({
   selector: 'app-detail',
@@ -30,7 +31,8 @@ export class DetailComponent implements OnInit {
     private service: WodService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location) { }
+    private location: Location, 
+    private toolbar: ToolBarService) { }
 
   ngOnInit() {
     this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
@@ -39,11 +41,15 @@ export class DetailComponent implements OnInit {
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     if (!id){
+      this.toolbar.setTitle("Créer un WOD");
       this.wod = new Wod();
+      this.wod.category = "CUSTOM";
+      this.wod.score = "FOR_TIME";
     }
     else{
       this.service.get(id).subscribe(w=>{
           this.wod = w;
+          this.toolbar.setTitle("Modifier un WOD");
         },
         err=>{
           this.router.navigate(["wod"]);
@@ -57,9 +63,14 @@ export class DetailComponent implements OnInit {
     if (searchText.length === 0){
       return [];
     }
-    return (this.availableMovements).map(m=>m as Taggable).concat(this.availableEquipments.map(m=>m as Taggable)).filter(m=>{
-        return searchText.length === 1 ?
-        m.fullname.toLowerCase().startsWith(searchText.toLowerCase()) : m.fullname.toLowerCase().includes(searchText.toLowerCase());
+    var data: Taggable[] = (this.availableMovements as Taggable[])/*.concat(this.availableEquipments)*/;
+    return data
+      .filter(m=>
+              m.fullname.toLowerCase().includes(searchText.toLowerCase())
+      ).sort((a,b)=>{
+        return a.fullname.toLowerCase().startsWith(searchText.toLowerCase()) ? 
+            -1 : b.fullname.toLowerCase().startsWith(searchText.toLowerCase()) ? 1 :
+            a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
       });
   }
 
@@ -75,6 +86,10 @@ export class DetailComponent implements OnInit {
     else{
       this.wod.equipments.push(event.option);
     }
+  }
+
+  removeMovement(m: Movement){
+    this.wod.movements.splice(this.wod.movements.indexOf(m),1);
   }
 
   onSubmit() {

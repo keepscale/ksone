@@ -1,0 +1,22 @@
+
+
+.mat-icon {
+    cursor: pointer;
+}
+
+mat-toolbar-row {
+    width: 100%;
+
+    .right-action{
+    float: right;
+    }
+}
+.spacer{
+    flex: 1 1 auto;
+}
+
+mat-form-field {
+    flex-grow: 1;
+    font-weight: lighter;
+    font-size: 16px;
+}

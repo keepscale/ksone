@@ -26,7 +26,7 @@ export class WodService {
   }
 
   delete(wod: Wod){
-    return this.http.delete("api/wods/" + wod.getId());
+    return this.http.delete("api/wods/" + wod.id);
   }
 
   get(id){
