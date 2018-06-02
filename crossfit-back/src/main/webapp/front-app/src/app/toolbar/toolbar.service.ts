@@ -45,7 +45,6 @@ export class ToolBarService {
         return this.allowSearch.asObservable();
     }
     search(query: string){
-        console.log(query);
-        this.onSearch.apply(query);
+        this.onSearch.call(this, query);
     }
 }

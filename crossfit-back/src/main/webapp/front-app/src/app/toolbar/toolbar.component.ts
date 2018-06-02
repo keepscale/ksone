@@ -41,7 +41,7 @@ export class ToolbarComponent implements OnInit {
 
     this.firstSub = this.isHandset$.subscribe(o=>{
       if (o) this.toggleSideNav();
-      this.firstSub.unsubscribe();
+      if (this.firstSub) this.firstSub.unsubscribe();
     })
     this.isHandset$.subscribe(o=>{
       this.toolbar.toggleSideNav();
@@ -52,5 +52,9 @@ export class ToolbarComponent implements OnInit {
   }
   search(){
     this.toolbar.search(this.searchText);
+  }
+  hideSearch(){
+    this.showSearchToolBar=false;
+    this.toolbar.search(null);
   }
 }

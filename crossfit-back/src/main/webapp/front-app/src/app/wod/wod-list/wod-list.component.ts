@@ -16,8 +16,10 @@ export class WodListComponent implements OnInit {
     this.toolbar.setAllowSearch(true, this.onSearch.bind(this));
   }
 
+  text: string;
   onSearch(query:string){
     console.log("Search: " + query);
+    this.text = "Recherche de : " + query;
   }
 
 }
