@@ -3,6 +3,7 @@ package org.crossfit.app.web.rest.workouts;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -16,9 +17,11 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,11 +44,23 @@ public class WodResource {
 	 * GET /wod -> get all the wod.
 	 */
 	@RequestMapping(value = "/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<WOD>> getWods(
+	public ResponseEntity<Set<WOD>> getWods(
 			@RequestParam(value = "search", required = false) String search){
-		List<WOD> result = wodService.findAll(search);
+		search = search == null ? "" :search;
+		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+		
+		Set<WOD> result = wodService.findAll(customSearch);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	
+
+	@RequestMapping(value = "/wod/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<WOD> getWod(@PathVariable Long id){
+		
+		WOD result = wodService.findOne(id);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
 
 	/**
 	 * POST /wod -> Create a new wod.

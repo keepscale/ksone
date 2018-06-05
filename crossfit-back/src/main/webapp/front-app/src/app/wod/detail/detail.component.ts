@@ -41,7 +41,7 @@ export class DetailComponent implements OnInit {
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     if (!id){
-      this.toolbar.setTitle("Créer un WOD");
+      this.toolbar.setTitle("Proposer un WOD");
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
@@ -81,15 +81,15 @@ export class DetailComponent implements OnInit {
   onSelectOption(event: OptionSelectedEvent){
     console.log( typeof event.option);
     if (event.option.type){
-      this.wod.movements.push(event.option);
+      this.wod.taggedMovements.push(event.option);
     }
     else{
-      this.wod.equipments.push(event.option);
+      this.wod.taggedEquipments.push(event.option);
     }
   }
 
   removeMovement(m: Movement){
-    this.wod.movements.splice(this.wod.movements.indexOf(m),1);
+    this.wod.taggedMovements.splice(this.wod.taggedMovements.indexOf(m),1);
   }
 
   onSubmit() {

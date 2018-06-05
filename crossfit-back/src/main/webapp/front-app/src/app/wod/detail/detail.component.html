@@ -3,9 +3,6 @@
     <form novalidate (ngSubmit)="onSubmit()">
   
       <div class="form-container">
-        <mat-form-field>
-          <input matInput placeholder="{{'wod.name.placeholder' | translate}}"  [(ngModel)]="wod.name" name="wod.name">
-        </mat-form-field>
 
         <div>
           <mat-form-field>
@@ -24,31 +21,29 @@
             </mat-select>
           </mat-form-field>
         </div>
-        
-          <mat-form-field>
-            <textarea matInput placeholder="{{'wod.warmup.placeholder' | translate}}"  rows="2"  [(ngModel)]="wod.warmup" name="wod.warmup"
+
+        <mat-form-field *ngIf="wod.category != 'CUSTOM'">
+          <input matInput placeholder="{{'wod.name.placeholder' | translate}}"  [(ngModel)]="wod.name" name="wod.name">
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="10"  [(ngModel)]="wod.description" name="wod.description"
             textComplete
             [optionsFilter]="completeFilter.bind(this)"
             [optionDisplay]="displayOptionComplete"
             (optionSelected)="onSelectOption($event)"></textarea>
-          </mat-form-field> 
-          <mat-form-field>
-              <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}"  rows="10"  [(ngModel)]="wod.description" name="wod.description"
-              textComplete
-              [optionsFilter]="completeFilter.bind(this)"
-              [optionDisplay]="displayOptionComplete"
-              (optionSelected)="onSelectOption($event)"></textarea>
-          </mat-form-field>
-          <mat-chip-list>
-            <mat-chip *ngFor="let m of wod.movements" 
-            [color]="primary"
-            [selectable]="false"
-            [removable]="true" 
-            (removed)="removeMovement(m)">
-              {{m.fullname}}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
+        </mat-form-field>
+
+        <mat-chip-list>
+          <mat-chip *ngFor="let m of wod.taggedMovements" 
+          [color]="primary"
+          [selectable]="false"
+          [removable]="true" 
+          (removed)="removeMovement(m)">
+            {{m.fullname}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
 
   
       </div>
