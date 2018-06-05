@@ -1,4 +1,13 @@
-<h1>{{text}}</h1>
+
+<mat-nav-list>
+  <mat-list-item *ngFor="let wod of wods">
+     <a matLine [routerLink]="['wod', wod.id]">{{ wod.name }}</a>
+     <button mat-icon-button (click)="showInfo(link)">
+        <mat-icon>info</mat-icon>
+     </button>
+  </mat-list-item>
+</mat-nav-list>
+
 
 
 <a routerLink="/wod/new">

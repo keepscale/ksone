@@ -5,6 +5,13 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { Router, RouterState, ActivatedRoute } from '@angular/router';
 
+export class MenuItem{
+
+  action: Function;
+  icon: string;
+  text: string;
+}
+
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
@@ -27,12 +34,15 @@ export class ToolbarComponent implements OnInit {
 
   firstSub: Subscription;
 
+  menuItems: MenuItem[] = [];
+
   constructor(private breakpointObserver: BreakpointObserver, private toolbar:ToolBarService, private router: Router) { }
 
   ngOnInit() {
     this.router.events.subscribe(event=>{
       this.showSearchToolBar = false;
       this.showSearchButton = false;
+      this.menuItems = [];
     })
     this.toolbar.getTitle().subscribe(t=>this.title=t); 
     this.toolbar.getSearchPlaceHolder().subscribe(t=>this.searchPlaceHolder=t);
