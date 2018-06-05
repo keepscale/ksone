@@ -12,8 +12,8 @@ export class Wod{
 	public link:string;
     public videoLink:string;
     
-    public movements:Movement[] = [];
-    public equipments:Equipment[] = [];
+    public taggedMovements:Movement[] = [];
+    public taggedEquipments:Equipment[] = [];
     
     constructor(){
     }

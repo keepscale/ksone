@@ -1,14 +1,20 @@
 
-<mat-nav-list>
-  <mat-list-item *ngFor="let wod of wods">
-     <a matLine [routerLink]="['wod', wod.id]">{{ wod.name }}</a>
-     <button mat-icon-button (click)="showInfo(link)">
-        <mat-icon>info</mat-icon>
-     </button>
-  </mat-list-item>
-</mat-nav-list>
-
-
+<mat-card class="wod-card" *ngFor="let wod of wods">
+  <mat-card-header>
+    <mat-card-title>Wod du jour</mat-card-title>
+    <mat-card-subtitle>{{'wod.score.' + wod.score | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p style="white-space: pre;">{{wod.description}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+      <a [routerLink]="[wod.id]">
+        <button mat-button >
+          <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
+        </button>
+      </a>
+  </mat-card-actions>
+</mat-card>
 
 <a routerLink="/wod/new">
   <button class="add" mat-fab color="primary">

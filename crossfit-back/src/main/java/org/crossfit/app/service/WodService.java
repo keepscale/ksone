@@ -2,6 +2,7 @@ package org.crossfit.app.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -59,7 +60,7 @@ public class WodService {
 	}
 
 
-	public List<WOD> findAll(String search) {
+	public Set<WOD> findAll(String search) {
 		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search);
 	}
 
@@ -102,6 +103,12 @@ public class WodService {
 		}
 			
 		return wodRepository.saveAndFlush(wod);
+	}
+
+
+	public WOD findOne(Long id) {
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		return wodRepository.findOne(currentCrossFitBox, id);
 	}
 	
 }
