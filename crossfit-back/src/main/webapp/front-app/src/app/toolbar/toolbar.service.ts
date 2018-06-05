@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Testability } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 
@@ -13,6 +13,8 @@ export class ToolBarService {
     private allowSearch = new Subject<boolean>();
 
     private onSearch: Function;
+
+    private menuItems = new Subject<any[]>();
  
 
     toggleSideNav(){
@@ -30,6 +32,17 @@ export class ToolBarService {
         return this.title.asObservable();
     }
 
+    addMenuItem(action: Function, icon:string, text:string){
+        /*let i = new MenuItem();
+        i.action = action;
+        i.icon = icon;
+        i.text = text;*/
+    }
+
+    getMenuItem(){
+        return this.menuItems.asObservable();
+    }
+
     setSearchPlaceHolder(searchPlaceHolder: string) {
         this.searchPlaceHolder.next(searchPlaceHolder);
     }
@@ -37,8 +50,8 @@ export class ToolBarService {
         return this.searchPlaceHolder.asObservable();
     }
  
-    setAllowSearch(allow: boolean, onSearch: Function) {
-        this.allowSearch.next(allow);
+    setOnSearch(onSearch: Function) {
+        this.allowSearch.next(true);
         this.onSearch = onSearch;
     }
     getAllowSearch(): Observable<boolean>{

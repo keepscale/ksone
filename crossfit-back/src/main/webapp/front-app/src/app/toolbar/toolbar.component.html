@@ -22,9 +22,9 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>dialpad</mat-icon>
-          <span>Redial</span>
+        <button mat-menu-item *ngFor="let item of menuItems" (click)="item.action.call(this)">
+          <mat-icon>{{item.icon}}</mat-icon>
+          <span>{{item.text}}</span>
         </button>
       </mat-menu>
     </div>

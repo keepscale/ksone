@@ -15,22 +15,22 @@ export class WodService {
   
  
   findAll(search: string){
-    return this.http.get<Wod[]>("api/wods", {
+    return this.http.get<Wod[]>("api/wod", {
         params: new HttpParams().set("query", search)
       }
     );
   }
 
   save(wod:Wod){
-    return this.http.put<Wod>("api/wods", wod);
+    return this.http.put<Wod>("api/wod", wod);
   }
 
   delete(wod: Wod){
-    return this.http.delete("api/wods/" + wod.id);
+    return this.http.delete("api/wod/" + wod.id);
   }
 
   get(id){
-    return this.http.get<Wod>("api/wods/" + id);
+    return this.http.get<Wod>("api/wod/" + id);
   }
 
   getScores(){

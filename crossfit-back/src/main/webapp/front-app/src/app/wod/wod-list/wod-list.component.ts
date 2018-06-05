@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolBarService } from '../../toolbar/toolbar.service';
+import { WodService } from '../wod.service';
+import { Wod } from '../domain/wod.model';
 
 @Component({
   selector: 'app-wod-list',
@@ -8,18 +10,22 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 })
 export class WodListComponent implements OnInit {
 
-  constructor(private toolbar: ToolBarService) { }
+  private wods:Wod[] = [];
+
+  constructor(private toolbar: ToolBarService, private wodService: WodService) { }
 
   ngOnInit() {
     this.toolbar.setTitle("Wods")
     this.toolbar.setSearchPlaceHolder("Rechercher des wods")
-    this.toolbar.setAllowSearch(true, this.onSearch.bind(this));
+    this.toolbar.setOnSearch(this.onSearch.bind(this));
+
+    this.onSearch(null);
+
   }
 
-  text: string;
   onSearch(query:string){
     console.log("Search: " + query);
-    this.text = "Recherche de : " + query;
+    this.wodService.findAll(query).subscribe(result=>this.wods=result);
   }
 
 }
