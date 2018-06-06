@@ -4,9 +4,6 @@
 			"WOD": "",
 			"home": "",
 			"logout": ""
-		},
-		"title": {
-			"menu": ""
 		}
 	},
 	"login": {
@@ -26,10 +23,47 @@
 				"label": ""
 			}
 		},
+		"category": {
+			"placeholder": ""
+		},
 		"description": {
 			"placeholder": ""
 		},
+		"edit": {
+			"button": {
+				"label": ""
+			}
+		},
+		"myscore": {
+			"button": {
+				"label": ""
+			},
+			"comments": {
+				"placeholder": ""
+			},
+			"date": {
+				"placeholder": ""
+			},
+			"totalChargeInKilo": {
+				"placeholder": ""
+			},
+			"totalCompleteRound": {
+				"placeholder": ""
+			},
+			"totalMinute": {
+				"placeholder": ""
+			},
+			"totalReps": {
+				"placeholder": ""
+			},
+			"totalSecond": {
+				"placeholder": ""
+			}
+		},
 		"name": {
+			"placeholder": ""
+		},
+		"score": {
 			"placeholder": ""
 		}
 	}

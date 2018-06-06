@@ -5,11 +5,13 @@ import { RoleManagerGuard, AuthGuard } from '../shared/auth/auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { DetailComponent } from './detail/detail.component';
+import { MyResultComponent } from './my-result/my-result.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod',  component: WodListComponent, canActivate: [AuthGuard] },
   { path: 'wod/new',  component: DetailComponent, canActivate: [AuthGuard] },
-  { path: 'wod/:id',  component: DetailComponent, canActivate: [AuthGuard] }
+  { path: 'wod/:id/edit',  component: DetailComponent, canActivate: [AuthGuard] },
+  { path: 'wod/:id/myscore',  component: MyResultComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
@@ -18,6 +20,6 @@ const wodsRoutes: Routes = [
     RouterModule.forChild(wodsRoutes),
     CommonModule
   ],
-  declarations: [WodListComponent, DetailComponent]
+  declarations: [WodListComponent, DetailComponent, MyResultComponent]
 })
 export class WodModule { }

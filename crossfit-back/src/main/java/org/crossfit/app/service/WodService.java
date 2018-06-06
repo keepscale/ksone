@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
-import org.crossfit.app.domain.workouts.WOD;
+import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.repository.EquipmentRepository;
 import org.crossfit.app.repository.MovementRepository;
 import org.crossfit.app.repository.WodRepository;
@@ -60,16 +60,16 @@ public class WodService {
 	}
 
 
-	public Set<WOD> findAll(String search) {
+	public Set<Wod> findAll(String search) {
 		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search);
 	}
 
 
-	public WOD save(@Valid WOD dto) {
+	public Wod save(@Valid Wod dto) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-		WOD wod;
+		Wod wod;
 		if (dto.getId() == null){			
-			wod = new WOD();
+			wod = new Wod();
 			wod.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		}
 		else{			
@@ -106,7 +106,7 @@ public class WodService {
 	}
 
 
-	public WOD findOne(Long id) {
+	public Wod findOne(Long id) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		return wodRepository.findOne(currentCrossFitBox, id);
 	}

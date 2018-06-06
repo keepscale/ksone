@@ -8,9 +8,14 @@
     <p style="white-space: pre;">{{wod.description}}</p>
   </mat-card-content>
   <mat-card-actions>
-      <a [routerLink]="[wod.id]">
+      <a [routerLink]="[wod.id, 'edit']">
         <button mat-button >
           <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
+        </button>
+      </a>
+      <a [routerLink]="[wod.id, 'myscore']">
+        <button mat-button >
+          <mat-icon aria-label="{{'wod.myscore.button.label' | translate}">timer</mat-icon>
         </button>
       </a>
   </mat-card-actions>
