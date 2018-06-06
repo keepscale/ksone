@@ -1,9 +1,14 @@
 package org.crossfit.app.domain.workouts;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,20 +26,25 @@ import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.AbstractAuditingEntity;
 import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.util.CustomLocalDateSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * A Member.
  */
 @Entity
-@Table(name = "WOD")
+@Table(name = "Wod")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class WOD extends AbstractAuditingEntity implements Serializable {
+public class Wod extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -82,6 +92,11 @@ public class WOD extends AbstractAuditingEntity implements Serializable {
 	@JoinTable(name = "WOD_EQUIPMENT", joinColumns = @JoinColumn(name = "wod_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "equipment_id", referencedColumnName = "ID"))
 	private Set<Equipment> taggedEquipments;
 
+   @ElementCollection
+   @CollectionTable( name="wod_date", joinColumns=@JoinColumn(name="wod_id"))
+	private Set<WodDate> dates = new HashSet<>();
+
+   
 	public Long getId() {
 		return id;
 	}
@@ -162,6 +177,14 @@ public class WOD extends AbstractAuditingEntity implements Serializable {
 		this.taggedEquipments = taggedEquipments;
 	}
 
+	public Set<WodDate> getDates() {
+		return dates;
+	}
+
+	public void setDates(Set<WodDate> dates) {
+		this.dates = dates;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -178,7 +201,7 @@ public class WOD extends AbstractAuditingEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		WOD other = (WOD) obj;
+		Wod other = (Wod) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

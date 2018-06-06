@@ -2,18 +2,26 @@ package org.crossfit.app.web.rest.workouts;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
-import org.crossfit.app.domain.workouts.WOD;
+import org.crossfit.app.domain.workouts.Wod;
+import org.crossfit.app.domain.workouts.WodDate;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
+import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,27 +45,36 @@ public class WodResource {
 
 	@Autowired
 	private WodService wodService;
-
+	@Autowired
+	private TimeService timeService;
+	@Autowired
+    private CrossFitBoxSerivce boxService;
+	
 	private final Logger log = LoggerFactory.getLogger(WodResource.class);
 
 	/**
 	 * GET /wod -> get all the wod.
 	 */
 	@RequestMapping(value = "/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Set<WOD>> getWods(
+	public ResponseEntity<List<Wod>> getWods(
 			@RequestParam(value = "search", required = false) String search){
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		
-		Set<WOD> result = wodService.findAll(customSearch);
+		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(boxService.findCurrentCrossFitBox());
+		
+		Function<Wod, LocalDate> plusPetiteDateApresMaintenant = wod->{
+			return wod == null ||wod.getDates() == null || wod.getDates().isEmpty() ? null : wod.getDates().stream().map(WodDate::getDate).filter(d->d.isAfter(nowAsLocalDate.minusDays(1))).min(LocalDate::compareTo).get();
+		};
+		List<Wod> result = wodService.findAll(customSearch).stream().sorted(Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList());
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 
 	@RequestMapping(value = "/wod/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WOD> getWod(@PathVariable Long id){
+	public ResponseEntity<Wod> getWod(@PathVariable Long id){
 		
-		WOD result = wodService.findOne(id);
+		Wod result = wodService.findOne(id);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -66,12 +83,12 @@ public class WodResource {
 	 * POST /wod -> Create a new wod.
 	 */
 	@RequestMapping(value = "/wod", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WOD> create(@Valid @RequestBody WOD wod) throws URISyntaxException {
+	public ResponseEntity<Wod> create(@Valid @RequestBody Wod wod) throws URISyntaxException {
 		log.debug("REST request to save Wod : {}", wod);
 		if (wod.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new wod cannot already have an ID").body(null);
 		}
-		WOD result = wodService.save(wod);
+		Wod result = wodService.save(wod);
 		return ResponseEntity.created(new URI("/api/wod/" + result.getId()))
 				.headers(HeaderUtil.createEntityCreationAlert("wod", result.getId().toString())).body(result);
 	}
@@ -82,12 +99,12 @@ public class WodResource {
 	 */
 
 	@RequestMapping(value = "/wod", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WOD> update(@Valid @RequestBody WOD wod) throws URISyntaxException {
+	public ResponseEntity<Wod> update(@Valid @RequestBody Wod wod) throws URISyntaxException {
 		log.debug("REST request to update Wod : {}", wod);
 		if (wod.getId() == null) {
 			return create(wod);
 		}
-		WOD result = wodService.save(wod);
+		Wod result = wodService.save(wod);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(" wod", result.getId().toString()))
 				.body(result);
 	}

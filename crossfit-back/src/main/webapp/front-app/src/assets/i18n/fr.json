@@ -4,12 +4,6 @@
 			"WOD": "WOD",
 			"home": "Accueil",
 			"logout": "Déconnexion"
-		},
-		"title": {
-			"menu": ""
-		},
-		"toolbar": {
-			"search.placeholder": "Rechercher"
 		}
 	},
 	"login": {
@@ -33,8 +27,36 @@
 		"description": {
 			"placeholder": "Wod"
 		},
-		"warmup": {
-			"placeholder": "Warm-up"
+		"edit": {
+			"button": {
+				"label": ""
+			}
+		},
+		"myscore": {
+			"button": {
+				"label": ""
+			},
+			"comments": {
+				"placeholder": "Mes commentaires"
+			},
+			"date": {
+				"placeholder": "Date du wod"
+			},
+			"totalChargeInKilo": {
+				"placeholder": "Charge total en Kg"
+			},
+			"totalCompleteRound": {
+				"placeholder": "Nb de tour fini"
+			},
+			"totalMinute": {
+				"placeholder": "Minutes"
+			},
+			"totalReps": {
+				"placeholder": "Nb de rép."
+			},
+			"totalSecond": {
+				"placeholder": "Secondes"
+			}
 		},
 		"name": {
 			"placeholder": "Nom du wod"

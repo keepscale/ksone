@@ -1,0 +1,50 @@
+<div class="wod-container">
+
+  <form novalidate (ngSubmit)="onSubmit()" *ngIf="wod">
+    <div>
+        <div style="float: left">
+            <span>{{'wod.score.' + wod.score | translate}}</span>
+          <p style="white-space: pre;">{{wod.description}}</p>
+        </div>
+        
+        <div [ngSwitch]="wod.score">
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker" placeholder="{{'wod.myscore.date.placeholder' | translate}}" [(ngModel)]="result.date" name="result.date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+              
+
+          <mat-form-field *ngSwitchCase="'FOR_LOAD'">
+            <input matInput placeholder="{{'wod.myscore.totalChargeInKilo.placeholder' | translate}}"  [(ngModel)]="result.totalChargeInKilo" name="result.totalChargeInKilo">
+          </mat-form-field>
+
+
+          <div *ngSwitchCase="'FOR_TIME'">
+              <mat-form-field >
+                <input matInput placeholder="{{'wod.myscore.totalMinute.placeholder' | translate}}"  [(ngModel)]="result.totalMinute" name="result.totalMinute">
+              </mat-form-field>
+              <mat-form-field >
+                <input matInput placeholder="{{'wod.myscore.totalSecond.placeholder' | translate}}"  [(ngModel)]="result.totalSecond" name="result.totalSecond">
+              </mat-form-field>
+          </div>
+
+          <div *ngSwitchCase="'FOR_ROUNDS_REPS'">
+            <mat-form-field>
+                <input matInput placeholder="{{'wod.myscore.totalCompleteRound.placeholder' | translate}}"  [(ngModel)]="result.totalCompleteRound" name="result.totalCompleteRound">
+                <input matInput placeholder="{{'wod.myscore.totalReps.placeholder' | translate}}"  [(ngModel)]="result.totalReps" name="result.totalReps">
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+      <div>
+          <mat-form-field>
+              <textarea matInput placeholder="{{'wod.myscore.comments.placeholder' | translate}}"  [(ngModel)]="result.comments" name="result.comments"></textarea>
+            </mat-form-field>
+      </div>
+
+  </form>
+
+</div>
