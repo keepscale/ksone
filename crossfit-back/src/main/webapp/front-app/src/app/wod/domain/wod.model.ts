@@ -15,6 +15,8 @@ export class Wod{
     public taggedMovements:Movement[] = [];
     public taggedEquipments:Equipment[] = [];
     
+    public dates:Date[] = []
+
     constructor(){
     }
 }
