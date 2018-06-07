@@ -13,7 +13,7 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     @Query("select w from Wod w "
     		+ "left join fetch w.taggedMovements "
     		+ "left join fetch w.taggedEquipments "
-    		+ "left join fetch w.dates "
+    		+ "left join fetch w.publications "
     		+ "where w.box = :box "
     		+ "and ( "
     		+ "	lower(w.name) like :search "
@@ -27,7 +27,7 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     @Query("select w from Wod w "
     		+ "left join fetch w.taggedMovements "
     		+ "left join fetch w.taggedEquipments "
-    		+ "left join fetch w.dates "
+    		+ "left join fetch w.publications "
     		+ "where w.box = :box and w.id = :id")
 	Wod findOne(@Param("box") CrossFitBox currentCrossFitBox,@Param("id")  Long id );
 

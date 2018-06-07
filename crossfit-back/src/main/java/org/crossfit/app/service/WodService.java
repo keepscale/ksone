@@ -64,7 +64,6 @@ public class WodService {
 		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search);
 	}
 
-
 	public Wod save(@Valid Wod dto) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		Wod wod;

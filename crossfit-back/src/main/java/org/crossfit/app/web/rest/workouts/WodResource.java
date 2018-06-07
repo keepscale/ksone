@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodDate;
+import org.crossfit.app.domain.workouts.WodPublication;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -64,9 +64,16 @@ public class WodResource {
 		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(boxService.findCurrentCrossFitBox());
 		
 		Function<Wod, LocalDate> plusPetiteDateApresMaintenant = wod->{
-			return wod == null ||wod.getDates() == null || wod.getDates().isEmpty() ? null : wod.getDates().stream().map(WodDate::getDate).filter(d->d.isAfter(nowAsLocalDate.minusDays(1))).min(LocalDate::compareTo).get();
+			return wod == null ||wod.getPublications() == null || wod.getPublications().isEmpty() ? null : 
+				wod.getPublications().stream()
+				.map(WodPublication::getDate)
+				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
+				.min(LocalDate::compareTo).orElse(null);
 		};
-		List<Wod> result = wodService.findAll(customSearch).stream().sorted(Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList());
+		List<Wod> result = wodService.findAll(customSearch).stream().sorted(
+				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
+				.collect(Collectors.toList());
+		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	

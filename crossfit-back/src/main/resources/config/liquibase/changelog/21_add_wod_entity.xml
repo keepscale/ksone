@@ -190,7 +190,80 @@
 		            schemaName="public"
 		            separator=";"
 		            tableName="EQUIPMENT">
-		    </loadData>
+	    </loadData>
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+		<createTable tableName="WOD_PUBLICATION">
+			<column name="id" type="bigint" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="wod_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="date" type="date">
+				<constraints nullable="false" />
+			</column>
+			
+		</createTable>
+		
+        <addForeignKeyConstraint baseColumnNames="wod_id"
+                                 baseTableName="WOD_PUBLICATION"
+                                 constraintName="fk_wod_publication_wod_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="WOD"/>
+                                 
+		
+		<addUniqueConstraint columnNames="wod_id,date" tableName="WOD_PUBLICATION" constraintName="uk_wod_publication_wod_id_wod_date"/>
+		
+		
+		
+		
+	    
+		<createTable tableName="WOD_RESULT">
+			<column name="id" type="bigint" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="wod_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="member_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="date" type="date">
+				<constraints nullable="false" />
+			</column>
+			
+			<column name="total_load_in_kilo" type="decimal(10,2)" />
+			<column name="total_minute" type="int" />
+			<column name="total_second" type="int" />
+			<column name="total_complete_round" type="int" />
+			<column name="total_reps" type="int" />
+			
+			
+		</createTable>
+		
+        <addForeignKeyConstraint baseColumnNames="wod_id"
+                                 baseTableName="WOD_RESULT"
+                                 constraintName="fk_wod_result_wod_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="WOD"/>
+        <addForeignKeyConstraint baseColumnNames="member_id"
+                                 baseTableName="WOD_RESULT"
+                                 constraintName="fk_wod_result_member_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="MEMBER"/>
+                                 
+		
+		<addUniqueConstraint columnNames="wod_id,member_id,date" tableName="WOD_RESULT" constraintName="uk_wod_result_wod_id_member_id_date"/>
+		
 	</changeSet>
 
 </databaseChangeLog>
