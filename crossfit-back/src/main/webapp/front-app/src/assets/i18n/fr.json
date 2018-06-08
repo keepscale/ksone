@@ -22,6 +22,9 @@
 		"add": {
 			"button": {
 				"label": "Ajouter un wod"
+			},
+			"date": {
+				"placeholder": "Ajouter une date"
 			}
 		},
 		"description": {

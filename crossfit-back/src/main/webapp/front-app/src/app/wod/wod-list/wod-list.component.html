@@ -13,7 +13,7 @@
           <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
         </button>
       </a>
-      <a [routerLink]="[wod.id, 'myscore']">
+      <a *ngFor="let pub of wod.publications"  [routerLink]="[wod.id, 'myscore', pub.date]" >
         <button mat-button >
           <mat-icon aria-label="{{'wod.myscore.button.label' | translate}">timer</mat-icon>
         </button>

@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * A Member.
  */
 @Entity
-@Table(name = "Wod")
+@Table(name = "WOD")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Wod extends AbstractAuditingEntity implements Serializable {
 
@@ -85,8 +85,7 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 	@JoinTable(name = "WOD_EQUIPMENT", joinColumns = @JoinColumn(name = "wod_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "equipment_id", referencedColumnName = "ID"))
 	private Set<Equipment> taggedEquipments;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod")
 	private Set<WodPublication> publications = new HashSet<>();
 
    

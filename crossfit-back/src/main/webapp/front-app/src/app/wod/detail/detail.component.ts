@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Movement } from '../domain/movement.model';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatAutocomplete, MatDatepickerInputEvent } from '@angular/material';
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
 import { Equipment } from '../domain/equipment.model';
 import { Taggable } from '../domain/taggable.model';
@@ -45,6 +45,7 @@ export class DetailComponent implements OnInit {
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
+      this.wod.addDate(new Date());
     }
     else{
       this.service.get(id).subscribe(w=>{
@@ -56,6 +57,15 @@ export class DetailComponent implements OnInit {
         }
       )
     }
+  }
+
+  dateToAdd: Date;
+  addPublicationDate(event: MatDatepickerInputEvent<Date>){
+    this.wod.addDate(event.value);
+    this.dateToAdd = null;
+  }
+  removePublicationAtIndex(index: number){
+    this.wod.publications.splice(index, 1);
   }
 
   completeFilter(searchText: string) {
