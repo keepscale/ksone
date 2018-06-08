@@ -1,6 +1,15 @@
 import { Movement } from "./movement.model";
 import { Equipment } from "./equipment.model";
 
+export class WodPublication{
+    
+    public id: number;
+    public date: Date;
+    constructor(date?: Date){
+        this.date = date;
+    }
+
+}
 export class Wod{
     public id: number;
     public name: string;
@@ -15,8 +24,15 @@ export class Wod{
     public taggedMovements:Movement[] = [];
     public taggedEquipments:Equipment[] = [];
     
-    public dates:Date[] = []
+    public publications:WodPublication[] = []
 
     constructor(){
+    }
+
+    public addEmptyDate(){
+        this.publications.push(new WodPublication());
+    }
+    public addDate(date:Date){
+        this.publications.push(new WodPublication(date));
     }
 }

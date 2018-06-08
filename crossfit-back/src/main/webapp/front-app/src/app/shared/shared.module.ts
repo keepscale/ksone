@@ -28,7 +28,7 @@ const loginRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(loginRoutes),
-    CommonModule, HttpModule, FormsModule, RouterModule,
+    CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule,
     TranslateModule,
     MatButtonModule,
     MatIconModule,
@@ -36,7 +36,7 @@ const loginRoutes: Routes = [
     ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule
   ],
   exports: [TranslateModule,
-    CommonModule, HttpModule, FormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
+    CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
