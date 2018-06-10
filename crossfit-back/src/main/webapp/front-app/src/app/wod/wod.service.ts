@@ -4,6 +4,7 @@ import { Wod } from './domain/wod.model';
 import { Movement } from './domain/movement.model';
 import { Equipment } from './domain/equipment.model';
 import { Observable } from 'rxjs';
+import { WodResult } from './domain/wod-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,9 @@ export class WodService {
 
   get(id){
     return this.http.get<Wod>("api/wod/" + id);
+  }
+  getMyResult(wodId){
+    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results")
   }
 
   getScores(){

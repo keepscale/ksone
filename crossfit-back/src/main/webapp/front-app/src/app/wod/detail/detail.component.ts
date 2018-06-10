@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { Wod } from '../domain/wod.model';
+import { Wod, WodPublication } from '../domain/wod.model';
 import { WodService } from '../wod.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -45,7 +45,7 @@ export class DetailComponent implements OnInit {
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
-      this.wod.addDate(new Date());
+      this.addPublicationDate(new Date());
     }
     else{
       this.service.get(id).subscribe(w=>{
@@ -59,10 +59,11 @@ export class DetailComponent implements OnInit {
     }
   }
 
-  dateToAdd: Date;
-  addPublicationDate(event: MatDatepickerInputEvent<Date>){
-    this.wod.addDate(event.value);
-    this.dateToAdd = null;
+  onSelectPublicationDate(event: MatDatepickerInputEvent<Date>){
+    this.addPublicationDate(event.value);
+  }
+  addPublicationDate(date: Date){    
+    this.wod.publications.push(new WodPublication(date));
   }
   removePublicationAtIndex(index: number){
     this.wod.publications.splice(index, 1);
@@ -106,8 +107,8 @@ export class DetailComponent implements OnInit {
     this.status = "wait";
     this.service.save(this.wod).subscribe(
       success=>{
-        this.status = "success";
         setTimeout (() => {
+          this.status = "success";
           this.router.navigate(["wod"]);
         }, 1000)
       },

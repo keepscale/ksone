@@ -13,9 +13,13 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
+import org.crossfit.app.domain.workouts.WodPublication;
+import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.repository.EquipmentRepository;
 import org.crossfit.app.repository.MovementRepository;
 import org.crossfit.app.repository.WodRepository;
+import org.crossfit.app.repository.WodResultRepository;
+import org.crossfit.app.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +50,8 @@ public class WodService {
 	private EquipmentRepository equipmentRepository;
 	@Autowired
 	private WodRepository wodRepository;
+	@Autowired
+	private WodResultRepository wodResultRepository;
 
 	
 	public List<Equipment> findAllEquipment(String search){
@@ -100,6 +106,15 @@ public class WodService {
 		else {
 			wod.setTaggedMovements(null);
 		}
+		
+		if (dto.getPublications() != null) {
+			wod.getPublications().removeIf(actual->!dto.getPublications().contains(actual));
+			wod.getPublications().addAll(dto.getPublications());
+			wod.getPublications().forEach(pub->pub.setWod(wod));
+		}
+		else {
+			wod.setPublications(null);
+		}
 			
 		return wodRepository.saveAndFlush(wod);
 	}
@@ -108,6 +123,14 @@ public class WodService {
 	public Wod findOne(Long id) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		return wodRepository.findOne(currentCrossFitBox, id);
+	}
+
+
+	public Set<WodResult> findMyResults(Long wodId) {
+
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		
+		return wodResultRepository.findAll(currentCrossFitBox, wodId, SecurityUtils.getCurrentMember());
 	}
 	
 }

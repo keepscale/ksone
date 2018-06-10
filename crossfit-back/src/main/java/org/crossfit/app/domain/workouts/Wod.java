@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -85,7 +86,7 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 	@JoinTable(name = "WOD_EQUIPMENT", joinColumns = @JoinColumn(name = "wod_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "equipment_id", referencedColumnName = "ID"))
 	private Set<Equipment> taggedEquipments;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod", cascade= {CascadeType.ALL})
 	private Set<WodPublication> publications = new HashSet<>();
 
    
