@@ -15,6 +15,7 @@ import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.WodPublication;
+import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -82,6 +83,14 @@ public class WodResource {
 	public ResponseEntity<Wod> getWod(@PathVariable Long id){
 		
 		Wod result = wodService.findOne(id);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+
+	@RequestMapping(value = "/wod/{id}/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Set<WodResult>> getMyWodResults(@PathVariable Long id){
+		
+		Set<WodResult> result = wodService.findMyResults(id);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 

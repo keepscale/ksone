@@ -33,14 +33,16 @@ const loginRoutes: Routes = [
     MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule,
-    ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule
+    ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
+    MatExpansionModule
   ],
   exports: [TranslateModule,
     CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
-    MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule
+    MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
+    MatExpansionModule
   ],
   providers:[
 	  AuthGuard,

@@ -28,11 +28,4 @@ export class Wod{
 
     constructor(){
     }
-
-    public addEmptyDate(){
-        this.publications.push(new WodPublication());
-    }
-    public addDate(date:Date){
-        this.publications.push(new WodPublication(date));
-    }
 }
