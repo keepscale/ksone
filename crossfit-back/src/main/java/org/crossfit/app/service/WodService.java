@@ -1,6 +1,5 @@
 package org.crossfit.app.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -139,30 +138,29 @@ public class WodService {
 		return wodResultRepository.findAll(wod, date);
 	}
 
-	public Set<WodResult> saveMyResults(Long wodId, @Valid List<WodResult> resultsDto) {
-		Wod wod = findOne(wodId);
-		
-		Set<WodResult> myActualresult = findMyResults(wodId);
 
-		List<WodResult> resultsToDelete = myActualresult.stream().filter(r->!resultsDto.contains(r)).collect(Collectors.toList());
-		List<WodResult> resultsToPersist = new ArrayList<>();
-		for (WodResult resultDto : resultsDto) {
-			WodResult result = new WodResult();
-			if (resultDto.getId() != null) {
-				result = wodResultRepository.findOne(resultDto.getId(), wod, SecurityUtils.getCurrentMember());
-				if (result == null) {
-					continue;
-				}
-			}
-			mergeResult(wod, result, resultDto);
-			resultsToPersist.add(result);
+	public void deleteMyResult(Long wodId, Long resultId) {
+		Wod wod = findOne(wodId);
+		WodResult result = wodResultRepository.findOne(resultId, wod, SecurityUtils.getCurrentMember());
+		if (result != null) {
+			wodResultRepository.delete(result);
 		}
-		
-		wodResultRepository.deleteAll(resultsToDelete);
-		wodResultRepository.saveAll(resultsToPersist);
-		
-		return new HashSet<>(resultsToPersist);
 	}
+
+	public WodResult saveMyResult(Long wodId, @Valid WodResult resultDto) {
+		Wod wod = findOne(wodId);
+		WodResult result = new WodResult();
+		
+		if (resultDto.getId() != null) {
+			result = wodResultRepository.findOne(resultDto.getId(), wod, SecurityUtils.getCurrentMember());
+			if (result == null) {
+				return null;
+			}
+		}
+		mergeResult(wod, result, resultDto);
+		return 	wodResultRepository.save(result);
+	}
+	
 
 
 	private void mergeResult(Wod wod, WodResult result, WodResult dto) {
@@ -194,6 +192,4 @@ public class WodService {
 			
 		}
 	}
-
-	
 }

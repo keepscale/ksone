@@ -3,6 +3,7 @@ package org.crossfit.app.web.rest.workouts;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -97,11 +98,16 @@ public class WodResource {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/wod/{id}/results", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Set<WodResult>> getMyWodResults(@PathVariable Long id, @Valid @RequestBody List<WodResult> results){
-		
-		Set<WodResult> result = wodService.saveMyResults(id, results);
+	@RequestMapping(value = "/wod/{wodId}/results", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<WodResult> saveMyResult(@PathVariable Long wodId, @Valid @RequestBody WodResult resultdto){
+		WodResult result = wodService.saveMyResult(wodId, resultdto);
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/wod/{wodId}/results/{resultId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> saveMyResult(@PathVariable Long wodId, @PathVariable Long resultId){
+		wodService.deleteMyResult(wodId, resultId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
@@ -115,7 +121,9 @@ public class WodResource {
 		Wod wod = wodService.findOne(wodId);
 		Set<WodResult> results = wodService.findAllResult(wod, date);
 		
-		List<WodResultCompute> ranking = results.stream()
+		List<WodResultCompute> rankings = new ArrayList<>();
+		
+		results.stream()
 				.sorted(wod.getScore().getComparator())
 				.map(result->{
 					WodResultCompute compute = new WodResultCompute();
@@ -127,9 +135,12 @@ public class WodResource {
 					compute.setDisplayName(displayName);
 					compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
 					return compute;
-				}).collect(Collectors.toList());
+				}).forEachOrdered(e->{
+					rankings.add(e);
+					e.setOrder(rankings.size());
+				});
 		
-		return new ResponseEntity<>(ranking, HttpStatus.OK);
+		return new ResponseEntity<>(rankings, HttpStatus.OK);
 	}
 
 
