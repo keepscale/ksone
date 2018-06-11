@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.workouts;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
@@ -22,6 +24,7 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.crossfit.app.web.rest.workouts.dto.WodResultCompute;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +102,34 @@ public class WodResource {
 		
 		Set<WodResult> result = wodService.saveMyResults(id, results);
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+
+	@RequestMapping(value = "/wod/{wodId}/{datestr}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId, @PathVariable String datestr){
+		
+		LocalDate date = LocalDate.parse(datestr);
+		if (date == null) {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		Wod wod = wodService.findOne(wodId);
+		Set<WodResult> results = wodService.findAllResult(wod, date);
+		
+		List<WodResultCompute> ranking = results.stream()
+				.sorted(wod.getScore().getComparator())
+				.map(result->{
+					WodResultCompute compute = new WodResultCompute();
+					compute.setId(result.getId());
+					String displayName = result.getMember().getNickName();
+					if (StringUtils.isBlank(displayName)) {
+						displayName = result.getMember().getFirstName() + " " + result.getMember().getLastName();
+					}
+					compute.setDisplayName(displayName);
+					compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
+					return compute;
+				}).collect(Collectors.toList());
+		
+		return new ResponseEntity<>(ranking, HttpStatus.OK);
 	}
 
 

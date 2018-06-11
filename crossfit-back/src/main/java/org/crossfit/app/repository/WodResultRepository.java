@@ -6,6 +6,7 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.WodResult;
+import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,13 @@ public interface WodResultRepository  extends JpaRepository<WodResult,Long> {
 	Set<WodResult> findAll(@Param("box") CrossFitBox box, @Param("wodId") Long wodId, @Param("member") Member member);
 
 
+    @Query("select r from WodResult r "
+    		+ "left join fetch r.member "
+    		+ "where r.wod = :wod "
+    		+ "and r.date = :date ")
+	Set<WodResult> findAll(@Param("wod") Wod wod, @Param("date") LocalDate date);
+
+    
     @Query("select r from WodResult r "
     		+ "where r.id = :id "
     		+ "and r.wod = :wod "

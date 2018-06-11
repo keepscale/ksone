@@ -20,6 +20,7 @@ import org.crossfit.app.repository.MovementRepository;
 import org.crossfit.app.repository.WodRepository;
 import org.crossfit.app.repository.WodResultRepository;
 import org.crossfit.app.security.SecurityUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,9 +135,12 @@ public class WodService {
 	}
 
 
+	public Set<WodResult> findAllResult(Wod wod, LocalDate date) {
+		return wodResultRepository.findAll(wod, date);
+	}
+
 	public Set<WodResult> saveMyResults(Long wodId, @Valid List<WodResult> resultsDto) {
-		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-		Wod wod = wodRepository.findOne(currentCrossFitBox, wodId);
+		Wod wod = findOne(wodId);
 		
 		Set<WodResult> myActualresult = findMyResults(wodId);
 
@@ -190,5 +194,6 @@ public class WodService {
 			
 		}
 	}
+
 	
 }
