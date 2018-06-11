@@ -1,67 +1,52 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!wod"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="!wod || !wodResults"></mat-progress-bar>
 
-<div class="wod-container" *ngIf="wod">
+<div class="wod-container" *ngIf="wod && wodResults">
 
   <form novalidate (ngSubmit)="onSubmit()">
 
-    <div class="form-container">
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{'wod.score.' + wod.score | translate}}
+        </mat-panel-title>
+        <mat-panel-description>
+            {{'wod.category.' + wod.category | translate}}
+            {{wod.name}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 
-      <mat-form-field>
-        <mat-select placeholder="{{'wod.score.placeholder' | translate}}" [(ngModel)]="wod.score" name="wod.score">
-          <mat-option *ngFor="let score of availableWodScore" [value]="score">
-            {{'wod.score.' + score | translate}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <p style="white-space: pre;">{{wod.description}}</p>
 
-      <mat-form-field>
-        <mat-select placeholder="{{'wod.category.placeholder' | translate}}" [(ngModel)]="wod.category" name="wod.category">
-          <mat-option *ngFor="let cat of availableWodCategories" [value]="cat">
-            {{'wod.category.' + cat | translate}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-tab-group  [dynamicHeight]="true">
+        <mat-tab *ngFor="let myresult of wodResults"  label="{{myresult.date | date: 'EEE, dd MMMM yyyy'}}">
 
-      <mat-form-field *ngIf="wod.category != 'CUSTOM'">
-        <input matInput placeholder="{{'wod.name.placeholder' | translate}}" [(ngModel)]="wod.name" name="wod.name">
-      </mat-form-field>
-
-      <mat-form-field style="width: 100%;">
-        <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}" rows="10" [(ngModel)]="wod.description" name="wod.description"
-          textComplete [optionsFilter]="completeFilter.bind(this)" [optionDisplay]="displayOptionComplete" (optionSelected)="onSelectOption($event)"></textarea>
-      </mat-form-field>
-
-      <mat-chip-list>
-        <mat-chip *ngFor="let m of wod.taggedMovements" [color]="primary" [selectable]="false" [removable]="true" (removed)="removeMovement(m)">
-          {{m.fullname}}
-          <mat-icon matChipRemove>close</mat-icon>
-        </mat-chip>
-      </mat-chip-list>
+          <nav mat-tab-nav-bar>
+              <a mat-tab-link
+                  [routerLink]="[myresult.date, 'myresult']"
+                  routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+                  [active]="rla.isActive">
+                Mon résultat
+              </a>
+              <a mat-tab-link
+                  [routerLink]="[myresult.date, 'ranking']"
+                  routerLinkActive #rla2="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+                  [active]="rla2.isActive">
+                Classement
+              </a>
+          </nav>
+          
+          <router-outlet></router-outlet>
+          
+        </mat-tab>
+      </mat-tab-group>
 
 
-      <mat-list>
-        <mat-list-item *ngFor="let pub of wod.publications">
-          <button mat-icon-button type="button" (click)="removePublicationAtIndex(index)">
-            <mat-icon>close</mat-icon>
-          </button>
-          {{pub.date | date:'E dd MMM yyyy'}}
-        </mat-list-item>
-      </mat-list>
-
-      <button mat-raised-button type="button" (click)="picker.open()">{{'wod.add.date.placeholder' | translate}}</button>
-      <mat-datepicker #picker></mat-datepicker>
-      <mat-form-field style="width:1px;visibility:hidden;">
-        <input matInput [matDatepicker]="picker" placeholder="{{'wod.add.date.placeholder' | translate}}" (dateChange)="onSelectPublicationDate($event)">
-      </mat-form-field>
-
-    </div>
-
-    <div class="form-footer">
-      <submit-button></submit-button>
-
-      <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
-    </div>
-
+      <div class="form-footer">
+          <submit-button></submit-button>
+    
+          <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+      </div>
+    </mat-expansion-panel>
   </form>
 
 </div>

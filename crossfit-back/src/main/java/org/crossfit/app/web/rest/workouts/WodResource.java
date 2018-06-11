@@ -94,6 +94,13 @@ public class WodResource {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/wod/{id}/results", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Set<WodResult>> getMyWodResults(@PathVariable Long id, @Valid @RequestBody List<WodResult> results){
+		
+		Set<WodResult> result = wodService.saveMyResults(id, results);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
 
 	/**
 	 * POST /wod -> Create a new wod.

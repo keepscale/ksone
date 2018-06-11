@@ -19,4 +19,11 @@ public interface WodResultRepository  extends JpaRepository<WodResult,Long> {
 	Set<WodResult> findAll(@Param("box") CrossFitBox box, @Param("wodId") Long wodId, @Param("member") Member member);
 
 
+    @Query("select r from WodResult r "
+    		+ "where r.id = :id "
+    		+ "and r.wod = :wod "
+    		+ "and r.member = :member ")
+	WodResult findOne( @Param("id") Long id, @Param("wod")  Wod wod,  @Param("member") Member member);
+
+
 }

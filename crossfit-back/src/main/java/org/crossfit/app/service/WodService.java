@@ -1,5 +1,6 @@
 package org.crossfit.app.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodPublication;
 import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.repository.EquipmentRepository;
 import org.crossfit.app.repository.MovementRepository;
@@ -131,6 +131,64 @@ public class WodService {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
 		
 		return wodResultRepository.findAll(currentCrossFitBox, wodId, SecurityUtils.getCurrentMember());
+	}
+
+
+	public Set<WodResult> saveMyResults(Long wodId, @Valid List<WodResult> resultsDto) {
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		Wod wod = wodRepository.findOne(currentCrossFitBox, wodId);
+		
+		Set<WodResult> myActualresult = findMyResults(wodId);
+
+		List<WodResult> resultsToDelete = myActualresult.stream().filter(r->!resultsDto.contains(r)).collect(Collectors.toList());
+		List<WodResult> resultsToPersist = new ArrayList<>();
+		for (WodResult resultDto : resultsDto) {
+			WodResult result = new WodResult();
+			if (resultDto.getId() != null) {
+				result = wodResultRepository.findOne(resultDto.getId(), wod, SecurityUtils.getCurrentMember());
+				if (result == null) {
+					continue;
+				}
+			}
+			mergeResult(wod, result, resultDto);
+			resultsToPersist.add(result);
+		}
+		
+		wodResultRepository.deleteAll(resultsToDelete);
+		wodResultRepository.saveAll(resultsToPersist);
+		
+		return new HashSet<>(resultsToPersist);
+	}
+
+
+	private void mergeResult(Wod wod, WodResult result, WodResult dto) {
+		result.setDate(dto.getDate());
+		result.setWod(wod);
+		result.setMember(SecurityUtils.getCurrentMember());
+		switch (wod.getScore()) {
+		case FOR_LOAD:
+			result.setTotalLoadInKilo(result.getTotalLoadInKilo());
+			result.setTotalMinute(null);
+			result.setTotalSecond(null);
+			result.setTotalCompleteRound(null);
+			result.setTotalReps(null);
+			break;
+		case FOR_ROUNDS_REPS:
+			result.setTotalLoadInKilo(null);
+			result.setTotalMinute(null);
+			result.setTotalSecond(null);
+			result.setTotalCompleteRound(dto.getTotalCompleteRound());
+			result.setTotalReps(dto.getTotalReps());
+			break;
+		case FOR_TIME:
+			result.setTotalLoadInKilo(null);
+			result.setTotalMinute(dto.getTotalMinute());
+			result.setTotalSecond(dto.getTotalSecond());
+			result.setTotalCompleteRound(null);
+			result.setTotalReps(null);
+			break;
+			
+		}
 	}
 	
 }
