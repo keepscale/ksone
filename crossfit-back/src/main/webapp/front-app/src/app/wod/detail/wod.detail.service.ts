@@ -1,13 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Wod } from "../domain/wod.model";
 import { WodResult } from "../domain/wod-result.model";
+import { Subject } from "rxjs";
 
 @Injectable()
 export class WodDetailService {
 
     public wod: Wod;
-    public wodResults: WodResult[];
+    public wodResults: WodResult[] = [];
     
+    private resultSavedSource = new Subject<WodResult>();
+    resultSaved$ = this.resultSavedSource.asObservable();
 
     public getMyResult(date:Date){
         let resultsMatch = this.wodResults.filter(r=>{
@@ -20,4 +23,8 @@ export class WodDetailService {
         return null;
     }
 
+    saveResult(wodResult: WodResult, newResult: WodResult){
+        Object.assign(wodResult, newResult);
+        this.resultSavedSource.next(wodResult);
+    }
 }

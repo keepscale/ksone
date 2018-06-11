@@ -14,11 +14,7 @@ const wodsRoutes: Routes = [
   { path: 'wod',  component: WodListComponent, canActivate: [AuthGuard] },
   { path: 'wod/new',  component: EditComponent, canActivate: [AuthGuard] },
   { path: 'wod/:id/edit',  component: EditComponent, canActivate: [AuthGuard] },
-  { path: 'wod/:id/detail',  component: DetailComponent, canActivate: [AuthGuard], children: [
-    {path: ':date/myresult', component: MyResultComponent },
-    {path: ':date/ranking', component: RankingComponent },
-  ]
-  }
+  { path: 'wod/:id/detail',  component: DetailComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

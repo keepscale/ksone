@@ -44,7 +44,7 @@ export class DetailComponent implements OnInit {
                 return result;
               }
             });
-            this.wodResults.sort((r1,r2)=>r1.date.getDate() - r2.date.getDate());
+            this.wodResults.sort((r1,r2)=>new Date(r1.date).getDate() - new Date(r2.date).getDate());
             this.wodDetailService.wodResults = this.wodResults;
           });
         },
@@ -55,8 +55,17 @@ export class DetailComponent implements OnInit {
     }
   }
 
+  resultsEditing:WodResult[] = [];
+  onEdit(editMode:boolean, resultEdited:WodResult){
+    if (editMode){
+      this.resultsEditing.push(resultEdited);
+    }
+    else{
+      this.resultsEditing.splice(this.resultsEditing.indexOf(resultEdited), 1);
+    }
+  }
 
-  onSubmit(){
-    this.service.saveMyResult(this.wod, this.wodResults).subscribe();
+  isEditing(result:WodResult){
+    return this.resultsEditing.indexOf(result) != -1;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WodService } from '../../wod.service';
 import { WodResultRanking } from '../../domain/wod-result-ranking.model';
@@ -13,7 +13,9 @@ import { Wod } from '../../domain/wod.model';
 })
 export class RankingComponent implements OnInit {
 
+  @Input("wod")
   private wod: Wod;
+  @Input("myresult")
   private myresult: WodResult;
   rankings: WodResultRanking[];
 
@@ -24,17 +26,19 @@ export class RankingComponent implements OnInit {
     private wodDetailService: WodDetailService) { }
 
   ngOnInit() {
-    this.rankings = null;
-    let dateParam = this.route.snapshot.paramMap.get('date');
-    let resultDate = new Date(dateParam);
-    
-    this.wod = this.wodDetailService.wod;
-    this.myresult = this.wodDetailService.getMyResult(resultDate);
+    this.loadRanking();
+    this.wodDetailService.resultSaved$.subscribe(result=>{
+      if (this.myresult == result){
+        this.loadRanking();
+      }
+    });
+  }
 
-    this.service.getRanking(this.wod.id, dateParam).subscribe(res=>{
+  loadRanking(){
+    this.rankings = null;
+    this.service.getRanking(this.wod.id, this.myresult.date+"").subscribe(res=>{
       this.rankings = res;
     })
-      
   }
 
 }
