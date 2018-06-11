@@ -1,3 +1,9 @@
-<p>
-  ranking works!
-</p>
+<mat-progress-bar mode="indeterminate" *ngIf="!rankings"></mat-progress-bar>
+
+<div *ngIf="rankings">
+    <mat-list >
+      <mat-list-item *ngFor="let rank of rankings; let i = index" [ngClass]="{'my-rank':rank.id == myresult.id}"> 
+        {{i+1}} - {{rank.displayName}} {{rank.displayResult}}
+      </mat-list-item>
+    </mat-list>
+</div>

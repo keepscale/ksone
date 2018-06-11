@@ -23,13 +23,7 @@ export class MyResultComponent implements OnInit {
     let resultDate = new Date(this.route.snapshot.paramMap.get('date'));
 
     this.wod = this.wodDetailService.wod;
-    let resultsMatch = this.wodDetailService.wodResults.filter(r=>{
-      let dateR = new Date(r.date);
-      return dateR.getDate() == resultDate.getDate();
-    });
-    if (resultsMatch.length == 1){
-      this.myresult = resultsMatch[0];
-    }
+    this.myresult = this.wodDetailService.getMyResult(resultDate);
   }
 
 }

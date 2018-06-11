@@ -5,6 +5,7 @@ import { Movement } from './domain/movement.model';
 import { Equipment } from './domain/equipment.model';
 import { Observable } from 'rxjs';
 import { WodResult } from './domain/wod-result.model';
+import { WodResultRanking } from './domain/wod-result-ranking.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,9 +51,12 @@ export class WodService {
 
   
   getMyResult(wodId){
-    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results")
+    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results");
   }
   saveMyResult(wod:Wod, result:WodResult[]){
     return this.http.put<WodResult[]>("api/wod/" + wod.id + "/results", result);
+  }
+  getRanking(wodId, date:string){
+    return this.http.get<WodResultRanking[]>("api/wod/" + wodId + "/" + date + "/ranking");
   }
 }
