@@ -1,25 +1,35 @@
 
-<mat-card class="wod-card" *ngFor="let wod of wods">
-  <mat-card-header>
-    <mat-card-title>Wod du jour</mat-card-title>
-    <mat-card-subtitle>{{'wod.score.' + wod.score | translate}}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let wod of wods" [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+          <span *ngIf="wod.publications.length > 0">
+              {{wod.publications[0].date | date: 'EEE, dd MMMM yyyy'}} -&nbsp;
+          </span>
+          {{'wod.category.' + wod.category | translate}}
+          {{wod.name}}
+      </mat-panel-title>
+      <mat-panel-description>
+          {{'wod.score.' + wod.score | translate}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
     <p style="white-space: pre;">{{wod.description}}</p>
-  </mat-card-content>
-  <mat-card-actions>
-      <a [routerLink]="[wod.id, 'edit']">
-        <button mat-button >
-          <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
-        </button>
-      </a>
-      <a *ngIf="wod.publications.length > 0" [routerLink]="[wod.id, 'myresult']" >
-        <button mat-button >
-          <mat-icon aria-label="{{'wod.myscore.button.label' | translate}">score</mat-icon>
-        </button>
-      </a>
-  </mat-card-actions>
-</mat-card>
+
+    <mat-action-row>
+        <a *ngIf="wod.publications.length > 0" [routerLink]="[wod.id, 'detail', wod.publications[0].date, 'myresult' ]">
+          <button mat-button >
+            <mat-icon aria-label="{{'wod.score.button.label' | translate}">score</mat-icon>
+          </button>
+        </a>
+        <a [routerLink]="[wod.id, 'edit']">
+          <button mat-button >
+            <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
+          </button>
+        </a>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
 
 <a routerLink="/wod/new">
   <button class="add" mat-fab color="primary">

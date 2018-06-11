@@ -16,7 +16,7 @@ import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
-  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule } from '@angular/material';
+  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule } from '@angular/material';
 import { TextCompleteModule } from './text-complete/text-complete.module';
   
 
@@ -34,7 +34,7 @@ const loginRoutes: Routes = [
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule,
     ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
-    MatExpansionModule
+    MatExpansionModule, MatTabsModule
   ],
   exports: [TranslateModule,
     CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
@@ -42,7 +42,7 @@ const loginRoutes: Routes = [
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
     MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
-    MatExpansionModule
+    MatExpansionModule, MatTabsModule
   ],
   providers:[
 	  AuthGuard,

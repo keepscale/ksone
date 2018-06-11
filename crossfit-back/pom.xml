@@ -232,6 +232,9 @@
 			</resource>
 			<resource>
 				<directory>src/main/webapp</directory>
+				<excludes>
+					<exclude>**/front-app/node_modules/**</exclude>
+				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/webapp-filtered</directory>

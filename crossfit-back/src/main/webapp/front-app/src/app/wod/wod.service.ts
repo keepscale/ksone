@@ -33,9 +33,6 @@ export class WodService {
   get(id){
     return this.http.get<Wod>("api/wod/" + id);
   }
-  getMyResult(wodId){
-    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results")
-  }
 
   getScores(){
     return this.http.get<string[]>("/api/wod/scores");
@@ -48,5 +45,14 @@ export class WodService {
   }
   getEquipments():Observable<Equipment[]>{
     return this.http.get<Equipment[]>("/api/wod/equipments");
+  }
+
+
+  
+  getMyResult(wodId){
+    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results")
+  }
+  saveMyResult(wod:Wod, result:WodResult[]){
+    return this.http.put<WodResult[]>("api/wod/" + wod.id + "/results", result);
   }
 }

@@ -44,17 +44,17 @@ public class WodResult {
 	public LocalDate date;
 
     @Column(name = "total_load_in_kilo")
-	private double totalLoadInKilo;
+	private Double totalLoadInKilo;
 
     @Column(name = "total_minute")
-	private int totalMinute;
+	private Integer totalMinute;
     @Column(name = "total_second")
-	private int totalSecond;
+	private Integer totalSecond;
 
     @Column(name = "total_complete_round")
-	private int totalCompleteRound;
+	private Integer totalCompleteRound;
     @Column(name = "total_reps")
-	private int totalReps;
+	private Integer totalReps;
 	public Long getId() {
 		return id;
 	}
@@ -79,34 +79,35 @@ public class WodResult {
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-	public double getTotalLoadInKilo() {
+
+	public Double getTotalLoadInKilo() {
 		return totalLoadInKilo;
 	}
-	public void setTotalLoadInKilo(double totalLoadInKilo) {
+	public void setTotalLoadInKilo(Double totalLoadInKilo) {
 		this.totalLoadInKilo = totalLoadInKilo;
 	}
-	public int getTotalMinute() {
+	public Integer getTotalMinute() {
 		return totalMinute;
 	}
-	public void setTotalMinute(int totalMinute) {
+	public void setTotalMinute(Integer totalMinute) {
 		this.totalMinute = totalMinute;
 	}
-	public int getTotalSecond() {
+	public Integer getTotalSecond() {
 		return totalSecond;
 	}
-	public void setTotalSecond(int totalSecond) {
+	public void setTotalSecond(Integer totalSecond) {
 		this.totalSecond = totalSecond;
 	}
-	public int getTotalCompleteRound() {
+	public Integer getTotalCompleteRound() {
 		return totalCompleteRound;
 	}
-	public void setTotalCompleteRound(int totalCompleteRound) {
+	public void setTotalCompleteRound(Integer totalCompleteRound) {
 		this.totalCompleteRound = totalCompleteRound;
 	}
-	public int getTotalReps() {
+	public Integer getTotalReps() {
 		return totalReps;
 	}
-	public void setTotalReps(int totalReps) {
+	public void setTotalReps(Integer totalReps) {
 		this.totalReps = totalReps;
 	}
 	@Override
