@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ToolBarService } from './toolbar.service';
 import { Subscription, Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -19,11 +19,6 @@ export class MenuItem{
 })
 export class ToolbarComponent implements OnInit {
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-  .pipe(
-    map(result => result.matches)
-  );
-
   title: string;
 
 
@@ -35,6 +30,8 @@ export class ToolbarComponent implements OnInit {
   firstSub: Subscription;
 
   menuItems: MenuItem[] = [];
+
+  @Output() toggleSideNav = new EventEmitter<void>();
 
   constructor(private breakpointObserver: BreakpointObserver, private toolbar:ToolBarService, private router: Router) { }
 
@@ -49,16 +46,9 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a)
 
 
-    this.firstSub = this.isHandset$.subscribe(o=>{
-      if (o) this.toggleSideNav();
-      if (this.firstSub) this.firstSub.unsubscribe();
-    })
-    this.isHandset$.subscribe(o=>{
-      this.toolbar.toggleSideNav();
-    })
   }
-  toggleSideNav(){
-    this.toolbar.toggleSideNav();
+  onToggleSideNav(){
+    this.toggleSideNav.emit();
   }
   search(){
     this.toolbar.search(this.searchText);
