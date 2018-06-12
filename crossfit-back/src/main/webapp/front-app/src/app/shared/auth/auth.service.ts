@@ -12,7 +12,7 @@ export class AuthService {
                     '&j_password=' + encodeURIComponent(password) +
                     '&remember-me=' + rememberMe + '&submit=Login';
 
-    return this.http.post("api/authentication", data, {
+    return this.http.post("/api/authentication", data, {
         headers: new Headers({
           "Content-Type": "application/x-www-form-urlencoded"
         })
@@ -22,6 +22,6 @@ export class AuthService {
 
 
   logout() {
-    return this.http.post('api/logout', "");
+    return this.http.post('/api/logout', "");
   }
 }

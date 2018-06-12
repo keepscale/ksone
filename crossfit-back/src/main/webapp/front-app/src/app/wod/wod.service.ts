@@ -17,22 +17,22 @@ export class WodService {
   
  
   findAll(search: string){
-    return this.http.get<Wod[]>("api/wod", {
+    return this.http.get<Wod[]>("/api/wod", {
         params: new HttpParams().set("query", search)
       }
     );
   }
 
   save(wod:Wod){
-    return this.http.put<Wod>("api/wod", wod);
+    return this.http.put<Wod>("/api/wod", wod);
   }
 
   delete(wod: Wod){
-    return this.http.delete("api/wod/" + wod.id);
+    return this.http.delete("/api/wod/" + wod.id);
   }
 
   get(id){
-    return this.http.get<Wod>("api/wod/" + id);
+    return this.http.get<Wod>("/api/wod/" + id);
   }
 
   getScores(){
@@ -51,12 +51,12 @@ export class WodService {
 
   
   getMyResult(wodId){
-    return this.http.get<WodResult[]>("api/wod/" + wodId + "/results");
+    return this.http.get<WodResult[]>("/api/wod/" + wodId + "/results");
   }
   saveOrUpdateResult(wod:Wod, result:WodResult){
-    return this.http.put<WodResult>("api/wod/" + wod.id + "/results", result);
+    return this.http.put<WodResult>("/api/wod/" + wod.id + "/results", result);
   }
   getRanking(wodId, date:string){
-    return this.http.get<WodResultRanking[]>("api/wod/" + wodId + "/" + date + "/ranking");
+    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/" + date + "/ranking");
   }
 }

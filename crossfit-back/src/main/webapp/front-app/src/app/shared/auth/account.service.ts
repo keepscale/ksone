@@ -10,6 +10,6 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   get(): Observable<User>{
-    return this.http.get<User>("api/account");
+    return this.http.get<User>("/api/account");
   }
 }
