@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -34,7 +35,18 @@ public class WebConfigurer implements WebMvcConfigurer, ServletContextInitialize
     @Inject
     private Environment env;
 
+    
+    
     @Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/front-app/").setViewName(
+                "forward:/front-app/index.html");
+        registry.addViewController("/").setViewName(
+                "forward:/index.html");
+	}
+
+
+	@Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
         servletContext.addListener(RequestContextListener.class);
@@ -101,6 +113,7 @@ public class WebConfigurer implements WebMvcConfigurer, ServletContextInitialize
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/i18n/*");
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
+        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/front-app/*");
         staticResourcesProductionFilter.setAsyncSupported(true);
     }
 
@@ -116,6 +129,7 @@ public class WebConfigurer implements WebMvcConfigurer, ServletContextInitialize
 
         cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
         cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
+        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/front-app/*");
         cachingHttpHeadersFilter.setAsyncSupported(true);
     }
     

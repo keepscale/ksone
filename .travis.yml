@@ -16,7 +16,7 @@ before_install:
 install: "/bin/true"
 
 script:
-- mvn clean package -Pproduction
+- mvn clean package -Pproduction -Dmake_asset=true
 
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
