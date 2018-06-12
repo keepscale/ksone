@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WodService } from '../../wod.service';
 import { WodResultRanking } from '../../domain/wod-result-ranking.model';
-import { WodDetailService } from '../wod.detail.service';
 import { WodResult } from '../../domain/wod-result.model';
 import { Wod } from '../../domain/wod.model';
 
@@ -11,7 +10,7 @@ import { Wod } from '../../domain/wod.model';
   templateUrl: './ranking.component.html',
   styleUrls: ['./ranking.component.scss']
 })
-export class RankingComponent implements OnInit {
+export class RankingComponent implements OnInit, OnChanges {
 
   @Input("wod")
   private wod: Wod;
@@ -22,16 +21,15 @@ export class RankingComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: WodService,
-    private wodDetailService: WodDetailService) { }
+    private service: WodService) { }
 
   ngOnInit() {
     this.loadRanking();
-    this.wodDetailService.resultSaved$.subscribe(result=>{
-      if (this.myresult == result){
-        this.loadRanking();
-      }
-    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("ngOnChanges");
+    this.loadRanking();
   }
 
   loadRanking(){

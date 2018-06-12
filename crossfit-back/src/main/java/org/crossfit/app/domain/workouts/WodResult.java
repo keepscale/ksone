@@ -28,9 +28,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WodResult {
 
-	public static final Comparator<WodResult> COMPARE_FOR_TIME = Comparator.comparingDouble(WodResult::getTotalMinute).thenComparing(WodResult::getTotalSecond);
-	public static final Comparator<WodResult> COMPARE_FOR_ROUND = Comparator.comparingDouble(WodResult::getTotalCompleteRound).thenComparing(WodResult::getTotalReps);
-	public static final Comparator<WodResult> COMPARE_FOR_LOAD = Comparator.comparingDouble(WodResult::getTotalLoadInKilo);
+	public static final Comparator<WodResult> COMPARE_FOR_TIME = Comparator.comparing(WodResult::getTotalMinute, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(WodResult::getTotalSecond, Comparator.nullsLast(Comparator.naturalOrder()));
+	public static final Comparator<WodResult> COMPARE_FOR_ROUND = Comparator.comparing(WodResult::getTotalCompleteRound, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(WodResult::getTotalReps, Comparator.nullsLast(Comparator.naturalOrder()));
+	public static final Comparator<WodResult> COMPARE_FOR_LOAD = Comparator.comparing(WodResult::getTotalLoadInKilo, Comparator.nullsLast(Comparator.naturalOrder()));
 
 	public static final Function<WodResult, String> RESULT_FORMAT_FOR_TIME = r->r.getTotalMinute()+":"+r.getTotalSecond();
 	public static final Function<WodResult, String> RESULT_FORMAT_FOR_ROUND = r->r.getTotalCompleteRound()+" ("+r.getTotalReps()+")";

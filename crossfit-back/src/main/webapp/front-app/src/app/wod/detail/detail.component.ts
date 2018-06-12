@@ -4,7 +4,6 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 import { Wod, WodPublication } from '../domain/wod.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WodResult } from '../domain/wod-result.model';
-import { WodDetailService } from './wod.detail.service';
 
 @Component({
   selector: 'app-detail',
@@ -24,7 +23,6 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private service: WodService,
-    private wodDetailService: WodDetailService,
     private toolbar: ToolBarService) { }
 
   ngOnInit() {
@@ -33,7 +31,6 @@ export class DetailComponent implements OnInit {
     if (wodId){
       this.service.get(wodId).subscribe(w=>{
           this.wod = w;
-          this.wodDetailService.wod = this.wod;
           this.service.getMyResult(wodId).subscribe(res=>{
             this.wodResults=res;
             this.wod.publications.forEach(publi => {              
@@ -44,8 +41,7 @@ export class DetailComponent implements OnInit {
                 return result;
               }
             });
-            this.wodResults.sort((r1,r2)=>new Date(r1.date).getDate() - new Date(r2.date).getDate());
-            this.wodDetailService.wodResults = this.wodResults;
+            this.wodResults.sort((r1,r2)=>new Date(r2.date).getDate() - new Date(r1.date).getDate());
           });
         },
         err=>{

@@ -30,6 +30,9 @@
               {{myresult.date | date: 'EEE, dd MMMM yyyy'}}
             </mat-panel-title>
 
+            <mat-panel-description>
+                <app-myresult [wod]="wod" [myresult]="myresult" [editable]="false"></app-myresult>
+            </mat-panel-description>
           </mat-expansion-panel-header>
           
           <app-myresult [wod]="wod" [myresult]="myresult" (onEditMode)="onEdit($event, myresult)"></app-myresult>

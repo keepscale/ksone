@@ -7,3 +7,10 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.mat-expansion-panel-header-title{
+    min-width: 130px;
+}
+.mat-expansion-panel-header-description{
+    min-width: 100px;
+}
