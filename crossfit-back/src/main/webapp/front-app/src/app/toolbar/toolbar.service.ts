@@ -8,7 +8,6 @@ export class ToolBarService {
 
     private title = new Subject<string>();
     private searchPlaceHolder = new Subject<string>();
-    private _toggleSideNav = new Subject<void>();
  
     private allowSearch = new Subject<boolean>();
 
@@ -16,14 +15,6 @@ export class ToolBarService {
 
     private menuItems = new Subject<any[]>();
  
-
-    toggleSideNav(){
-        this._toggleSideNav.next();
-    }
-
-    sideNavToggle(): Observable<void>{
-        return this._toggleSideNav.asObservable();
-    }
 
     setTitle(title: string) {
         this.title.next(title);

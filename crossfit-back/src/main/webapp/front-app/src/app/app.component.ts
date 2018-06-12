@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { Component, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { BreakpointObserver, Breakpoints, BreakpointState, MediaMatcher } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Principal } from './shared/auth/principal.service';
@@ -13,21 +13,20 @@ import { MatDrawerContent, MatSidenav } from '@angular/material';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent  implements OnDestroy{
 
-  @ViewChild(MatSidenav)
-  private sideNav: MatSidenav;
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-  .pipe(
-    map(result => result.matches)
-  );
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
 
   constructor(
-    private breakpointObserver: BreakpointObserver, 
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, 
     public translate: TranslateService, 
-    private principal: Principal, 
-    private toolbar: ToolBarService) {
+    private principal: Principal) {
+
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
 
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('fr');
@@ -35,10 +34,11 @@ export class AppComponent {
     const browserLang = translate.getBrowserLang();
     //translate.use(browserLang.match(/en|fr/) ? browserLang : 'fr');
     translate.use('fr');
-
-    this.toolbar.sideNavToggle().subscribe(o=>this.sideNav.toggle());
   }
 
+  ngOnDestroy(): void {
+    this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
 
   private displayName;
 
