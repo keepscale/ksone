@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WodDetailService } from '../wod.detail.service';
 import { Wod } from '../../domain/wod.model';
 import { WodResult } from '../../domain/wod-result.model';
 import { WodService } from '../../wod.service';
@@ -16,6 +15,8 @@ export class MyResultComponent implements OnInit {
   private wod: Wod;
   @Input("myresult")
   private myresult: WodResult;
+  @Input("editable")
+  private editable: boolean = true;
   
   private mode:string = "READ";
   private status: string;
@@ -26,11 +27,10 @@ export class MyResultComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: WodService,
-    private wodDetailService: WodDetailService) { }
+    private service: WodService) { }
 
   ngOnInit() {
-    if (!this.myresult.id){
+    if (!this.myresult.id && this.editable){
       this.editMode();
     }
   }
@@ -40,7 +40,7 @@ export class MyResultComponent implements OnInit {
     this.service.saveOrUpdateResult(this.wod, this.myresult).subscribe(
       success=>{
           this.status = "success";
-          this.wodDetailService.saveResult(this.myresult);
+          Object.assign(this.myresult, success);
           this.readMode();
       },
       e=>{

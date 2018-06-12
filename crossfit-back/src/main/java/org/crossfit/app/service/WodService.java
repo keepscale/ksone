@@ -169,7 +169,7 @@ public class WodService {
 		result.setMember(SecurityUtils.getCurrentMember());
 		switch (wod.getScore()) {
 		case FOR_LOAD:
-			result.setTotalLoadInKilo(result.getTotalLoadInKilo());
+			result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
 			result.setTotalMinute(null);
 			result.setTotalSecond(null);
 			result.setTotalCompleteRound(null);
@@ -179,17 +179,24 @@ public class WodService {
 			result.setTotalLoadInKilo(null);
 			result.setTotalMinute(null);
 			result.setTotalSecond(null);
-			result.setTotalCompleteRound(dto.getTotalCompleteRound());
-			result.setTotalReps(dto.getTotalReps());
+			result.setTotalCompleteRound(getOrDefault(dto.getTotalCompleteRound(), 0));
+			result.setTotalReps(getOrDefault(dto.getTotalReps(), 0));
 			break;
 		case FOR_TIME:
 			result.setTotalLoadInKilo(null);
-			result.setTotalMinute(dto.getTotalMinute());
-			result.setTotalSecond(dto.getTotalSecond());
+			result.setTotalMinute(getOrDefault(dto.getTotalMinute(), 0));
+			result.setTotalSecond(getOrDefault(dto.getTotalSecond(), 0));
 			result.setTotalCompleteRound(null);
 			result.setTotalReps(null);
 			break;
 			
 		}
+	}
+
+	private static Integer getOrDefault(Integer value, Integer defaultValue) {
+		return value == null ? defaultValue : value;
+	}
+	private static Double getOrDefault(Double value, Double defaultValue) {
+		return value == null ? defaultValue : value;
 	}
 }

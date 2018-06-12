@@ -7,7 +7,6 @@ import { SharedModule } from '../shared/shared.module';
 import { EditComponent } from './edit/edit.component';
 import { DetailComponent } from './detail/detail.component';
 import { MyResultComponent } from './detail/myresult/myresult.component';
-import { WodDetailService } from './detail/wod.detail.service';
 import { RankingComponent } from './detail/ranking/ranking.component';
 
 const wodsRoutes: Routes = [
@@ -24,6 +23,6 @@ const wodsRoutes: Routes = [
     CommonModule
   ],
   declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent],
-  providers: [WodDetailService]
+  providers: []
 })
 export class WodModule { }
