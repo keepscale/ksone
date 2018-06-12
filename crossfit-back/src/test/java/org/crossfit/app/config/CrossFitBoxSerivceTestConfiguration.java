@@ -23,7 +23,7 @@ public class CrossFitBoxSerivceTestConfiguration {
     	return new CrossFitBoxSerivce(){
 			@Override
 			public CrossFitBox findCurrentCrossFitBox() {
-				return boxRepository.getOne(1L);
+				return boxRepository.findById(1L).get();
 			}
     	};
     	

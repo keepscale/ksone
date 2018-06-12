@@ -70,7 +70,7 @@
                                  referencedTableName="i18n_key"/>
                                  
                                  
-    	<sql>
+    	<sql dbms="postgresql">
         	alter sequence i18n_key_id_seq RESTART with 2000;
         	alter sequence i18n_value_id_seq RESTART with 2000;    	
     	</sql>

@@ -76,7 +76,7 @@ public class TimeSlotTypeResource {
     }
 
 	protected TimeSlotType doGet(Long id) {
-		return timeSlotTypeRepository.getOne(id);
+		return timeSlotTypeRepository.findById(id).get();
 	}
 
 	

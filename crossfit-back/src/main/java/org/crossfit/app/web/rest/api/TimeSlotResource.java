@@ -202,9 +202,10 @@ public class TimeSlotResource {
 
 	protected TimeSlot doGet(Long id) {
 		// TODO: Filtrer par box
-		TimeSlot t = timeSlotRepository.getOne(id);
-		t.setExclusions(timeSlotExclusionRepository.findAllByTimeSlot(t));
-		
+		TimeSlot t = timeSlotRepository.findById(id).map(ts->{
+			ts.setExclusions(timeSlotExclusionRepository.findAllByTimeSlot(ts));
+			return ts;
+		}).orElse(null);
 		return t;
 	}
 
@@ -221,7 +222,7 @@ public class TimeSlotResource {
     }
 
 	protected void doDelete(Long id) {
-		TimeSlot timeSlot = timeSlotRepository.getOne(id);
+		TimeSlot timeSlot = timeSlotRepository.findById(id).get();
 		if (timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())) {
 			timeSlotExclusionRepository.deleteAll(timeSlotExclusionRepository.findAllByTimeSlot(timeSlot));
 			timeSlotRepository.delete(timeSlot);

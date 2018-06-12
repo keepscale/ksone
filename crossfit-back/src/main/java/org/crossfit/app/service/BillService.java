@@ -235,7 +235,7 @@ public class BillService {
 
 
 	public Bill updateBill(CrossFitBox box, Bill bill) throws UnableToUpdateBillException{
-		Bill actualBill = billRepository.getOne(bill.getId());
+		Bill actualBill = billRepository.findById(bill.getId()).get();
 		
 		if (actualBill.getStatus() != BillStatus.DRAFT) {
 			throw new UnableToUpdateBillException(bill);

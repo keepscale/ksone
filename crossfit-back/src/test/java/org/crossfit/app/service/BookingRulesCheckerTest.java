@@ -58,11 +58,11 @@ public class BookingRulesCheckerTest {
 
 	@Before
 	public void initTest() {
-		aMember = memberRepository.getOne(1L);
+		aMember = memberRepository.findById(1L).get();
 		ABO_TRIPLE = membershipRepository.findOne(6L, crossFitBoxSerivce.findCurrentCrossFitBox());
 		ABO_5_PAR_MOIS = membershipRepository.findOne(8L, crossFitBoxSerivce.findCurrentCrossFitBox());
-		WOD = timeSlotTypeRepository.getOne(3L);
-		OPENBOX = timeSlotTypeRepository.getOne(5L);
+		WOD = timeSlotTypeRepository.findById(3L).get();
+		OPENBOX = timeSlotTypeRepository.findById(5L).get();
 	}
 
 	@Test

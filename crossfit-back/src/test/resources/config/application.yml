@@ -2,14 +2,14 @@ server:
     port: 10344
     address: localhost
 
-liquibase:
-    change-log: classpath:config/liquibase/master-test.xml
-    contexts: test
 
 logback.loglevel: DEBUG
 
 
 spring:
+    liquibase:
+        change-log: classpath:config/liquibase/master-test.xml
+        contexts: test
     datasource:
         dataSourceClassName: org.h2.jdbcx.JdbcDataSource
         url: jdbc:h2:mem:crossfit;DB_CLOSE_DELAY=-1
@@ -25,12 +25,14 @@ spring:
         generate-ddl: false
         hibernate:
             ddl-auto: none
-            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+            naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+            default_schema: public
         properties:
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: none
+    jackson.serialization.fail-on-empty-beans: false
     
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: 7ca8472b058a2023ba576ff40139793b6546c6b7

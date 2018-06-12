@@ -1,11 +1,10 @@
 server:
     port: 8080
 
-liquibase:
-    change-log: classpath:config/liquibase/master.xml
-    contexts: production
-
 spring:
+    liquibase:
+        change-log: classpath:config/liquibase/master.xml
+        contexts: production
     profiles:
         active: production
     datasource:
@@ -20,7 +19,6 @@ spring:
         validation-interval: 30000
         remove-abandoned: true
         remove-abandoned-timeout: 60
-
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQL82Dialect
         database: POSTGRESQL
@@ -29,12 +27,15 @@ spring:
         generate-ddl: false
         hibernate:
             ddl-auto: none
-            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+            naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+            default_schema: public
         properties:
             hibernate.cache.use_second_level_cache: true
             hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: false
-            hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+            hibernate.generate_statistics: true
+            hibernate.id.new_generator_mappings: false
+#            hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+    jackson.serialization.fail-on-empty-beans: false
     messages:
         cache-seconds: 5000
         basename: i18n/messages
