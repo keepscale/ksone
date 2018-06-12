@@ -125,7 +125,7 @@ public class TimeSlotResourceTest {
         timeSlot.setStartTime(DEFAULT_START_TIME);
         timeSlot.setEndTime(DEFAULT_END_TIME);
         timeSlot.setMaxAttendees(DEFAULT_MAX_ATTENDEES);
-        timeSlot.setTimeSlotType(timeSlotTypeRepository.getOne(1L));
+        timeSlot.setTimeSlotType(timeSlotTypeRepository.findById(1L).get());
     }
 
     @Test
@@ -200,7 +200,7 @@ public class TimeSlotResourceTest {
         // Get all the timeSlots
         restTimeSlotMockMvc.perform(get("/api/timeSlots"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
 }

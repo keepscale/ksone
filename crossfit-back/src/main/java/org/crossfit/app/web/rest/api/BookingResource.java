@@ -150,7 +150,7 @@ public class BookingResource {
 
 
 	private TimeSlot findTimeSlot(Long timeSlotId) {
-		TimeSlot selectedTimeSlot = timeSlotRepository.getOne(timeSlotId);
+		TimeSlot selectedTimeSlot = timeSlotRepository.findById(timeSlotId).get();
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
     	
@@ -275,7 +275,7 @@ public class BookingResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Booking> get(@PathVariable Long id) {
         log.debug("REST request to get Booking : {}", id);
-		Booking booking = bookingRepository.getOne(id);
+		Booking booking = bookingRepository.findById(id).get();
 		
 		if (!SecurityUtils.isUserInAnyRole(AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)){
     		if(booking == null || !booking.getSubscription().getMember().equals( SecurityUtils.getCurrentMember())){
@@ -327,7 +327,7 @@ public class BookingResource {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'avez pas les droits necessaires", "")).body(null);
     	}
     	
-		Booking booking = bookingRepository.getOne(id);
+		Booking booking = bookingRepository.findById(id).get();
 		Member m = booking.getSubscription().getMember();
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
 		DateTime nowAsDateTime = timeService.nowAsDateTime(box);
@@ -352,7 +352,7 @@ public class BookingResource {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'avez pas les droits necessaires", "")).body(null);
     	}
     	
-		Booking booking = bookingRepository.getOne(id);
+		Booking booking = bookingRepository.findById(id).get();
 		booking.setStatus(BookingStatus.VALIDATED);    	
 		
         bookingRepository.save(booking);
@@ -373,10 +373,10 @@ public class BookingResource {
 
 		log.debug("REST request to save Booking : {}", bookingdto);
 		
-    	TimeSlot selectedTimeSlot = timeSlotRepository.getOne(bookingdto.getTimeslotId());
+    	TimeSlot selectedTimeSlot = timeSlotRepository.findById(bookingdto.getTimeslotId()).get();
     	
     	// Si owner est null alors on prend l'utilisateur courant
-    	Subscription selectedSubscription = bookingdto.getSubscriptionId() == null ? null : subscriptionRepository.getOne(bookingdto.getSubscriptionId());
+    	Subscription selectedSubscription = bookingdto.getSubscriptionId() == null ? null : subscriptionRepository.findById(bookingdto.getSubscriptionId()).get();
     	Member selectedMember = selectedSubscription == null ? SecurityUtils.getCurrentMember() : selectedSubscription.getMember();
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();

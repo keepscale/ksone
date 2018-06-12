@@ -145,7 +145,7 @@ public class SubscriptionResource {
 	
 
 	protected Subscription doGet(Long id) {
-		return subscriptionRepository.getOne(id);
+		return subscriptionRepository.findById(id).get();
 	}
 
 	/**

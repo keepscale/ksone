@@ -61,7 +61,7 @@ public class BookingService {
     @Transactional
 	public void deleteBooking(Long id, boolean notifyEventBus) throws NotBookingOwnerException, UnableToDeleteBooking{
         log.debug("Try to delete Booking : {}", id);
-		Booking booking = bookingRepository.getOne(id);
+		Booking booking = bookingRepository.findById(id).get();
 
 		CrossFitBox currentBox = boxService.findCurrentCrossFitBox();
 		DateTime now = timeService.nowAsDateTime(currentBox);
