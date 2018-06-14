@@ -35,6 +35,6 @@ deploy:
   file: crossfit-back/target/crossfit-$GIT_TAG.jar
   on:
     repo: keepscale/ksone
-    tags: false
+    tags: true
     all_branches: true
     
