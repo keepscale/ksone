@@ -20,8 +20,9 @@ install: "/bin/true"
 script:
 - cd crossfit-back
 - mvn clean package -Pproduction -Dmake_asset=true
+- cd ..
 
-before_deploy:
+after_success:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
   - export GIT_TAG=$APP_VERSION-$TRAVIS_BUILD_NUMBER
