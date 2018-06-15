@@ -79,7 +79,7 @@ public class CustomPersistentRememberMeServices extends AbstractRememberMeServic
 
     
     @Autowired
-    public CustomPersistentRememberMeServices(@Value("security.rememberme.key")String key, org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, MemberRepository userRepository, CrossFitBoxSerivce boxService) {
+    public CustomPersistentRememberMeServices(@Value("${security.rememberme.key}")String key, org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, MemberRepository userRepository, CrossFitBoxSerivce boxService) {
         super(key, userDetailsService);
         random = new SecureRandom();
         this.persistentTokenRepository = tokenRepository;
