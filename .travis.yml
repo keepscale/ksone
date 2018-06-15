@@ -36,8 +36,5 @@ deploy:
   on:
     repo: keepscale/ksone
     tags: true
-  branches:
-    only:
-      - workouts
-      - develop 
+    all_branches: true
     
