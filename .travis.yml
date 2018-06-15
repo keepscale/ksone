@@ -22,7 +22,7 @@ script:
 - mvn clean package -Pproduction -Dmake_asset=true
 - cd ..
 
-after_success:
+before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
   - export GIT_TAG=$APP_VERSION-$TRAVIS_BUILD_NUMBER
@@ -36,6 +36,6 @@ deploy:
   file: crossfit-back/target/crossfit-$GIT_TAG.jar
   on:
     repo: keepscale/ksone
-    tags: true
+    tags: false
     all_branches: true
     
