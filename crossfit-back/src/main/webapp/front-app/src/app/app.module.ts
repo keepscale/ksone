@@ -8,8 +8,6 @@ import { MatToolbarModule, MatSidenavModule } from '@angular/material';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import { HomeComponent } from './home/home.component';
-import { AuthGuard } from './shared/auth/auth.guard';
 import { SharedModule } from './shared/shared.module';
 import { WodModule } from './wod/wod.module';
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -19,14 +17,12 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, "./assets/i18n/", ".json");
 }
 const appRoutes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '/wod' }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomeComponent
+    AppComponent
   ],
   imports: [
     HttpClientModule,
