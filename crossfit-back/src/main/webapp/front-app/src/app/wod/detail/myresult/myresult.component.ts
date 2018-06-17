@@ -61,4 +61,7 @@ export class MyResultComponent implements OnInit {
     this.onEditMode.emit(false);
   }
 
+  compareFn(c1: string, c2: string): boolean {
+    return c1 === c2;
+  }
 }

@@ -2,7 +2,6 @@
 	"app": {
 		"menu": {
 			"WOD": "WOD",
-			"home": "Accueil",
 			"logout": "Déconnexion"
 		}
 	},
@@ -36,20 +35,19 @@
 			}
 		},
 		"myscore": {
-			"button": {
-				"label": ""
+			"category": {
+				"RX": "Rx",
+				"SCALED": "Scaled"
 			},
-			"comments": {
-				"placeholder": "Mes commentaires"
-			},
-			"date": {
-				"placeholder": "Date du wod"
-			},
-			"totalChargeInKilo": {
-				"placeholder": "Charge total en Kg"
+			"title": {
+				"MR": "Homme",
+				"MS": "Femme"
 			},
 			"totalCompleteRound": {
 				"placeholder": "Nb de tour fini"
+			},
+			"totalLoadInKilo": {
+				"placeholder": "Charge total en Kg"
 			},
 			"totalMinute": {
 				"placeholder": "Minutes"
@@ -65,6 +63,9 @@
 			"placeholder": "Nom du wod"
 		},
 		"score": {
+			"button": {
+				"label": ""
+			},
 			"placeholder": "Score",
 			"FOR_LOAD": "Charge Max",
 			"FOR_TIME": "For Time",

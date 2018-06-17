@@ -2,7 +2,6 @@
 	"app": {
 		"menu": {
 			"WOD": "",
-			"home": "",
 			"logout": ""
 		}
 	},
@@ -21,6 +20,9 @@
 		"add": {
 			"button": {
 				"label": ""
+			},
+			"date": {
+				"placeholder": ""
 			}
 		},
 		"category": {
@@ -35,19 +37,18 @@
 			}
 		},
 		"myscore": {
-			"button": {
-				"label": ""
+			"category": {
+				"RX": "",
+				"SCALED": ""
 			},
-			"comments": {
-				"placeholder": ""
-			},
-			"date": {
-				"placeholder": ""
-			},
-			"totalChargeInKilo": {
-				"placeholder": ""
+			"title": {
+				"MR": "",
+				"MS": ""
 			},
 			"totalCompleteRound": {
+				"placeholder": ""
+			},
+			"totalLoadInKilo": {
 				"placeholder": ""
 			},
 			"totalMinute": {
@@ -64,6 +65,9 @@
 			"placeholder": ""
 		},
 		"score": {
+			"button": {
+				"label": ""
+			},
 			"placeholder": ""
 		}
 	}

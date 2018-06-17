@@ -5,13 +5,17 @@ import java.util.function.Function;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
@@ -47,6 +51,16 @@ public class WodResult {
 	@JsonIgnore
 	@ManyToOne(optional = false, cascade = {})
 	private Member member;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "category", nullable = false)
+	private ResultCategory category;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "title", nullable = false)
+	private Title title;
 	
 	@Column(name = "date", nullable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
@@ -66,6 +80,8 @@ public class WodResult {
 	private Integer totalCompleteRound;
     @Column(name = "total_reps")
 	private Integer totalReps;
+    
+    
 	public Long getId() {
 		return id;
 	}
