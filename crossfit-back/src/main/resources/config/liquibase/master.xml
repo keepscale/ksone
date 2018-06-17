@@ -42,6 +42,7 @@
    	<include file="classpath:config/liquibase/changelog/19_added_entity_BookingEvent.xml" relativeToChangelogFile="false"/>
    	<include file="classpath:config/liquibase/changelog/20_add_i18n_entity.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/21_add_wod_entity.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/22_modify_wod_result.xml" relativeToChangelogFile="false"/>
     
 
 </databaseChangeLog>

@@ -3,8 +3,22 @@
 <div *ngIf="editable && myresult && mode=='EDIT'" [ngSwitch]="wod.score" style="width: 100%">
           
   <form novalidate (ngSubmit)="onSubmit()">
-
-
+    <div>
+      <mat-radio-group class="title-group" [(ngModel)]="myresult.title" name="myresulttitle">
+        <mat-radio-button class="title-radio-button" *ngFor="let t of ['MS', 'MR']" [value]="t">
+          {{'wod.myscore.title.' + t | translate}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
+      <mat-radio-group class="category-group" [(ngModel)]="myresult.category" name="myresultcategory">
+        <mat-radio-button class="category-radio-button"
+          *ngFor="let t of ['RX', 'SCALED']" [value]="t">
+          {{'wod.myscore.category.' + t | translate}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    
     <mat-label>Saisissez votre score</mat-label>
 
     <div *ngSwitchCase="'FOR_LOAD'">      
