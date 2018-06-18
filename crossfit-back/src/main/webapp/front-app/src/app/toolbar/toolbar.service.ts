@@ -10,8 +10,11 @@ export class ToolBarService {
     private searchPlaceHolder = new Subject<string>();
  
     private allowSearch = new Subject<boolean>();
-
     private onSearch: Function;
+
+    
+    private allowGoBack = new Subject<boolean>();
+    private onGoBack: Function;
 
     private menuItems = new Subject<any[]>();
  
@@ -50,5 +53,18 @@ export class ToolBarService {
     }
     search(query: string){
         this.onSearch.call(this, query);
+    }
+
+
+    
+    setOnGoBack(onGoBack: Function) {
+        this.allowGoBack.next(true);
+        this.onGoBack = onGoBack;
+    }
+    getAllowGoBack(): Observable<boolean>{
+        return this.allowGoBack.asObservable();
+    }
+    goBack(){
+        this.onGoBack.call(this);
     }
 }
