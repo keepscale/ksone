@@ -3,23 +3,8 @@
 <div *ngIf="editable && myresult && mode=='EDIT'" [ngSwitch]="wod.score" style="width: 100%">
           
   <form novalidate (ngSubmit)="onSubmit()">
-    <div>
-      <mat-radio-group class="title-group" [(ngModel)]="myresult.title" name="myresulttitle">
-        <mat-radio-button class="title-radio-button" *ngFor="let t of ['MS', 'MR']" [value]="t">
-          {{'wod.myscore.title.' + t | translate}}
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <div>
-      <mat-radio-group class="category-group" [(ngModel)]="myresult.category" name="myresultcategory">
-        <mat-radio-button class="category-radio-button"
-          *ngFor="let t of ['RX', 'SCALED']" [value]="t">
-          {{'wod.myscore.category.' + t | translate}}
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-    
     <mat-label>Saisissez votre score</mat-label>
+
 
     <div *ngSwitchCase="'FOR_LOAD'">      
       <mat-form-field >
@@ -46,9 +31,28 @@
       </mat-form-field>
     </div>
     
+    <div>
+        <mat-button-toggle-group class="category-group" (change)="myresult.category=$event.value">
+          <mat-button-toggle class="category-button" 
+            *ngFor="let t of ['RX', 'SCALED']" value="{{t}}" [checked]="t==myresult.category">
+            {{'wod.myscore.category.' + t | translate}}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+    <div>
+      <mat-button-toggle-group class="title-group" (change)="myresult.title=$event.value">
+        <mat-button-toggle class="title-button" 
+          *ngFor="let t of ['MS', 'MR']" value="{{t}}" [checked]="t==myresult.title">
+          {{'wod.myscore.title.' + t | translate}}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    
 
-    <submit-button></submit-button>  
-    <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+    <div class="form-footer">
+      <submit-button></submit-button>  
+      <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+    </div>
 
   </form>
 
@@ -56,6 +60,11 @@
 
 
 <div *ngIf="myresult && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
+
+    <mat-label>
+        {{'wod.myscore.category.' + myresult.category | translate}} |
+    </mat-label>
+
     <span *ngSwitchCase="'FOR_LOAD'">
       {{myresult.totalLoadInKilo}} Kg
     </span>

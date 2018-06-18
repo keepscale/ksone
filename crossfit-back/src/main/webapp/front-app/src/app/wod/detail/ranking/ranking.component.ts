@@ -17,6 +17,8 @@ export class RankingComponent implements OnInit, OnChanges {
   @Input("myresult")
   private myresult: WodResult;
   rankings: WodResultRanking[];
+  rankingsInCategory: WodResultRanking[];
+  private mode:string = "COMPATE_TO_ME";
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +38,13 @@ export class RankingComponent implements OnInit, OnChanges {
     this.rankings = null;
     this.service.getRanking(this.wod.id, this.myresult.date+"").subscribe(res=>{
       this.rankings = res;
+      this.rankingsInCategory = [];
+      this.rankings.forEach(r => {
+        if (r.category==this.myresult.category && r.title == this.myresult.title){
+          this.rankingsInCategory.push(r);
+          r.orderInCategory = this.rankingsInCategory.length;
+        }
+      });
     })
   }
 

@@ -1,9 +1,14 @@
 package org.crossfit.app.web.rest.workouts.dto;
 
+import org.crossfit.app.domain.enumeration.Title;
+import org.crossfit.app.domain.workouts.ResultCategory;
+
 public class WodResultCompute {
 
 	private Integer order;
 	private Long id;
+	private Title title;
+	private ResultCategory category;
 	private String displayName;
 	private String displayResult;
 	
@@ -32,4 +37,17 @@ public class WodResultCompute {
 	public void setDisplayResult(String displayResult) {
 		this.displayResult = displayResult;
 	}
+	public Title getTitle() {
+		return title;
+	}
+	public void setTitle(Title title) {
+		this.title = title;
+	}
+	public ResultCategory getCategory() {
+		return category;
+	}
+	public void setCategory(ResultCategory category) {
+		this.category = category;
+	}
+	
 }

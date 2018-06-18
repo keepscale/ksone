@@ -1,4 +1,4 @@
-<div class="app-container" [class.is-mobile]="mobileQuery.matches" >
+<div class="app-container" [class.is-mobile]="mobileQuery.matches" [class.is-mobile-portrait]="mobileQueryPortrait.matches" >
   
   <app-toolbar (toggleSideNav)="sidenav.toggle()"></app-toolbar>
 

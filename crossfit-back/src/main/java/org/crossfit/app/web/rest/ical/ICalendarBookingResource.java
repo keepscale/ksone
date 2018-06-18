@@ -12,6 +12,8 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
+import org.crossfit.app.service.TimeService;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,8 @@ public class ICalendarBookingResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private TimeService timeService;
 
 
     /**
@@ -65,6 +69,7 @@ public class ICalendarBookingResource {
     	
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+    	DateTimeZone dateTimeZone = timeService.getDateTimeZone(currentCrossFitBox);
     	
     	Optional<Member> optMember = memberService.findMemberByUuid(uuid);
     	
@@ -91,11 +96,11 @@ public class ICalendarBookingResource {
     	for (Booking booking : bookings) {
 
     		net.fortuna.ical4j.model.DateTime start = 
-    				new net.fortuna.ical4j.model.DateTime(booking.getStartAt().toDateTimeISO().toDate());
+    				new net.fortuna.ical4j.model.DateTime(booking.getStartAt().toDateTime(DateTimeZone.UTC).getMillis());
 			net.fortuna.ical4j.model.DateTime end = 
-					new net.fortuna.ical4j.model.DateTime(booking.getEndAt().toDateTimeISO().toDate());
-			start.setTimeZone(timeZone);
-			end.setTimeZone(timeZone);
+					new net.fortuna.ical4j.model.DateTime(booking.getEndAt().toDateTime(DateTimeZone.UTC).getMillis());
+			//start.setTimeZone(timeZone);
+			//end.setTimeZone(timeZone);
 			
 			VEvent event = new VEvent(start, end, booking.getTimeSlotType().getName());
 

@@ -167,6 +167,8 @@ public class WodService {
 		result.setDate(dto.getDate());
 		result.setWod(wod);
 		result.setMember(SecurityUtils.getCurrentMember());
+		result.setCategory(dto.getCategory());
+		result.setTitle(dto.getTitle());
 		switch (wod.getScore()) {
 		case FOR_LOAD:
 			result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
