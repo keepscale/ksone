@@ -63,7 +63,7 @@
                                  referencedTableName="MEMBER"/>
 
 
-		<sql>
+		<sql dbms="postgresql">
 			update WOD
 			set visibility = 'PUBLIC', 
 				owner_id = subquery.id	
@@ -72,8 +72,8 @@
 			where subquery.login = wod.created_by
 		</sql>
 		
-		<addNotNullConstraint tableName="WOD" columnName="visibility" defaultNullValue="PUBLIC"/>
-		<addNotNullConstraint tableName="WOD" columnName="owner_id"/>
+		<addNotNullConstraint tableName="WOD" columnName="visibility" defaultNullValue="PUBLIC" columnDataType="bigint"/>
+		<addNotNullConstraint tableName="WOD" columnName="owner_id" columnDataType="varchar(32)"/>
 		
 		
 	</changeSet>
