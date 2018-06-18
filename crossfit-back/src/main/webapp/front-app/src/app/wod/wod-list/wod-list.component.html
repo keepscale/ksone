@@ -14,6 +14,14 @@
     <p style="white-space: pre;">{{wod.description}}</p>
 
     <mat-action-row>
+      
+            
+        <a [routerLink]="[wod.id,'edit']">
+          <button mat-button >
+            <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
+          </button>
+        </a>
+
         <a *ngIf="wod.publications.length > 0" [routerLink]="[wod.id, 'detail']">
           <button mat-button >
             <mat-icon aria-label="{{'wod.score.button.label' | translate}">arrow_forward</mat-icon>
