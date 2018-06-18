@@ -1,18 +1,6 @@
 <mat-progress-bar mode="indeterminate" *ngIf="!rankings"></mat-progress-bar>
 
 <div *ngIf="rankings">
-
-    <mat-button-toggle-group (change)="mode=$event.value">
-      <mat-button-toggle value="COMPATE_TO_ME" [checked]="mode=='COMPATE_TO_ME'"
-        aria-label="{{'wod.ranking.COMPATE_TO_ME' | translate}}">
-        <mat-icon>person</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="COMPATE_TO_ALL" [checked]="mode=='COMPATE_TO_ALL'"
-        aria-label="{{'wod.ranking.COMPATE_TO_ALL' | translate}}">
-        <mat-icon>people</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-
     <table mat-table [dataSource]="mode == 'COMPATE_TO_ALL' ? rankings : rankingsInCategory" class="mat-elevation-z8">
         
         <ng-container matColumnDef="order">

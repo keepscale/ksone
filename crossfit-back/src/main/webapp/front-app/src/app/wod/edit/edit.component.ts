@@ -40,9 +40,9 @@ export class EditComponent implements OnInit {
     this.service.getMovements().subscribe(res=>this.availableMovements=res);
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
+    this.toolbar.setOnGoBack(()=>this.router.navigate(['wod']));
     if (!id){
       this.toolbar.setTitle("Proposer un WOD");
-      this.toolbar.setOnGoBack(()=>this.router.navigate(['wod']));
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
@@ -52,7 +52,6 @@ export class EditComponent implements OnInit {
       this.service.get(id).subscribe(w=>{
           this.wod = w;
           this.toolbar.setTitle("Modifier un WOD");
-          this.toolbar.setOnGoBack(()=>this.router.navigate(['wod', this.wod.id, 'detail']));
         },
         err=>{
           this.router.navigate(["wod"]);

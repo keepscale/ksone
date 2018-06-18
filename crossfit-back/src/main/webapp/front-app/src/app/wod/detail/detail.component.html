@@ -12,12 +12,6 @@
         <mat-panel-description>
             {{'wod.category.' + wod.category | translate}}
             {{wod.name}}
-            
-            <a [routerLink]="['..','edit']">
-              <button mat-button >
-                <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
-              </button>
-            </a>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
@@ -43,6 +37,13 @@
                     <mat-icon>bar_chart</mat-icon>
                   </ng-template>
                   <app-ranking [wod]="wod" [myresult]="myresult"></app-ranking>
+              </mat-tab>
+              <mat-tab label="Classement">
+                  <ng-template mat-tab-label>
+                      <mat-icon>bar_chart</mat-icon>
+                      <mat-icon>people</mat-icon>
+                  </ng-template>
+                  <app-ranking [wod]="wod" [myresult]="myresult" [mode]="'COMPATE_TO_ALL'"></app-ranking>
               </mat-tab>
           </mat-tab-group>
       </mat-expansion-panel>

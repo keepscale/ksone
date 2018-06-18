@@ -18,6 +18,7 @@ export class RankingComponent implements OnInit, OnChanges {
   private myresult: WodResult;
   rankings: WodResultRanking[];
   rankingsInCategory: WodResultRanking[];
+  @Input("mode")
   private mode:string = "COMPATE_TO_ME";
 
   constructor(
