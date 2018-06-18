@@ -134,6 +134,8 @@ public class WodResource {
 					}
 					compute.setDisplayName(displayName);
 					compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
+					compute.setCategory(result.getCategory());
+					compute.setTitle(result.getTitle());
 					return compute;
 				}).forEachOrdered(e->{
 					rankings.add(e);

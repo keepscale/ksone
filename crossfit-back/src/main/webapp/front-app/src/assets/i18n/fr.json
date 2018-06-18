@@ -34,6 +34,19 @@
 				"label": ""
 			}
 		},
+		"ranking": {
+			"COMPATE_TO_ME":"Ma catégorie",
+			"COMPATE_TO_ALL":"Toutes catégories",
+			
+			"title.min": {
+				"MR": "H",
+				"MS": "F"
+			},
+			"category.min": {
+				"RX": "Rx",
+				"SCALED": "Sc"
+			}
+		},
 		"myscore": {
 			"category": {
 				"RX": "Rx",

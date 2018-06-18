@@ -137,6 +137,19 @@ public class WodResult {
 	public void setTotalReps(Integer totalReps) {
 		this.totalReps = totalReps;
 	}
+	
+	public ResultCategory getCategory() {
+		return category;
+	}
+	public void setCategory(ResultCategory category) {
+		this.category = category;
+	}
+	public Title getTitle() {
+		return title;
+	}
+	public void setTitle(Title title) {
+		this.title = title;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

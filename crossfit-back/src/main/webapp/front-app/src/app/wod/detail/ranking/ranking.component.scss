@@ -1,5 +1,14 @@
+
+@import '~@angular/material/theming';
+
+@include mat-core();
+
 .my-rank{
-    background-color: yellow;
+    $app-primary: mat-palette($mat-indigo);
+    $app-accent:  mat-palette($mat-pink, A200, A100, A400);    
+    $app-theme: mat-light-theme($app-primary, $app-accent);
+
+    background-color:mat-color(map-get($app-theme, accent));
 }
 
 table{
