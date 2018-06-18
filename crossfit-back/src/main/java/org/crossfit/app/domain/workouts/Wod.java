@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -89,6 +89,8 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod", cascade= {CascadeType.ALL})
 	private Set<WodPublication> publications = new HashSet<>();
 
+	@Embedded
+	private WodShareProperties shareProperties;
    
 	public Long getId() {
 		return id;
@@ -176,6 +178,13 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 
 	public void setPublications(Set<WodPublication> publications) {
 		this.publications = publications;
+	}
+	public WodShareProperties getShareProperties() {
+		return shareProperties;
+	}
+
+	public void setShareProperties(WodShareProperties shareProperties) {
+		this.shareProperties = shareProperties;
 	}
 
 	@Override

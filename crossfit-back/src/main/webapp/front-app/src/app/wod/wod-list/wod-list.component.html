@@ -1,6 +1,6 @@
 
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let wod of wods" [expanded]="true">
+  <mat-expansion-panel *ngFor="let wod of wods">
     <mat-expansion-panel-header>
       <mat-panel-title>
           {{'wod.category.' + wod.category | translate}}
@@ -16,7 +16,7 @@
     <mat-action-row>
       
             
-        <a [routerLink]="[wod.id,'edit']">
+        <a [routerLink]="[wod.id,'edit']" *ngIf="isOwner(wod)">
           <button mat-button >
             <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
           </button>

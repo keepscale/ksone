@@ -14,6 +14,8 @@ import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.WodResult;
+import org.crossfit.app.domain.workouts.WodShareProperties;
+import org.crossfit.app.domain.workouts.enumeration.WodVisibility;
 import org.crossfit.app.repository.EquipmentRepository;
 import org.crossfit.app.repository.MovementRepository;
 import org.crossfit.app.repository.WodRepository;
@@ -67,7 +69,7 @@ public class WodService {
 
 
 	public Set<Wod> findAll(String search) {
-		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search);
+		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search);
 	}
 
 	public Wod save(@Valid Wod dto) {
@@ -76,9 +78,13 @@ public class WodService {
 		if (dto.getId() == null){			
 			wod = new Wod();
 			wod.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+			WodShareProperties shareProperties = new WodShareProperties();
+			shareProperties.setOwner(SecurityUtils.getCurrentMember());
+			shareProperties.setVisibility(WodVisibility.PUBLIC);
+			wod.setShareProperties(shareProperties);
 		}
 		else{			
-			wod= wodRepository.findOne(currentCrossFitBox, dto.getId());
+			wod= wodRepository.findOne(currentCrossFitBox, SecurityUtils.getCurrentMember(), dto.getId());
 		}
 		
 		wod.setBox(currentCrossFitBox);
@@ -122,7 +128,7 @@ public class WodService {
 
 	public Wod findOne(Long id) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-		return wodRepository.findOne(currentCrossFitBox, id);
+		return wodRepository.findOne(currentCrossFitBox, SecurityUtils.getCurrentMember(), id);
 	}
 
 
