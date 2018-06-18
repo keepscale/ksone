@@ -10,6 +10,12 @@ export class WodPublication{
     }
 
 }
+export class WodWhareProperties{
+    
+    public ownerId: number;
+    public visibility: string;
+
+}
 export class Wod{
     public id: number;
     public name: string;
@@ -24,7 +30,9 @@ export class Wod{
     public taggedMovements:Movement[] = [];
     public taggedEquipments:Equipment[] = [];
     
-    public publications:WodPublication[] = []
+    public publications:WodPublication[] = [];
+
+    public shareProperties:WodWhareProperties;
 
     constructor(){
     }
