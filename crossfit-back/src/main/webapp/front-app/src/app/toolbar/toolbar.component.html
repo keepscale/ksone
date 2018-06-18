@@ -9,6 +9,11 @@
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
 
+
+    <button mat-button mat-icon-button aria-label="Back" (click)="goBack()" *ngIf="showGoBackButton" >
+      <mat-icon aria-label="{{'app.toolbar.back.button.label' | translate}">arrow_back</mat-icon>
+    </button>
+
     <span>{{title}}</span>
 
     <span class="spacer"></span>

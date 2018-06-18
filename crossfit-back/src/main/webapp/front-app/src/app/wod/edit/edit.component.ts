@@ -42,6 +42,7 @@ export class EditComponent implements OnInit {
     let id = this.route.snapshot.paramMap.get('id');
     if (!id){
       this.toolbar.setTitle("Proposer un WOD");
+      this.toolbar.setOnGoBack(()=>this.router.navigate(['wod']));
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
@@ -51,6 +52,7 @@ export class EditComponent implements OnInit {
       this.service.get(id).subscribe(w=>{
           this.wod = w;
           this.toolbar.setTitle("Modifier un WOD");
+          this.toolbar.setOnGoBack(()=>this.router.navigate(['wod', this.wod.id, 'detail']));
         },
         err=>{
           this.router.navigate(["wod"]);

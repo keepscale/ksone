@@ -29,6 +29,8 @@ export class DetailComponent implements OnInit {
 
   ngOnInit() {
     this.toolbar.setTitle("Mes résultat");
+    this.toolbar.setOnGoBack(this.goToSearch.bind(this));
+
     let wodId = +this.route.snapshot.paramMap.get('id');
     if (wodId){
       this.service.get(wodId).subscribe(w=>{
@@ -67,5 +69,10 @@ export class DetailComponent implements OnInit {
 
   isEditing(result:WodResult){
     return this.resultsEditing.indexOf(result) != -1;
+  }
+
+  goToSearch(){
+    this.router.navigate(['wod']);
+    return;
   }
 }

@@ -26,6 +26,8 @@ export class ToolbarComponent implements OnInit {
   searchPlaceHolder: string;
   searchText: string;
 
+  showGoBackButton: boolean;
+
   firstSub: Subscription;
 
   menuItems: MenuItem[] = [];
@@ -38,11 +40,13 @@ export class ToolbarComponent implements OnInit {
     this.router.events.subscribe(event=>{
       this.showSearchToolBar = false;
       this.showSearchButton = false;
+      this.showGoBackButton = false;
       this.menuItems = [];
     })
     this.toolbar.getTitle().subscribe(t=>this.title=t); 
     this.toolbar.getSearchPlaceHolder().subscribe(t=>this.searchPlaceHolder=t);
     this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a)
+    this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a)
 
 
   }
@@ -51,6 +55,9 @@ export class ToolbarComponent implements OnInit {
   }
   search(){
     this.toolbar.search(this.searchText);
+  }
+  goBack(){
+    this.toolbar.goBack();
   }
   hideSearch(){
     this.showSearchToolBar=false;
