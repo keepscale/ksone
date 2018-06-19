@@ -50,6 +50,12 @@ export class WodService {
 
 
   
+  findAllMyPastResult(page: number = 1){
+    return this.http.get<WodResult[]>("/api/results/pastresults", {
+      params: new HttpParams().set("page", page.toString())
+    }
+  );
+  }
   getMyResult(wodId){
     return this.http.get<WodResult[]>("/api/wod/" + wodId + "/results");
   }

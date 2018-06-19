@@ -1,9 +1,10 @@
-import { Movement } from "./movement.model";
-import { Equipment } from "./equipment.model";
+import { Wod } from "./wod.model";
 
 export class WodResult{
     public id: number;
     public date: Date;
+
+    public wod: Wod;
     
 	public totalLoadInKilo:number;
     public totalMinute:number;

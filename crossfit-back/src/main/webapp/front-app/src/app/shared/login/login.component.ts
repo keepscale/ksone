@@ -11,13 +11,13 @@ import { Principal } from '../auth/principal.service';
 })
 export class LoginComponent implements OnInit {
 
-  private username: string;
-  private password: string;
-  private rememberme: boolean;
+  username: string;
+  password: string;
+  rememberme: boolean;
 
-  private error;
-  private loginFailed: boolean;
-  private status: string;
+  error;
+  loginFailed: boolean;
+  status: string;
 
 
   constructor(private authService: AuthService,  private router: Router, private principal: Principal) { }

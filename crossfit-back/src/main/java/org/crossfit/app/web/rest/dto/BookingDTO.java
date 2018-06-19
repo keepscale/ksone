@@ -1,6 +1,7 @@
 package org.crossfit.app.web.rest.dto;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
+import org.crossfit.app.domain.workouts.Wod;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -95,7 +97,7 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime checkInDate;
-	
+		
 	public BookingDTO() {
 		super();
 	}

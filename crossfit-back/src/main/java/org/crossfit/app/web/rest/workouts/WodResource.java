@@ -75,7 +75,7 @@ public class WodResource {
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};
-		List<Wod> result = wodService.findAll(customSearch).stream().sorted(
+		List<Wod> result = wodService.findAllMyWod(customSearch).stream().sorted(
 				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList());
 		
@@ -90,25 +90,6 @@ public class WodResource {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-
-	@RequestMapping(value = "/wod/{id}/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Set<WodResult>> getMyWodResults(@PathVariable Long id){
-		
-		Set<WodResult> result = wodService.findMyResults(id);
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/wod/{wodId}/results", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WodResult> saveMyResult(@PathVariable Long wodId, @Valid @RequestBody WodResult resultdto){
-		WodResult result = wodService.saveMyResult(wodId, resultdto);
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/wod/{wodId}/results/{resultId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> saveMyResult(@PathVariable Long wodId, @PathVariable Long resultId){
-		wodService.deleteMyResult(wodId, resultId);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
 
 
 	@RequestMapping(value = "/wod/{wodId}/{datestr}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

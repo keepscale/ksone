@@ -5,16 +5,6 @@
   <form novalidate (ngSubmit)="onSubmit()">
 
     <mat-expansion-panel [expanded]="true" hideToggle="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-            {{'wod.score.' + wod.score | translate}}
-        </mat-panel-title>
-        <mat-panel-description>
-            {{'wod.category.' + wod.category | translate}}
-            {{wod.name}}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
       <p style="white-space: pre;">{{wod.description}}</p>
       <mat-accordion>
         

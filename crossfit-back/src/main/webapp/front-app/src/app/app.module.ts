@@ -11,6 +11,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
 import { WodModule } from './wod/wod.module';
 import { ToolbarModule } from './toolbar/toolbar.module';
+import { BookingModule } from './booking/booking.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -46,6 +47,7 @@ const appRoutes: Routes = [
     LayoutModule,
     MatSidenavModule,
     WodModule,
+    BookingModule,
     ToolbarModule
   ],
   bootstrap: [AppComponent],

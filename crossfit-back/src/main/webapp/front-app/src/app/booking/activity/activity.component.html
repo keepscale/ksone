@@ -1,0 +1,10 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="i === 0">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{b.startAt | date: 'HH:mm \'-\' EEE, dd MMMM yyyy'}} - {{b.title}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+  </mat-expansion-panel>
+</mat-accordion>
