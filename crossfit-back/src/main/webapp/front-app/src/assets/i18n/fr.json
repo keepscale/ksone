@@ -1,6 +1,7 @@
 {
 	"app": {
 		"menu": {
+			"activity": "Activité",
 			"WOD": "WOD",
 			"logout": "Déconnexion"
 		}

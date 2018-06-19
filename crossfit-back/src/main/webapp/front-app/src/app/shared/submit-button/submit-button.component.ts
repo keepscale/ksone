@@ -8,13 +8,13 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SubmitButtonComponent implements OnInit {
 
   @Input('value')
-  private buttonValue = "Sauvegarder";
+  buttonValue = "Sauvegarder";
   
   @Input('i18n')
-  private i18n = "";
+  i18n = "";
 
   @Input('disabled')
-  private disabled = false;
+  disabled = false;
 
   constructor() { }
 

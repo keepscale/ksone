@@ -11,8 +11,8 @@ import { Principal } from '../../shared/auth/principal.service';
 })
 export class WodListComponent implements OnInit {
 
-  private currentMemberId: number;
-  private wods:Wod[] = [];
+  currentMemberId: number;
+  wods:Wod[] = [];
 
   constructor(private toolbar: ToolBarService, 
     private wodService: WodService, 

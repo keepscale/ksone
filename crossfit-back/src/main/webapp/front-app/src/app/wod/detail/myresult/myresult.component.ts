@@ -12,15 +12,15 @@ import { WodService } from '../../wod.service';
 export class MyResultComponent implements OnInit {
 
   @Input("wod")
-  private wod: Wod;
+  wod: Wod;
   @Input("myresult")
-  private myresult: WodResult;
+  myresult: WodResult;
   @Input("editable")
-  private editable: boolean = true;
+  editable: boolean = true;
   
-  private mode:string = "READ";
-  private status: string;
-  private error: string;
+  mode:string = "READ";
+  status: string;
+  error: string;
 
   @Output() onEditMode = new EventEmitter<boolean>();
 

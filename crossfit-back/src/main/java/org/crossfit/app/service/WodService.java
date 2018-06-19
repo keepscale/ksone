@@ -21,6 +21,7 @@ import org.crossfit.app.repository.MovementRepository;
 import org.crossfit.app.repository.WodRepository;
 import org.crossfit.app.repository.WodResultRepository;
 import org.crossfit.app.security.SecurityUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class WodService {
 	}
 
 
-	public Set<Wod> findAll(String search) {
+	public Set<Wod> findAllMyWod(String search) {
 		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search);
 	}
 
@@ -206,5 +207,11 @@ public class WodService {
 	}
 	private static Double getOrDefault(Double value, Double defaultValue) {
 		return value == null ? defaultValue : value;
+	}
+
+
+	public Set<WodResult> findMyResultsBetween(DateTime start, DateTime end) {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();		
+		return this.wodResultRepository.findAll(box, SecurityUtils.getCurrentMember(), start, end);
 	}
 }

@@ -13,12 +13,12 @@ import { Principal } from '../../shared/auth/principal.service';
 })
 export class DetailComponent implements OnInit {
 
-  private status: string;
-  private error: string;
-  private wod: Wod;
-  private wodResults: WodResult[];
+  status: string;
+  error: string;
+  wod: Wod;
+  wodResults: WodResult[];
 
-  private result: any = {};
+  result: any = {};
   
   constructor(
     private route: ActivatedRoute,

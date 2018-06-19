@@ -19,13 +19,13 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 export class EditComponent implements OnInit {
   
   
-  private availableWodScore: String[];
-  private availableWodCategories: String[];
-  private availableMovements: Movement[] = [];
-  private availableEquipments: Equipment[] = [];
-  private status: string;
-  private error: string;
-  private wod: Wod;
+  availableWodScore: String[];
+  availableWodCategories: String[];
+  availableMovements: Movement[] = [];
+  availableEquipments: Equipment[] = [];
+  status: string;
+  error: string;
+  wod: Wod;
 
   constructor(
     private service: WodService,

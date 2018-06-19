@@ -13,13 +13,13 @@ import { Wod } from '../../domain/wod.model';
 export class RankingComponent implements OnInit, OnChanges {
 
   @Input("wod")
-  private wod: Wod;
+  wod: Wod;
   @Input("myresult")
-  private myresult: WodResult;
+  myresult: WodResult;
   rankings: WodResultRanking[];
   rankingsInCategory: WodResultRanking[];
   @Input("mode")
-  private mode:string = "COMPATE_TO_ME";
+  mode:string = "COMPATE_TO_ME";
 
   constructor(
     private route: ActivatedRoute,
