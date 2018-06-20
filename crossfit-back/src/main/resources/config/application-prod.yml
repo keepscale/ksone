@@ -62,7 +62,5 @@ async:
     queueCapacity: 10000
             
 mail:
-    username: ${SENDGRID_USERNAME}
-    password: ${SENDGRID_PASSWORD}
-    protocol: sendgrid
+    sendgrid.api.key: ${SENDGRID_API_KEY}
     from: ne-pas-repondre@crossfit-nancy.fr
