@@ -1,4 +1,5 @@
 import { WodResult } from "../../wod/domain/wod-result.model";
+import { Wod } from "../../wod/domain/wod.model";
 
 export interface Booking{
     id: number;
@@ -15,5 +16,5 @@ export interface Booking{
 	cardUuid:string;
     checkInDate: Date;
 
-    results: WodResult[];
+    availableWods: Wod[];
 }

@@ -22,6 +22,9 @@ const wodsRoutes: Routes = [
     RouterModule.forChild(wodsRoutes),
     CommonModule
   ],
+  exports: [
+    MyResultComponent
+  ],
   declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent],
   providers: []
 })

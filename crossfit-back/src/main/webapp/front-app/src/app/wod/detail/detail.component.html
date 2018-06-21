@@ -15,11 +15,11 @@
             </mat-panel-title>
 
             <mat-panel-description>
-                <app-myresult [wod]="wod" [myresult]="myresult" [editable]="false" class="hide-mobile-portrait"></app-myresult>
+                <app-myresult [wod]="wod" [result]="myresult" [editable]="false" class="hide-mobile-portrait"></app-myresult>
             </mat-panel-description>
           </mat-expansion-panel-header>
           
-          <app-myresult [wod]="wod" [myresult]="myresult" (onEditMode)="onEdit($event, myresult)"></app-myresult>
+          <app-myresult [wod]="wod" [result]="myresult" (onEditMode)="onEdit($event, myresult)"></app-myresult>
 
           <mat-tab-group *ngIf="!isEditing(myresult)">
               <mat-tab label="Classement">

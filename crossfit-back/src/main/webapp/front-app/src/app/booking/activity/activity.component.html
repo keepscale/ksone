@@ -2,9 +2,43 @@
   <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="i === 0">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        {{b.startAt | date: 'HH:mm \'-\' EEE, dd MMMM yyyy'}} - {{b.title}}
+        {{b.startAt | date: 'EEE, dd MMMM yyyy \'à\' HH:mm'}} - {{b.title}}
       </mat-panel-title>
     </mat-expansion-panel-header>
 
+    <mat-expansion-panel [expanded]="true" hideToggle="true" *ngFor="let wod of b.availableWods;">
+
+        <p style="white-space: pre;">{{wod.description}}</p>
+        
+        <mat-grid-list cols="1" rowHeight="1:1">
+            <div *ngFor="let result of wod.myresults">
+                <app-myresult             
+                *ngIf="result.date === b.date"
+                [wod]="wod" 
+                [result]="result" 
+                [defaultDate]="b.date" 
+                [editable]="true" 
+                [removable]="true"
+                (onSaved)="onSaved($event)"
+                (onDelete)="onDelete(result)" ></app-myresult>
+
+            </div>
+
+
+            <app-myresult             
+              *ngIf="wod.myresults.length == 0"
+              [wod]="wod"  
+              [defaultDate]="b.date" 
+              [editable]="true" 
+              (onSaved)="onSaved($event)"></app-myresult>
+        </mat-grid-list>
+    </mat-expansion-panel>
+
+    <a routerLink="/wod/new" *ngIf="b.availableWods.length == 0">
+      <button class="add" mat-raised-button color="primary" type="button">
+        <mat-icon aria-label="{{'wod.add.button.label' | translate}">add</mat-icon>
+        <mat-label>{{'wod.add.button.label' | translate}}</mat-label>
+      </button>
+    </a>
   </mat-expansion-panel>
 </mat-accordion>
