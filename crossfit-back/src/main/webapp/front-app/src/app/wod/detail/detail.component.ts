@@ -37,16 +37,6 @@ export class DetailComponent implements OnInit {
           this.wod = w;
           this.service.getMyResult(wodId).subscribe(res=>{
             this.wodResults=res;
-            this.wod.publications.forEach(publi => {              
-              if (this.wodResults.filter(r=>r.date==publi.date).length===0){
-                let result = new WodResult();
-                result.category = "RX";
-                this.principal.identity().subscribe(principal=>result.title=principal.title);
-                result.date = publi.date;
-                this.wodResults.push(result);
-                return result;
-              }
-            });
             this.wodResults.sort((r1,r2)=>new Date(r2.date).getDate() - new Date(r1.date).getDate());
           });
         },

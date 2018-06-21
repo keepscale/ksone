@@ -1,5 +1,6 @@
 import { Movement } from "./movement.model";
 import { Equipment } from "./equipment.model";
+import { WodResult } from "./wod-result.model";
 
 export class WodPublication{
     
@@ -33,6 +34,8 @@ export class Wod{
     public publications:WodPublication[] = [];
 
     public shareProperties:WodWhareProperties;
+
+    myresults: WodResult[];
 
     constructor(){
     }

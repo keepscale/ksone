@@ -4,6 +4,7 @@ import { ActivityComponent } from './activity/activity.component';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../shared/auth/auth.guard';
 import { SharedModule } from '../shared/shared.module';
+import { WodModule } from '../wod/wod.module';
 
 
 const bookingsRoutes: Routes = [
@@ -14,7 +15,8 @@ const bookingsRoutes: Routes = [
   imports: [
     SharedModule,
     RouterModule.forChild(bookingsRoutes),
-    CommonModule
+    CommonModule,
+    WodModule
   ],
   declarations: [ActivityComponent],
   providers: []

@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.domain.workouts.Wod;
+import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.exception.booking.NotBookingOwnerException;
 import org.crossfit.app.exception.booking.UnableToDeleteBooking;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
@@ -37,6 +40,7 @@ import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.BookingService;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
+import org.crossfit.app.service.WodService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.BookingEventDTO;
@@ -84,6 +88,9 @@ public class BookingResource {
     
     @Inject
     private BookingService bookingService;
+    
+    @Inject
+    private WodService wodService;
 
 	@Inject
 	private CardEventRepository cardEventRepository;
@@ -124,7 +131,7 @@ public class BookingResource {
 		page = bookingRepository.findAllByMemberAfter(SecurityUtils.getCurrentMember(), timeService.nowAsDateTime(currentCrossFitBox), PaginationUtil.generatePageRequest(offset, limit));
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bookings", offset, limit);
-        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking).collect(Collectors.toList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent().stream().map(BookingDTO.myBooking()).collect(Collectors.toList()), headers, HttpStatus.OK);
     }
     
 
@@ -141,11 +148,13 @@ public class BookingResource {
     	DateTime end = timeService.nowAsDateTime(box).minusMillis(1);
 		DateTime start = end.minusMonths(offset);
 		Set<Booking> result = bookingRepository.findAllStartBetween(box, SecurityUtils.getCurrentMember(), start, end);
+		Set<Wod> wods = wodService.findWodsBetween(start.toLocalDate(), end.toLocalDate());
+		Set<WodResult> wodResults = wodService.findMyResultsBetween(start.toLocalDate(), end.toLocalDate());
 
         Comparator<? super BookingDTO> comparator = (b1,b2) ->{
         	return b2.getStartAt().compareTo(b1.getStartAt());
         };
-		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
+		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking(wods, wodResults)).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
     }
 
 

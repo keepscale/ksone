@@ -5,6 +5,7 @@ import java.util.Set;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.workouts.Wod;
+import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,5 +34,13 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ "where w.box = :box and w.id = :id "
     		+ "and (w.shareProperties.visibility = 'PUBLIC' or w.shareProperties.owner = :owner) ")
 	Wod findOne(@Param("box") CrossFitBox box, @Param("owner") Member owner,@Param("id")  Long id );
+
+
+    @Query("select w from Wod w "
+    		+ "left join fetch w.publications "
+    		+ "where w.box = :box "
+    		+ "and (w.shareProperties.visibility = 'PUBLIC' or w.shareProperties.owner = :owner) "
+    		+ "and exists ( select pub from w.publications pub where :start <= pub.date  AND pub.date <= :end )")
+	Set<Wod> findAll(@Param("box") CrossFitBox box, @Param("owner") Member owner, @Param("start") LocalDate start, @Param("end") LocalDate end);
 
 }

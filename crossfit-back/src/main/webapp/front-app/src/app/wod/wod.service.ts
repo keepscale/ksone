@@ -56,11 +56,15 @@ export class WodService {
     }
   );
   }
+
   getMyResult(wodId){
     return this.http.get<WodResult[]>("/api/wod/" + wodId + "/results");
   }
   saveOrUpdateResult(wod:Wod, result:WodResult){
     return this.http.put<WodResult>("/api/wod/" + wod.id + "/results", result);
+  }
+  deleteResult(wod:Wod, result:WodResult){
+    return this.http.delete("/api/wod/" + wod.id + "/results/" + result.id);
   }
   getRanking(wodId, date:string){
     return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/" + date + "/ranking");

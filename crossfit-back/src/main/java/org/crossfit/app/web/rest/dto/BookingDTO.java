@@ -1,12 +1,15 @@
 package org.crossfit.app.web.rest.dto;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.Member;
@@ -15,6 +18,7 @@ import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.crossfit.app.domain.workouts.Wod;
+import org.crossfit.app.domain.workouts.WodResult;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -50,17 +54,27 @@ public class BookingDTO implements Serializable {
 		dto.setStartAt(b.getStartAt());
 		return dto;
 	};
+	public static Function<Booking, BookingDTO> myBooking(){
+		return myBooking(Collections.emptyList(), Collections.emptySet());
+	}
 
-	public static Function<Booking, BookingDTO> myBooking = b->{
-//		String membershipName = b.getSubscription().getMembership().getN	ame();
-		String timeslotName = b.getTimeSlotType().getName();
-		String title = "'" + timeslotName+"'";
-		BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
-		dto.setCreatedAt(b.getCreatedDate());
-		dto.setStartAt(b.getStartAt());
-		
-		return dto;
-	};
+	public static Function<Booking, BookingDTO> myBooking(Collection<Wod> wods, Set<WodResult> myresult){
+		return  b->{
+//			String membershipName = b.getSubscription().getMembership().getN	ame();
+			String timeslotName = b.getTimeSlotType().getName();
+			String title = "'" + timeslotName+"'";
+			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
+			dto.setCreatedAt(b.getCreatedDate());
+			dto.setStartAt(b.getStartAt());
+			dto.setAvailableWods(wods.stream()
+					.filter(wod->wod.getPublications().stream()
+							.anyMatch(pub->pub.getDate().equals(b.getStartAt().toLocalDate())))
+					.map(WodDTO.publicMapper(myresult))
+					.collect(Collectors.toSet()));
+			
+			return dto;
+		};
+	}
 
 	public static Function<Booking, BookingDTO> publicMapper = b->{
 		Member member = b.getSubscription().getMember();
@@ -97,7 +111,9 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime checkInDate;
-		
+	
+	private Set<WodDTO> availableWods = new HashSet();
+	
 	public BookingDTO() {
 		super();
 	}
@@ -189,6 +205,14 @@ public class BookingDTO implements Serializable {
 
 	public void setCheckInDate(DateTime checkInDate) {
 		this.checkInDate = checkInDate;
+	}
+	
+	public Set<WodDTO> getAvailableWods() {
+		return availableWods;
+	}
+
+	public void setAvailableWods(Set<WodDTO> availableWods) {
+		this.availableWods = availableWods;
 	}
 
 	@Override

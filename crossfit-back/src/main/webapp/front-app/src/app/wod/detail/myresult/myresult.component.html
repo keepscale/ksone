@@ -1,48 +1,50 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!myresult"></mat-progress-bar>
-
-<div *ngIf="editable && myresult && mode=='EDIT'" [ngSwitch]="wod.score" style="width: 100%">
+<div *ngIf="editable && editedResult && mode=='EDIT'" [ngSwitch]="wod.score" style="width: 100%">
           
-  <form novalidate (ngSubmit)="onSubmit()">
-    <mat-label>Saisissez votre score</mat-label>
+  <form novalidate (ngSubmit)="submit()">
 
 
     <div *ngSwitchCase="'FOR_LOAD'">      
       <mat-form-field >
-        <input matInput type="number" placeholder="{{'wod.myscore.totalLoadInKilo.placeholder' | translate}}"  [(ngModel)]="myresult.totalLoadInKilo" name="result.totalLoadInKilo">
+        <input matInput type="number" placeholder="{{'wod.myscore.totalLoadInKilo.placeholder' | translate}}" 
+         [(ngModel)]="editedResult.totalLoadInKilo" name="result.totalLoadInKilo">
       </mat-form-field>
     </div>
 
 
     <div *ngSwitchCase="'FOR_TIME'">
         <mat-form-field >
-          <input matInput type="number" placeholder="{{'wod.myscore.totalMinute.placeholder' | translate}}"  [(ngModel)]="myresult.totalMinute" name="result.totalMinute">
+          <input matInput type="number" placeholder="{{'wod.myscore.totalMinute.placeholder' | translate}}" 
+           [(ngModel)]="editedResult.totalMinute" name="result.totalMinute">
         </mat-form-field>
         <mat-form-field >
-          <input matInput type="number"  placeholder="{{'wod.myscore.totalSecond.placeholder' | translate}}"  [(ngModel)]="myresult.totalSecond" name="result.totalSecond">
+          <input matInput type="number"  placeholder="{{'wod.myscore.totalSecond.placeholder' | translate}}" 
+           [(ngModel)]="editedResult.totalSecond" name="result.totalSecond">
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="'FOR_ROUNDS_REPS'">
       <mat-form-field>
-          <input matInput type="number" placeholder="{{'wod.myscore.totalCompleteRound.placeholder' | translate}}"  [(ngModel)]="myresult.totalCompleteRound" name="result.totalCompleteRound">
+          <input matInput type="number" placeholder="{{'wod.myscore.totalCompleteRound.placeholder' | translate}}" 
+           [(ngModel)]="editedResult.totalCompleteRound" name="result.totalCompleteRound">
       </mat-form-field>
       <mat-form-field >
-          <input matInput type="number" placeholder="{{'wod.myscore.totalReps.placeholder' | translate}}"  [(ngModel)]="myresult.totalReps" name="result.totalReps">
+          <input matInput type="number" placeholder="{{'wod.myscore.totalReps.placeholder' | translate}}" 
+           [(ngModel)]="editedResult.totalReps" name="result.totalReps">
       </mat-form-field>
     </div>
     
     <div>
-        <mat-button-toggle-group class="category-group" (change)="myresult.category=$event.value">
+        <mat-button-toggle-group class="category-group" (change)="editedResult.category=$event.value">
           <mat-button-toggle class="category-button" 
-            *ngFor="let t of ['RX', 'SCALED']" value="{{t}}" [checked]="t==myresult.category">
+            *ngFor="let t of ['RX', 'SCALED']" value="{{t}}" [checked]="t==editedResult.category">
             {{'wod.myscore.category.' + t | translate}}
           </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
     <div>
-      <mat-button-toggle-group class="title-group" (change)="myresult.title=$event.value">
+      <mat-button-toggle-group class="title-group" (change)="editedResult.title=$event.value">
         <mat-button-toggle class="title-button" 
-          *ngFor="let t of ['MS', 'MR']" value="{{t}}" [checked]="t==myresult.title">
+          *ngFor="let t of ['MS', 'MR']" value="{{t}}" [checked]="t==editedResult.title">
           {{'wod.myscore.title.' + t | translate}}
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -50,8 +52,14 @@
     
 
     <div class="form-footer">
+      
+      <button mat-raised-button type="button" (click)="delete()" *ngIf="removable && editedResult.id">
+        {{'result.remove.button.label' | translate}}
+      </button>
+      <button mat-raised-button type="button" (click)="readMode()">
+        {{'cancel.button' | translate}}
+      </button>
       <submit-button></submit-button>  
-      <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
     </div>
 
   </form>
@@ -59,25 +67,32 @@
 </div>
 
 
-<div *ngIf="myresult && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
+<div *ngIf="result && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
+  <button mat-button mat-icon-button type="button" (click)="editMode()" *ngIf="editable">
+    <mat-icon aria-label="{{'result.edit.button.label' | translate}">edit</mat-icon>
+  </button>
+  <mat-label>
+      {{'wod.myscore.category.' + result.category | translate}} |
+  </mat-label>
 
-    <mat-label>
-        {{'wod.myscore.category.' + myresult.category | translate}} |
-    </mat-label>
+  <span *ngSwitchCase="'FOR_LOAD'">
+    {{result.totalLoadInKilo}} Kg
+  </span>
 
-    <span *ngSwitchCase="'FOR_LOAD'">
-      {{myresult.totalLoadInKilo}} Kg
-    </span>
-  
-    <span *ngSwitchCase="'FOR_TIME'">
-        {{myresult.totalMinute}}min {{myresult.totalSecond}}s. 
-    </span>
+  <span *ngSwitchCase="'FOR_TIME'">
+      {{result.totalMinute}}min {{result.totalSecond}}s. 
+  </span>
 
-    <span *ngSwitchCase="'FOR_ROUNDS_REPS'">
-        {{myresult.totalCompleteRound}} tours complet.  {{myresult.totalReps}} reps. 
-    </span>
-
-    <button mat-button type="button" (click)="editMode()" *ngIf="editable">
-      <mat-icon aria-label="{{'wod.edit.button.label' | translate}">edit</mat-icon>
-    </button>
+  <span *ngSwitchCase="'FOR_ROUNDS_REPS'">
+      {{result.totalCompleteRound}} tours complet.  {{result.totalReps}} reps. 
+  </span>
 </div>
+
+<div *ngIf="!result && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
+  <button mat-button type="button" (click)="editMode()" *ngIf="editable">
+    <mat-icon aria-label="{{'result.add.button.label' | translate}">add</mat-icon>
+    <mat-label>Saisissez votre score</mat-label>
+  </button>
+</div>
+
+<mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
