@@ -18,6 +18,8 @@ export class MenuItem{
 })
 export class ToolbarComponent implements OnInit {
 
+  sideNavOpened: boolean = false;
+
   title: string;
 
 
@@ -52,6 +54,9 @@ export class ToolbarComponent implements OnInit {
   }
   onToggleSideNav(){
     this.toggleSideNav.emit();
+  }
+  sideNavChange(opened: boolean){
+    this.sideNavOpened = opened;
   }
   search(){
     this.toolbar.search(this.searchText);

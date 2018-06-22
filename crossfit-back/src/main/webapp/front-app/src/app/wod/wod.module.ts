@@ -23,7 +23,7 @@ const wodsRoutes: Routes = [
     CommonModule
   ],
   exports: [
-    MyResultComponent
+    MyResultComponent, RankingComponent
   ],
   declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent],
   providers: []
