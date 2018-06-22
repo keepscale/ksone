@@ -86,7 +86,7 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 	@JoinTable(name = "WOD_EQUIPMENT", joinColumns = @JoinColumn(name = "wod_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "equipment_id", referencedColumnName = "ID"))
 	private Set<Equipment> taggedEquipments;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod", cascade= {CascadeType.ALL})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="wod", cascade= {CascadeType.ALL}, orphanRemoval=true)
 	private Set<WodPublication> publications = new HashSet<>();
 
 	@Embedded

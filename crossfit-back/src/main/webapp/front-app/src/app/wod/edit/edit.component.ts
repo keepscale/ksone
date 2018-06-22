@@ -40,13 +40,20 @@ export class EditComponent implements OnInit {
     this.service.getMovements().subscribe(res=>this.availableMovements=res);
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
-    this.toolbar.setOnGoBack(()=>this.router.navigate(['wod']));
+    this.toolbar.setOnGoBack(()=>{
+      let goBack = this.route.snapshot.paramMap.get("goBack");
+      let path = goBack == null ? 'wod' : goBack;
+      let adate = this.wod.publications.length == 0 ? null : this.wod.publications[0].date.toISOString().slice(0,10);
+      this.router.navigate([path, {'date': adate}])
+    }
+    );
     if (!id){
       this.toolbar.setTitle("Proposer un WOD");
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
-      this.addPublicationDate(new Date());
+      let date = this.route.snapshot.paramMap.get("date");
+      this.addPublicationDate(date == null ? new Date() : new Date(date));
     }
     else{
       this.service.get(id).subscribe(w=>{
@@ -108,10 +115,8 @@ export class EditComponent implements OnInit {
     this.status = "wait";
     this.service.save(this.wod).subscribe(
       success=>{
-        setTimeout (() => {
-          this.status = "success";
-          this.router.navigate(["wod"]);
-        }, 1000)
+        this.status = "success";
+        this.toolbar.goBack();
       },
       e=>{
         this.status = "error";

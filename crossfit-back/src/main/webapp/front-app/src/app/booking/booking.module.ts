@@ -8,7 +8,7 @@ import { WodModule } from '../wod/wod.module';
 
 
 const bookingsRoutes: Routes = [
-  { path: 'activity',  component: ActivityComponent, canActivate: [AuthGuard] }
+  { path: 'activity',  component: ActivityComponent, pathMatch: 'prefix', canActivate: [AuthGuard] }
 ];
 
 @NgModule({

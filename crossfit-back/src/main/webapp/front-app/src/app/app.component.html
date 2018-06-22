@@ -1,10 +1,12 @@
 <div class="app-container" [class.is-mobile]="mobileQuery.matches" [class.is-mobile-portrait]="mobileQueryPortrait.matches" >
   
-  <app-toolbar (toggleSideNav)="sidenav.toggle()"></app-toolbar>
+  <app-toolbar #toolbar (toggleSideNav)="sidenav.toggle()"></app-toolbar>
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #sidenav
+    <mat-sidenav #sidenav 
+    (closedStart)="toolbar.sideNavChange(false)"
+    (openedStart)="toolbar.sideNavChange(true)"
       [mode]="mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="true" 
       fixedTopGap="56">

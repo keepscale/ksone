@@ -6,7 +6,8 @@
       aria-label="Toggle sidenav"
       mat-icon-button
       (click)="onToggleSideNav()">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      <mat-icon *ngIf="!sideNavOpened" aria-label="Side nav toggle icon">menu</mat-icon>
+      <mat-icon *ngIf="sideNavOpened" aria-label="Side nav toggle icon">close</mat-icon>
     </button>
 
 

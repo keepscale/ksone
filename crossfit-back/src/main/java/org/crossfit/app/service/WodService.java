@@ -119,7 +119,7 @@ public class WodService {
 			wod.getPublications().forEach(pub->pub.setWod(wod));
 		}
 		else {
-			wod.setPublications(null);
+			wod.getPublications().clear();
 		}
 			
 		return wodRepository.saveAndFlush(wod);
