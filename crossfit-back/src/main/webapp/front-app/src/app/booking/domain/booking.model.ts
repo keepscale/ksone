@@ -16,5 +16,4 @@ export interface Booking{
 	cardUuid:string;
     checkInDate: Date;
 
-    availableWods: Wod[];
 }

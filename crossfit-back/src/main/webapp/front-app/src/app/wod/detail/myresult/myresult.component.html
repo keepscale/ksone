@@ -54,10 +54,10 @@
     <div class="form-footer">
       
       <button mat-raised-button type="button" (click)="delete()" *ngIf="removable && editedResult.id">
-        {{'result.remove.button.label' | translate}}
+        {{'button.delete' | translate}}
       </button>
       <button mat-raised-button type="button" (click)="readMode()">
-        {{'cancel.button' | translate}}
+        {{'button.cancel' | translate}}
       </button>
       <submit-button></submit-button>  
     </div>
@@ -69,7 +69,7 @@
 
 <div *ngIf="result && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
   <button mat-button mat-icon-button type="button" (click)="editMode()" *ngIf="editable">
-    <mat-icon aria-label="{{'result.edit.button.label' | translate}">edit</mat-icon>
+    <mat-icon attr.aria-label="{{'result.edit.button.label' | translate}}">edit</mat-icon>
   </button>
   <mat-label>
       {{'wod.myscore.category.' + result.category | translate}} |
@@ -89,7 +89,7 @@
 </div>
 
 <div *ngIf="!result && mode=='READ'" [ngSwitch]="wod.score" style="width: 100%">
-  <button mat-button type="button" (click)="editMode()" *ngIf="editable">
+  <button mat-raised-button type="button" color="accent" (click)="editMode()" *ngIf="editable">
     <mat-icon aria-label="{{'result.add.button.label' | translate}">add</mat-icon>
     <mat-label>Saisissez votre score</mat-label>
   </button>

@@ -148,8 +148,8 @@ public class BookingResource {
     	DateTime end = timeService.nowAsDateTime(box).minusMillis(1);
 		DateTime start = end.minusMonths(offset);
 		Set<Booking> result = bookingRepository.findAllStartBetween(box, SecurityUtils.getCurrentMember(), start, end);
-		Set<Wod> wods = wodService.findWodsBetween(start.toLocalDate(), end.toLocalDate());
-		Set<WodResult> wodResults = wodService.findMyResultsBetween(start.toLocalDate(), end.toLocalDate());
+//		Set<Wod> wods = wodService.findWodsBetween(start.toLocalDate(), end.toLocalDate());
+//		Set<WodResult> wodResults = wodService.findMyResultsBetween(start.toLocalDate(), end.toLocalDate());
 
         Comparator<? super BookingDTO> comparator = (b1,b2) ->{
         	return b2.getStartAt().compareTo(b1.getStartAt());

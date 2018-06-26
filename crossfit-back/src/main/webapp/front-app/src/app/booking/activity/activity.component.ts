@@ -8,6 +8,15 @@ import { Principal } from '../../shared/auth/principal.service';
 import { Wod } from '../../wod/domain/wod.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
+export class BookingsDay{
+  date: Date;
+  bookings: Booking[];
+  constructor(date:Date){
+    this.date = date;
+    this.bookings = [];
+  }
+}
+
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
@@ -22,18 +31,34 @@ export class ActivityComponent implements OnInit {
     private route: ActivatedRoute,
     private principal: Principal) { }
 
-  bookings: Booking[] = [];
+  bookings: BookingsDay[] = [];
   pastMonth: number=1;
 
   openedDate: string;
+  
+  status: string;
+  error: string;
 
   ngOnInit() {
-    this.toolbar.setTitle("Mon activité")
+    this.toolbar.setTitle("Mon activité");
+    this.status="wait";
     this.bookingService.findAllPastBooking(this.pastMonth).subscribe(
-      res=>{
-        this.bookings=res;
-      }
-    );
+      success=>{
+          this.bookings=success.reduce(function(map:BookingsDay[], booking, index, array){
+            let bday= map.filter(bday=>bday.date===booking.date)[0];
+            if (bday==null){
+              bday = new BookingsDay(booking.date);
+              map.push(bday);
+            }
+            bday.bookings.push(booking);
+            return map;
+          },[]);
+          this.status = "success";
+      },
+      e=>{
+        this.status = "error";
+        this.error = e.error;
+    });
 
     this.route.paramMap.subscribe(map=>{
       this.openedDate=map.get("date");
