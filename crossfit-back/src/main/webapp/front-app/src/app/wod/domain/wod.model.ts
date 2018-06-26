@@ -36,6 +36,8 @@ export class Wod{
     public shareProperties:WodWhareProperties;
 
     myresults: WodResult[];
+    myresultAtDate: WodResult;
+
 
     constructor(){
     }

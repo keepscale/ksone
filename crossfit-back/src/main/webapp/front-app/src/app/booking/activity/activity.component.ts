@@ -7,6 +7,7 @@ import { WodResult } from '../../wod/domain/wod-result.model';
 import { Principal } from '../../shared/auth/principal.service';
 import { Wod } from '../../wod/domain/wod.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 export class BookingsDay{
   date: Date;
@@ -34,10 +35,12 @@ export class ActivityComponent implements OnInit {
   bookings: BookingsDay[] = [];
   pastMonth: number=1;
 
-  openedDate: string;
+  currentBookingsDay: BookingsDay;
   
   status: string;
   error: string;
+
+  wods: Wod[] = [];
 
   ngOnInit() {
     this.toolbar.setTitle("Mon activité");
@@ -53,6 +56,14 @@ export class ActivityComponent implements OnInit {
             bday.bookings.push(booking);
             return map;
           },[]);
+          
+          this.route.paramMap.subscribe(map=>{
+            let match = this.bookings.filter(b=>b.date+""===map.get("date"));
+            if (match.length==1){
+              this.loadBookingDate(match[0]);
+            }
+          });
+          
           this.status = "success";
       },
       e=>{
@@ -60,37 +71,32 @@ export class ActivityComponent implements OnInit {
         this.error = e.error;
     });
 
-    this.route.paramMap.subscribe(map=>{
-      this.openedDate=map.get("date");
-      console.log(this.openedDate);
-    });
   }
-
-  findMyResultAtDate(results:WodResult[], at:Date){
-    let res = results.filter(r=>r.date === at);
-    if (res.length > 0){
-      return res[0];
-    }
-    else{
-      return null;
-    }
-  }
-
-  openBooking(b: Booking){
+  
+  openBookingsDay(b: BookingsDay){
     this.router.navigate(["activity", {'date': b.date}]);
   }
 
+  loadBookingDate(b: BookingsDay){
+    this.wods = [];
+    this.status="wait";
 
-  onUpdateResult(result: WodResult, updatedResult: WodResult){
-    Object.assign(result, updatedResult);
+    this.wodService.findAllWodAtDateWithMyResult(b.date).subscribe(res=>{      
+      this.wods = res;
+      this.currentBookingsDay = b;
+      this.status = "success";
+    });
   }
-  onCreateResult(wod: Wod, createdResult: WodResult){
-    if (!wod.myresults){
-      wod.myresults = [];
+
+  onSaveResult(wod: Wod, updatedResult: WodResult){
+    if (wod.myresultAtDate == null){
+      wod.myresultAtDate = updatedResult;
     }
-    wod.myresults.push(createdResult);
+    else{
+      Object.assign(wod.myresultAtDate, updatedResult);
+    }
   }
-  onDeleteResult(wod: Wod, deleteResult: WodResult){
-    wod.myresults.splice(wod.myresults.indexOf(deleteResult), 1);
+  onDeleteResult(wod: Wod){
+    wod.myresultAtDate = null;
   }
 }

@@ -1,36 +1,34 @@
 package org.crossfit.app.web.rest.dto;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodPublication;
 import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.domain.workouts.WodShareProperties;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
+import org.joda.time.LocalDate;
 
 public class WodDTO {
 	
-	public static Function<Wod, WodDTO> publicMapper(Set<WodResult> myresult) {
+	public static Function<Wod, WodDTO> publicMapper(LocalDate date, WodResult myresultAtDate) {
 		return wod->{
 			WodDTO dto = new WodDTO();
 			dto.setId(wod.getId());
-			dto.setPublications(wod.getPublications());
+			dto.setDate(date);
 			dto.setName(wod.getName());
 			dto.setCategory(wod.getCategory());
 			dto.setDescription(wod.getDescription());
 			dto.setScore(wod.getScore());
 			dto.setShareProperties(wod.getShareProperties());
-			dto.setMyresults(myresult.stream().filter(res->res.getWod().equals(wod)).collect(Collectors.toSet()));
+			dto.setMyresultAtDate(myresultAtDate);
 			return dto;
 		};
 	}
 	
 	
 	private Long id;
+	private LocalDate date;
 
 	private String name;
 	private String description;
@@ -38,10 +36,9 @@ public class WodDTO {
 	private WodCategory category;
 	private WodScore score;
 
-	private Set<WodPublication> publications = new HashSet<>();
 	private WodShareProperties shareProperties;
 	
-	private Set<WodResult> myresults = new HashSet<>();
+	private WodResult myresultAtDate;
 
 	public Long getId() {
 		return id;
@@ -83,13 +80,6 @@ public class WodDTO {
 		this.description = description;
 	}
 
-	public Set<WodPublication> getPublications() {
-		return publications;
-	}
-
-	public void setPublications(Set<WodPublication> publications) {
-		this.publications = publications;
-	}
 
 	public WodShareProperties getShareProperties() {
 		return shareProperties;
@@ -99,11 +89,20 @@ public class WodDTO {
 		this.shareProperties = shareProperties;
 	}
 
-	public Set<WodResult> getMyresults() {
-		return myresults;
+	public LocalDate getDate() {
+		return date;
 	}
 
-	public void setMyresults(Set<WodResult> myresults) {
-		this.myresults = myresults;
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
+
+	public WodResult getMyresultAtDate() {
+		return myresultAtDate;
+	}
+
+	public void setMyresultAtDate(WodResult myresultAtDate) {
+		this.myresultAtDate = myresultAtDate;
+	}
+
 }

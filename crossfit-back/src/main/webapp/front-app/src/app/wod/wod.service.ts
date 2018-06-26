@@ -6,6 +6,7 @@ import { Equipment } from './domain/equipment.model';
 import { Observable } from 'rxjs';
 import { WodResult } from './domain/wod-result.model';
 import { WodResultRanking } from './domain/wod-result-ranking.model';
+import { StringifyOptions } from 'querystring';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,10 @@ export class WodService {
 
   
  
-  findAll(search: string){
+  findAll(search?: string){
     return this.http.get<Wod[]>("/api/wod", {
-        params: new HttpParams().set("query", search)
+        params: new HttpParams()
+          .set("query", search)
       }
     );
   }
@@ -47,14 +49,9 @@ export class WodService {
   getEquipments():Observable<Equipment[]>{
     return this.http.get<Equipment[]>("/api/wod/equipments");
   }
-
-
   
-  findAllMyPastResult(page: number = 1){
-    return this.http.get<WodResult[]>("/api/results/pastresults", {
-      params: new HttpParams().set("page", page.toString())
-    }
-  );
+  findAllWodAtDateWithMyResult(date: Date){
+    return this.http.get<Wod[]>("/api/wod/" + date + "/withMyResult");
   }
 
   getMyResult(wodId){
