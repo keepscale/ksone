@@ -52,6 +52,7 @@ export class EditComponent implements OnInit {
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
+      this.wod.name = "WOD";
       let date = this.route.snapshot.paramMap.get("date");
       this.addPublicationDate(date == null ? new Date() : new Date(date));
     }

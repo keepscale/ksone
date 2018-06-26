@@ -22,7 +22,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="wod.category != 'CUSTOM'">
+      <mat-form-field>
         <input matInput placeholder="{{'wod.name.placeholder' | translate}}" [(ngModel)]="wod.name" name="wod.name">
       </mat-form-field>
 

@@ -1,13 +1,32 @@
+
+<mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+
 <mat-accordion>
   <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="openedDate === b.date" (opened)="openBooking(b)">
     <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{b.startAt | date: 'EEE, dd MMMM yyyy \'à\' HH:mm'}} - {{b.title}}
+      <mat-panel-title *ngIf="b.bookings.length == 1; else multipleBooking">
+        {{b.bookings[0].startAt | date: 'EEE, dd MMMM yyyy \'à\' HH:mm'}} - {{b.bookings[0].title}}
       </mat-panel-title>
+      <ng-template #multipleBooking>
+        {{b.date | date: 'EEE, dd MMMM yyyy'}} - {{b.bookings.length}} Réservations
+      </ng-template>
     </mat-expansion-panel-header>
+<!--
+
+    <mat-form-field>
+      <mat-select placeholder="Choisissez un wod">
+        <mat-option *ngFor="let wod of b.availableWods;" [value]="wod.name">
+          {{ wod.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button mat-icon-button type="button">
+      <mat-icon attr.aria-label="{{'button.add' | translate}}">add</mat-icon>
+    </button>
+    
 
     <mat-expansion-panel [expanded]="true" hideToggle="true" *ngFor="let wod of b.availableWods;">
-
+        <h3>{{wod.name}}</h3>
         <p style="white-space: pre;">{{wod.description}}</p>
         
         <mat-grid-list cols="1" rowHeight="1:1">
@@ -47,6 +66,9 @@
               [defaultDate]="b.date" 
               [editable]="true" 
               (onSaved)="onCreateResult(wod, $event)"></app-myresult>
+
+              <mat-divider [inset]="true"></mat-divider>
+
         </mat-grid-list>
     </mat-expansion-panel>
 
@@ -56,5 +78,7 @@
         <mat-label>{{'wod.add.button.label' | translate}}</mat-label>
       </button>
     </a>
+  -->
+  
   </mat-expansion-panel>
 </mat-accordion>

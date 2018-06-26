@@ -1,4 +1,9 @@
 {
+	"button":{
+		"cancel": "Annuler",
+		"save": "Sauvegarder",
+		"delete": "Supprimer"
+	},
 	"app": {
 		"menu": {
 			"activity": "Activité",
