@@ -65,13 +65,7 @@ public class BookingDTO implements Serializable {
 			String title = "'" + timeslotName+"'";
 			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
 			dto.setCreatedAt(b.getCreatedDate());
-			dto.setStartAt(b.getStartAt());
-			dto.setAvailableWods(wods.stream()
-					.filter(wod->wod.getPublications().stream()
-							.anyMatch(pub->pub.getDate().equals(b.getStartAt().toLocalDate())))
-					.map(WodDTO.publicMapper(myresult))
-					.collect(Collectors.toSet()));
-			
+			dto.setStartAt(b.getStartAt());			
 			return dto;
 		};
 	}
@@ -111,9 +105,7 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime checkInDate;
-	
-	private Set<WodDTO> availableWods = new HashSet();
-	
+		
 	public BookingDTO() {
 		super();
 	}
@@ -207,14 +199,6 @@ public class BookingDTO implements Serializable {
 		this.checkInDate = checkInDate;
 	}
 	
-	public Set<WodDTO> getAvailableWods() {
-		return availableWods;
-	}
-
-	public void setAvailableWods(Set<WodDTO> availableWods) {
-		this.availableWods = availableWods;
-	}
-
 	@Override
 	public String toString() {
 		return "BookingDTO [id=" + id + ", date=" + date + ", title=" + title + ", timeslotId=" + timeslotId

@@ -68,8 +68,9 @@ public class WodService {
 	}
 
 
-	public Set<Wod> findAllMyWod(String search) {
-		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search);
+	public Set<Wod> findAllVisibleWod(String search) {
+		log.debug("findAllVisibleWod(search={}", search);
+		return wodRepository.findAllVisible(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search);
 	}
 
 	public Wod save(@Valid Wod dto) {
@@ -214,8 +215,8 @@ public class WodService {
 	}
 
 
-	public Set<WodResult> findMyResultsBetween(LocalDate start, LocalDate end) {
+	public Set<WodResult> findMyResultsAtDate(LocalDate atDate) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();		
-		return this.wodResultRepository.findAll(box, SecurityUtils.getCurrentMember(), start, end);
+		return this.wodResultRepository.findAll(box, SecurityUtils.getCurrentMember(), atDate, atDate);
 	}
 }

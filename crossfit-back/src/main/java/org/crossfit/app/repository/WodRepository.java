@@ -23,8 +23,9 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ "	or lower(w.category) like :search "
     		+ "	or lower(w.score) like :search "
     		+ "	or lower(w.description) like :search "
-    		+ ") ")
-	Set<Wod> findAll(@Param("box") CrossFitBox box, @Param("owner") Member owner, @Param("search") String search);
+    		+ ") "
+    		+ "")
+	Set<Wod> findAllVisible(@Param("box") CrossFitBox box, @Param("owner") Member owner, @Param("search") String search);
 
 
     @Query("select w from Wod w "

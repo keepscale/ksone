@@ -32,7 +32,7 @@ public interface WodResultRepository  extends JpaRepository<WodResult,Long> {
     		+ "where r.wod.box = :box "
     		+ "and r.member = :member "
     		+ "and :start <= r.date  AND r.date <= :end ")
-	Set<WodResult> findAll(@Param("box") CrossFitBox box,@Param("member") Member member, @Param("start") LocalDate start, @Param("end") LocalDate end);
+	Set<WodResult> findAll(@Param("box") CrossFitBox box, @Param("member") Member member, @Param("start") LocalDate start, @Param("end") LocalDate end);
     
     @Query("select r from WodResult r "
     		+ "where r.id = :id "

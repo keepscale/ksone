@@ -154,7 +154,7 @@ public class BookingResource {
         Comparator<? super BookingDTO> comparator = (b1,b2) ->{
         	return b2.getStartAt().compareTo(b1.getStartAt());
         };
-		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking(wods, wodResults)).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
+		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking()).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
     }
 
 

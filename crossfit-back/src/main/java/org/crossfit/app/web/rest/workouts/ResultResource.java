@@ -4,10 +4,13 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -36,7 +40,23 @@ public class ResultResource {
 	
 	private final Logger log = LoggerFactory.getLogger(ResultResource.class);
 
-	
+
+	@RequestMapping(value = "/wod/myresults", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Set<WodResult>> getMyResults(
+			@RequestParam(value = "date", required = false) String date){
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		DateTime dateParsed = timeService.parseDate("yyyy-MM-dd", date, box);
+		LocalDate atDate = dateParsed == null ? null : dateParsed.toLocalDate();
+		
+		if (atDate == null) {
+			log.info("Unable to parse date {}", date);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		Set<WodResult> result = wodService.findMyResultsAtDate(atDate);
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 
 	@RequestMapping(value = "/wod/{id}/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Set<WodResult>> getMyWodResults(@PathVariable Long id){

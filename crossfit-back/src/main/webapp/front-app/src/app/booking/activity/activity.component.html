@@ -1,8 +1,7 @@
 
-<mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
 
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="openedDate === b.date" (opened)="openBooking(b)">
+  <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="currentBookingsDay === b" (opened)="openBookingsDay(b)">
     <mat-expansion-panel-header>
       <mat-panel-title *ngIf="b.bookings.length == 1; else multipleBooking">
         {{b.bookings[0].startAt | date: 'EEE, dd MMMM yyyy \'à\' HH:mm'}} - {{b.bookings[0].title}}
@@ -11,74 +10,51 @@
         {{b.date | date: 'EEE, dd MMMM yyyy'}} - {{b.bookings.length}} Réservations
       </ng-template>
     </mat-expansion-panel-header>
-<!--
 
-    <mat-form-field>
-      <mat-select placeholder="Choisissez un wod">
-        <mat-option *ngFor="let wod of b.availableWods;" [value]="wod.name">
-          {{ wod.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button mat-button mat-icon-button type="button">
-      <mat-icon attr.aria-label="{{'button.add' | translate}}">add</mat-icon>
-    </button>
     
+    <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
 
-    <mat-expansion-panel [expanded]="true" hideToggle="true" *ngFor="let wod of b.availableWods;">
-        <h3>{{wod.name}}</h3>
+    <mat-expansion-panel [expanded]="true" hideToggle="true" *ngFor="let wod of wods">
+        <h3>
+            <mat-icon>{{wod.shareProperties.visibility == 'PUBLIC' ? 'public' : 'security'}}</mat-icon>
+            {{wod.name}}
+        </h3>
         <p style="white-space: pre;">{{wod.description}}</p>
         
-        <mat-grid-list cols="1" rowHeight="1:1">
-            <div *ngFor="let result of wod.myresults">
-                <app-myresult             
-                *ngIf="result.date === b.date"
-                [wod]="wod" 
-                [result]="result" 
-                [defaultDate]="b.date" 
-                [editable]="true" 
-                [removable]="true"
-                (onSaved)="onUpdateResult(result, $event)"
-                (onDelete)="onDeleteResult(wod, result)" ></app-myresult>
+        <app-myresult 
+            [wod]="wod" 
+            [result]="wod.myresultAtDate" 
+            [defaultDate]="currentBookingsDay.date" 
+            [editable]="true" 
+            [removable]="true"
+            (onSaved)="onSaveResult(wod, $event)"
+            (onDelete)="onDeleteResult(wod)" ></app-myresult>
 
-                
-                <mat-tab-group *ngIf="result.date === b.date">
-                  <mat-tab label="Classement">
-                      <ng-template mat-tab-label>
-                        <mat-icon>bar_chart</mat-icon>
-                      </ng-template>
-                      <app-ranking [wod]="wod" [myresult]="result"></app-ranking>
-                  </mat-tab>
-                  <mat-tab label="Classement">
-                      <ng-template mat-tab-label>
-                          <mat-icon>bar_chart</mat-icon>
-                          <mat-icon>people</mat-icon>
-                      </ng-template>
-                      <app-ranking [wod]="wod" [myresult]="result" [mode]="'COMPATE_TO_ALL'"></app-ranking>
-                  </mat-tab>
-              </mat-tab-group>
-            </div>
-
-
-            <app-myresult             
-              *ngIf="wod.myresults.length == 0"
-              [wod]="wod"  
-              [defaultDate]="b.date" 
-              [editable]="true" 
-              (onSaved)="onCreateResult(wod, $event)"></app-myresult>
-
-              <mat-divider [inset]="true"></mat-divider>
-
-        </mat-grid-list>
+            
+            <mat-tab-group *ngIf="wod.myresultAtDate">
+              <mat-tab label="Classement">
+                  <ng-template mat-tab-label>
+                    <mat-icon>bar_chart</mat-icon>
+                  </ng-template>
+                  <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate"></app-ranking>
+              </mat-tab>
+              <mat-tab label="Classement">
+                  <ng-template mat-tab-label>
+                      <mat-icon>bar_chart</mat-icon>
+                      <mat-icon>people</mat-icon>
+                  </ng-template>
+                  <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate" [mode]="'COMPATE_TO_ALL'"></app-ranking>
+              </mat-tab>
+          </mat-tab-group>
     </mat-expansion-panel>
 
-    <a [routerLink]="['/wod/new', {'date': b.date, 'goBack': 'activity'}]" *ngIf="b.availableWods.length == 0">
+
+    <a [routerLink]="['/wod/new', {'date': b.date, 'goBack': 'activity'}]">
       <button class="add" mat-raised-button color="primary" type="button">
         <mat-icon aria-label="{{'wod.add.button.label' | translate}">add</mat-icon>
         <mat-label>{{'wod.add.button.label' | translate}}</mat-label>
       </button>
     </a>
-  -->
   
   </mat-expansion-panel>
 </mat-accordion>

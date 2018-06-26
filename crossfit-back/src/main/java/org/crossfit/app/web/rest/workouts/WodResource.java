@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
@@ -24,8 +25,10 @@ import org.crossfit.app.domain.workouts.enumeration.WodScore;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
+import org.crossfit.app.web.rest.dto.WodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.workouts.dto.WodResultCompute;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,16 +60,45 @@ public class WodResource {
 	
 	private final Logger log = LoggerFactory.getLogger(WodResource.class);
 
+
+	@RequestMapping(value = "/wod/{datestr}/withMyResult", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<WodDTO>> getWodAtDateWithMyResult(@PathVariable String datestr){
+		
+		LocalDate date = LocalDate.parse(datestr);
+		if (date == null) {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		Set<Wod> wodsAtDate = wodService.findWodsBetween(date, date);
+		Set<WodResult> myResultsAtDate = wodService.findMyResultsAtDate(date);
+		
+		
+		List<WodDTO> results = wodsAtDate.stream()
+				.map(wod->{
+					return WodDTO.publicMapper(date, 
+							myResultsAtDate.stream().filter(r->r.getWod().equals(wod)).findFirst().orElse(null))
+							.apply(wod);
+				})
+				.sorted(Comparator.comparing(WodDTO::getName))
+				.collect(Collectors.toList());
+		
+		return new ResponseEntity<>(results, HttpStatus.OK);
+	}
+	
 	/**
 	 * GET /wod -> get all the wod.
 	 */
 	@RequestMapping(value = "/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Wod>> getWods(
 			@RequestParam(value = "search", required = false) String search){
+
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+
 		
-		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(boxService.findCurrentCrossFitBox());
+		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(box);
 		
 		Function<Wod, LocalDate> plusPetiteDateApresMaintenant = wod->{
 			return wod == null ||wod.getPublications() == null || wod.getPublications().isEmpty() ? null : 
@@ -75,7 +107,7 @@ public class WodResource {
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};
-		List<Wod> result = wodService.findAllMyWod(customSearch).stream().sorted(
+		List<Wod> result = wodService.findAllVisibleWod(customSearch).stream().sorted(
 				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList());
 		
