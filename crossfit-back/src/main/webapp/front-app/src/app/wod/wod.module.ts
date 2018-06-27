@@ -8,6 +8,7 @@ import { EditComponent } from './edit/edit.component';
 import { DetailComponent } from './detail/detail.component';
 import { MyResultComponent } from './detail/myresult/myresult.component';
 import { RankingComponent } from './detail/ranking/ranking.component';
+import { PlanningModule } from '../planning/planning.module';
 
 const wodsRoutes: Routes = [
   { path: 'wod',  component: WodListComponent, canActivate: [AuthGuard] },
@@ -20,7 +21,8 @@ const wodsRoutes: Routes = [
   imports: [
     SharedModule,
     RouterModule.forChild(wodsRoutes),
-    CommonModule
+    CommonModule,
+    PlanningModule
   ],
   exports: [
     MyResultComponent, RankingComponent

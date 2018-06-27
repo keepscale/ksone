@@ -1,0 +1,33 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<table>
+  <thead>
+    <tr>
+      <th *ngFor="let day of days">
+        <span class="day" [ngClass]="{'active':day.date.isSame(now, 'd')}">{{day.date.date()}}</span>
+        <span class="long">{{day.date.format('dddd')}}</span>
+        <span class="short">{{day.date.format('ddd')}}</span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td *ngFor="let day of days">
+        <mat-card *ngFor="let event of day.events">
+          <mat-card-title>{{event.title}}</mat-card-title>
+          <mat-card-content>{{event.detail}}</mat-card-content>          
+        </mat-card>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th *ngFor="let day of days">
+        <a [routerLink]="['/wod/new', {'date': day.date.format('MM-DD-YYYY')}]">
+          <button class="add" mat-raised-button color="primary" type="button">
+            <mat-icon aria-label="{{'wod.add.button.label' | translate}">add</mat-icon>
+          </button>
+        </a>
+      </th>
+    </tr>
+  </tfoot>
+</table>
