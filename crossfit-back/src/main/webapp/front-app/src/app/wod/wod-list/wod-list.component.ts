@@ -3,6 +3,7 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 import { WodService } from '../wod.service';
 import { Wod } from '../domain/wod.model';
 import { Principal } from '../../shared/auth/principal.service';
+import { Event } from '../../planning/event';
 
 @Component({
   selector: 'app-wod-list',
@@ -13,6 +14,8 @@ export class WodListComponent implements OnInit {
 
   currentMemberId: number;
   wods:Wod[] = [];
+
+  events: Event[];
 
   constructor(private toolbar: ToolBarService, 
     private wodService: WodService, 
@@ -32,7 +35,17 @@ export class WodListComponent implements OnInit {
 
   onSearch(query:string){
     console.log("Search: " + query);
-    this.wodService.findAll(query).subscribe(result=>this.wods=result);
+    this.wodService.findAll(query).subscribe(result=>{
+      this.wods=result;
+
+      let tmp = [];
+      this.wods.forEach(w=>{
+        w.publications.forEach(pub=>{
+          tmp.push(new Event(pub.date, w.name, w.description));
+        })
+      })
+      this.events = tmp;
+    });
   }
 
   isOwner(wod:Wod){

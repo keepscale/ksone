@@ -14,6 +14,10 @@
     
     <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
 
+    <span *ngIf="status=='success' && wods.length==0">
+      Aucun wod de publié
+    </span>
+
     <mat-expansion-panel [expanded]="true" hideToggle="true" *ngFor="let wod of wods">
         <h3>
             <mat-icon>{{wod.shareProperties.visibility == 'PUBLIC' ? 'public' : 'security'}}</mat-icon>
@@ -48,13 +52,6 @@
           </mat-tab-group>
     </mat-expansion-panel>
 
-
-    <a [routerLink]="['/wod/new', {'date': b.date, 'goBack': 'activity'}]">
-      <button class="add" mat-raised-button color="primary" type="button">
-        <mat-icon aria-label="{{'wod.add.button.label' | translate}">add</mat-icon>
-        <mat-label>{{'wod.add.button.label' | translate}}</mat-label>
-      </button>
-    </a>
   
   </mat-expansion-panel>
 </mat-accordion>
