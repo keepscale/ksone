@@ -25,8 +25,7 @@ export class WeekPlanningComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    this.currentDate = moment(this.now);
-    this.buildCalendar();
+    this.today();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -36,7 +35,8 @@ export class WeekPlanningComponent implements OnInit, OnChanges {
 }
 
   buildCalendar(){
-    let start = this.currentDate.startOf('isoWeek').add(-1, 'd');
+    this.days = [];
+    let start = moment(this.currentDate).startOf('isoWeek').add(-1, 'd');
     for (let day = 0; day < 7; day++) {
       this.days.push(new Day(moment(start.add(1, 'd'))));
     }
@@ -47,5 +47,19 @@ export class WeekPlanningComponent implements OnInit, OnChanges {
     this.days.forEach(day => {
       day.events = this.events.filter(e=>e.date.isSame(day.date, 'd'));
     });
+  }
+
+  today(){
+    this.currentDate = moment(this.now);
+    this.buildCalendar();
+  }
+
+  add(amout, unit: string){
+    this.currentDate.add(amout, unit);
+    this.buildCalendar();
+  }
+
+  editEvent(event:Event){
+    console.log(event);
   }
 }
