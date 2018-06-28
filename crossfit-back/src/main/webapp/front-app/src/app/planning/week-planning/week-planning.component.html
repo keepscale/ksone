@@ -1,4 +1,19 @@
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="navigation-buttons">
+
+  <button mat-raised-button (click)="today()">
+    Aujourd'hui
+  </button>
+  <button mat-icon-button (click)="add(-1, 'w')">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <button mat-icon-button (click)="add(1, 'w')">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  <span class="current-month">
+      {{currentDate.format('MMMM YYYY')}}
+  </span>
+</div>
 <table>
   <thead>
     <tr>
@@ -12,22 +27,25 @@
   <tbody>
     <tr>
       <td *ngFor="let day of days">
-        <mat-card *ngFor="let event of day.events">
+
+        
+        <button class="day-action-menu" mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <a [routerLink]="['/wod/new', {'date': day.date.format('MM-DD-YYYY')}]">
+            <button mat-menu-item>
+              <mat-icon>note_add</mat-icon>
+              <span>{{'wod.add.button.label' | translate}}</span>
+            </button>
+          </a>
+        </mat-menu>
+
+        <mat-card *ngFor="let event of day.events" (click)="editEvent(event)">
           <mat-card-title>{{event.title}}</mat-card-title>
-          <mat-card-content>{{event.detail}}</mat-card-content>          
+          <mat-card-content>{{event.detail}}</mat-card-content>
         </mat-card>
       </td>
     </tr>
   </tbody>
-  <tfoot>
-    <tr>
-      <th *ngFor="let day of days">
-        <a [routerLink]="['/wod/new', {'date': day.date.format('MM-DD-YYYY')}]">
-          <button class="add" mat-raised-button color="primary" type="button">
-            <mat-icon aria-label="{{'wod.add.button.label' | translate}">add</mat-icon>
-          </button>
-        </a>
-      </th>
-    </tr>
-  </tfoot>
 </table>
