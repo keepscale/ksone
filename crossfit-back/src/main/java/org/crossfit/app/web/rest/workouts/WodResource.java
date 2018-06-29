@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -124,36 +125,40 @@ public class WodResource {
 	
 
 
-	@RequestMapping(value = "/wod/{wodId}/{datestr}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId, @PathVariable String datestr){
+	@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId){
 		
-		LocalDate date = LocalDate.parse(datestr);
-		if (date == null) {
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
 		Wod wod = wodService.findOne(wodId);
-		Set<WodResult> results = wodService.findAllResult(wod, date);
+		Set<WodResult> results = wodService.findAllResult(wod);
 		
-		List<WodResultCompute> rankings = new ArrayList<>();
-		
-		results.stream()
-				.sorted(wod.getScore().getComparator())
-				.map(result->{
-					WodResultCompute compute = new WodResultCompute();
-					compute.setId(result.getId());
-					String displayName = result.getMember().getNickName();
-					if (StringUtils.isBlank(displayName)) {
-						displayName = result.getMember().getFirstName() + " " + result.getMember().getLastName();
-					}
-					compute.setDisplayName(displayName);
-					compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
-					compute.setCategory(result.getCategory());
-					compute.setTitle(result.getTitle());
-					return compute;
-				}).forEachOrdered(e->{
-					rankings.add(e);
-					e.setOrder(rankings.size());
-				});
+		BinaryOperator merge = new BinaryOperator<WodResult>() {
+
+			@Override
+			public WodResult apply(WodResult t, WodResult u) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+		List<WodResultCompute> rankings = results.stream()
+			.collect(Collectors.toMap(WodResult::getMember, Function.identity(), (r1,r2)->wod.getScore().getComparator().compare(r1, r2) > 0 ? r1 : r2 ))
+			.values().stream()
+			.sorted(wod.getScore().getComparator())
+			.map(result->{
+				WodResultCompute compute = new WodResultCompute();
+				compute.setId(result.getId());
+				compute.setMemberId(result.getMember().getId());
+				String displayName = result.getMember().getNickName();
+				if (StringUtils.isBlank(displayName)) {
+					displayName = result.getMember().getFirstName() + " " + result.getMember().getLastName();
+				}
+				compute.setDisplayName(displayName);
+				compute.setDate(result.getDate());
+				compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
+				compute.setCategory(result.getCategory());
+				compute.setTitle(result.getTitle());
+				return compute;
+			})
+			.collect(Collectors.toList());
 		
 		return new ResponseEntity<>(rankings, HttpStatus.OK);
 	}

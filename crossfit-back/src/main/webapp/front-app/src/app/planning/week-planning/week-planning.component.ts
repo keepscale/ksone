@@ -1,8 +1,9 @@
-import { Component, OnInit, SimpleChanges, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { Event, Day } from '../event';
 import { EventService, EventRequest } from '../event.service';
+import { ActivatedRoute } from '@angular/router';
 
 enum Mode{
   WEEK,
@@ -16,15 +17,16 @@ enum Mode{
 export class WeekPlanningComponent implements OnInit {
 
   mode = Mode.WEEK;
-
-  now = moment();
   currentDate: moment.Moment;
-
 
   days: Day[] = [];
 
+  
+  @Output() onAddEvent = new EventEmitter<Date>();
+  @Output() onEditEvent = new EventEmitter<Event>();
 
-  constructor(private eventService: EventService) { }
+
+  constructor(private eventService: EventService, private route:ActivatedRoute) { }
 
   ngOnInit() {
     this.eventService.eventSource$.subscribe(events=>{
@@ -32,7 +34,9 @@ export class WeekPlanningComponent implements OnInit {
         day.events = events.filter(e=>e.date.isSame(day.date, 'd'));
       });
     })
-    this.today();
+    let date = this.route.snapshot.queryParamMap.get("date");
+   
+    this.goTo(date ? moment(date) : moment());
   }
 
 
@@ -57,7 +61,11 @@ export class WeekPlanningComponent implements OnInit {
   }
 
   today(){
-    this.currentDate = moment(this.now);
+    this.goTo(moment());
+  }
+  
+  goTo(date){
+    this.currentDate = moment(date);
     this.buildCalendar();
   }
 
@@ -67,9 +75,9 @@ export class WeekPlanningComponent implements OnInit {
   }
 
   editEvent(event:Event){
-    console.log(event);
+    this.onEditEvent.emit(event);
   }
   addEvent(date:moment.Moment){
-    console.log(date);
+    this.onAddEvent.emit(date.toDate());
   }
 }

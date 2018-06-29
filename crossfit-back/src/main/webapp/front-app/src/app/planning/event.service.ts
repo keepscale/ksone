@@ -3,25 +3,24 @@ import { Subject } from 'rxjs';
 import { Event } from './event';
 
 export class EventRequest{
-  constructor(private start: Date, private end: Date){}
+  constructor(public start: Date, public end: Date){}
 }
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class EventService {
 
   private eventSource = new Subject<Event[]>();
   private eventRequest = new Subject<EventRequest>();
   
   eventSource$ = this.eventSource.asObservable();
-  eventRequested$ = this.eventSource.asObservable();
+  eventRequested$ = this.eventRequest.asObservable();
 
   constructor() { }
 
-  sendEventRequest(request: EventRequest){
-    this.eventRequest.next(request);
-  }
   setEvents(events: Event[]){
     this.eventSource.next(events);
+  }
+
+  sendEventRequest(request: EventRequest){
+    this.eventRequest.next(request);
   }
 }

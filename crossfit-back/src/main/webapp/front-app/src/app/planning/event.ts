@@ -4,11 +4,14 @@ export class Event{
     date: moment.Moment;
     title: string;
     detail: string;
+
+    payload: any;
     
-    constructor(date: moment.Moment | Date, title: string, detail?: string){
+    constructor(date: moment.Moment | Date, title: string, detail?: string, payload?: any){
         this.date = moment(date);
         this.title = title;
         this.detail = detail;
+        this.payload = payload;
     }
 }
 

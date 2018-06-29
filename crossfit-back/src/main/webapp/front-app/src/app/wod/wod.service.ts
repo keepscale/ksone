@@ -6,7 +6,11 @@ import { Equipment } from './domain/equipment.model';
 import { Observable } from 'rxjs';
 import { WodResult } from './domain/wod-result.model';
 import { WodResultRanking } from './domain/wod-result-ranking.model';
-import { StringifyOptions } from 'querystring';
+import * as moment from 'moment';
+
+export class WodSearchRequest{
+  constructor(public query?: string, public start?: Date, public end?: Date){}
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +21,12 @@ export class WodService {
 
   
  
-  findAll(search?: string){
+  findAll(search?: WodSearchRequest){
     return this.http.get<Wod[]>("/api/wod", {
         params: new HttpParams()
-          .set("query", search)
+        .set("query", search.query)
+        .set("start", moment(search.start).format("YYYY-MM-DD"))
+        .set("end", moment(search.end).format("YYYY-MM-DD"))
       }
     );
   }
@@ -63,7 +69,7 @@ export class WodService {
   deleteResult(wod:Wod, result:WodResult){
     return this.http.delete("/api/wod/" + wod.id + "/results/" + result.id);
   }
-  getRanking(wodId, date:string){
-    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/" + date + "/ranking");
+  getRanking(wodId){
+    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/ranking");
   }
 }

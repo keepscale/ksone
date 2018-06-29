@@ -22,9 +22,8 @@ public interface WodResultRepository  extends JpaRepository<WodResult,Long> {
 
     @Query("select r from WodResult r "
     		+ "left join fetch r.member "
-    		+ "where r.wod = :wod "
-    		+ "and r.date = :date ")
-	Set<WodResult> findAll(@Param("wod") Wod wod, @Param("date") LocalDate date);
+    		+ "where r.wod = :wod ")
+	Set<WodResult> findAll(@Param("wod") Wod wod);
     
     @Query("select r from WodResult r "
     		+ "join fetch r.wod "
