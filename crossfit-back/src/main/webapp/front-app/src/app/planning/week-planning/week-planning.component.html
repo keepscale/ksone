@@ -29,17 +29,9 @@
       <td *ngFor="let day of days">
 
         
-        <button class="day-action-menu" mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
+        <button class="day-action-menu" mat-icon-button (click)="addEvent(day)">
+          <mat-icon>add</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
-          <a [routerLink]="['/wod/new', {'date': day.date.format('MM-DD-YYYY')}]">
-            <button mat-menu-item>
-              <mat-icon>note_add</mat-icon>
-              <span>{{'wod.add.button.label' | translate}}</span>
-            </button>
-          </a>
-        </mat-menu>
 
         <mat-card *ngFor="let event of day.events" (click)="editEvent(event)">
           <mat-card-title>{{event.title}}</mat-card-title>

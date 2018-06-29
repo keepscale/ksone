@@ -4,6 +4,7 @@ import { WodService } from '../wod.service';
 import { Wod } from '../domain/wod.model';
 import { Principal } from '../../shared/auth/principal.service';
 import { Event } from '../../planning/event';
+import { EventService } from '../../planning/event.service';
 
 @Component({
   selector: 'app-wod-list',
@@ -18,7 +19,8 @@ export class WodListComponent implements OnInit {
   events: Event[];
 
   constructor(private toolbar: ToolBarService, 
-    private wodService: WodService, 
+    private wodService: WodService,
+    private eventService: EventService,
     private principal: Principal) { }
 
   ngOnInit() {
@@ -28,8 +30,7 @@ export class WodListComponent implements OnInit {
 
     this.principal.identity().subscribe(p=>this.currentMemberId=p.id)
 
-    this.onSearch(null);
-
+    this.eventService.eventRequested$.subscribe(req=>this.onSearch(null));
 
   }
 
@@ -45,6 +46,7 @@ export class WodListComponent implements OnInit {
         })
       })
       this.events = tmp;
+      this.eventService.setEvents(this.events);
     });
   }
 
