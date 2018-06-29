@@ -4,12 +4,12 @@ import { WodService } from '../wod.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Movement } from '../domain/movement.model';
-import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocomplete, MatDatepickerInputEvent } from '@angular/material';
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
 import { Equipment } from '../domain/equipment.model';
 import { Taggable } from '../domain/taggable.model';
 import { ToolBarService } from '../../toolbar/toolbar.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-edit',
@@ -41,10 +41,8 @@ export class EditComponent implements OnInit {
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     this.toolbar.setOnGoBack(()=>{
-      let goBack = this.route.snapshot.paramMap.get("goBack");
-      let path = goBack == null ? 'wod' : goBack;
-      let adate = this.wod.publications.length == 0 ? null : this.wod.publications[0].date.toISOString().slice(0,10);
-      this.router.navigate([path, {'date': adate}])
+      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].date).format("YYYY-MM-DD");
+      this.router.navigate(['wod'], {queryParams:{'date': adate}});
     }
     );
     if (!id){
@@ -53,7 +51,7 @@ export class EditComponent implements OnInit {
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
       this.wod.name = "WOD";
-      let date = this.route.snapshot.paramMap.get("date");
+      let date = this.route.snapshot.queryParamMap.get("date");
       this.addPublicationDate(date == null ? new Date() : new Date(date));
     }
     else{

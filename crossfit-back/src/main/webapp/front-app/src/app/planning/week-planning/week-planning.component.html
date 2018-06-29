@@ -29,7 +29,7 @@
       <td *ngFor="let day of days">
 
         
-        <button class="day-action-menu" mat-icon-button (click)="addEvent(day)">
+        <button class="day-action-menu" mat-icon-button (click)="addEvent(day.date)" *ngIf="onAddEvent.observers.length!=0">
           <mat-icon>add</mat-icon>
         </button>
 

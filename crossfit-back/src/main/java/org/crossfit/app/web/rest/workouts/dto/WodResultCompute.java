@@ -2,16 +2,17 @@ package org.crossfit.app.web.rest.workouts.dto;
 
 import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.workouts.ResultCategory;
+import org.joda.time.LocalDate;
 
 public class WodResultCompute {
 
-	private Integer order;
 	private Long id;
 	private Title title;
 	private ResultCategory category;
+	private Long memberId;
 	private String displayName;
 	private String displayResult;
-	
+	private LocalDate date;
 	
 	public Long getId() {
 		return id;
@@ -19,11 +20,12 @@ public class WodResultCompute {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getOrder() {
-		return order;
+	
+	public Long getMemberId() {
+		return memberId;
 	}
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setMemberId(Long memberId) {
+		this.memberId = memberId;
 	}
 	public String getDisplayName() {
 		return displayName;
@@ -49,5 +51,10 @@ public class WodResultCompute {
 	public void setCategory(ResultCategory category) {
 		this.category = category;
 	}
-	
+	public LocalDate getDate() {
+		return date;
+	}
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
 }

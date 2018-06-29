@@ -1,45 +1,30 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!wod || !wodResults"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="!wod"></mat-progress-bar>
 
-<div class="wod-container" *ngIf="wod && wodResults">
+<div class="wod-container" *ngIf="wod">
 
-  <form novalidate (ngSubmit)="onSubmit()">
-
-    <mat-expansion-panel [expanded]="true" hideToggle="true">
+  <mat-card>
+    <mat-card-title>{{wod.name}}</mat-card-title>
+    <mat-card-subtitle>
+      <span>{{'wod.score.' + wod.score | translate}}</span>
+      <span>{{'wod.category.' + wod.category | translate}}</span>
+    </mat-card-subtitle>
+    <mat-card-content>
       <p style="white-space: pre;">{{wod.description}}</p>
-      <mat-accordion>
-        
-        <mat-expansion-panel *ngFor="let myresult of wodResults; let i = index" [expanded]="i==0" >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{myresult.date | date: 'EEE, dd MMMM yyyy'}}
-            </mat-panel-title>
 
-            <mat-panel-description>
-                <app-myresult [wod]="wod" [result]="myresult" [editable]="false" class="hide-mobile-portrait"></app-myresult>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          
-          <app-myresult [wod]="wod" [result]="myresult" (onEditMode)="onEdit($event, myresult)"></app-myresult>
+      
+      <mat-tab-group>
+        <mat-tab label="Classement">
+            <ng-template mat-tab-label>
+                <mat-icon>bar_chart</mat-icon>
+            </ng-template>
+            <app-ranking [wod]="wod"></app-ranking>
+        </mat-tab>
+    </mat-tab-group>
+    
+    </mat-card-content>
+    <mat-card-actions>
 
-          <mat-tab-group *ngIf="!isEditing(myresult)">
-              <mat-tab label="Classement">
-                  <ng-template mat-tab-label>
-                    <mat-icon>bar_chart</mat-icon>
-                  </ng-template>
-                  <app-ranking [wod]="wod" [myresult]="myresult"></app-ranking>
-              </mat-tab>
-              <mat-tab label="Classement">
-                  <ng-template mat-tab-label>
-                      <mat-icon>bar_chart</mat-icon>
-                      <mat-icon>people</mat-icon>
-                  </ng-template>
-                  <app-ranking [wod]="wod" [myresult]="myresult" [mode]="'COMPATE_TO_ALL'"></app-ranking>
-              </mat-tab>
-          </mat-tab-group>
-      </mat-expansion-panel>
-
-      </mat-accordion>
-    </mat-expansion-panel>
-  </form>
+    </mat-card-actions>
+  </mat-card>
 
 </div>

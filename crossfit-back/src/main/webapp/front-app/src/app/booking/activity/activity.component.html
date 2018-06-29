@@ -42,13 +42,6 @@
                   </ng-template>
                   <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate"></app-ranking>
               </mat-tab>
-              <mat-tab label="Classement">
-                  <ng-template mat-tab-label>
-                      <mat-icon>bar_chart</mat-icon>
-                      <mat-icon>people</mat-icon>
-                  </ng-template>
-                  <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate" [mode]="'COMPATE_TO_ALL'"></app-ranking>
-              </mat-tab>
           </mat-tab-group>
     </mat-expansion-panel>
 

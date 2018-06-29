@@ -141,8 +141,8 @@ public class WodService {
 	}
 
 
-	public Set<WodResult> findAllResult(Wod wod, LocalDate date) {
-		return wodResultRepository.findAll(wod, date);
+	public Set<WodResult> findAllResult(Wod wod) {
+		return wodResultRepository.findAll(wod);
 	}
 
 

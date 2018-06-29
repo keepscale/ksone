@@ -12,14 +12,11 @@ import { Wod } from '../../domain/wod.model';
 })
 export class RankingComponent implements OnInit, OnChanges {
 
-  @Input("wod")
-  wod: Wod;
-  @Input("myresult")
-  myresult: WodResult;
+  @Input("wod") wod: Wod;
+  @Input("myresult")  myresult: WodResult;
+  
   rankings: WodResultRanking[];
-  rankingsInCategory: WodResultRanking[];
-  @Input("mode")
-  mode:string = "COMPATE_TO_ME";
+
 
   constructor(
     private route: ActivatedRoute,
@@ -37,15 +34,8 @@ export class RankingComponent implements OnInit, OnChanges {
 
   loadRanking(){
     this.rankings = null;
-    this.service.getRanking(this.wod.id, this.myresult.date+"").subscribe(res=>{
+    this.service.getRanking(this.wod.id).subscribe(res=>{
       this.rankings = res;
-      this.rankingsInCategory = [];
-      this.rankings.forEach(r => {
-        if (r.category==this.myresult.category && r.title == this.myresult.title){
-          this.rankingsInCategory.push(r);
-          r.orderInCategory = this.rankingsInCategory.length;
-        }
-      });
     })
   }
 
