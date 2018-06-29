@@ -2,13 +2,20 @@ import { Component, OnInit, SimpleChanges, Input, OnChanges } from '@angular/cor
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { Event, Day } from '../event';
+import { EventService, EventRequest } from '../event.service';
 
+enum Mode{
+  WEEK,
+  DAY
+}
 @Component({
   selector: 'app-week-planning',
   templateUrl: './week-planning.component.html',
   styleUrls: ['./week-planning.component.scss']
 })
-export class WeekPlanningComponent implements OnInit, OnChanges {
+export class WeekPlanningComponent implements OnInit {
+
+  mode = Mode.WEEK;
 
   now = moment();
   currentDate: moment.Moment;
@@ -17,36 +24,36 @@ export class WeekPlanningComponent implements OnInit, OnChanges {
   days: Day[] = [];
 
 
-  @Input("events")
-  events: Event[] = [];
-
-
-
-  constructor() { }
+  constructor(private eventService: EventService) { }
 
   ngOnInit() {
+    this.eventService.eventSource$.subscribe(events=>{
+      this.days.forEach(day => {
+        day.events = events.filter(e=>e.date.isSame(day.date, 'd'));
+      });
+    })
     this.today();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['events']) {
-      this.refreshEvent();
-    }
-}
 
   buildCalendar(){
     this.days = [];
-    let start = moment(this.currentDate).startOf('isoWeek').add(-1, 'd');
-    for (let day = 0; day < 7; day++) {
-      this.days.push(new Day(moment(start.add(1, 'd'))));
-    }
-    this.refreshEvent();
-  }
+    let start = moment(this.currentDate);
+    let end = moment(start);
 
-  refreshEvent(){
-    this.days.forEach(day => {
-      day.events = this.events.filter(e=>e.date.isSame(day.date, 'd'));
-    });
+    if (this.mode == Mode.WEEK){
+      start.startOf('isoWeek');
+      end = moment(start).add(7,'d');
+    }
+    
+    let curday = moment(start);
+    do{
+      this.days.push(new Day(moment(curday)));
+      curday.add(1, 'd');
+    }
+    while(curday.isBefore(end));
+
+    this.eventService.sendEventRequest(new EventRequest(start.toDate(), end.toDate()));
   }
 
   today(){
@@ -61,5 +68,8 @@ export class WeekPlanningComponent implements OnInit, OnChanges {
 
   editEvent(event:Event){
     console.log(event);
+  }
+  addEvent(date:moment.Moment){
+    console.log(date);
   }
 }
