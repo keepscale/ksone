@@ -3,28 +3,32 @@
 <div class="wod-container" *ngIf="wod">
 
   <mat-card>
-    <mat-card-title>{{wod.name}}</mat-card-title>
+    <mat-card-title><span *ngIf="wod.category != 'CUSTOM'">{{'wod.category.' + wod.category | translate}}: </span>{{wod.name}}</mat-card-title>
     <mat-card-subtitle>
-      <span>{{'wod.score.' + wod.score | translate}}</span>
-      <span>{{'wod.category.' + wod.category | translate}}</span>
+      {{'wod.score.' + wod.score | translate}}
     </mat-card-subtitle>
-    <mat-card-content>
-      <p style="white-space: pre;">{{wod.description}}</p>
+    <mat-card-content style="white-space: pre;">
+     
+    {{wod.description}}
 
       
-      <mat-tab-group>
-        <mat-tab label="Classement">
-            <ng-template mat-tab-label>
-                <mat-icon>bar_chart</mat-icon>
-            </ng-template>
-            <app-ranking [wod]="wod"></app-ranking>
-        </mat-tab>
-    </mat-tab-group>
     
     </mat-card-content>
     <mat-card-actions>
-
+      <a [routerLink]="['..','edit']">
+        <button mat-button >
+          <mat-icon attr.aria-label="{{'wod.edit.button.label' | translate}}">edit</mat-icon>
+        </button>
+      </a>
     </mat-card-actions>
   </mat-card>
 
+  <mat-tab-group>
+    <mat-tab label="Classement">
+        <ng-template mat-tab-label>
+            <mat-icon>bar_chart</mat-icon>
+        </ng-template>
+        <app-ranking [wod]="wod"></app-ranking>
+    </mat-tab>
+  </mat-tab-group>
 </div>

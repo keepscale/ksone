@@ -44,6 +44,7 @@
     <include file="classpath:config/liquibase/changelog/21_add_wod_entity.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/22_modify_wod_result.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/23_add_wod_share_entity.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/24_modify_wod_result.xml" relativeToChangelogFile="false"/>
     
 
 </databaseChangeLog>

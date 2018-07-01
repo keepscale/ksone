@@ -4,6 +4,7 @@ import { WodService } from '../../wod.service';
 import { WodResultRanking } from '../../domain/wod-result-ranking.model';
 import { WodResult } from '../../domain/wod-result.model';
 import { Wod } from '../../domain/wod.model';
+import { Principal } from '../../../shared/auth/principal.service';
 
 @Component({
   selector: 'app-ranking',
@@ -14,17 +15,19 @@ export class RankingComponent implements OnInit, OnChanges {
 
   @Input("wod") wod: Wod;
   @Input("myresult")  myresult: WodResult;
-  
+  currentMemberId: number;
   rankings: WodResultRanking[];
 
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private principal: Principal,
     private service: WodService) { }
 
   ngOnInit() {
     this.loadRanking();
+    this.principal.identity().subscribe(res=>this.currentMemberId=res.id);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -37,6 +40,10 @@ export class RankingComponent implements OnInit, OnChanges {
     this.service.getRanking(this.wod.id).subscribe(res=>{
       this.rankings = res;
     })
+  }
+
+  isMyResult(aResult: WodResultRanking){
+    return aResult.memberId == this.currentMemberId;
   }
 
 }

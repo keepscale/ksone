@@ -7,7 +7,6 @@ import org.joda.time.LocalDate;
 public class WodResultCompute {
 
 	private Long id;
-	private Title title;
 	private ResultCategory category;
 	private Long memberId;
 	private String displayName;
@@ -38,12 +37,6 @@ public class WodResultCompute {
 	}
 	public void setDisplayResult(String displayResult) {
 		this.displayResult = displayResult;
-	}
-	public Title getTitle() {
-		return title;
-	}
-	public void setTitle(Title title) {
-		this.title = title;
 	}
 	public ResultCategory getCategory() {
 		return category;

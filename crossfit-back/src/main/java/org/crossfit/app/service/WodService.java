@@ -68,9 +68,9 @@ public class WodService {
 	}
 
 
-	public Set<Wod> findAllVisibleWod(String search) {
+	public Set<Wod> findAllVisibleWod(String search, LocalDate start, LocalDate end) {
 		log.debug("findAllVisibleWod(search={}", search);
-		return wodRepository.findAllVisible(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search);
+		return wodRepository.findAllVisible(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search, start, end);
 	}
 
 	public Wod save(@Valid Wod dto) {
@@ -175,7 +175,6 @@ public class WodService {
 		result.setWod(wod);
 		result.setMember(SecurityUtils.getCurrentMember());
 		result.setCategory(dto.getCategory());
-		result.setTitle(dto.getTitle());
 		switch (wod.getScore()) {
 		case FOR_LOAD:
 			result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
@@ -208,12 +207,6 @@ public class WodService {
 	private static Double getOrDefault(Double value, Double defaultValue) {
 		return value == null ? defaultValue : value;
 	}
-
-	public Set<Wod> findWodsBetween(LocalDate start, LocalDate end) {
-		CrossFitBox box = boxService.findCurrentCrossFitBox();		
-		return this.wodRepository.findAll(box, SecurityUtils.getCurrentMember(), start, end);
-	}
-
 
 	public Set<WodResult> findMyResultsAtDate(LocalDate atDate) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();		

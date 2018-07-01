@@ -56,11 +56,6 @@ public class WodResult {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
 	private ResultCategory category;
-
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	@Column(name = "title", nullable = false)
-	private Title title;
 	
 	@Column(name = "date", nullable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
@@ -143,12 +138,6 @@ public class WodResult {
 	}
 	public void setCategory(ResultCategory category) {
 		this.category = category;
-	}
-	public Title getTitle() {
-		return title;
-	}
-	public void setTitle(Title title) {
-		this.title = title;
 	}
 	@Override
 	public int hashCode() {

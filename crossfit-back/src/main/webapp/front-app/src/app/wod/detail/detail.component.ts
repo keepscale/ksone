@@ -5,6 +5,7 @@ import { Wod, WodPublication } from '../domain/wod.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WodResult } from '../domain/wod-result.model';
 import { Principal } from '../../shared/auth/principal.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-detail',
@@ -25,8 +26,12 @@ export class DetailComponent implements OnInit {
     private principal: Principal) { }
 
   ngOnInit() {
-    this.toolbar.setTitle("Mes résultat");
-    this.toolbar.setOnGoBack(this.goToSearch.bind(this));
+    this.toolbar.setTitle("Détail d'un wod");
+    this.toolbar.setOnGoBack(()=>{
+      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].date).format("YYYY-MM-DD");
+      this.router.navigate(['wod'], {queryParams:{'date': adate}});
+      }
+    );
 
     let wodId = +this.route.snapshot.paramMap.get('id');
     if (wodId){
@@ -34,14 +39,9 @@ export class DetailComponent implements OnInit {
           this.wod = w;
         },
         err=>{
-          this.router.navigate(["wod"]);
+          this.toolbar.goBack();
         }
       );
     }
-  }
-
-  goToSearch(){
-    this.router.navigate(['wod']);
-    return;
   }
 }
