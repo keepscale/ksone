@@ -41,15 +41,6 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
-    <div>
-      <mat-button-toggle-group class="title-group" (change)="editedResult.title=$event.value">
-        <mat-button-toggle class="title-button" 
-          *ngFor="let t of ['MS', 'MR']" value="{{t}}" [checked]="t==editedResult.title">
-          {{'wod.myscore.title.' + t | translate}}
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-    
 
     <div class="form-footer">
       

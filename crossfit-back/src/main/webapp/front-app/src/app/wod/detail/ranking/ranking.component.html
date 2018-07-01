@@ -1,32 +1,35 @@
 <mat-progress-bar mode="indeterminate" *ngIf="!rankings"></mat-progress-bar>
 
-<div *ngIf="rankings">
+<div *ngIf="rankings != null && rankings.length>0; else noResultYet">
     <table mat-table [dataSource]="rankings" class="mat-elevation-z8">
         
         <ng-container matColumnDef="order">
           <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element; let i = index;" [ngClass]="{'my-rank':element.id == myresult.id}"> 
-            {{i}}
+          <td mat-cell *matCellDef="let element; let i = index;" [ngClass]="{'my-rank':isMyResult(element)}"> 
+            {{i+1}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':element.id == myresult.id}"> {{element.displayName}} </td>
+          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.displayName}} </td>
         </ng-container>
 
         <ng-container matColumnDef="result">
           <th mat-header-cell *matHeaderCellDef> Result </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':element.id == myresult.id}"> {{element.displayResult}} </td>
+          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.displayResult}} </td>
         </ng-container>
 
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':element.id == myresult.id}"> {{element.date | date:'dd/MM/yyyy'}} </td>
+          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.date | date:'dd/MM/yyyy'}} </td>
         </ng-container>
         
         <tr mat-header-row *matHeaderRowDef="['order', 'name', 'result', 'date']"></tr>
         <tr mat-row *matRowDef="let row; columns: ['order', 'name', 'result', 'date'];"></tr>
     
     </table>
+</div>
+<div #noResultYet>
+  Il n'y a pas encore de résultat pour ce wod.
 </div>

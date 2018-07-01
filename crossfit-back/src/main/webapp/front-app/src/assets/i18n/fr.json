@@ -58,10 +58,6 @@
 				"RX": "Rx",
 				"SCALED": "Scaled"
 			},
-			"title": {
-				"MR": "Homme",
-				"MS": "Femme"
-			},
 			"totalCompleteRound": {
 				"placeholder": "Nb de tour fini"
 			},

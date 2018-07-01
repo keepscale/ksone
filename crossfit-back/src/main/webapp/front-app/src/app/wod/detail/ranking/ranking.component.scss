@@ -3,6 +3,10 @@
 
 @include mat-core();
 
+:host{
+    padding: 5px;
+}
+
 .my-rank{
     $app-primary: mat-palette($mat-indigo);
     $app-accent:  mat-palette($mat-pink, A200, A100, A400);    

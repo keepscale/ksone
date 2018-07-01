@@ -13,7 +13,6 @@ export class WodResult{
     public totalCompleteRound:number;
     public totalReps: number;
 
-    public title: string;
     public category: string;
 
     constructor(){

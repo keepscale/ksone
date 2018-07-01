@@ -29,7 +29,7 @@ export class WodListComponent implements OnInit {
     private principal: Principal) { }
 
   ngOnInit() {
-    this.toolbar.setTitle("Wods")
+    this.toolbar.setTitle("Planning des wods")
     this.toolbar.setSearchPlaceHolder("Rechercher des wods")
     this.toolbar.setOnSearch(this.onSearch.bind(this));
 

@@ -61,7 +61,7 @@ public class WodResource {
 	
 	private final Logger log = LoggerFactory.getLogger(WodResource.class);
 
-
+/*
 	@RequestMapping(value = "/wod/{datestr}/withMyResult", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<WodDTO>> getWodAtDateWithMyResult(@PathVariable String datestr){
 		
@@ -85,19 +85,23 @@ public class WodResource {
 		
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
-	
+	*/
 	/**
 	 * GET /wod -> get all the wod.
 	 */
 	@RequestMapping(value = "/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Wod>> getWods(
-			@RequestParam(value = "search", required = false) String search){
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "start", required = false) String startStr,
+			@RequestParam(value = "end", required = false) String endStr){
 
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 
+		LocalDate start = LocalDate.parse(startStr);
+		LocalDate end = LocalDate.parse(endStr);
 		
 		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(box);
 		
@@ -108,7 +112,7 @@ public class WodResource {
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};
-		List<Wod> result = wodService.findAllVisibleWod(customSearch).stream().sorted(
+		List<Wod> result = wodService.findAllVisibleWod(customSearch, start, end).stream().sorted(
 				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList());
 		
@@ -131,14 +135,6 @@ public class WodResource {
 		Wod wod = wodService.findOne(wodId);
 		Set<WodResult> results = wodService.findAllResult(wod);
 		
-		BinaryOperator merge = new BinaryOperator<WodResult>() {
-
-			@Override
-			public WodResult apply(WodResult t, WodResult u) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
 		List<WodResultCompute> rankings = results.stream()
 			.collect(Collectors.toMap(WodResult::getMember, Function.identity(), (r1,r2)->wod.getScore().getComparator().compare(r1, r2) > 0 ? r1 : r2 ))
 			.values().stream()
@@ -155,7 +151,6 @@ public class WodResource {
 				compute.setDate(result.getDate());
 				compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
 				compute.setCategory(result.getCategory());
-				compute.setTitle(result.getTitle());
 				return compute;
 			})
 			.collect(Collectors.toList());

@@ -76,7 +76,6 @@ export class MyResultComponent implements OnInit {
     this.editedResult = new WodResult();
     if (this.result == null){
       this.editedResult.category = "RX";
-      this.principal.identity().subscribe(principal=>this.editedResult.title=principal.title);
       this.editedResult.date = this.defaultDate;
     }
     else{

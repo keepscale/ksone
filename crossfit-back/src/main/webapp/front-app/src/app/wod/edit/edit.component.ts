@@ -41,18 +41,19 @@ export class EditComponent implements OnInit {
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     this.toolbar.setOnGoBack(()=>{
-      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].date).format("YYYY-MM-DD");
-      this.router.navigate(['wod'], {queryParams:{'date': adate}});
-    }
+      this.router.navigate(['wod', this.wod.id, 'detail']);
+      }
     );
     if (!id){
-      this.toolbar.setTitle("Proposer un WOD");
+      let dateParam = this.route.snapshot.queryParamMap.get("date");
+      let date = dateParam == null ? new Date() : new Date(dateParam);
+
+      this.toolbar.setTitle("Plannifier un WOD pour le " + moment(date).format("dddd DD/MM/YYYY"));
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
       this.wod.name = "WOD";
-      let date = this.route.snapshot.queryParamMap.get("date");
-      this.addPublicationDate(date == null ? new Date() : new Date(date));
+      this.addPublicationDate(date);
     }
     else{
       this.service.get(id).subscribe(w=>{
@@ -97,7 +98,6 @@ export class EditComponent implements OnInit {
   }
 
   onSelectOption(event: OptionSelectedEvent){
-    console.log( typeof event.option);
     if (event.option.type){
       this.wod.taggedMovements.push(event.option);
     }
@@ -115,6 +115,7 @@ export class EditComponent implements OnInit {
     this.service.save(this.wod).subscribe(
       success=>{
         this.status = "success";
+        this.wod.id = success.id;
         this.toolbar.goBack();
       },
       e=>{
