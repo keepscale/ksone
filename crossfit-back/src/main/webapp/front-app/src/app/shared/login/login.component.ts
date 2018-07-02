@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Principal } from '../auth/principal.service';
+import { ToolBarService } from '../../toolbar/toolbar.service';
 
 
 @Component({
@@ -20,9 +21,10 @@ export class LoginComponent implements OnInit {
   status: string;
 
 
-  constructor(private authService: AuthService,  private router: Router, private principal: Principal) { }
+  constructor(private authService: AuthService,  private router: Router, private principal: Principal, private toolbar: ToolBarService) { }
 
   ngOnInit() {
+    this.toolbar.setTitle("Connexion");
     this.rememberme = true;
     this.loginFailed = false;
   }

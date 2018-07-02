@@ -30,7 +30,7 @@ export class Principal {
         return false;
     }
 
-    identity(force?: boolean): Subject<any>{
+    identity(force?: boolean): Subject<User>{
         if (force === true) {
             this.userIdentity = undefined;
         }

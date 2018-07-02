@@ -12,6 +12,8 @@ import { SharedModule } from './shared/shared.module';
 import { WodModule } from './wod/wod.module';
 import { ToolbarModule } from './toolbar/toolbar.module';
 import { BookingModule } from './booking/booking.module';
+import { AccountComponent } from './account/account.component';
+import { AccountModule } from './account/account.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -48,7 +50,8 @@ const appRoutes: Routes = [
     MatSidenavModule,
     WodModule,
     BookingModule,
-    ToolbarModule
+    ToolbarModule,
+    AccountModule
   ],
   bootstrap: [AppComponent],
   providers: []
