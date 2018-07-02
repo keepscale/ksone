@@ -1,7 +1,7 @@
 <mat-toolbar color="primary"> 
 
   <mat-toolbar-row *ngIf="!showSearchToolBar">
-    <button
+    <button *ngIf="isAuthenticated()"
       type="button"
       aria-label="Toggle sidenav"
       mat-icon-button
@@ -32,6 +32,11 @@
           <span>{{item.text}}</span>
         </button>
       </mat-menu>
+      <a [routerLink]="['account']">
+        <button mat-icon-button *ngIf="isAuthenticated()">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </a>
     </div>
   </mat-toolbar-row>
 
