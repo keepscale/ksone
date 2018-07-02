@@ -42,12 +42,7 @@ export class AppComponent  implements OnDestroy{
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
-  private displayName;
-
   ngOnInit() {
-    this.principal.identity().subscribe(res=>{
-      this.displayName = res != null ? res.firstName : "";
-    });
   }
 
 

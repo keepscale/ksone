@@ -1,10 +1,11 @@
-<div class="app-container" [class.is-mobile]="mobileQuery.matches" [class.is-mobile-portrait]="mobileQueryPortrait.matches" >
+<div *ngIf="isAuthenticated(); else notConnected"
+  class="app-container" [class.is-mobile]="mobileQuery.matches" [class.is-mobile-portrait]="mobileQueryPortrait.matches" >
   
   <app-toolbar #toolbar (toggleSideNav)="sidenav.toggle()"></app-toolbar>
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #sidenav *ngIf="isAuthenticated()"
+    <mat-sidenav #sidenav
     (closedStart)="toolbar.sideNavChange(false)"
     (openedStart)="toolbar.sideNavChange(true)"
       [mode]="mobileQuery.matches ? 'over' : 'side'"
@@ -26,5 +27,21 @@
     </mat-sidenav-content>
 
   </mat-sidenav-container>
-
 </div>
+
+
+
+<ng-template #notConnected>
+  <div class="app-container" [class.is-mobile]="mobileQuery.matches" [class.is-mobile-portrait]="mobileQueryPortrait.matches" >
+    <app-toolbar #toolbar></app-toolbar>
+    
+    <mat-sidenav-container class="sidenav-container">
+
+        <mat-sidenav-content class="sidenav-content">
+          <div  class="app-content">
+            <router-outlet></router-outlet>
+          </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</ng-template>

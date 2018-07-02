@@ -32,12 +32,12 @@
           <span>{{item.text}}</span>
         </button>
       </mat-menu>
-      <a [routerLink]="['account']">
-        <button mat-icon-button *ngIf="isAuthenticated()">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-      </a>
     </div>
+    <a [routerLink]="['account']" *ngIf="isAuthenticated()" title="{{displayName}}">
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </a>
   </mat-toolbar-row>
 
 

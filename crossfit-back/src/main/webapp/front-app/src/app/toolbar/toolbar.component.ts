@@ -35,6 +35,8 @@ export class ToolbarComponent implements OnInit {
 
   menuItems: MenuItem[] = [];
 
+  displayName;
+
   @Output() toggleSideNav = new EventEmitter<void>();
 
   constructor(private breakpointObserver: BreakpointObserver, private toolbar:ToolBarService, private router: Router, private principal: Principal) { }
@@ -51,6 +53,9 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a);
     this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
 
+    this.principal.identity().subscribe(res=>{
+      this.displayName = res != null ? res.firstName + " " + res.lastName : "";
+    });
   }
   isAuthenticated(){
     return this.principal.isAuthenticated() || false;
