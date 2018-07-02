@@ -4,7 +4,7 @@
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #sidenav 
+    <mat-sidenav #sidenav *ngIf="isAuthenticated()"
     (closedStart)="toolbar.sideNavChange(false)"
     (openedStart)="toolbar.sideNavChange(true)"
       [mode]="mobileQuery.matches ? 'over' : 'side'"
@@ -12,7 +12,7 @@
       fixedTopGap="56">
       <mat-nav-list>
         <a mat-list-item routerLink="/activity" routerLinkActive="active">{{ 'app.menu.activity' | translate }}</a>
-        <a mat-list-item routerLink="/wod" routerLinkActive="active">{{ 'app.menu.WOD' | translate }}</a>
+        <a mat-list-item routerLink="/wod" *ngIf="isInRole('ROLE_COACH')" routerLinkActive="active">{{ 'app.menu.WOD' | translate }}</a>
         <a mat-list-item routerLink="/logout" routerLinkActive="active">{{ 'app.menu.logout' | translate }}</a>
       </mat-nav-list>
     </mat-sidenav>

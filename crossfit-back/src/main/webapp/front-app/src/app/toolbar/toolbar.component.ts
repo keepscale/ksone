@@ -3,6 +3,7 @@ import { ToolBarService } from './toolbar.service';
 import { Subscription } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
+import { Principal } from '../shared/auth/principal.service';
 
 export class MenuItem{
 
@@ -36,7 +37,7 @@ export class ToolbarComponent implements OnInit {
 
   @Output() toggleSideNav = new EventEmitter<void>();
 
-  constructor(private breakpointObserver: BreakpointObserver, private toolbar:ToolBarService, private router: Router) { }
+  constructor(private breakpointObserver: BreakpointObserver, private toolbar:ToolBarService, private router: Router, private principal: Principal) { }
 
   ngOnInit() {
     this.router.events.subscribe(event=>{
@@ -47,10 +48,12 @@ export class ToolbarComponent implements OnInit {
     })
     this.toolbar.getTitle().subscribe(t=>this.title=t); 
     this.toolbar.getSearchPlaceHolder().subscribe(t=>this.searchPlaceHolder=t);
-    this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a)
-    this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a)
+    this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a);
+    this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
 
-
+  }
+  isAuthenticated(){
+    return this.principal.isAuthenticated() || false;
   }
   onToggleSideNav(){
     this.toggleSideNav.emit();

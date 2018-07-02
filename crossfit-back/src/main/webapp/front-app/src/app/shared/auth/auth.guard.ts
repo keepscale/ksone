@@ -57,3 +57,13 @@ export class RoleAdminGuard extends AuthGuard{
     this.authorities = ['ROLE_ADMIN'];
    }
 }
+
+
+@Injectable()
+export class RoleCoachGuard extends AuthGuard{
+  
+  constructor(protected router: Router, protected principal: Principal) {
+    super(router, principal);
+    this.authorities = ['ROLE_COACH'];
+   }
+}
