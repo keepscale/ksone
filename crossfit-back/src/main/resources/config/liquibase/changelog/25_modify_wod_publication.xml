@@ -31,7 +31,7 @@
 		
 		<sql>update WOD_PUBLICATION set end_at = start_at</sql>
 		
-		<addNotNullConstraint tableName="WOD_PUBLICATION" columnName="end_at"/>
+		<addNotNullConstraint tableName="WOD_PUBLICATION" columnName="end_at" columnDataType="date"/>
 		
 	</changeSet>
 
