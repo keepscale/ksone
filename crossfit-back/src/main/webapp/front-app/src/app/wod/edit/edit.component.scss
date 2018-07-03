@@ -1,0 +1,21 @@
+
+.form-container{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+    div{
+        flex-grow: 1;
+    }
+    .wod-publications{
+        min-width: 270px;
+    }
+}
+
+
+@media screen and (max-width: 767px) {
+
+    .form-container{
+        flex-direction: column;
+    }
+}

@@ -16,7 +16,7 @@ import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
-  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule, MatTableModule, MatButtonToggleModule } from '@angular/material';
+  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule } from '@angular/material';
 import { TextCompleteModule } from './text-complete/text-complete.module';
 import { StatusBarComponent } from './status-bar/status-bar.component';
   
@@ -35,7 +35,7 @@ const loginRoutes: Routes = [
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule,
     ReactiveFormsModule, MatSelectModule, TextCompleteModule, MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
-    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule
+    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule
   ],
   exports: [TranslateModule,
     CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
@@ -43,7 +43,7 @@ const loginRoutes: Routes = [
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
     MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
-    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule,
+    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule,
     StatusBarComponent
   ],
   providers:[
