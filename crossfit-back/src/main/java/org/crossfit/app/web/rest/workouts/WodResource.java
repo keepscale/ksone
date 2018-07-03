@@ -108,7 +108,7 @@ public class WodResource {
 		Function<Wod, LocalDate> plusPetiteDateApresMaintenant = wod->{
 			return wod == null ||wod.getPublications() == null || wod.getPublications().isEmpty() ? null : 
 				wod.getPublications().stream()
-				.map(WodPublication::getStartAt)
+				.map(WodPublication::getEndAt)
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};
@@ -128,6 +128,12 @@ public class WodResource {
 	}
 	
 
+	@RequestMapping(value = "/wod/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> deleteWod(@PathVariable Long id){
+		 wodService.deleteWodAndResult(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 
 	@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId){

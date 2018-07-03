@@ -212,4 +212,15 @@ public class WodService {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();		
 		return this.wodResultRepository.findAll(box, SecurityUtils.getCurrentMember(), atDate, atDate);
 	}
+
+
+	public void deleteWodAndResult(Long id) {
+		Wod wodToDelete = this.findOne(id);
+		if (wodToDelete != null) {
+			
+			Set<WodResult> resultToDelete = this.findAllResult(wodToDelete);
+			this.wodResultRepository.deleteAll(resultToDelete);
+			this.wodRepository.delete(wodToDelete);
+		}
+	}
 }

@@ -40,6 +40,25 @@
 
     </div>
 
+    
+    <mat-card>
+        <mat-card-title>Publications du wod</mat-card-title>
+        <mat-card-content>
+          <mat-nav-list dense>
+              <mat-list-item *ngFor="let pub of wod.publications">
+                
+                <mat-icon matListIcon>{{pub.startAt === pub.endAt ? 'calendar_today' : 'date_range'}}</mat-icon>
+                <span matLine > {{pub.startAt | date:'dd/MM/yyyy'}}</span>
+                <span matLine *ngIf="pub.startAt != pub.endAt"> {{pub.endAt | date:'dd/MM/yyyy'}}</span>
+                
+                <button mat-button mat-icon-button (click)="deletePub(pub)" >
+                  <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-nav-list>            
+        </mat-card-content>
+      </mat-card>
+
     <div class="form-footer">
       <submit-button></submit-button>
 

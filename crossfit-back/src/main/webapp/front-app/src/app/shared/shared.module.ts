@@ -18,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
   MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule, MatTableModule, MatButtonToggleModule } from '@angular/material';
 import { TextCompleteModule } from './text-complete/text-complete.module';
+import { StatusBarComponent } from './status-bar/status-bar.component';
   
 
 const loginRoutes: Routes = [
@@ -42,7 +43,8 @@ const loginRoutes: Routes = [
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
     MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
-    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule
+    MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule,
+    StatusBarComponent
   ],
   providers:[
 	  AuthGuard,
@@ -53,6 +55,6 @@ const loginRoutes: Routes = [
 	  AuthService,
 	  Principal,
   ],
-  declarations: [LoginComponent, LogoutComponent, SubmitButtonComponent]
+  declarations: [LoginComponent, LogoutComponent, SubmitButtonComponent, StatusBarComponent]
 })
 export class SharedModule { }

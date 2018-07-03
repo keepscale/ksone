@@ -29,6 +29,17 @@
     
     <mat-card>
       <mat-card-title>Publications du wod</mat-card-title>
+      <mat-card-content>
+        <mat-nav-list dense>
+            <mat-list-item *ngFor="let pub of wod.publications">
+              
+              <mat-icon matListIcon>{{pub.startAt === pub.endAt ? 'calendar_today' : 'date_range'}}</mat-icon>
+              <span > {{pub.startAt | date:'dd/MM/yyyy'}} </span>
+              <span *ngIf="pub.startAt != pub.endAt">&nbsp;au {{pub.endAt | date:'dd/MM/yyyy'}}</span>
+              
+            </mat-list-item>
+          </mat-nav-list>            
+      </mat-card-content>
     </mat-card>
   </div>
 
