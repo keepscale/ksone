@@ -94,5 +94,36 @@
 			"HEROES" : "Heroe",
 			"CUSTOM" : "Personnalisé"
 		}
+	},
+	"account": {
+		"address": {
+			"placeholder": "Addresse"
+		},
+		"city": {
+			"placeholder": "Ville"
+		},
+		"email": {
+			"placeholder": "Email"
+		},
+		"firstName": {
+			"placeholder": "Prénom"
+		},
+		"lastName": {
+			"placeholder": "Nom"
+		},
+		"nickName": {
+			"placeholder": "Surnom"
+		},
+		"telephonNumber": {
+			"placeholder": "N° téléphone"
+		},
+		"title": {
+			"MR": "Monsieur",
+			"MS": "Madame",
+			"placeholder": "Civilité"
+		},
+		"zipCode": {
+			"placeholder": "Code postal"
+		}
 	}
 }

@@ -24,7 +24,7 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ "	or lower(w.score) like :search "
     		+ "	or lower(w.description) like :search "
     		+ ") "
-    		+ "and exists ( select pub from w.publications pub where (:start <= pub.date )  AND ( pub.date <= :end ) ) "
+    		+ "and exists ( select pub from w.publications pub where  (:start <= pub.endAt )  AND ( pub.startAt <= :end ) ) "
     		+ "")
 	Set<Wod> findAllVisible(@Param("box") CrossFitBox box, @Param("owner") Member owner, @Param("search") String search, @Param("start") LocalDate start, @Param("end") LocalDate end);
 

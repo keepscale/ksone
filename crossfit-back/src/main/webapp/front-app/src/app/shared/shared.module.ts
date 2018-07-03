@@ -11,7 +11,7 @@ import { LogoutComponent } from './login/logout.component';
 import { AuthService } from './auth/auth.service';
 import { AccountService } from './auth/account.service';
 import { Principal } from './auth/principal.service';
-import { AuthGuard, RoleManagerGuard, RoleAdminGuard } from './auth/auth.guard';
+import { AuthGuard, RoleManagerGuard, RoleAdminGuard, RoleCoachGuard } from './auth/auth.guard';
 import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -47,7 +47,8 @@ const loginRoutes: Routes = [
   providers:[
 	  AuthGuard,
 	  RoleManagerGuard,
-	  RoleAdminGuard,
+    RoleAdminGuard,
+    RoleCoachGuard,
 	  AccountService,
 	  AuthService,
 	  Principal,

@@ -1,12 +1,27 @@
 
 .account-container{
+    width: 750px;
+    margin: auto;
+}
+mat-form-field{
     width: 100%;
 }
-.account-container mat-form-field{
-    width: 250px;
+mat-form-field.title{
+    width: 20%;
+}
+mat-form-field.firstName, 
+mat-form-field.lastName{
+    width: 40%;
+}
+mat-form-field.zipCode, 
+mat-form-field.city{
+    width: 50%;
 }
 
 @media screen and (max-width: 767px) {
+    .account-container{
+        width: 100%;
+    }
     .account-container mat-form-field{
         width: 100%;
     }

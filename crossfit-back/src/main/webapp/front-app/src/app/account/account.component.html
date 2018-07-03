@@ -5,9 +5,9 @@
   <form novalidate (ngSubmit)="onSubmit()">
 
     <div class="form-container">
-      <div class="line info1">
-        <mat-form-field>
-          <mat-select placeholder="{{'account.title.placeholder' | translate}}" readonly disabled
+      <div class="line">
+        <mat-form-field class="title">
+          <mat-select placeholder="{{'account.title.placeholder' | translate}}"
             [(ngModel)]="account.title" name="account.title">
             <mat-option [value]="'MR'">
                 {{'account.title.MR' | translate}}
@@ -18,58 +18,59 @@
           </mat-select>
         </mat-form-field>
             
-        <mat-form-field>
-          <input matInput placeholder="{{'account.firstName.placeholder' | translate}}" readonly disabled
+        <mat-form-field class="firstName">
+          <input matInput placeholder="{{'account.firstName.placeholder' | translate}}"
             [(ngModel)]="account.firstName" name="account.firstName">
         </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="{{'account.lastName.placeholder' | translate}}" readonly disabled
+        <mat-form-field class="lastName">
+          <input matInput placeholder="{{'account.lastName.placeholder' | translate}}"
             [(ngModel)]="account.lastName" name="account.lastName">
         </mat-form-field>
       </div>
-      <div class="line info2">
+      <div class="line">
         <mat-form-field>
-          <input matInput placeholder="{{'account.address.placeholder' | translate}}" readonly disabled
+          <input matInput placeholder="{{'account.address.placeholder' | translate}}"
             [(ngModel)]="account.address" name="account.address">
         </mat-form-field>
       </div>
 
-      <div class="line info3">
-          <mat-form-field>
-          <input matInput placeholder="{{'account.zipCode.placeholder' | translate}}" readonly disabled
+      <div class="line">
+        <mat-form-field class="zipCode">
+          <input matInput placeholder="{{'account.zipCode.placeholder' | translate}}"
             [(ngModel)]="account.zipCode" name="account.zipCode">
         </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="{{'account.city.placeholder' | translate}}" readonly disabled
+        <mat-form-field class="city">
+          <input matInput placeholder="{{'account.city.placeholder' | translate}}"
             [(ngModel)]="account.city" name="account.city">
         </mat-form-field>
       </div>
 
-      <div class="line info4">
-          <mat-form-field>
-            <input matInput placeholder="{{'account.email.placeholder' | translate}}" readonly disabled
+      <div class="line">
+        <mat-form-field class="email">
+            <input matInput placeholder="{{'account.email.placeholder' | translate}}"
               [(ngModel)]="account.email" name="account.email">
           </mat-form-field>
 
-          <mat-form-field>
-            <input matInput placeholder="{{'account.telephonNumber.placeholder' | translate}}" readonly disabled
+          <mat-form-field class="telephon">
+            <input matInput placeholder="{{'account.telephonNumber.placeholder' | translate}}"
               [(ngModel)]="account.telephonNumber" name="account.telephonNumber">
           </mat-form-field>
       </div>
 
-      <div class="line info5">
+      <div class="line">
         <mat-form-field>
           <input matInput placeholder="{{'account.nickName.placeholder' | translate}}"
             [(ngModel)]="account.nickName" name="account.nickName">
         </mat-form-field>
       </div>
+
   </div>
 
-    <div class="form-footer">
-      <submit-button></submit-button>
+  <div class="form-footer">
+    <submit-button></submit-button>
 
-      <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
-    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+  </div>
 
   </form>
 

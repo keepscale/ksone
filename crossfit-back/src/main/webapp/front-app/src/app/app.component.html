@@ -5,10 +5,10 @@
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #sidenav
+    <mat-sidenav #sidenav (click)="sidenav.close()"
     (closedStart)="toolbar.sideNavChange(false)"
     (openedStart)="toolbar.sideNavChange(true)"
-      [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [mode]="mobileQuery.matches ? 'over' : 'over'"
       [fixedInViewport]="true" 
       fixedTopGap="56">
       <mat-nav-list>

@@ -19,7 +19,9 @@ $light2: darken($light, 3%);
 
 mat-card{
 	margin: 30px 5px 5px;
+	padding: 5px;
 	cursor: pointer;
+	overflow: hidden;
 	mat-card-title{
 		text-align: center;
 	}
