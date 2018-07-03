@@ -5,9 +5,11 @@ import { WodResult } from "./wod-result.model";
 export class WodPublication{
     
     public id: number;
-    public date: Date;
+    public startAt: Date;
+    public endAt: Date;
     constructor(date?: Date){
-        this.date = date;
+        this.startAt = date;
+        this.endAt = date;
     }
 
 }

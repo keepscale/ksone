@@ -2,31 +2,36 @@
 
 <div class="wod-container" *ngIf="wod">
 
-  <mat-card>
-    <mat-card-title><span *ngIf="wod.category != 'CUSTOM'">{{'wod.category.' + wod.category | translate}}: </span>{{wod.name}}</mat-card-title>
-    <mat-card-subtitle>
-      {{'wod.score.' + wod.score | translate}}
-    </mat-card-subtitle>
-    <mat-card-content style="white-space: pre;">
-     
-    {{wod.description}}
-
+  <div class="wod-infos">
+    <mat-card>
+      <mat-card-title><span *ngIf="wod.category != 'CUSTOM'">{{'wod.category.' + wod.category | translate}}: </span>{{wod.name}}</mat-card-title>
+      <mat-card-subtitle>
+        {{'wod.score.' + wod.score | translate}}
+      </mat-card-subtitle>
+      <mat-card-content style="white-space: pre;">
       
+      {{wod.description}}
+      
+      </mat-card-content>
+      <mat-card-actions>
+        <a [routerLink]="['..','edit']">
+          <button mat-button >
+            <mat-icon attr.aria-label="{{'wod.edit.button.label' | translate}}">edit</mat-icon>
+          </button>
+        </a>
+        <a [routerLink]="['..','delete']">
+          <button mat-button >
+            <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
+          </button>
+        </a>
+      </mat-card-actions>
+    </mat-card>  
     
-    </mat-card-content>
-    <mat-card-actions>
-      <a [routerLink]="['..','edit']">
-        <button mat-button >
-          <mat-icon attr.aria-label="{{'wod.edit.button.label' | translate}}">edit</mat-icon>
-        </button>
-      </a>
-      <a [routerLink]="['..','delete']">
-        <button mat-button >
-          <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
-        </button>
-      </a>
-    </mat-card-actions>
-  </mat-card>
+    <mat-card>
+      <mat-card-title>Publications du wod</mat-card-title>
+    </mat-card>
+  </div>
+
 
   <mat-tab-group>
     <mat-tab label="Classement">

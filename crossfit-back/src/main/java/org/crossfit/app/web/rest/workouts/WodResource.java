@@ -108,7 +108,7 @@ public class WodResource {
 		Function<Wod, LocalDate> plusPetiteDateApresMaintenant = wod->{
 			return wod == null ||wod.getPublications() == null || wod.getPublications().isEmpty() ? null : 
 				wod.getPublications().stream()
-				.map(WodPublication::getDate)
+				.map(WodPublication::getStartAt)
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};

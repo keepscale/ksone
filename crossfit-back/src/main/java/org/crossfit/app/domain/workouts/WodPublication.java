@@ -31,12 +31,19 @@ public class WodPublication {
 	@JsonIgnore
 	@ManyToOne(optional = false, cascade = {})
 	private Wod wod;
-	
-	@Column(name = "date", nullable = false)
+
+	@Column(name = "start_at", nullable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
-	private LocalDate date;
+	private LocalDate startAt;
+	
+
+	@Column(name = "end_at", nullable = false)
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+	private LocalDate endAt;
 	
 	public Long getId() {
 		return id;
@@ -54,12 +61,20 @@ public class WodPublication {
 		this.wod = wod;
 	}
 
-	public LocalDate getDate() {
-		return date;
+	public LocalDate getStartAt() {
+		return startAt;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setStartAt(LocalDate startAt) {
+		this.startAt = startAt;
+	}
+
+	public LocalDate getEndAt() {
+		return endAt;
+	}
+
+	public void setEndAt(LocalDate endAt) {
+		this.endAt = endAt;
 	}
 
 	@Override

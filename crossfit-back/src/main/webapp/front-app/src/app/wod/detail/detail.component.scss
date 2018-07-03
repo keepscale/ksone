@@ -1,15 +1,9 @@
-.mat-expansion-panel-header-title, 
-.mat-expansion-panel-header-description {
-    flex-basis: 0;
-}
 
-.mat-expansion-panel-header-description {
-    justify-content: space-between;
-}
+.wod-infos{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 
-.mat-expansion-panel-header-title{
-    min-width: 130px;
-}
-.mat-expansion-panel-header-description{
-    min-width: 100px;
+    mat-card{
+    }
 }

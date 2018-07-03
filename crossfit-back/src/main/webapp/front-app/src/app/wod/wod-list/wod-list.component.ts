@@ -20,7 +20,6 @@ export class WodListComponent implements OnInit {
   currentMemberId: number;
   wods:Wod[] = [];
 
-  events: Event[];
 
   constructor(private toolbar: ToolBarService, 
     private wodService: WodService,
@@ -48,14 +47,19 @@ export class WodListComponent implements OnInit {
     this.wodService.findAll(search).subscribe(result=>{
       this.wods=result;
 
-      let tmp = [];
+      let events = [];
       this.wods.forEach(w=>{
         w.publications.forEach(pub=>{
-          tmp.push(new Event(pub.date, w.name, w.description, w));
+          let start = moment(pub.startAt);
+          let actual = moment(start);
+          let end = moment(pub.endAt);
+          do{
+            events.push(new Event(moment(actual), w.name, w.description, w));
+            actual.add(1,'d');
+          }while(actual.isBefore(end))
         })
       })
-      this.events = tmp;
-      this.eventService.setEvents(this.events);
+      this.eventService.setEvents(events);
     });
   }
 

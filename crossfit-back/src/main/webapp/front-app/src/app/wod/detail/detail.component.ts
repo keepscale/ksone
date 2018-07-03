@@ -28,7 +28,7 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
     this.toolbar.setTitle("Détail d'un wod");
     this.toolbar.setOnGoBack(()=>{
-      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].date).format("YYYY-MM-DD");
+      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].startAt).format("YYYY-MM-DD");
       this.router.navigate(['wod'], {queryParams:{'date': adate}});
       }
     );
