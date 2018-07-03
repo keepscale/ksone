@@ -10,6 +10,7 @@ import { MyResultComponent } from './detail/myresult/myresult.component';
 import { RankingComponent } from './detail/ranking/ranking.component';
 import { PlanningModule } from '../planning/planning.module';
 import { DeleteComponent } from './delete/delete.component';
+import { DatePublicationDialogComponent } from './edit/date-publication-dialog/date-publication-dialog.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod',  component: WodListComponent, canActivate: [RoleCoachGuard] },
@@ -29,7 +30,10 @@ const wodsRoutes: Routes = [
   exports: [
     MyResultComponent, RankingComponent
   ],
-  declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent, DeleteComponent],
+  entryComponents: [DatePublicationDialogComponent],
+  declarations: [WodListComponent, EditComponent, DetailComponent, 
+    MyResultComponent, RankingComponent, DeleteComponent, 
+    DatePublicationDialogComponent],
   providers: []
 })
 export class WodModule { }

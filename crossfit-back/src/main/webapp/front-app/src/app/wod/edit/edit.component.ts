@@ -4,12 +4,13 @@ import { WodService } from '../wod.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Movement } from '../domain/movement.model';
-import { MatAutocompleteSelectedEvent, MatAutocomplete, MatDatepickerInputEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatAutocomplete, MatDatepickerInputEvent, MatDialog } from '@angular/material';
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
 import { Equipment } from '../domain/equipment.model';
 import { Taggable } from '../domain/taggable.model';
 import { ToolBarService } from '../../toolbar/toolbar.service';
 import * as moment from 'moment';
+import { DatePublicationDialogComponent } from './date-publication-dialog/date-publication-dialog.component';
 
 @Component({
   selector: 'app-edit',
@@ -32,7 +33,8 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location, 
-    private toolbar: ToolBarService) { }
+    private toolbar: ToolBarService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
@@ -41,14 +43,22 @@ export class EditComponent implements OnInit {
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
     this.toolbar.setOnGoBack(()=>{
-      this.router.navigate(['wod', this.wod.id, 'detail']);
+      
+        if (!this.wod.id){
+          this.router.navigate(['wod'], {queryParams:{'date': this.route.snapshot.queryParamMap.get("date")}});
+        }
+        else{
+          this.router.navigate(['wod', this.wod.id, 'detail']);
+        }
       }
     );
+    this.toolbar.addMenuItem(this.showAddPublicationDate.bind(this), "event", "Ajouter une date");
+
     if (!id){
       let dateParam = this.route.snapshot.queryParamMap.get("date");
       let date = dateParam == null ? new Date() : new Date(dateParam);
 
-      this.toolbar.setTitle("Plannifier un WOD pour le " + moment(date).format("dddd DD/MM/YYYY"));
+      this.toolbar.setTitle("Plannifier un WOD pour le " + moment(date).format("DD/MM/YYYY"));
       this.wod = new Wod();
       this.wod.category = "CUSTOM";
       this.wod.score = "FOR_TIME";
@@ -66,6 +76,20 @@ export class EditComponent implements OnInit {
       )
     }
   }
+
+  showAddPublicationDate(){
+    const dialogRef = this.dialog.open(DatePublicationDialogComponent, {
+      width: '250px',
+      data: new WodPublication()
+    });
+
+    dialogRef.afterClosed().subscribe(result => {      
+      if(result != null){
+        this.wod.publications.push(result);
+      }
+    });
+  }
+  
 
   onSelectPublicationDate(event: MatDatepickerInputEvent<Date>){
     this.addPublicationDate(event.value);

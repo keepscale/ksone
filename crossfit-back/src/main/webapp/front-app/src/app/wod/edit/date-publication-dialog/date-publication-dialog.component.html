@@ -1,0 +1,16 @@
+<mat-form-field>
+  <input matInput [matDatepicker]="pickerStartAt" placeholder="Date de début" [(ngModel)]="pub.startAt" name="pub.startAt" (dateChange)="pub.endAt=$event.value">
+  <mat-datepicker-toggle matSuffix [for]="pickerStartAt"></mat-datepicker-toggle>
+  <mat-datepicker #pickerStartAt></mat-datepicker>
+</mat-form-field>
+  
+<mat-form-field>
+  <input matInput [matDatepicker]="pickerEndAt" placeholder="Date de fin" [(ngModel)]="pub.endAt" name="pub.endAt" (dateChange)="pub.endAt=$event.value">
+  <mat-datepicker-toggle matSuffix [for]="pickerEndAt"></mat-datepicker-toggle>
+  <mat-datepicker #pickerEndAt></mat-datepicker>
+</mat-form-field>
+
+
+<button mat-raised-button color="primary" (click)="addPublication()" [disabled]="pub.endAt==null || pub.startAt == null">
+  Ajouter
+</button>

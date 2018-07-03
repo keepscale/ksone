@@ -6,58 +6,63 @@
 
     <div class="form-container">
 
-      <mat-form-field>
-        <mat-select placeholder="{{'wod.score.placeholder' | translate}}" [(ngModel)]="wod.score" name="wod.score">
-          <mat-option *ngFor="let score of availableWodScore" [value]="score">
-            {{'wod.score.' + score | translate}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="wod-infos">
+        <mat-form-field>
+          <mat-select placeholder="{{'wod.score.placeholder' | translate}}" [(ngModel)]="wod.score" name="wod.score">
+            <mat-option *ngFor="let score of availableWodScore" [value]="score">
+              {{'wod.score.' + score | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field>
-        <mat-select placeholder="{{'wod.category.placeholder' | translate}}" [(ngModel)]="wod.category" name="wod.category">
-          <mat-option *ngFor="let cat of availableWodCategories" [value]="cat">
-            {{'wod.category.' + cat | translate}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="{{'wod.category.placeholder' | translate}}" [(ngModel)]="wod.category" name="wod.category">
+            <mat-option *ngFor="let cat of availableWodCategories" [value]="cat">
+              {{'wod.category.' + cat | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field>
-        <input matInput placeholder="{{'wod.name.placeholder' | translate}}" [(ngModel)]="wod.name" name="wod.name">
-      </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="{{'wod.name.placeholder' | translate}}" [(ngModel)]="wod.name" name="wod.name">
+        </mat-form-field>
 
-      <mat-form-field style="width: 100%;">
-        <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}" rows="10" [(ngModel)]="wod.description" name="wod.description"
-          textComplete [optionsFilter]="completeFilter.bind(this)" [optionDisplay]="displayOptionComplete" (optionSelected)="onSelectOption($event)"></textarea>
-      </mat-form-field>
+        <mat-form-field>
+          <textarea matInput placeholder="{{'wod.description.placeholder' | translate}}" rows="10" [(ngModel)]="wod.description" name="wod.description"
+            textComplete [optionsFilter]="completeFilter.bind(this)" [optionDisplay]="displayOptionComplete" (optionSelected)="onSelectOption($event)"></textarea>
+        </mat-form-field>
 
-      <mat-chip-list>
-        <mat-chip *ngFor="let m of wod.taggedMovements" [color]="primary" [selectable]="false" [removable]="true" (removed)="removeMovement(m)">
-          {{m.fullname}}
-          <mat-icon matChipRemove>close</mat-icon>
-        </mat-chip>
-      </mat-chip-list>
+        <mat-chip-list>
+          <mat-chip *ngFor="let m of wod.taggedMovements" [color]="primary" [selectable]="false" [removable]="true" (removed)="removeMovement(m)">
+            {{m.fullname}}
+            <mat-icon matChipRemove>close</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <div class="wod-publications">
 
+        <mat-card>
+            <mat-card-title>Publications du wod</mat-card-title>
+            <mat-card-content>
+              <mat-nav-list dense>
+                  <mat-list-item *ngFor="let pub of wod.publications; let idx=index">
+                    
+                    <mat-icon matListIcon>{{pub.startAt === pub.endAt ? 'calendar_today' : 'date_range'}}</mat-icon>
+                    <span matLine > {{pub.startAt | date:'dd/MM/yyyy'}}</span>
+                    <span matLine *ngIf="pub.startAt != pub.endAt"> {{pub.endAt | date:'dd/MM/yyyy'}}</span>
+                    
+                    <button mat-button mat-icon-button (click)="removePublicationAtIndex(idx)" >
+                      <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
+                    </button>
+                  </mat-list-item>
+                </mat-nav-list>            
+            </mat-card-content>
+          </mat-card>
+
+      </div>
     </div>
 
     
-    <mat-card>
-        <mat-card-title>Publications du wod</mat-card-title>
-        <mat-card-content>
-          <mat-nav-list dense>
-              <mat-list-item *ngFor="let pub of wod.publications">
-                
-                <mat-icon matListIcon>{{pub.startAt === pub.endAt ? 'calendar_today' : 'date_range'}}</mat-icon>
-                <span matLine > {{pub.startAt | date:'dd/MM/yyyy'}}</span>
-                <span matLine *ngIf="pub.startAt != pub.endAt"> {{pub.endAt | date:'dd/MM/yyyy'}}</span>
-                
-                <button mat-button mat-icon-button (click)="deletePub(pub)" >
-                  <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
-                </button>
-              </mat-list-item>
-            </mat-nav-list>            
-        </mat-card-content>
-      </mat-card>
 
     <div class="form-footer">
       <submit-button></submit-button>

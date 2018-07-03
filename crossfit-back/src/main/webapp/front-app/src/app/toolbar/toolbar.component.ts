@@ -4,13 +4,9 @@ import { Subscription } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { Principal } from '../shared/auth/principal.service';
+import { MenuItem } from './menu-item.model';
 
-export class MenuItem{
 
-  action: Function;
-  icon: string;
-  text: string;
-}
 
 @Component({
   selector: 'app-toolbar',
@@ -52,6 +48,7 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getSearchPlaceHolder().subscribe(t=>this.searchPlaceHolder=t);
     this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a);
     this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
+    this.toolbar.getMenuItemAdded().subscribe(item=>this.menuItems.push(item));
 
     this.principal.identity().subscribe(res=>{
       this.displayName = res != null ? res.firstName + " " + res.lastName : "";
