@@ -37,6 +37,7 @@ export class DetailComponent implements OnInit {
     if (wodId){
       this.service.get(wodId).subscribe(w=>{
           this.wod = w;
+          this.wod.publications = this.wod.publications.sort((pub1,pub2)=>{return moment(pub2.endAt).diff(moment(pub1.endAt));});
         },
         err=>{
           this.toolbar.goBack();

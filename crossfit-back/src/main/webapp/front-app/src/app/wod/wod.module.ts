@@ -9,12 +9,14 @@ import { DetailComponent } from './detail/detail.component';
 import { MyResultComponent } from './detail/myresult/myresult.component';
 import { RankingComponent } from './detail/ranking/ranking.component';
 import { PlanningModule } from '../planning/planning.module';
+import { DeleteComponent } from './delete/delete.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod',  component: WodListComponent, canActivate: [RoleCoachGuard] },
   { path: 'wod/new',  component: EditComponent, canActivate: [RoleCoachGuard] },
   { path: 'wod/:id/edit',  component: EditComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/:id/detail',  component: DetailComponent, canActivate: [RoleCoachGuard] }
+  { path: 'wod/:id/detail',  component: DetailComponent, canActivate: [RoleCoachGuard] },
+  { path: 'wod/:id/delete',  component: DeleteComponent, canActivate: [RoleCoachGuard] }
 ];
 
 @NgModule({
@@ -27,7 +29,7 @@ const wodsRoutes: Routes = [
   exports: [
     MyResultComponent, RankingComponent
   ],
-  declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent],
+  declarations: [WodListComponent, EditComponent, DetailComponent, MyResultComponent, RankingComponent, DeleteComponent],
   providers: []
 })
 export class WodModule { }

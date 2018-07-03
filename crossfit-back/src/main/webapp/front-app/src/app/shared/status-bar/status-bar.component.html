@@ -1,0 +1,9 @@
+
+<mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
+
+<div *ngIf="error">
+    <h4><mat-icon>error</mat-icon>Une erreur est survenue</h4>
+
+    <p>{{error.message | translate}}</p>
+    <p>{{error.description}}</p>
+</div>
