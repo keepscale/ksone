@@ -29,7 +29,7 @@ export class DetailComponent implements OnInit {
     this.toolbar.setTitle("Détail d'un wod");
     this.toolbar.setOnGoBack(()=>{
       let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].startAt).format("YYYY-MM-DD");
-      this.router.navigate(['wod'], {queryParams:{'date': adate}});
+      this.router.navigate(['wod-planning'], {queryParams:{'date': adate}});
       }
     );
 
