@@ -55,7 +55,7 @@ export class DeleteComponent implements OnInit {
     this.status = "wait";
     this.error = "";
     this.service.delete(this.wod).subscribe(res=>{
-      this.router.navigate(["wod"]);
+      this.router.navigate(["wod-planning"]);
     },
     err=>{
       this.status = "error";

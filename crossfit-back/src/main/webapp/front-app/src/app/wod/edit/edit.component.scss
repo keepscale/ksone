@@ -9,6 +9,13 @@
     }
     .wod-publications{
         min-width: 270px;
+        h2{
+            margin: 0;
+        }
+        mat-nav-list{
+            border-left: 2px solid black;
+            margin-left: 20px;
+        }
     }
 }
 

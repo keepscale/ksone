@@ -1,18 +1,31 @@
 
 .wod-infos{
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
+    mat-card-content{
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        
+        div{
+            flex-grow: 1;
+        }
 
-    mat-card{
-        flex-grow: 1;
+        h2{
+            margin: 0;
+        }
+        mat-nav-list{
+            border-left: 2px solid black;
+            margin-left: 20px;
+        }
     }
+
 }
 
 
 @media screen and (max-width: 767px) {
 
     .wod-infos{
-        flex-direction: column;
+        mat-card-content{
+            flex-direction: column;
+        }
     }
 }

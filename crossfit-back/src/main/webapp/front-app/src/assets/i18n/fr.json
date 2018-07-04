@@ -7,7 +7,7 @@
 	"app": {
 		"menu": {
 			"activity": "Activité",
-			"WOD": "WOD",
+			"wod.planning": "Planning des wods",
 			"logout": "Déconnexion"
 		}
 	},
