@@ -212,4 +212,10 @@ public class Wod extends AbstractAuditingEntity implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Wod [name=" + name + ", category=" + category + ", score=" + score + ", description=" + description
+				+ "]";
+	}
+
 }
