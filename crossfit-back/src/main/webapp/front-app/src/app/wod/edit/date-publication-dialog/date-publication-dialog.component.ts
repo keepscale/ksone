@@ -9,7 +9,7 @@ export class DatePublicationDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<DatePublicationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private pub: WodPublication) {
+    @Inject(MAT_DIALOG_DATA) public pub: WodPublication) {
     }
 
   onNoClick(): void {
