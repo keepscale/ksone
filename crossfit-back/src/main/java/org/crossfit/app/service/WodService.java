@@ -75,55 +75,63 @@ public class WodService {
 
 	public Wod save(@Valid Wod dto) {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-		Wod wod;
-		if (dto.getId() == null){			
-			wod = new Wod();
-			wod.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-			WodShareProperties shareProperties = new WodShareProperties();
-			shareProperties.setOwner(SecurityUtils.getCurrentMember());
-			shareProperties.setVisibility(WodVisibility.PUBLIC);
-			wod.setShareProperties(shareProperties);
-		}
-		else{			
-			wod= wodRepository.findOne(currentCrossFitBox, SecurityUtils.getCurrentMember(), dto.getId());
-		}
 		
-		wod.setBox(currentCrossFitBox);
-		wod.setCategory(dto.getCategory());
-		wod.setDescription(dto.getDescription());
-		wod.setLink(dto.getLink());
-		wod.setVideoLink(dto.getVideoLink());
-		wod.setName(dto.getName());
-		wod.setScore(dto.getScore());
-		if (dto.getTaggedEquipments() != null) {
-			wod.setTaggedEquipments(new HashSet<>(equipmentRepository.findAllById(
-					dto.getTaggedEquipments().stream().map(Equipment::getId).collect(Collectors.toList()
+		Wod wod = dto.getId() == null ? createWod(currentCrossFitBox) 
+				: wodRepository.findOne(currentCrossFitBox, SecurityUtils.getCurrentMember(), dto.getId())	;
+		
+		mergeWod(dto, wod);
+			
+		return wodRepository.saveAndFlush(wod);
+	}
+
+
+	private void mergeWod(Wod source, Wod destination) {
+		destination.setCategory(source.getCategory());
+		destination.setDescription(source.getDescription());
+		destination.setLink(source.getLink());
+		destination.setVideoLink(source.getVideoLink());
+		destination.setName(source.getName());
+		destination.setScore(source.getScore());
+		if (source.getTaggedEquipments() != null) {
+			destination.setTaggedEquipments(new HashSet<>(equipmentRepository.findAllById(
+					source.getTaggedEquipments().stream().map(Equipment::getId).collect(Collectors.toList()
 			))));
 		}
 		else {
-			wod.setTaggedEquipments(null);
+			destination.setTaggedEquipments(null);
 		}
 		
 
-		if (dto.getTaggedMovements() != null) {
-			wod.setTaggedMovements(new HashSet<>(movementRepository.findAllById(
-					dto.getTaggedMovements().stream().map(Movement::getId).collect(Collectors.toList()
+		if (source.getTaggedMovements() != null) {
+			destination.setTaggedMovements(new HashSet<>(movementRepository.findAllById(
+					source.getTaggedMovements().stream().map(Movement::getId).collect(Collectors.toList()
 			))));
 		}
 		else {
-			wod.setTaggedMovements(null);
+			destination.setTaggedMovements(null);
 		}
 		
-		if (dto.getPublications() != null) {
-			wod.getPublications().removeIf(actual->!dto.getPublications().contains(actual));
-			wod.getPublications().addAll(dto.getPublications());
-			wod.getPublications().forEach(pub->pub.setWod(wod));
+		if (source.getPublications() != null) {
+			destination.getPublications().removeIf(actual->!source.getPublications().contains(actual));
+			destination.getPublications().addAll(source.getPublications());
+			destination.getPublications().forEach(pub->pub.setWod(destination));
 		}
 		else {
-			wod.getPublications().clear();
+			destination.getPublications().clear();
 		}
-			
-		return wodRepository.saveAndFlush(wod);
+	}
+
+
+	private Wod createWod(CrossFitBox currentCrossFitBox) {
+		Wod wod;
+		wod = new Wod();
+		wod.setCreatedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+		wod.setBox(currentCrossFitBox);
+		WodShareProperties shareProperties = new WodShareProperties();
+		shareProperties.setOwner(SecurityUtils.getCurrentMember());
+		shareProperties.setVisibility(WodVisibility.PUBLIC);
+		wod.setShareProperties(shareProperties);
+		return wod;
 	}
 
 
@@ -222,5 +230,18 @@ public class WodService {
 			this.wodResultRepository.deleteAll(resultToDelete);
 			this.wodRepository.delete(wodToDelete);
 		}
+	}
+
+
+	public void createAll(List<Wod> dtos) {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		
+		List<Wod> wodToCreate = dtos.stream().map(dto->{
+			Wod wod = createWod(box);
+			mergeWod(dto, wod);
+			return wod;
+		}).collect(Collectors.toList());
+		
+		this.wodRepository.saveAll(wodToCreate);
 	}
 }
