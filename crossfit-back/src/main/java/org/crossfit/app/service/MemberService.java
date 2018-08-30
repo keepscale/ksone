@@ -157,6 +157,11 @@ public class MemberService {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		return memberRepository.findAllMemberWithNoSubscriptionAtDate(box, date);
 	}
+
+	public List<Member> findAllMemberWithActiveSubscriptionAtDate(LocalDate date) {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithSubscriptionAtDate(box, date);
+	}
 	
 	public List<Member> findAllMemberWithNoCard(){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();

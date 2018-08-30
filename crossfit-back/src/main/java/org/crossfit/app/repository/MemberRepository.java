@@ -89,6 +89,12 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate )")
 	List<Member> findAllMemberWithNoSubscriptionAtDate(@Param("box") CrossFitBox box, @Param("at") LocalDate at);
 
+    @Query("select m from Member m where m.box = :box "
+    		+ "AND m.enabled = true AND m.locked = false "
+    		+ "and exists ( "
+    		+ "select s from Subscription s where s.member = m "
+    		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate )")
+	List<Member> findAllMemberWithSubscriptionAtDate(@Param("box") CrossFitBox box, @Param("at") LocalDate at);
 
     @Query("select m from Member m where m.box = :box "
     		+ "AND m.enabled = true AND m.locked = false "
