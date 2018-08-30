@@ -69,7 +69,7 @@ public class MembershipStatsService {
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
 		List<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box).stream()
 				.filter(s -> {
-					return s.getSubscriptionStartDate().isBefore(endAt) && s.getSubscriptionEndDate().isAfter(endAt);
+					return s.getSubscriptionStartDate().isBefore(endAt) && s.getSubscriptionEndDate().isAfter(startAd);
 				}).collect(Collectors.toList());
 		
 		Optional<Subscription> findFirst = subscriptions.stream()

@@ -13,3 +13,30 @@
     <nvd3 options="options" data="data"></nvd3>
 
 
+<div class="row">
+	<div class="col-lg-12">
+	
+	    <div class="table-responsive">
+	        <table class="table table-striped">
+				<tr>
+					<th></th>
+					<th style="text-align: center" ng-repeat="firstAboStat in data[0].values">
+						{{firstAboStat[0]  | date:'MMM yyyy' }}
+					</th>
+				</tr>
+			
+			</thead>
+			<tbody>
+				<tr ng-repeat="abo in data">
+					<th>
+						{{abo.key}}
+					</th>
+					<td  align="center" ng-repeat="aboStat in abo.values">
+						{{aboStat[1]}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+    </div>
+</div>
