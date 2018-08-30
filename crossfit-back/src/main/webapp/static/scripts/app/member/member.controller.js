@@ -16,7 +16,8 @@ angular.module('crossfitApp')
         $scope.selectedHealthIndicators = [];
         $scope.selectedCustomCriteria = [];
         $scope.customCriteria = {
-    		expire: new Date()
+    		expire: new Date(),
+    		encours: new Date()
         }
         
         $scope.loadAll = function() {
@@ -28,6 +29,7 @@ angular.module('crossfitApp')
             	with_healthindicators: $scope.selectedHealthIndicators,
             	with_customcriteria: $scope.selectedCustomCriteria,
             	with_customcriteria_expire: DateUtils.formatDateAsDate($scope.customCriteria.expire),
+            	with_customcriteria_encours: DateUtils.formatDateAsDate($scope.customCriteria.encours),
             	include_actif: $scope.include_actif,
             	include_not_enabled: $scope.include_not_ennabled,
             	include_bloque: $scope.include_bloque}, 
@@ -175,8 +177,9 @@ angular.module('crossfitApp')
             for (var i = 0; i < $scope.selectedCustomCriteria.length; i++) {
             	params += "&with_customcriteria=" + $scope.selectedCustomCriteria[i];
             }
-            
+
         	params += "&with_customcriteria_expire=" + DateUtils.formatDateAsDate($scope.customCriteria.expire);
+        	params += "&with_customcriteria_encours=" + DateUtils.formatDateAsDate($scope.customCriteria.encours);
         	
             
             

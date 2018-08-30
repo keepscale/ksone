@@ -102,15 +102,26 @@
 						<span class="checkbox-title">Autres critères</span>
 						<div class="checkbox-list-content">
 							<div style="display: block">
-									<label style="float: left; margin-top: 5px;">
-									  <input type="checkbox" value="EXPIRE"
-										    ng-checked="selectedCustomCriteria.indexOf('EXPIRE') > -1"
-					  						ng-click="toggleSelectedCustomCriteria('EXPIRE')"> Abo. expiré au 
-					  						
-									</label>
-						            <datetimepicker hidden-time="true"
-										ng-model="customCriteria.expire" how-weeks="false" minute-step="30" show-meridian="false" 
-								       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+								<label style="float: left; margin-top: 5px;">
+								  <input type="checkbox" value="ENCOURS"
+									    ng-checked="selectedCustomCriteria.indexOf('ENCOURS') > -1"
+				  						ng-click="toggleSelectedCustomCriteria('ENCOURS')"> Abo. en cours au 
+				  						
+								</label>
+					            <datetimepicker hidden-time="true"
+									ng-model="customCriteria.encours" how-weeks="false" minute-step="30" show-meridian="false" 
+							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
+							</div>
+							<div style="display: block">
+								<label style="float: left; margin-top: 5px;">
+								  <input type="checkbox" value="EXPIRE"
+									    ng-checked="selectedCustomCriteria.indexOf('EXPIRE') > -1"
+				  						ng-click="toggleSelectedCustomCriteria('EXPIRE')"> Abo. expiré au 
+				  						
+								</label>
+					            <datetimepicker hidden-time="true"
+									ng-model="customCriteria.expire" how-weeks="false" minute-step="30" show-meridian="false" 
+							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 							</div>
 						</div>
 					</div>
