@@ -31,7 +31,9 @@ import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
+import org.joda.time.Months;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -71,7 +73,7 @@ public class StatsResource {
     public String membership() throws JSONException {
         log.debug("REST request to get membership stats");
         LocalDate start = new LocalDate(0);
-        LocalDate end = new LocalDate();
+        LocalDate end = new LocalDate().plusMonths(6);
 		return membershipStatsService.countSubscriptionsMonthByMonth(start, end).toJson().toString();
     }
 

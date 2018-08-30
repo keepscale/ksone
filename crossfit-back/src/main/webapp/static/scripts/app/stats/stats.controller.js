@@ -45,7 +45,7 @@ angular.module('crossfitApp')
         };
     	
     	Stats.membership(function(result, headers){
-    		$scope.data = result;
+    		$scope.data = result.sort((abo1,abo2)=>abo1.key.localeCompare(abo2.key));
     	})
 	
     });
