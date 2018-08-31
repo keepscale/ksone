@@ -220,9 +220,10 @@ public class MemberResource {
 		search = search == null ? "" :search;
 		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+		Set<Long> membershipsIds = Stream.of(includeMembershipsIds != null && includeMembershipsIds.length > 0 ? includeMembershipsIds : new Long[]{-1L}).collect(Collectors.toSet());
 		List<Member> members = memberRepository.findAll(
 				currentCrossFitBox, customSearch, 
-				Stream.of(includeMembershipsIds != null && includeMembershipsIds.length > 0 ? includeMembershipsIds : new Long[]{-1L}).collect(Collectors.toSet()), 
+				membershipsIds, 
 				includeAllMemberships,
 				Stream.of(includeRoles != null && includeRoles.length > 0 ? includeRoles : new String[]{""}).collect(Collectors.toSet()), 
 				includeAllRoles,
@@ -239,12 +240,18 @@ public class MemberResource {
 			List<CustomCriteria> withCustomCriteriaAsList = Arrays.asList(withCustomCriteria);
 			if (withCustomCriteriaAsList.contains(CustomCriteria.EXPIRE) && StringUtils.isNotBlank(withCustomCriteriaExpireAt)) {
 		    	DateTime atDate = timeService.parseDate("yyyy-MM-dd", withCustomCriteriaExpireAt, currentCrossFitBox);
-				Set<Member> membersWithNoSub = memberService.findAllMemberWithNoActiveSubscriptionAtDate(atDate.toLocalDate()).stream().collect(Collectors.toSet());
+				Set<Member> membersWithNoSub = memberService.findAllMemberWithNoActiveSubscriptionAtDate(
+						atDate.toLocalDate(),
+						membershipsIds, 
+						includeAllMemberships).stream().collect(Collectors.toSet());
 				members.removeIf(m->!membersWithNoSub.contains(m));
 			}
 			if (withCustomCriteriaAsList.contains(CustomCriteria.ENCOURS) && StringUtils.isNotBlank(withCustomCriteriaEncoursAt)) {
 		    	DateTime atDate = timeService.parseDate("yyyy-MM-dd", withCustomCriteriaEncoursAt, currentCrossFitBox);
-				Set<Member> membersWithSub = memberService.findAllMemberWithActiveSubscriptionAtDate(atDate.toLocalDate()).stream().collect(Collectors.toSet());
+				Set<Member> membersWithSub = memberService.findAllMemberWithActiveSubscriptionAtDate(
+						atDate.toLocalDate(),
+						membershipsIds, 
+						includeAllMemberships).stream().collect(Collectors.toSet());
 				members.removeIf(m->!membersWithSub.contains(m));
 			}
 			

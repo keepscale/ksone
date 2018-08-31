@@ -9,6 +9,7 @@ angular.module('crossfitApp')
         $scope.include_not_ennabled = true;
         $scope.include_bloque = false;
         $scope.memberships = [];
+        $scope.membershipsIds = [];
         $scope.selectedMemberships = [];
         $scope.roles = [];
         $scope.selectedRoles = ["ROLE_USER"];
@@ -95,6 +96,20 @@ angular.module('crossfitApp')
         $scope.clear = function () {
             $scope.member = {telephonNumber: null, sickNoteEndDate: null, membershipStartDate: null, membershipEndDate: null, level: null, id: null};
         };
+        
+        $scope.isIndeterminate = function(selectedIds, allvalues){
+        	return selectedIds && selectedIds.length > 0 && selectedIds.length != allvalues.length;
+        }
+        $scope.isChecked = function(selectedIds){
+        	return selectedIds && selectedIds.length > 0;
+        }
+        $scope.toggleSelectAll = function(selectedIds, allvalues){
+        	if (selectedIds.length > 0)
+        		selectedIds.splice(0, selectedIds.length);
+        	else{
+        		Array.prototype.push.apply(selectedIds, allvalues);
+        	}
+        }
         
         $scope.toggleSelectedMembership = function toggleSelectedMembership(membershipId) {
 			var idx = $scope.selectedMemberships.indexOf(membershipId);
@@ -193,6 +208,7 @@ angular.module('crossfitApp')
                 	if (result[i].id != undefined)
                 		$scope.selectedMemberships.push(result[i].id);
 				}
+                $scope.membershipsIds = $scope.memberships.map(b=>b.id);
                 
                 Authority.query({}, function(res){
                 	$scope.roles = res;
