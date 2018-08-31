@@ -2,6 +2,7 @@ package org.crossfit.app.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -149,18 +150,20 @@ public class MemberService {
 	
 	public List<Member> findAllMemberWithNoActiveSubscriptionAtNow(){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		return findAllMemberWithNoActiveSubscriptionAtDate(timeService.nowAsLocalDate(box));
+		HashSet<Long> membershipsIds = new HashSet<>();
+		membershipsIds.add(-1L);
+		return findAllMemberWithNoActiveSubscriptionAtDate(timeService.nowAsLocalDate(box), membershipsIds, true);
 	}
 
 	
-	public List<Member> findAllMemberWithNoActiveSubscriptionAtDate(LocalDate date){
+	public List<Member> findAllMemberWithNoActiveSubscriptionAtDate(LocalDate date, Set<Long> membershipsIds, boolean includeAllMemberships){
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		return memberRepository.findAllMemberWithNoSubscriptionAtDate(box, date);
+		return memberRepository.findAllMemberWithNoSubscriptionAtDate(box, date, membershipsIds, includeAllMemberships);
 	}
 
-	public List<Member> findAllMemberWithActiveSubscriptionAtDate(LocalDate date) {
+	public List<Member> findAllMemberWithActiveSubscriptionAtDate(LocalDate date, Set<Long> membershipsIds, boolean includeAllMemberships) {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		return memberRepository.findAllMemberWithSubscriptionAtDate(box, date);
+		return memberRepository.findAllMemberWithSubscriptionAtDate(box, date, membershipsIds, includeAllMemberships);
 	}
 	
 	public List<Member> findAllMemberWithNoCard(){

@@ -347,8 +347,14 @@ datetimepicker.has-error input{
 
 
 .checkbox-list label {
-  display: block;
-margin: 0 10px;
+  	display: block;
+	margin: 0 10px;
+}
+
+.checkbox-list .fixlabel label{
+	float: left; 
+	margin-top: 5px;
+	width: 131px;
 }
 
 .checkbox-list > span{
@@ -360,12 +366,14 @@ margin: 0 10px;
 
 .checkbox-list {
 	border: 1px solid lightgray;
+	margin-right: 5px;
 }
 
 .checkbox-list-content {
 	overflow-y: scroll;	
 	height: 80px;
 }
+
 
 
 .glyphicon.spinning {

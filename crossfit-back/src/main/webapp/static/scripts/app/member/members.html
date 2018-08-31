@@ -9,33 +9,20 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-10">
-		 		<div class="form-group">
-					<input type="search" ng-model="searchLike" class="form-control" placeholder="Rechercher"/>
-				</div>				
+			
 			</div>
 			
 			<div class="col-xs-2">
-		        <div class="form-group pull-right" style="margin-left: 5px;">
-				    <button type="button" class="btn btn-primary" ng-click="search()">
-				        <span translate="entity.action.search">Search</span>
-				    </button> 
-				    <button type="button" class="btn btn-primary" ng-click="export()">
-				        <span translate="entity.action.export">Export</span>
-				    </button>
-				</div>
 			</div>
 		</div>
-		
 		<div class="row">
-		
-			<div class="col-xs-12">
-			
-								
-				<div class="form-group pull-right form-inline">
-					<label>{{totalMember}} membres</label>
-				</div>
+			<div class="col-xs-10">
+		 		<div class="form-group">
+					<input type="search" ng-model="searchLike" class="form-control" placeholder="Rechercher"/>
+				</div>	
+										
 				
-				<div class="form-group pull-left" style="padding: 0 0 20px 0;">
+				<div class="form-group pull-left">
 				
 					<div class="checkbox-list">
 						<span class="checkbox-title">Statut</span>
@@ -53,9 +40,16 @@
 					</div>
 				</div>
 				
-				<div class="form-group pull-left" style="padding: 0 20px;">
+				<div class="form-group pull-left">
 					<div class="checkbox-list">
-						<span class="checkbox-title">Abonnements</span>
+						<span class="checkbox-title">
+							<input type="checkbox" 
+								ng-indeterminate="{{isIndeterminate(selectedMemberships, membershipsIds)}}"
+								ng-checked="isChecked(selectedMemberships)"
+		  						ng-click="toggleSelectAll(selectedMemberships, membershipsIds)">
+	  						
+	  						Abonnements
+  						</span>
 						<div class="checkbox-list-content">
 							<label ng-repeat="membership in memberships">
 							  <input
@@ -69,9 +63,17 @@
 					</div>
 				</div>
 
-				<div class="form-group pull-left" style="padding: 0 20px;">
+				<div class="form-group pull-left">
 					<div class="checkbox-list">
-						<span class="checkbox-title">Droits</span>
+						<span class="checkbox-title">
+						
+							<input type="checkbox" 
+								ng-indeterminate="{{isIndeterminate(selectedRoles, roles)}}"
+								ng-checked="isChecked(selectedRoles)"
+		  						ng-click="toggleSelectAll(selectedRoles, roles)">
+		  						
+							Droits
+						</span>
 						<div class="checkbox-list-content">
 							<label ng-repeat="role in roles">
 							  <input type="checkbox" value="{{role}}"
@@ -83,13 +85,21 @@
 					</div>
 				</div>	
 				
-				<div class="form-group pull-left" style="padding: 0 20px;">
+				<div class="form-group pull-left">
 					<div class="checkbox-list">
-						<span class="checkbox-title">Incohérence</span>
+						<span class="checkbox-title">
+						
+							<input type="checkbox" 
+								ng-indeterminate="{{isIndeterminate(selectedHealthIndicators, healthIndicators)}}"
+								ng-checked="isChecked(selectedHealthIndicators)"
+		  						ng-click="toggleSelectAll(selectedHealthIndicators, healthIndicators)">
+		  						
+							Incohérence
+						</span>
 						<div class="checkbox-list-content">
 							<label ng-repeat="hi in healthIndicators">
 							  <input type="checkbox" value="{{hi}}"
-								    ng-checked="selectedhealthIndicators.indexOf(hi) > -1"
+								    ng-checked="selectedHealthIndicators.indexOf(hi) > -1"
 			  						ng-click="toggleSelectedHealthIndicator(hi)"> {{'crossfitApp.member.health.enum.min.' + hi | translate}}
 							</label>
 						</div>
@@ -97,12 +107,12 @@
 				</div>	
 				
 				
-				<div class="form-group pull-left" style="padding: 0 20px;">
+				<div class="form-group pull-left">
 					<div class="checkbox-list">
 						<span class="checkbox-title">Autres critères</span>
 						<div class="checkbox-list-content">
-							<div style="display: block">
-								<label style="float: left; margin-top: 5px;">
+							<div class="fixlabel">
+								<label>
 								  <input type="checkbox" value="ENCOURS"
 									    ng-checked="selectedCustomCriteria.indexOf('ENCOURS') > -1"
 				  						ng-click="toggleSelectedCustomCriteria('ENCOURS')"> Abo. en cours au 
@@ -112,8 +122,8 @@
 									ng-model="customCriteria.encours" how-weeks="false" minute-step="30" show-meridian="false" 
 							       	date-format="dd/MM/yyyy" readonly-time="false"></datetimepicker>
 							</div>
-							<div style="display: block">
-								<label style="float: left; margin-top: 5px;">
+							<div class="fixlabel">
+								<label>
 								  <input type="checkbox" value="EXPIRE"
 									    ng-checked="selectedCustomCriteria.indexOf('EXPIRE') > -1"
 				  						ng-click="toggleSelectedCustomCriteria('EXPIRE')"> Abo. expiré au 
@@ -126,6 +136,21 @@
 						</div>
 					</div>
 				</div>	
+			
+			</div>
+			
+			<div class="col-xs-2">
+		        <div class="form-group pull-right" style="margin-left: 5px;">
+				    <button type="button" class="btn btn-primary" ng-click="search()">
+				        <span translate="entity.action.search">Search</span>
+				    </button> 
+				    <button type="button" class="btn btn-primary" ng-click="export()">
+				        <span translate="entity.action.export">Export</span>
+				    </button>
+				</div>
+				<div class="form-group pull-right form-inline">
+					<label>{{totalMember}} membres</label>
+				</div>
 			</div>
 		</div>
 	</form>		

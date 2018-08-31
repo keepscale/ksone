@@ -85,16 +85,24 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select m from Member m where m.box = :box "
     		+ "AND m.enabled = true AND m.locked = false "
     		+ "and not exists ( "
-    		+ "select s from Subscription s where s.member = m "
-    		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate )")
-	List<Member> findAllMemberWithNoSubscriptionAtDate(@Param("box") CrossFitBox box, @Param("at") LocalDate at);
+    		+ "select s from Subscription s where s.member = m AND ( ( true = :includeAllMembership ) OR s.membership.id in ( :includeMembershipsIds ) ) "
+    		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate ) ")
+	List<Member> findAllMemberWithNoSubscriptionAtDate(
+			@Param("box") CrossFitBox box, 
+			@Param("at") LocalDate at, 
+			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, 
+			@Param("includeAllMembership") boolean includeAllMembership);
 
     @Query("select m from Member m where m.box = :box "
     		+ "AND m.enabled = true AND m.locked = false "
     		+ "and exists ( "
-    		+ "select s from Subscription s where s.member = m "
+    		+ "select s from Subscription s where s.member = m AND ( ( true = :includeAllMembership ) OR s.membership.id in ( :includeMembershipsIds ) ) "
     		+ "and s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate )")
-	List<Member> findAllMemberWithSubscriptionAtDate(@Param("box") CrossFitBox box, @Param("at") LocalDate at);
+	List<Member> findAllMemberWithSubscriptionAtDate(
+			@Param("box") CrossFitBox box, 
+			@Param("at") LocalDate at, 
+			@Param("includeMembershipsIds") Set<Long> includeMembershipsIds, 
+			@Param("includeAllMembership") boolean includeAllMembership);
 
     @Query("select m from Member m where m.box = :box "
     		+ "AND m.enabled = true AND m.locked = false "
