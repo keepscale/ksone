@@ -1,6 +1,7 @@
 package org.crossfit.app.web.rest.ical;
 
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,6 @@ import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
 import org.crossfit.app.service.TimeService;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
@@ -54,22 +55,21 @@ public class ICalendarBookingResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
-	@Inject
-	private TimeService timeService;
 
 
+	private static final String DEFAULT_PATTERN = "yyyyMMdd'T'HHmmss";
     /**
      * GET  /bookings -> get all the bookings to ICS
+     * @throws ParseException 
      */
     @RequestMapping(value = "/ical/{uuid}/booking.ics",
             method = RequestMethod.GET,
             produces = "text/calendar; charset=UTF-8")
     public ResponseEntity<String> getAllToICalendar(
-    		@PathVariable String uuid) throws URISyntaxException {
+    		@PathVariable String uuid) throws URISyntaxException, ParseException {
     	
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-    	DateTimeZone dateTimeZone = timeService.getDateTimeZone(currentCrossFitBox);
     	
     	Optional<Member> optMember = memberService.findMemberByUuid(uuid);
     	
@@ -95,12 +95,8 @@ public class ICalendarBookingResource {
     	
     	for (Booking booking : bookings) {
 
-    		net.fortuna.ical4j.model.DateTime start = 
-    				new net.fortuna.ical4j.model.DateTime(booking.getStartAt().toDateTime(DateTimeZone.UTC).getMillis());
-			net.fortuna.ical4j.model.DateTime end = 
-					new net.fortuna.ical4j.model.DateTime(booking.getEndAt().toDateTime(DateTimeZone.UTC).getMillis());
-			//start.setTimeZone(timeZone);
-			//end.setTimeZone(timeZone);
+    		net.fortuna.ical4j.model.DateTime start = new DateTime(booking.getStartAt().toString(DEFAULT_PATTERN), timeZone);
+    		net.fortuna.ical4j.model.DateTime end = new DateTime(booking.getEndAt().toString(DEFAULT_PATTERN), timeZone);
 			
 			VEvent event = new VEvent(start, end, booking.getTimeSlotType().getName());
 
