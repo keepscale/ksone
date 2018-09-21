@@ -1,9 +1,13 @@
 package org.crossfit.app.service;
 
+import static org.junit.Assert.assertThat;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -14,11 +18,16 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
+import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.repository.TimeSlotTypeRepository;
 import org.crossfit.app.service.util.BookingRulesChecker;
+import org.crossfit.app.web.rest.errors.ExceptionTranslator;
+import org.crossfit.app.web.rest.errors.SubscriptionErrorDTO;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,6 +57,8 @@ public class BookingRulesCheckerTest {
 	private MembershipRepository membershipRepository;
 	@Inject
 	private TimeSlotTypeRepository timeSlotTypeRepository;
+	@Inject
+	private ExceptionTranslator exceptionTranslator;
 	
 
 	private Membership ABO_TRIPLE;
@@ -64,7 +75,101 @@ public class BookingRulesCheckerTest {
 		WOD = timeSlotTypeRepository.findById(3L).get();
 		OPENBOX = timeSlotTypeRepository.findById(5L).get();
 	}
+	
+	
+	@Test
+	public void testAbdoExpireAvecUnValide() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
 
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    	
+		Set<Subscription> subscriptions = new HashSet<Subscription>();
+		Subscription s6 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-11-01", "2016-12-01");
+		
+		Subscription s1 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-02-01", "2016-03-01");
+		Subscription s2 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-03-01", "2016-03-01");
+		Subscription s3 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-04-01", "2016-05-01");
+		Subscription s4 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-05-01", "2016-05-01");
+		Subscription s5 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-10-01", "2016-11-01");
+
+		List<Booking> bookings = new ArrayList<Booking>();
+
+		DateTime now = parseDateTime("2016-10-12T14:00:00");
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+
+		Subscription findSubscription = checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 0);
+		
+		assertThat(findSubscription, Matchers.equalTo(s5));
+	}
+	
+
+	@Test
+	public void testQueDesAbdoExpire() throws ManySubscriptionsAvailableException {
+
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    	
+		Set<Subscription> subscriptions = new HashSet<Subscription>();
+		Subscription s6 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-11-01", "2016-12-01");
+		
+		Subscription s1 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-02-01", "2016-03-01");
+		Subscription s2 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-03-01", "2016-03-01");
+		Subscription s3 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-04-01", "2016-05-01");
+		Subscription s4 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-05-01", "2016-05-01");
+		Subscription s5 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-10-01", "2016-11-01");
+
+		List<Booking> bookings = new ArrayList<Booking>();
+
+		DateTime now = parseDateTime("2016-10-12T14:00:00");
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		
+		try {
+			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 0);
+			Assert.fail("Pas de souscription dispo !");
+		} catch (NoSubscriptionAvailableException e) {
+			assertThat(e.getExceptions(), Matchers.hasSize(6)); //On a bien 6 erreurs d'abonnements
+			
+			
+			SubscriptionErrorDTO exToError = exceptionTranslator.processNoSubscriptionAvailableError(e);
+
+			assertThat(exToError.getErrors(), Matchers.hasSize(1)); //Mais après traitement, on en affiche qu'un seul !
+			assertThat(exToError.getErrors().iterator().next().getMessage(), //Et le dernier
+					Matchers.equalTo("Votre abonnement " + s5.getMembership().getName() + " a expiré depuis le "+ sdf.format(s5.getSubscriptionEndDate().toDate())));
+		}
+	}
+
+	@Test
+	public void testQueDesAbdoExpireAvecUnValideMaisErreurValiationRegle() throws ManySubscriptionsAvailableException {
+
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    	
+		Set<Subscription> subscriptions = new HashSet<Subscription>();
+		Subscription s6 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-11-01", "2016-12-01");
+		
+		Subscription s1 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-02-01", "2016-03-01");
+		Subscription s2 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-03-01", "2016-03-01");
+		Subscription s3 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-04-01", "2016-05-01");
+		Subscription s4 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-05-01", "2016-05-01");
+		Subscription s5 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-10-01", "2016-11-01");
+
+		List<Booking> bookings = new ArrayList<Booking>();
+
+		DateTime now = parseDateTime("2016-10-12T14:00:00");
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		
+		try {
+			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 150); //150 va déclencher erreur car trop de résa
+			Assert.fail("Pas de souscription dispo !");
+		} catch (NoSubscriptionAvailableException e) {
+			assertThat(e.getExceptions(), Matchers.hasSize(6)); //On a bien 5 erreurs d'abonnements + l'erreur de regle
+			assertThat(e.getExceptions().stream().filter(eee->eee instanceof SubscriptionDateExpiredException).collect(Collectors.toList()), Matchers.hasSize(5)); //5 erreur d'abo expirer
+			
+			SubscriptionErrorDTO exToError = exceptionTranslator.processNoSubscriptionAvailableError(e);
+
+			assertThat(exToError.getErrors(), Matchers.hasSize(1)); //Mais après traitement, on en affiche qu'un seul !
+			assertThat(exToError.getErrors().iterator().next().getMessage(), //Celui de la regle depasse
+					Matchers.equalTo("Vous avez atteint votre quota de 5 sessions par mois"));
+		}
+	}
+	
 	@Test
 	public void testRegleParSemaine() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
 
@@ -153,6 +258,18 @@ public class BookingRulesCheckerTest {
 
 	}
 
+
+	private Subscription createSubscription(Set<Subscription> subscriptions, Member member, Membership membership, String start, String end) {
+		Subscription s = new Subscription();
+		s.setId(subscriptions.size()+1L);
+		s.setMembership(membership);
+		s.setMember(member);
+		s.setSubscriptionStartDate(parseDate(start));
+		s.setSubscriptionEndDate(parseDate(end));
+		subscriptions.add(s);
+		return s;
+	}
+
 	private Booking createBooking(String dateStr, Subscription souscriptionDouble, TimeSlotType timeSlotType) {
 		Booking b = new Booking();
 		DateTime startAt = parseDateTime(dateStr);
@@ -163,9 +280,14 @@ public class BookingRulesCheckerTest {
 		return b;
 	}
 
-	private DateTime parseDateTime(String dateStr) {
-		DateTime startAt = ISODateTimeFormat.dateTimeParser().parseDateTime(dateStr);
-		return startAt;
+
+	private LocalDate parseDate(String text) {
+		LocalDate d = ISODateTimeFormat.localDateParser().parseLocalDate(text);
+		return d;
+	}
+	private DateTime parseDateTime(String text) {
+		DateTime dt = ISODateTimeFormat.dateTimeParser().parseDateTime(text);
+		return dt;
 	}
 
 	

@@ -1,7 +1,10 @@
 package org.crossfit.app.web.rest.errors;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.enumeration.MembershipRulesType;
@@ -104,13 +107,14 @@ public class ExceptionTranslator {
     	else{
         	error = new SubscriptionErrorDTO("Vous ne pouvez pas réserver ce créneau");
         	
-        	for (SubscriptionException e : ex.getExceptions()) {
+        	List<SubscriptionException> exceptions = prefilterExceptionToDisplay(ex);        	
+        	
+			for (SubscriptionException e : exceptions) {
 				String membershipName = e.getSubscription().getMembership().getName();
 				String dateFin = sdf.format(e.getSubscription().getSubscriptionEndDate().toDate());
 				String dateDeb = sdf.format(e.getSubscription().getSubscriptionStartDate().toDate());
 				if (e instanceof SubscriptionDateExpiredException){
-					error.addDetail("Votre abonnement " + membershipName + " a expiré depuis le "+ dateFin);
-					
+					error.addDetail("Votre abonnement " + membershipName + " a expiré depuis le "+ dateFin);					
 				}
 				else if (e instanceof SubscriptionDateExpiredForBookingException){
 					SubscriptionDateExpiredForBookingException ee = (SubscriptionDateExpiredForBookingException) e;
@@ -181,6 +185,29 @@ public class ExceptionTranslator {
     	
         return error;
     }
+
+	private List<SubscriptionException> prefilterExceptionToDisplay(NoSubscriptionAvailableException ex) {
+		List<SubscriptionException> exceptions = ex.getExceptions()
+				.stream()
+				.filter(e->!(e instanceof SubscriptionDateExpiredException))
+				.collect(Collectors.toList()); //On enlève toutes les exceptions des abos expirés
+		
+		if (exceptions.isEmpty()) { //Si la liste des exceptions est vide (c'est qu'il n'y a que des exceptions d'abo expirés)
+			//Alors on va afficher que l'exception du dernier abo
+			Optional<SubscriptionDateExpiredException> lastException = ex.getExceptions()
+				.stream()
+				.filter(e->e instanceof SubscriptionDateExpiredException)
+				.map(e->(SubscriptionDateExpiredException)e)
+				.collect(Collectors.maxBy(Comparator.comparing(e->e.getSubscription().getSubscriptionEndDate())));
+			if (lastException.isPresent()) {
+				exceptions.add(lastException.get());
+			}
+			else { //Impossible a atteindre normalement, mais dans le doute, on affiche toutes les exceptions
+				exceptions = ex.getExceptions();
+			}
+		}
+		return exceptions;
+	}
     
 
     @ExceptionHandler(ManySubscriptionsAvailableException.class)
