@@ -249,7 +249,7 @@
 																			
 						<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
 							
-				       	{{booking.startAt | date:"EEE dd MMM 'à' HH:mm"}} - {{booking.title}}
+				       	{{booking.startAt | date:"EEE dd MMM yyyy 'à' HH:mm"}} - {{booking.title}}
 				       						
 						<button type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
 	                    	<span class="glyphicon glyphicon-remove"></span></button>
