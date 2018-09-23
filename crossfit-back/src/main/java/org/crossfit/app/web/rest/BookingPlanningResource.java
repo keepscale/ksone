@@ -88,6 +88,8 @@ public class BookingPlanningResource {
     		@RequestParam(value = "page" , required = false, defaultValue = "0") Integer index,
             @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer nbDaysToDisplay) throws URISyntaxException {
 
+        log.debug("REST request to GET LastBookingOfToday");
+        
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	
     	DateTime now = timeService.nowAsDateTime(box);
@@ -114,7 +116,9 @@ public class BookingPlanningResource {
     public ResponseEntity<PlanningDTO> get(@RequestParam(value = "page" , required = false, defaultValue = "0") Integer index,
                                   @RequestParam(value = "per_page", required = false, defaultValue = "7") Integer nbDaysToDisplay)
         throws URISyntaxException {
-    	
+
+        log.debug("REST request to GET planning");
+        
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
         
     
@@ -201,6 +205,8 @@ public class BookingPlanningResource {
     		@RequestParam(value = "start" , required = true) String startStr,
     		@RequestParam(value = "view" , required = true, defaultValue = "week") String viewStr){
 
+        log.debug("REST request to GET planning");
+        
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	DateTime now = timeService.nowAsDateTime(currentCrossFitBox);
     	DateTime startAt = timeService.parseDate("yyyy-MM-dd", startStr, currentCrossFitBox);

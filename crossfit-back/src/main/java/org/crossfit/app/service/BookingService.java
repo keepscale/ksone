@@ -59,7 +59,7 @@ public class BookingService {
     private SimpMessagingTemplate template;
 
     @Transactional
-	public void deleteBooking(Long id, boolean notifyEventBus) throws NotBookingOwnerException, UnableToDeleteBooking{
+	public void deleteBooking(Long id) throws NotBookingOwnerException, UnableToDeleteBooking{
         log.debug("Try to delete Booking : {}", id);
 		Booking booking = bookingRepository.findById(id).get();
 
@@ -85,12 +85,11 @@ public class BookingService {
     	
 		cardEventRepository.deleteByBooking(booking);
         bookingRepository.deleteById(id);
+        bookingRepository.flush();
         
-        if (notifyEventBus){
-        	BookingEvent bookingEvent = BookingEvent.deletedBooking(now, SecurityUtils.getCurrentMember(), booking, currentBox);
-			eventBus.notify("booking-deleted", Event.wrap(bookingEvent));
-            template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
-        }
+    	BookingEvent bookingEvent = BookingEvent.deletedBooking(now, SecurityUtils.getCurrentMember(), booking, currentBox);
+		eventBus.notify("bookings", Event.wrap(bookingEvent));
+        template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
         
 	}
 

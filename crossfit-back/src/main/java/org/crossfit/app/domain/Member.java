@@ -335,8 +335,7 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 	public String toString() {
 		return "Member [id=" + id + ", login=" + login + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", locked="
-				+ locked + ", enabled="	+ enabled + ", langKey=" + langKey + ", authorities="
-				+ (authorities == null ? null : authorities) + ", box=" + (box == null ? null : box.getName()) + "]";
+				+ locked + ", enabled="	+ enabled + ", langKey=" + langKey + ", box=" + (box == null ? null : box.getName()) + "]";
 	}
 
 	@Override

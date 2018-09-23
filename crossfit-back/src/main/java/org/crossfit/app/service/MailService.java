@@ -1,8 +1,8 @@
 package org.crossfit.app.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -55,7 +55,7 @@ public class MailService {
 		mailSender.sendEmail(member.getBox().getEmailFrom(), member.getLogin(), subject, content, false, true);
 	}
 
-	public void sendNotification(List<TimeSlotNotification> findAllByDateAndTimeSlot) {
+	public void sendNotification(Collection<TimeSlotNotification> findAllByDateAndTimeSlot) {
 		if (findAllByDateAndTimeSlot == null || findAllByDateAndTimeSlot.isEmpty()){
 			log.debug("Reservation supprimée, mais personne ne souhaite être notifié");
 			return;
