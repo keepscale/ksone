@@ -306,13 +306,12 @@ public class BookingResource {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(
-    		@PathVariable Long id,
-    		@RequestParam(name="silent", defaultValue="false") boolean silent) {
+    		@PathVariable Long id) {
     	
         log.debug("REST request to delete Booking : {}", id);
         
         try {
-			bookingService.deleteBooking(id, !silent);
+			bookingService.deleteBooking(id);
 		} catch (NotBookingOwnerException e) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createAlert("Vous n'êtes pas le propiétaire de cette réservation", "")).body(null);
 		} catch (UnableToDeleteBooking e) {
@@ -527,7 +526,7 @@ public class BookingResource {
     	if(!prepare){
 	        Booking result = bookingRepository.save(b);
 	        BookingEvent bookingEvent = BookingEvent.createdBooking(now, SecurityUtils.getCurrentMember(), result, currentCrossFitBox);
-			eventBus.notify("booking-created", Event.wrap(bookingEvent));
+			eventBus.notify("bookings", Event.wrap(bookingEvent));
             template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
     		log.debug("Booking sauvegarde: {}", b);
 	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
