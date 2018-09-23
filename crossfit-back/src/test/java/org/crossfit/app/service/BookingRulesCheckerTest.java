@@ -118,11 +118,11 @@ public class BookingRulesCheckerTest {
 
 		List<Booking> bookings = new ArrayList<Booking>();
 
-		DateTime now = parseDateTime("2016-10-12T14:00:00");
+		DateTime now = parseDateTime("2016-12-12T14:00:00");
 		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
 		
 		try {
-			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 0);
+			checker.findSubscription(aMember, WOD, parseDateTime("2016-12-14T09:00:00"), 0);
 			Assert.fail("Pas de souscription dispo !");
 		} catch (NoSubscriptionAvailableException e) {
 			assertThat(e.getExceptions(), Matchers.hasSize(6)); //On a bien 6 erreurs d'abonnements
@@ -132,7 +132,7 @@ public class BookingRulesCheckerTest {
 
 			assertThat(exToError.getErrors(), Matchers.hasSize(1)); //Mais après traitement, on en affiche qu'un seul !
 			assertThat(exToError.getErrors().iterator().next().getMessage(), //Et le dernier
-					Matchers.equalTo("Votre abonnement " + s5.getMembership().getName() + " a expiré depuis le "+ sdf.format(s5.getSubscriptionEndDate().toDate())));
+					Matchers.equalTo("Votre abonnement " + s6.getMembership().getName() + " a expiré depuis le "+ sdf.format(s6.getSubscriptionEndDate().toDate())));
 		}
 	}
 
@@ -142,31 +142,31 @@ public class BookingRulesCheckerTest {
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     	
 		Set<Subscription> subscriptions = new HashSet<Subscription>();
-		Subscription s6 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-11-01", "2016-12-01");
 		
 		Subscription s1 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-02-01", "2016-03-01");
 		Subscription s2 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-03-01", "2016-03-01");
 		Subscription s3 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-04-01", "2016-05-01");
 		Subscription s4 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-05-01", "2016-05-01");
-		Subscription s5 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-10-01", "2016-11-01");
+		Subscription s6 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-09-01", "2016-10-01");
+		Subscription s5 = createSubscription(subscriptions, aMember, ABO_TRIPLE, "2016-10-01", "2016-11-01");		
 
 		List<Booking> bookings = new ArrayList<Booking>();
 
-		DateTime now = parseDateTime("2016-10-12T14:00:00");
+		DateTime now = parseDateTime("2016-10-12T08:00:00");
 		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
 		
 		try {
-			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 150); //150 va déclencher erreur car trop de résa
+			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-12T09:00:00"), 0);
 			Assert.fail("Pas de souscription dispo !");
 		} catch (NoSubscriptionAvailableException e) {
-			assertThat(e.getExceptions(), Matchers.hasSize(6)); //On a bien 5 erreurs d'abonnements + l'erreur de regle
+			assertThat(e.getExceptions(), Matchers.hasSize(6)); //On a bien 5 erreurs d'abonnements + l'erreur de regle de réservation tardive
 			assertThat(e.getExceptions().stream().filter(eee->eee instanceof SubscriptionDateExpiredException).collect(Collectors.toList()), Matchers.hasSize(5)); //5 erreur d'abo expirer
 			
 			SubscriptionErrorDTO exToError = exceptionTranslator.processNoSubscriptionAvailableError(e);
 
 			assertThat(exToError.getErrors(), Matchers.hasSize(1)); //Mais après traitement, on en affiche qu'un seul !
 			assertThat(exToError.getErrors().iterator().next().getMessage(), //Celui de la regle depasse
-					Matchers.equalTo("Vous avez atteint votre quota de 5 sessions par mois"));
+					Matchers.equalTo("Votre abonnement " + s6.getMembership().getName() + " ne vous permet pas de réserver pour ce créneau: "));
 		}
 	}
 	
