@@ -18,6 +18,10 @@ import org.crossfit.app.exception.rules.SubscriptionException;
 import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException;
 import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.crossfit.app.web.rest.errors.SubscriptionErrorDTO.SubscriptionMessageErreur;
+import org.joda.time.Chronology;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +34,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
  * Controller advice to translate the server side exceptions to client-friendly json structures.
@@ -136,7 +139,11 @@ public class ExceptionTranslator {
 					SubscriptionMembershipRulesException rule = (SubscriptionMembershipRulesException) e;
 
 					String timeSlotType = rule.getBooking().getTimeSlotType().getName();
-					
+
+					PeriodFormatter formatter = new PeriodFormatterBuilder()
+					    .appendYears().appendSuffix(" an", " ans")
+					    .toFormatter();
+    
 					SubscriptionMessageErreur detail = error.addDetail("Votre abonnement " + membershipName + " ne vous permet pas de réserver pour ce créneau: ");
 					
 					for (MembershipRules r : rule.getBreakingRules()) {
@@ -173,6 +180,21 @@ public class ExceptionTranslator {
 		
 							case NbMaxDayBooking:	
 								detail.addReason(r.getApplyForTimeSlotTypes(), "Les séances %s ne peuvent être réservées que " + r.getNbMaxDayBooking() + " jours à l'avance.");
+								break;
+							case MedicalCertificate:
+									
+								String message2 = "Un certificat médical";
+								if (r.getMedicalCertificateValidForLessThanNbYears() > 0) {
+									message2 += " de moins de " + formatter.print(Period.years(r.getMedicalCertificateValidForLessThanNbYears()));
+								}
+								message2 += " est obligatoire pour réserver.";
+								if (!rule.getOwner().hasGivenMedicalCertificate() || rule.getOwner().getMedicalCertificateDate() == null) {
+									message2 +=  " Veuillez nous contacter pour mettre à jour vos informations personnelles.";
+								}
+								else {
+									message2 += " Le dernier certificat fourni date du " + sdf.format(rule.getOwner().getMedicalCertificateDate().toDate());
+								}
+								detail.addReason(r.getApplyForTimeSlotTypes(), message2);
 								break;
 						}	
 

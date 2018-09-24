@@ -41,10 +41,16 @@
 		<div class="row" ng-show="view == 'infoperso'">
 		  <div class="col-xs-12">
 	    	<div class="row form-group"> 
-				<div class="col-xs-12">
+				<div class="col-xs-12 col-md-6">
 					<input
 						type="text" class="form-control" id="id" name="id"
 						ng-model="member.id" readonly>
+				</div>
+				
+				<div class="col-xs-12 col-md-6">
+					<input type="text" class="form-control" id="number" name="number"
+						placeholder="{{'crossfitApp.member.number.placeholder' | translate}}"
+						ng-model="member.number"  ng-minlength=2 ng-maxlength=36 maxlength="36">
 				</div>
 			</div>
 		    <div class="row form-group">
@@ -175,6 +181,25 @@
 					</div>
 				</div>
 	    	</div>
+	    	
+	    	<div class="row form-group"> 				
+				<div class="col-xs-12">				
+					<label class="checkbox-inline">
+					  <input type="checkbox" ng-model="member.givenMedicalCertificate"> 					  
+					  {{'crossfitApp.member.givenMedicalCertificate.'+(member.givenMedicalCertificate ? 'selected' : 'notselected')+'.label' | translate}}
+					</label>					
+					<datetimepicker ng-show="member.givenMedicalCertificate" name="medicalCertificateDate" how-weeks="false" show-meridian="false" 
+       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="member.medicalCertificateDate"></datetimepicker>
+				</div>
+			</div>
+		    <div class="row form-group">
+		  		<div class="col-xs-12">
+			  		<label>{{'crossfitApp.member.comments' | translate}}</label>
+					<textarea class="form-control" id="comments" name="comments" 
+						placeholder="{{'crossfitApp.member.comments.placeholder' | translate}}" ng-maxlength=255
+						ng-model="member.comments"></textarea>
+		  		</div>
+	  		</div>
 		  </div>
 		</div>
 		

@@ -32,6 +32,7 @@ import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
+import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.repository.TimeSlotNotificationRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
@@ -103,7 +104,9 @@ public class BookingResource {
 
     @Inject
     private TimeSlotRepository timeSlotRepository;
-    
+
+    @Inject
+	private MemberRepository memberRepository;
     @Inject
 	private SubscriptionRepository subscriptionRepository;
 
@@ -385,7 +388,7 @@ public class BookingResource {
     	
     	// Si owner est null alors on prend l'utilisateur courant
     	Subscription selectedSubscription = bookingdto.getSubscriptionId() == null ? null : subscriptionRepository.findById(bookingdto.getSubscriptionId()).get();
-    	Member selectedMember = selectedSubscription == null ? SecurityUtils.getCurrentMember() : selectedSubscription.getMember();
+    	Member selectedMember = selectedSubscription == null ? memberRepository.findById(SecurityUtils.getCurrentMember().getId()).get() : selectedSubscription.getMember();
     	
     	CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
     	
@@ -524,11 +527,7 @@ public class BookingResource {
 
 		log.debug("Booking a sauvegarder ou a preparer: {}", b);
     	if(!prepare){
-	        Booking result = bookingRepository.save(b);
-	        BookingEvent bookingEvent = BookingEvent.createdBooking(now, SecurityUtils.getCurrentMember(), result, currentCrossFitBox);
-			eventBus.notify("bookings", Event.wrap(bookingEvent));
-            template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
-    		log.debug("Booking sauvegarde: {}", b);
+    		Booking result = bookingService.createBooking(b, now);
 	        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("booking", result.getId().toString())).body(null);
     	}
     	else{

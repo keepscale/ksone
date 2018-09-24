@@ -51,6 +51,9 @@ public class BookingService {
     
     @Inject
 	private SubscriptionRepository subscriptionRepository;
+
+    @Inject
+	private NotificationService notificationService;
     
     @Inject
 	private EventBus eventBus;
@@ -85,12 +88,28 @@ public class BookingService {
     	
 		cardEventRepository.deleteByBooking(booking);
         bookingRepository.deleteById(id);
-        bookingRepository.flush();
         
     	BookingEvent bookingEvent = BookingEvent.deletedBooking(now, SecurityUtils.getCurrentMember(), booking, currentBox);
+    	
+    	notificationService.accept(bookingEvent);
+    	
 		eventBus.notify("bookings", Event.wrap(bookingEvent));
         template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
         
+	}
+
+	public Booking createBooking(Booking b, DateTime now) {
+		CrossFitBox currentBox = boxService.findCurrentCrossFitBox();
+		b.setBox(currentBox);
+        Booking result = bookingRepository.save(b);
+        BookingEvent bookingEvent = BookingEvent.createdBooking(now, SecurityUtils.getCurrentMember(), result, currentBox);
+
+    	notificationService.accept(bookingEvent);
+    	
+		eventBus.notify("bookings", Event.wrap(bookingEvent));
+        template.convertAndSend("/topic/bookings", BookingEventDTO.mapper.apply(bookingEvent));
+		log.debug("Booking sauvegarde: {}", result);
+		return result;
 	}
 
 

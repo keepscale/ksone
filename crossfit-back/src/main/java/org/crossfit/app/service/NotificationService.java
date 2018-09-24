@@ -1,4 +1,4 @@
-package org.crossfit.app.event;
+package org.crossfit.app.service;
 
 import java.util.List;
 import java.util.Set;
@@ -30,9 +30,9 @@ import reactor.bus.Event;
 import reactor.fn.Consumer;
 
 @Service
-public class BookingEventNotificationConsumer implements Consumer<Event<BookingEvent>> {
+public class NotificationService {
 
-	private final Logger log = LoggerFactory.getLogger(BookingEventNotificationConsumer.class);
+	private final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
 	@Inject
 	private TimeSlotNotificationRepository notificationRepository;
@@ -43,8 +43,8 @@ public class BookingEventNotificationConsumer implements Consumer<Event<BookingE
     @Inject
     private TimeService timeService;
 
-	public void accept(Event<BookingEvent> event) {
-		Booking booking = event.getData().getBooking();
+	public void accept(BookingEvent event) {
+		Booking booking = event.getBooking();
 		CrossFitBox box = booking.getBox();
 		
 		Member bookingMember = booking.getSubscription().getMember();
@@ -55,12 +55,12 @@ public class BookingEventNotificationConsumer implements Consumer<Event<BookingE
 		LocalTime bookingEndTime = bookingEndAt.toLocalTime();
 		TimeSlotType bookingTimeSlotType = booking.getTimeSlotType();
 
-		log.debug("{} {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", event.getData().getEventType(), booking, bookingStartTime, bookingEndTime, bookingTimeSlotType.getId(), box.getId());
+		log.debug("{} {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", event.getEventType(), booking, bookingStartTime, bookingEndTime, bookingTimeSlotType.getId(), box.getId());
 
 		LocalDate bookingStartDate = bookingStartAt.toLocalDate();
 		Set<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAll(bookingStartDate, bookingStartTime, bookingEndTime, bookingTimeSlotType);
 
-		log.info("{} {}, recherche des demandes de notif pour le {} => {} demandes de notifs", event.getData().getEventType(), booking, bookingStartDate, notifAtBookingDate.size());
+		log.info("{} {}, recherche des demandes de notif pour le {} => {} demandes de notifs", event.getEventType(), booking, bookingStartDate, notifAtBookingDate.size());
 		
 		if (notifAtBookingDate.isEmpty()) {
 			return;
@@ -69,7 +69,7 @@ public class BookingEventNotificationConsumer implements Consumer<Event<BookingE
 		TimeSlot timeSlot = notifAtBookingDate.iterator().next().getTimeSlot();
 		
 		
-		if (event.getData().getEventType() == BookingEventType.DELETED) {
+		if (event.getEventType() == BookingEventType.DELETED) {
 			long bookingCount = bookingRepository.findAllAt(box, bookingStartAt, bookingEndAt).stream().filter(b->b.getTimeSlotType().equals(bookingTimeSlotType)).count();
 			if (bookingCount < timeSlot.getMaxAttendees()){
 				log.info("Suppression d'une résa, on notifie toutes les personnes en attente: {}", notifAtBookingDate);
@@ -81,7 +81,7 @@ public class BookingEventNotificationConsumer implements Consumer<Event<BookingE
 				log.info("Une resa a ete supprimée, mais le nombre d'inscrit est encore au dessus: {} >= {}", bookingCount, timeSlot.getMaxAttendees());
 			}
 		}
-		else if (event.getData().getEventType() == BookingEventType.CREATED) {
+		else if (event.getEventType() == BookingEventType.CREATED) {
 			List<TimeSlotNotification> notifEnAttenteDuMembreDeLaResa = notifAtBookingDate.stream().filter(notif->notif.getMember().equals(bookingMember)).collect(Collectors.toList());
 			if (!notifEnAttenteDuMembreDeLaResa.isEmpty()) {
 				log.info("Creation d'un résa pour {}, on supprime ses demandes de notif: {}", bookingMember, notifEnAttenteDuMembreDeLaResa);

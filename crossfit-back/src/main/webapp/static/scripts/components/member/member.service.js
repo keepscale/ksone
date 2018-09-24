@@ -16,7 +16,8 @@ angular.module('crossfitApp')
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {
-                    data = angular.fromJson(data);                    
+                    data = angular.fromJson(data);
+                    data.medicalCertificateDate = DateUtils.convertLocaleDateFromServer(data.medicalCertificateDate);
                     for (var i = 0; i < data.subscriptions.length; i++) {
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionStartDate);
@@ -28,7 +29,8 @@ angular.module('crossfitApp')
             'update': {
                 method: 'PUT',
                 transformRequest: function (data) {
-                    
+
+                    data.medicalCertificateDate = DateUtils.convertLocaleDateToServer(data.medicalCertificateDate);
                     for (var i = 0; i < data.subscriptions.length; i++) {
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
@@ -42,6 +44,7 @@ angular.module('crossfitApp')
                 method: 'POST',
                 transformRequest: function (data) {
 
+                    data.medicalCertificateDate = DateUtils.convertLocaleDateToServer(data.medicalCertificateDate);
                     for (var i = 0; i < data.subscriptions.length; i++) {
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
