@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -13,8 +14,14 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.enumeration.Title;
+import org.crossfit.app.domain.util.CustomLocalDateSerializer;
+import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.validator.constraints.Email;
+import org.joda.time.LocalDate;
 import org.springframework.core.convert.converter.Converter;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class MemberDTO {
 
@@ -40,6 +47,11 @@ public class MemberDTO {
 		dto.setCardUuid(member.getCardUuid());
 		dto.setEmail(member.getLogin());
 		dto.setTelephonNumber(member.getTelephonNumber());
+		
+		dto.setGivenMedicalCertificate(member.hasGivenMedicalCertificate());
+		dto.setMedicalCertificateDate(member.getMedicalCertificateDate());
+		dto.setComments(member.getComments());
+		dto.setNumber(member.getNumber());
          
 		return dto;
 	};
@@ -97,6 +109,19 @@ public class MemberDTO {
     private List<SubscriptionDTO> subscriptions = new ArrayList<>();
     private List<MembershipRules> rules = new ArrayList<>();
 
+
+    private boolean givenMedicalCertificate;
+
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+	private LocalDate medicalCertificateDate;
+
+    @Size(max = 255)
+    private String comments;
+    
+    @Size(max = 36)
+    private String number;
+    
     
     public String getUuid() {
 		return uuid;
@@ -265,6 +290,38 @@ public class MemberDTO {
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+	public boolean isGivenMedicalCertificate() {
+		return givenMedicalCertificate;
+	}
+
+	public void setGivenMedicalCertificate(boolean givenMedicalCertificate) {
+		this.givenMedicalCertificate = givenMedicalCertificate;
+	}
+
+	public LocalDate getMedicalCertificateDate() {
+		return medicalCertificateDate;
+	}
+
+	public void setMedicalCertificateDate(LocalDate medicalCertificateDate) {
+		this.medicalCertificateDate = medicalCertificateDate;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 	@Override

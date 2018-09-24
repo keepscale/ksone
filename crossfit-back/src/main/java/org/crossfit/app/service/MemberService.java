@@ -233,6 +233,10 @@ public class MemberService {
 		member.setCardUuid(StringUtils.isBlank(memberdto.getCardUuid()) ? null : memberdto.getCardUuid());
 		member.setLastModifiedBy(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
+		member.setGivenMedicalCertificate(memberdto.isGivenMedicalCertificate());
+		member.setMedicalCertificateDate(memberdto.getMedicalCertificateDate());
+		member.setComments(memberdto.getComments());
+		member.setNumber(memberdto.getNumber());
 		member.setBox(currentCrossFitBox);
 
 		//L'email a changé ? on repasse par une validation d'email

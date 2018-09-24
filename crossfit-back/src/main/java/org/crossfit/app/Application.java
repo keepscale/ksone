@@ -1,14 +1,16 @@
 package org.crossfit.app;
 
+import static reactor.bus.selector.Selectors.$;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.crossfit.app.event.BookingEventNotificationConsumer;
 import org.crossfit.app.event.BookingEventConsumer;
 import org.crossfit.app.event.CheckingCardReceiver;
 import org.slf4j.Logger;
@@ -16,28 +18,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.jcabi.manifests.Manifests;
 
 import reactor.bus.EventBus;
-import static reactor.bus.selector.Selectors.$;
 
 
 @SpringBootApplication
 //@EnableAutoConfiguration
+@EnableAsync
 public class Application implements CommandLineRunner{
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Inject
     private Environment env;
-
-	@Autowired
-	private BookingEventNotificationConsumer bookingEventNotificationConsumer;
 
 	@Autowired
 	private BookingEventConsumer bookingEventConsumer;
@@ -63,11 +63,21 @@ public class Application implements CommandLineRunner{
 
     @Override
 	public void run(String... arg0) throws Exception {
-		eventBus.on($("bookings"), bookingEventNotificationConsumer);
 		eventBus.on($("bookings"), bookingEventConsumer);
 		eventBus.on($("checkingcard"), checkingCardReceiver);
 	}
-
+    
+    @Bean
+    public Executor asyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("SendGrid-");
+        executor.initialize();
+        return executor;
+    }
+    
 	@PostConstruct
     public void initApplication() throws IOException {
         if (env.getActiveProfiles().length == 0) {

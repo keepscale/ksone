@@ -126,7 +126,22 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Column(name = "lang_key", length = 5)
     private String langKey;
 
+    @Column(name="has_given_medical_certificate", nullable = false)
+    private boolean givenMedicalCertificate = false;
+    
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+    @Column(name = "medical_certificate_date", nullable = true)
+    private LocalDate medicalCertificateDate;
 
+    @Column(name = "comments", nullable = true)
+    private String comments;
+
+    @Size(max = 36)
+    @Column(name = "number", length = 36)
+    private String number;
+    
     @ManyToOne(optional=false)
     private CrossFitBox box;
     
@@ -362,7 +377,37 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 	public boolean isEnabled() {
 		return enabled;
 	}
+
+	public boolean hasGivenMedicalCertificate() {
+		return givenMedicalCertificate;
+	}
+
+	public void setGivenMedicalCertificate(boolean givenMedicalCertificate) {
+		this.givenMedicalCertificate = givenMedicalCertificate;
+	}
+
+	public LocalDate getMedicalCertificateDate() {
+		return medicalCertificateDate;
+	}
+
+	public void setMedicalCertificateDate(LocalDate medicalCertificateDate) {
+		this.medicalCertificateDate = medicalCertificateDate;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
 	
-	
-    
 }

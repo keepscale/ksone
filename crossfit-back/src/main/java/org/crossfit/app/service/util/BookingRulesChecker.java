@@ -110,13 +110,14 @@ public class BookingRulesChecker {
 				rulesToTest.put(MembershipRulesExceptionType.NbHoursAtLeastToBook, isRuleBreakingNbHoursAtLeastToBook(booking, totalBookingForTimeSlot));
 				rulesToTest.put(MembershipRulesExceptionType.NbMaxBooking, isRuleBreakingNbMaxBooking(subscriptionBookings));
 				rulesToTest.put(MembershipRulesExceptionType.NbMaxDayBooking, isRuleBreakingNbMaxDayBooking(booking));
+				rulesToTest.put(MembershipRulesExceptionType.MedicalCertificate, isRuleBreakingMedicalCertificat(booking, owner));
 				
 				for (Entry<MembershipRulesExceptionType, Predicate<? super MembershipRules>> entry : rulesToTest.entrySet()) {
 					//On cherche les regles violées
 					List<MembershipRules> breakingRules = rules.stream().filter(entry.getValue()).collect(Collectors.toList());
 					
 					if (!breakingRules.isEmpty()){
-						throw new SubscriptionMembershipRulesException(entry.getKey(), subscription, booking, breakingRules);
+						throw new SubscriptionMembershipRulesException(entry.getKey(), subscription, booking, owner, breakingRules);
 					}
 				}
 				
@@ -152,6 +153,42 @@ public class BookingRulesChecker {
     
 	
 	
+	private Predicate<? super MembershipRules> isRuleBreakingMedicalCertificat(Booking bookingToTest, Member owner) {
+
+		return new Predicate<MembershipRules>() {
+
+			@Override
+			public boolean test(MembershipRules rule) {
+				
+				if (isRuleApplyFor(bookingToTest).test(rule)){
+
+					if (!rule.isMustHaveMedicalCertificate()) //On ne vérifie pas le certificat ? => Valid
+						return false;
+					
+					if (!owner.hasGivenMedicalCertificate()) //Pas donné le certificat ? => Règle viole
+						return true;
+					
+					if (rule.getMedicalCertificateValidForLessThanNbYears() < 0) //illimité => Valid
+						return false;
+					
+					//On doit vérfier le certifcat				
+					if (owner.getMedicalCertificateDate() == null) //Pas de date de certif ? => Regle violé
+						return true;
+					
+					DateTime certificatValidEndOfValidityDate = owner.getMedicalCertificateDate().plusYears(rule.getMedicalCertificateValidForLessThanNbYears()).toDateTime(bookingToTest.getStartAt());
+					
+					if (bookingToTest.getStartAt().isAfter(certificatValidEndOfValidityDate)) //La date de résa est après la date du certif => Regle violé
+						return true;
+				}
+				
+				
+				
+				return false;
+			}
+			
+		};
+	}
+
 	private Predicate<? super MembershipRules> isRuleBreakingCountPreviousBooking(Booking bookingToTest, List<Booking> bookings) {
 		final List<Booking> _bookings = bookings;
 

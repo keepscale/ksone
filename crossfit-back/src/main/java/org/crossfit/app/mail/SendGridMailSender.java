@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 
 import com.sendgrid.Content;
 import com.sendgrid.Email;
@@ -23,7 +24,8 @@ public class SendGridMailSender implements MailSender {
 		super();
 		this.apiKey = apiKey;
 	}
-
+	
+	@Async
 	@Override
 	public void sendEmail(String fromStr, String toStr, String subject, String contentStr, boolean isMultipart, boolean isHtml) {
 		

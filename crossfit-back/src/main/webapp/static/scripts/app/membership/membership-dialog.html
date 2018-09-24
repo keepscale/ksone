@@ -179,6 +179,22 @@
 												            <div class="col-sm-2">
 												            	<input type="number" class="form-control" name="nbHoursAtLeastToCancel" id="field_nbHoursAtLeastToCancel" ng-model="rule.nbHoursAtLeastToCancel">
 												        	</div>
+												        </div>        
+												        <div class="form-group">
+											            	<label class="col-sm-10 control-label">
+										           				{{ 'crossfitApp.membership.mustHaveMedicalCertificate' | translate}}
+											        		</label>
+												        	<div class="col-sm-2">
+												            		<input type="checkbox" 
+												            			name="mustHaveMedicalCertificate" id="field_mustHaveMedicalCertificate" 
+												            			ng-model="rule.mustHaveMedicalCertificate">
+									            			</div>
+												        </div>        
+												        <div class="form-group" ng-show="rule.mustHaveMedicalCertificate">
+												            <label for="field_medicalCertificateValidForLessThanNbYears" class="col-sm-10 control-label">{{ 'crossfitApp.membership.medicalCertificateValidForLessThanNbYears' | translate:{medicalCertificateValidForLessThanNbYears: rule.medicalCertificateValidForLessThanNbYears} }}</label>
+												            <div class="col-sm-2">
+												            	<input type="number" class="form-control" name="medicalCertificateValidForLessThanNbYears" id="field_medicalCertificateValidForLessThanNbYears" ng-model="rule.medicalCertificateValidForLessThanNbYears">
+												        	</div>
 												        </div>
 											        </div>
 												

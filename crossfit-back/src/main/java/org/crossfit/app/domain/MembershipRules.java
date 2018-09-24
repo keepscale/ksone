@@ -36,7 +36,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class MembershipRules implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
           
@@ -68,6 +70,12 @@ public class MembershipRules implements Serializable {
     
     @Column(name = "nb_hours_at_least_to_cancel", nullable = false)
     private int nbHoursAtLeastToCancel = 6;
+
+    @Column(name = "must_have_med_cert", nullable = false)
+    private boolean mustHaveMedicalCertificate = false;
+
+    @Column(name = "med_cert_valid_for_less_than_nb_years", nullable = false)
+    private int medicalCertificateValidForLessThanNbYears = 1;
     
     @JsonIgnore
     @ManyToOne(optional=false)
@@ -144,6 +152,22 @@ public class MembershipRules implements Serializable {
 
 	public void setNbMaxBooking(int nbMaxBooking) {
 		this.nbMaxBooking = nbMaxBooking;
+	}
+
+	public boolean isMustHaveMedicalCertificate() {
+		return mustHaveMedicalCertificate;
+	}
+
+	public void setMustHaveMedicalCertificate(boolean mustHaveMedicalCertificate) {
+		this.mustHaveMedicalCertificate = mustHaveMedicalCertificate;
+	}
+
+	public int getMedicalCertificateValidForLessThanNbYears() {
+		return medicalCertificateValidForLessThanNbYears;
+	}
+
+	public void setMedicalCertificateValidForLessThanNbYears(int medicalCertificateValidForLessThanNbYears) {
+		this.medicalCertificateValidForLessThanNbYears = medicalCertificateValidForLessThanNbYears;
 	}
 
 	@Override
