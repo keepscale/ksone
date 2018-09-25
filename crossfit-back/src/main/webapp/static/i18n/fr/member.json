@@ -41,6 +41,7 @@
         	"abonnements" : "Abonnements",
         	"reservations" : "Réservations",
         	"authority" : "Roles",
+        	"number.placeholder": "Num. Adhérent",
         	"firstname" : "Prénom",
         	"firstname.placeholder" : "Prénom",
         	"lastname" : "Nom",
@@ -56,6 +57,10 @@
 			"address.placeholder" : "Adresse",
 			"zipCode.placeholder" : "Code postal",
 			"city.placeholder" : "Ville",
+			"givenMedicalCertificate.selected.label" : "Certificat médical donné, et daté au",
+			"givenMedicalCertificate.notselected.label" : "Certificat médical",
+			"comments" : "Infos. complémentaires",
+			"comments.placeholder" : "",
 			"role" : {
 				"ROLE_ADMIN" : "Administrateur",
 				"ROLE_MANAGER" : "Manager",
