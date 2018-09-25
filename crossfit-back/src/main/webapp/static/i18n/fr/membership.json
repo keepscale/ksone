@@ -29,6 +29,8 @@
             "nbMaxDayBooking": "Réserver jusqu'à {{ nbMaxDayBooking }} jour(s) à l'avance",
             "nbHoursAtLeastToBook": "Réserver jusqu'à {{nbHoursAtLeastToBook}} heure(s) à l'avance une séance vide",
             "nbHoursAtLeastToCancel": "Annuler une réservation jusqu'à {{nbHoursAtLeastToCancel}} heure(s) à l'avance.",
+            "mustHaveMedicalCertificate" : "Certificat médical obligatoire",
+            "medicalCertificateValidForLessThanNbYears" : "De moins de {{medicalCertificateValidForLessThanNbYears}} ans.",
 	        "messages" : {
 	        	"validate" : {
 		        	"name" : {
