@@ -50,31 +50,31 @@ public class NotificationService {
 		Member bookingMember = booking.getSubscription().getMember();
 		DateTime bookingStartAt = booking.getStartAt().withZone(timeService.getDateTimeZone(box));
 		DateTime bookingEndAt = booking.getEndAt().withZone(timeService.getDateTimeZone(box));
+		LocalDate bookingStartDate = bookingStartAt.toLocalDate();
 		
 		LocalTime bookingStartTime = bookingStartAt.toLocalTime();
 		LocalTime bookingEndTime = bookingEndAt.toLocalTime();
 		TimeSlotType bookingTimeSlotType = booking.getTimeSlotType();
 
-		log.debug("{} {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", event.getEventType(), booking, bookingStartTime, bookingEndTime, bookingTimeSlotType.getId(), box.getId());
-
-		LocalDate bookingStartDate = bookingStartAt.toLocalDate();
-		Set<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAll(bookingStartDate, bookingStartTime, bookingEndTime, bookingTimeSlotType);
-
-		log.info("{} {}, recherche des demandes de notif pour le {} => {} demandes de notifs", event.getEventType(), booking, bookingStartDate, notifAtBookingDate.size());
-		
-		if (notifAtBookingDate.isEmpty()) {
-			return;
-		}
-
-		TimeSlot timeSlot = notifAtBookingDate.iterator().next().getTimeSlot();
-		
-		
 		if (event.getEventType() == BookingEventType.DELETED) {
+			
+			log.debug("{} {}, on cherche le timeslot correspondant. start:{}, end:{}, timeSlotTypeId:{}, boxId:{}", event.getEventType(), booking, bookingStartTime, bookingEndTime, bookingTimeSlotType.getId(), box.getId());
+	
+			Set<TimeSlotNotification> notifAtBookingDate = notificationRepository.findAll(bookingStartDate, bookingStartTime, bookingEndTime, bookingTimeSlotType);
+	
+			log.info("{} {}, recherche des demandes de notif pour le {} => {} demandes de notifs", event.getEventType(), booking, bookingStartDate, notifAtBookingDate.size());
+			
+			if (notifAtBookingDate.isEmpty()) {
+				return;
+			}
+	
+			TimeSlot timeSlot = notifAtBookingDate.iterator().next().getTimeSlot();
+			
+		
 			long bookingCount = bookingRepository.findAllAt(box, bookingStartAt, bookingEndAt).stream().filter(b->b.getTimeSlotType().equals(bookingTimeSlotType)).count();
 			if (bookingCount < timeSlot.getMaxAttendees()){
 				log.info("Suppression d'une résa, on notifie toutes les personnes en attente: {}", notifAtBookingDate);
 				notificationRepository.deleteAll(notifAtBookingDate);
-				notificationRepository.flush();
 				mailService.sendNotification(notifAtBookingDate);	
 			}
 			else{
@@ -82,11 +82,8 @@ public class NotificationService {
 			}
 		}
 		else if (event.getEventType() == BookingEventType.CREATED) {
-			List<TimeSlotNotification> notifEnAttenteDuMembreDeLaResa = notifAtBookingDate.stream().filter(notif->notif.getMember().equals(bookingMember)).collect(Collectors.toList());
-			if (!notifEnAttenteDuMembreDeLaResa.isEmpty()) {
-				log.info("Creation d'un résa pour {}, on supprime ses demandes de notif: {}", bookingMember, notifEnAttenteDuMembreDeLaResa);
-				notificationRepository.deleteAll(notifEnAttenteDuMembreDeLaResa);				
-			}
+			log.info("Creation d'une résa pour {}, on supprime toutes ses demandes de notif à la date du {}", bookingMember, bookingStartDate);
+			notificationRepository.deleteAll(bookingStartDate, bookingMember);				
 		}
 	}
 
