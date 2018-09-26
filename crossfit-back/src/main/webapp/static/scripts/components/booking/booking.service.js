@@ -54,6 +54,7 @@ angular.module('crossfitApp')
                 params : {prepare: 'true'},
                 transformRequest: function (data) {
                     data.date = DateUtils.convertLocaleDateToServer(data.date);
+                    data.medicalCertificateEndDateSoonExpired = DateUtils.convertLocaleDateFromServer(data.medicalCertificateEndDateSoonExpired);
                     return angular.toJson(data);
                 }
             },

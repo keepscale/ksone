@@ -84,6 +84,11 @@ public class CrossFitBox implements Serializable {
     @Size(max=255)
     @Column(name = "redirect_to_rules", nullable = true)
     private String redirectToRules;
+    
+
+    @NotNull        
+    @Column(name = "alert_when_med_cert_expires_in_days", nullable = false)
+    private int alertWhenMedicalCertificateExpiresInDays;
 
     public Long getId() {
         return id;
@@ -203,6 +208,16 @@ public class CrossFitBox implements Serializable {
 
 	public void setBillFooter(String billFooter) {
 		this.billFooter = billFooter;
+	}
+	
+	
+
+	public int getAlertWhenMedicalCertificateExpiresInDays() {
+		return alertWhenMedicalCertificateExpiresInDays;
+	}
+
+	public void setAlertWhenMedicalCertificateExpiresInDays(int alertWhenMedicalCertificateExpiresInDays) {
+		this.alertWhenMedicalCertificateExpiresInDays = alertWhenMedicalCertificateExpiresInDays;
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Booking;
-import org.crossfit.app.domain.BookingEvent;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
@@ -24,12 +22,11 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.BookingStatus;
-import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.exception.booking.NotBookingOwnerException;
 import org.crossfit.app.exception.booking.UnableToDeleteBooking;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
+import org.crossfit.app.exception.rules.SubscriptionAvailableWithWarningException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
@@ -44,7 +41,6 @@ import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
-import org.crossfit.app.web.rest.dto.BookingEventDTO;
 import org.crossfit.app.web.rest.dto.BookingStatusDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -72,7 +68,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 /**
@@ -190,7 +185,6 @@ public class BookingResource {
 		return bookings;
 	}
 
-	
     @RequestMapping(value = "/bookings/{date}/{timeSlotId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -427,7 +421,7 @@ public class BookingResource {
     	
     	// Si il y a déjà une réservation entre les date de ce créneau
 		List<Booking> currentBookingsBetweenStartAndEnd = new ArrayList<>(
-				bookingRepository.findAllAt(boxService.findCurrentCrossFitBox(), startAt, endAt));
+				bookingRepository.findAllAt(currentCrossFitBox, startAt, endAt));
 		
 		Optional<Booking> alreadyBooked = currentBookingsBetweenStartAndEnd.stream()
 				.filter(b-> b.getSubscription().getMember().equals(selectedMember)).findAny();
@@ -481,12 +475,18 @@ public class BookingResource {
         
         BookingRulesChecker rules = new BookingRulesChecker(now,
         		bookingRepository.findAllByMember(selectedMember), 
-        		subscriptionRepository.findAllByMember(selectedMember));
+        		subscriptionRepository.findAllByMember(selectedMember),
+        		currentCrossFitBox.getAlertWhenMedicalCertificateExpiresInDays());
 
         Subscription possibleSubscription = null;        
         try {
         	
-        	possibleSubscription = rules.findSubscription(selectedMember, selectedTimeSlot.getTimeSlotType(), startAt, currentBookingsForTimeSlot.size());
+        	try {
+				possibleSubscription = rules.findSubscription(selectedMember, selectedTimeSlot.getTimeSlotType(), startAt, currentBookingsForTimeSlot.size());
+			} catch (SubscriptionAvailableWithWarningException e) { //On a trouvé l'abonnement, mais il y a un/des warnings à afficher
+				possibleSubscription = e.getSubscription();
+				bookingdto.setMedicalCertificateEndDateSoonExpired(e.getDateFinValiditeCertif());
+			}
         	
         	//Si on est pas admin, qu'on souhaite forcer une souscription, qui n'est pas possible => erreur
         	//(Si on est admin, on laisse passer)

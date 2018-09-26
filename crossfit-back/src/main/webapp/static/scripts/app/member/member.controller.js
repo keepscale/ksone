@@ -55,6 +55,10 @@ angular.module('crossfitApp')
         $scope.search = function() {
             $scope.reset();
         };
+        $scope.keyPressOnSearchField = function(keyEvent) {
+    	  if (keyEvent.which === 13)
+    		  $scope.search();
+    	}
 
         $scope.lock = function (id) {
             Member.get({id: id}, function(result) {

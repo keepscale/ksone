@@ -9,6 +9,7 @@ angular.module('crossfitApp')
 		$scope.socialEnabled = $rootScope.socialEnabled;
 		$scope.selectedSubscriptionId = "";
 
+       
 		$scope.cancelBooking = function(){
 			if (confirm("Annuler votre réservation ?")){
 	        	Booking.delete({id : $scope.booking.id}, function(){
@@ -28,6 +29,10 @@ angular.module('crossfitApp')
 			Booking.prepareBooking($scope.booking, 
 				function(booking){
 					$scope.booking.subscriptionId = booking.subscriptionId;
+					if (booking.medicalCertificateEndDateSoonExpired){
+	        			$scope.medicalCertificateEndDateSoonExpired = booking.medicalCertificateEndDateSoonExpired;
+	                	$('#modalMedicalCert').modal('show');
+					}
         		},$scope.onError);
         };
         

@@ -47,6 +47,7 @@
     <include file="classpath:config/liquibase/changelog/24_modify_wod_result.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/25_modify_wod_publication.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/26_medical_certificate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/27_alert_medical_certificate.xml" relativeToChangelogFile="false"/>
     
 
 </databaseChangeLog>

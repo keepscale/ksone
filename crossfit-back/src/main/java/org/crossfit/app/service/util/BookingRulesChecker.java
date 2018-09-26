@@ -21,6 +21,7 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
+import org.crossfit.app.exception.rules.SubscriptionAvailableWithWarningException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredForBookingException;
 import org.crossfit.app.exception.rules.SubscriptionDateNotYetAvaiblableException;
@@ -30,6 +31,7 @@ import org.crossfit.app.exception.rules.SubscriptionMembershipRulesException.Mem
 import org.crossfit.app.exception.rules.SubscriptionNoMembershipRulesApplicableException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,16 +44,19 @@ public class BookingRulesChecker {
 	private final Map<Subscription, List<Booking>> bookingsBySubscriptions;
 	private final Set<Subscription> subscriptions;
 
+	private final int alertWhenMedicalCertificateExpiresInDays;
+
 
 	public BookingRulesChecker(DateTime now){
-		this(now, new ArrayList<>(), new HashSet<>());
+		this(now, new ArrayList<>(), new HashSet<>(),-1);
 	}
 	
-	public BookingRulesChecker(DateTime now, List<Booking> bookings, Set<Subscription> subscriptions) {
+	public BookingRulesChecker(DateTime now, List<Booking> bookings, Set<Subscription> subscriptions, int alertWhenMedicalCertificateExpiresInDays) {
 		super();
 		this.now = now;
 		this.bookingsBySubscriptions = bookings.stream().collect(Collectors.groupingBy(Booking::getSubscription));
 		this.subscriptions = new HashSet<>(subscriptions);
+		this.alertWhenMedicalCertificateExpiresInDays = alertWhenMedicalCertificateExpiresInDays;
 	}
 
 	public Optional<MembershipRules> breakRulesToCancel(Booking booking, Collection<MembershipRules> rulesToVerify){
@@ -65,7 +70,7 @@ public class BookingRulesChecker {
 	}
 
 	public Subscription findSubscription(Member owner, TimeSlotType timeSlotType, DateTime startAt, int totalBookingForTimeSlot) 
-			throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+			throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException, SubscriptionAvailableWithWarningException {
 
 		log.debug("Il est {}. Recherche d'une souscription valide pour {} {} pour un creneau {} le {} parmis ses souscription {}",
 				now, owner.getFirstName(), owner.getLastName(), timeSlotType.getName(), startAt, subscriptions);
@@ -142,7 +147,24 @@ public class BookingRulesChecker {
 		}
 		else if (possibleSubscriptionsToUse.size() == 1){
 			log.debug("Une seul souscription possible pour cette résa");
-			return possibleSubscriptionsToUse.get(0);
+			Subscription subscription = possibleSubscriptionsToUse.get(0);
+
+			//On cherche parmis toutes les règles
+			Optional<Integer> mustMedicalCertificateValidForLessThanNbYears = subscription.getMembership().getMembershipRules().stream()
+				.filter(isRuleApplyFor(booking)) //celle qui s'applique à la réservation
+				.filter(MembershipRules::isMustHaveMedicalCertificate) //Qui demande la vérif du certif
+				.map(MembershipRules::getMedicalCertificateValidForLessThanNbYears) //On prends le nombre d'année valide du certif
+				.collect(Collectors.minBy(Integer::compareTo));//si yen a plusieurs, on prends le plus petite
+			
+			if (this.alertWhenMedicalCertificateExpiresInDays > 0 && owner.getMedicalCertificateDate() !=null && mustMedicalCertificateValidForLessThanNbYears.isPresent()) {
+
+				LocalDate dateFinValiditeCertif = owner.getMedicalCertificateDate().plusYears(mustMedicalCertificateValidForLessThanNbYears.get());
+				LocalDate dateFinValiditeCertifAlert = dateFinValiditeCertif.minusDays(alertWhenMedicalCertificateExpiresInDays);
+				if (startAt.toLocalDate().isAfter(dateFinValiditeCertifAlert)) {
+					throw new SubscriptionAvailableWithWarningException(subscription, dateFinValiditeCertif);
+				}				
+			}
+			return subscription;
 		}
 		else{
 			log.debug("Plusieurs souscription possible pour cette résa");

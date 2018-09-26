@@ -105,7 +105,11 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomDateTimeSerializer.class)
 	@JsonDeserialize(using = CustomDateTimeDeserializer.class)
 	private DateTime checkInDate;
-		
+
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
+	private LocalDate medicalCertificateEndDateSoonExpired;
+	
 	public BookingDTO() {
 		super();
 	}
@@ -198,7 +202,14 @@ public class BookingDTO implements Serializable {
 	public void setCheckInDate(DateTime checkInDate) {
 		this.checkInDate = checkInDate;
 	}
-	
+	public LocalDate getMedicalCertificateEndDateSoonExpired() {
+		return medicalCertificateEndDateSoonExpired;
+	}
+
+	public void setMedicalCertificateEndDateSoonExpired(LocalDate medicalCertificateEndDateSoonExpired) {
+		this.medicalCertificateEndDateSoonExpired = medicalCertificateEndDateSoonExpired;
+	}
+
 	@Override
 	public String toString() {
 		return "BookingDTO [id=" + id + ", date=" + date + ", title=" + title + ", timeslotId=" + timeslotId
