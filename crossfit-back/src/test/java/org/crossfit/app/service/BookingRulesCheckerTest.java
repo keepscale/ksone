@@ -18,6 +18,7 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
+import org.crossfit.app.exception.rules.SubscriptionAvailableWithWarningException;
 import org.crossfit.app.exception.rules.SubscriptionDateExpiredException;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.MembershipRepository;
@@ -78,7 +79,7 @@ public class BookingRulesCheckerTest {
 	
 	
 	@Test
-	public void testAbdoExpireAvecUnValide() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+	public void testAbdoExpireAvecUnValide() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException, SubscriptionAvailableWithWarningException {
 
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     	
@@ -94,7 +95,7 @@ public class BookingRulesCheckerTest {
 		List<Booking> bookings = new ArrayList<Booking>();
 
 		DateTime now = parseDateTime("2016-10-12T14:00:00");
-		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions, -1);
 
 		Subscription findSubscription = checker.findSubscription(aMember, WOD, parseDateTime("2016-10-14T09:00:00"), 0);
 		
@@ -103,7 +104,7 @@ public class BookingRulesCheckerTest {
 	
 
 	@Test
-	public void testQueDesAbdoExpire() throws ManySubscriptionsAvailableException {
+	public void testQueDesAbdoExpire() throws ManySubscriptionsAvailableException, SubscriptionAvailableWithWarningException {
 
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     	
@@ -119,7 +120,7 @@ public class BookingRulesCheckerTest {
 		List<Booking> bookings = new ArrayList<Booking>();
 
 		DateTime now = parseDateTime("2016-12-12T14:00:00");
-		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions, -1);
 		
 		try {
 			checker.findSubscription(aMember, WOD, parseDateTime("2016-12-14T09:00:00"), 0);
@@ -137,7 +138,7 @@ public class BookingRulesCheckerTest {
 	}
 
 	@Test
-	public void testQueDesAbdoExpireAvecUnValideMaisErreurValiationRegle() throws ManySubscriptionsAvailableException {
+	public void testQueDesAbdoExpireAvecUnValideMaisErreurValiationRegle() throws ManySubscriptionsAvailableException, SubscriptionAvailableWithWarningException {
 
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     	
@@ -153,7 +154,7 @@ public class BookingRulesCheckerTest {
 		List<Booking> bookings = new ArrayList<Booking>();
 
 		DateTime now = parseDateTime("2016-10-12T08:00:00");
-		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions, -1);
 		
 		try {
 			checker.findSubscription(aMember, WOD, parseDateTime("2016-10-12T09:00:00"), 0);
@@ -171,7 +172,7 @@ public class BookingRulesCheckerTest {
 	}
 	
 	@Test
-	public void testRegleParSemaine() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+	public void testRegleParSemaine() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException, SubscriptionAvailableWithWarningException {
 
 		Subscription sTriple = new Subscription();
 		sTriple.setMember(aMember);
@@ -194,7 +195,7 @@ public class BookingRulesCheckerTest {
 		
 		
 		DateTime now = parseDateTime("2016-10-11T14:00:00"); 					//On est mardi
-		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions, -1);
 
 		checker.findSubscription(aMember, WOD, parseDateTime("2016-10-12T09:00:00"), 5); //On doit pouvoir reserver le mercredi
 		checker.findSubscription(aMember, WOD, parseDateTime("2016-10-13T09:00:00"), 5); //On doit pouvoir reserver le jeudi
@@ -221,7 +222,7 @@ public class BookingRulesCheckerTest {
 	
 
 	@Test
-	public void testRegleParMois() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException {
+	public void testRegleParMois() throws ManySubscriptionsAvailableException, NoSubscriptionAvailableException, SubscriptionAvailableWithWarningException {
 
 		Subscription sTripleParMois = new Subscription();
 		sTripleParMois.setMember(aMember);
@@ -243,7 +244,7 @@ public class BookingRulesCheckerTest {
 		bookings.add(createBooking("2016-11-04T14:00:00", sTripleParMois, WOD)); 		//vendredi mois après
 		
 		DateTime now = parseDateTime("2016-10-19T14:00:00"); 					//On est mercredi
-		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions);
+		BookingRulesChecker checker = new BookingRulesChecker(now , bookings, subscriptions, -1);
 
 		//On ne doit plus pouvoir réserver car on a fait les 5 résa sur le mois
 		try {
