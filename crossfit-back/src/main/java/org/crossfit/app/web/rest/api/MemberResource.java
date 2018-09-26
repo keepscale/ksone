@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -183,15 +185,19 @@ public class MemberResource {
 		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, withCustomCriteria, withCustomCriteriaExpireAt, withCustomCriteriaEncoursAt, includeActif, includeNotEnabled, includeBloque );
 		
 		StringBuffer sb = new StringBuffer();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		sb.append("[Id];[Title];[FirstName];[LastName];[Email];[CardNumber];[Telephon];[Address];[ZipCode];[City]\n");		
+		sb.append("[Id];[MemberNumber];[Title];[FirstName];[LastName];[Email];[CardNumber];[hasCertMed];[certMedDate];[Telephon];[Address];[ZipCode];[City]\n");		
 		for (Member m : page) {
 			append(sb, m.getId()).append(";");
+			append(sb, m.getNumber()).append(";");
 			append(sb, m.getTitle()).append(";");
 			append(sb, m.getFirstName()).append(";");
 			append(sb, m.getLastName()).append(";");
 			append(sb, m.getLogin()).append(";");
 			append(sb, m.getCardUuid()).append(";");
+			append(sb, m.hasGivenMedicalCertificate()).append(";");
+			append(sb, m.getMedicalCertificateDate(), sdf).append(";");
 			append(sb, m.getTelephonNumber()).append(";");
 			append(sb, m.getAddress()).append(";");
 			append(sb, m.getZipCode()).append(";");
@@ -200,6 +206,11 @@ public class MemberResource {
 		return sb.toString();
 	}
 	
+	private StringBuffer append(StringBuffer sb, LocalDate localDate, SimpleDateFormat sdf) {
+		return localDate == null ? append(sb, "") : append(sb, sdf.format(localDate.toDate()));
+	}
+
+
 	private static final StringBuffer append(StringBuffer sb, Object value){
 		sb.append("\"").append(value == null ? "" : value).append("\"");
 		return sb;
