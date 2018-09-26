@@ -24,6 +24,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "	or lower(m.lastName) like :search "
     		+ "	or lower(m.telephonNumber) like :search "
     		+ "	or lower(m.login) like :search "
+    		+ "	or lower(m.comments) like :search "
+    		+ "	or lower(m.number) like :search "
     		+ ") "
     		+ "and ( "
     		+ "		( true = :includeActif 		AND m.enabled = true 	and m.locked = false ) "
