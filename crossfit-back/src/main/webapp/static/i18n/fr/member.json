@@ -17,6 +17,7 @@
             	"date.addmonth" : "+ {{ total }} mois",
             	"lock": "Bloquer"
         	},
+        	"import.ok": "{{ param }} membres ont été mis à jour (numéro adhérent & date certficat).",
             "lock": {
                 "question": "Etes-vous certain de vouloir bloquer l'adhérent {{ id }} ?"
             },

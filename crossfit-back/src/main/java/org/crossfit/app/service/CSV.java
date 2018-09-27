@@ -2,9 +2,11 @@ package org.crossfit.app.service;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.crossfit.app.exception.CSVParseException;
 import org.joda.time.LocalDate;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 public class CSV<T> {
 
@@ -38,34 +41,38 @@ public class CSV<T> {
 		this.instanceSupplier = instanceSupplier;
 	}
 
-	public String format(Iterable<T> datas) {
-		StringBuilder sb = new StringBuilder();
-		if (hasHeader)
-			sb.append(columnLine()).append("\n");
+	public String format(Iterable<T> datas) throws IOException {
+		StringWriter sw = new StringWriter();
+		CSVWriter writer = new CSVWriter(sw);
+		if (hasHeader) {
+			writer.writeNext(columns.toArray(new String[columns.size()]), false);
+		}
 		
-		for (T data : datas) {
-			sb.append(columns.stream().map(col->getMapper.get(col).apply(data)).map(o->o==null ? "" : o.toString()).collect(Collectors.joining(";", "\"", "\""))).append("\n");
+		for (T data : datas) {			
+			writer.writeNext(columns.stream().map(col->getMapper.get(col).apply(data)).map(o->o==null ? "" : o.toString()).toArray(String[]::new), false);
 		}		
+		writer.close();
 		
-		return sb.toString();
+		return sw.getBuffer().toString();
 	}
 
 	private String columnLine() {
-		return columns.stream().collect(Collectors.joining(";", "[", "]"));
+		return columns.stream().collect(Collectors.joining(";"));
 	}
-	
-	public Collection<T> parse(Reader reader) throws IOException, CSVParseException{
+
+	public Collection<T> parse(Reader reader) throws CSVParseException{
 
 		try(CSVReader csvreader = new CSVReader(reader)){
 
 			List<T> elements = new ArrayList<>();
 			
-			if (hasHeader && !columnLine().equals(csvreader.readNext())) {
-				throw new CSVParseException("La première ligne n'est pas une entête: " + columnLine());
+			String[] firstLine = csvreader.readNext();
+			if (hasHeader && !columns.equals(Arrays.asList(firstLine))) {
+				throw new CSVParseException("La première ligne ("+Arrays.stream(firstLine).collect(Collectors.joining(";"))+") ne correspond pas à l'entete attendue: " + columnLine());
 			}
 
 			int index = hasHeader ? 1 : 0;
-			String[] cells = csvreader.readNext();
+			String[] cells = hasHeader ? csvreader.readNext() : firstLine;
 			index ++;
 			while (cells != null) {
 
@@ -86,6 +93,8 @@ public class CSV<T> {
 			
 			
 			return elements;
+		} catch (IOException e) {
+			throw new CSVParseException("Erreur de lecture du fichier: " + e.getMessage(), e);
 		}
 		
 		
@@ -105,15 +114,15 @@ public class CSV<T> {
 	private static final CSV<Member> csvMember = new CSV<>(true, Member::new);
 	static {
 
-		csvMember.addMapping("Id", Member::getId, (m, val)->m.setId(Long.valueOf(val)));
-		csvMember.addMapping("MemberNumber", Member::getNumber, Member::setNumber);
-		csvMember.addMapping("Title", Member::getTitle, (m, val)->m.setTitle(Title.valueOf(val)));
-		csvMember.addMapping("FirstName", Member::getFirstName, Member::setFirstName);
-		csvMember.addMapping("LastName", Member::getLastName, Member::setLastName);
-		csvMember.addMapping("Email", Member::getLogin, Member::setLogin);
-		csvMember.addMapping("CardNumber", Member::getCardUuid, Member::setCardUuid);
-		csvMember.addMapping("hasCertMed", Member::hasGivenMedicalCertificate, (m, val)->m.setGivenMedicalCertificate(Boolean.valueOf(val)));
-		csvMember.addMapping("certMedDate",
+		csvMember.addMapping("[Id]", Member::getId, (m, val)->m.setId(Long.valueOf(val)));
+		csvMember.addMapping("[MemberNumber]", Member::getNumber, Member::setNumber);
+		csvMember.addMapping("[Title]", Member::getTitle, (m, val)->m.setTitle(Title.valueOf(val)));
+		csvMember.addMapping("[FirstName]", Member::getFirstName, Member::setFirstName);
+		csvMember.addMapping("[LastName]", Member::getLastName, Member::setLastName);
+		csvMember.addMapping("[Email]", Member::getLogin, Member::setLogin);
+		csvMember.addMapping("[CardNumber]", Member::getCardUuid, Member::setCardUuid);
+		csvMember.addMapping("[hasCertMed]", Member::hasGivenMedicalCertificate, (m, val)->m.setGivenMedicalCertificate(Boolean.valueOf(val)));
+		csvMember.addMapping("[certMedDate]",
 				m->
 					m.getMedicalCertificateDate()==null ? "" : SDF.format(m.getMedicalCertificateDate().toDate()),
 				(m, val) -> {
@@ -124,9 +133,9 @@ public class CSV<T> {
 							}
 						}
 				});
-		csvMember.addMapping("Telephon", Member::getTelephonNumber, Member::setTelephonNumber);
-		csvMember.addMapping("Address", Member::getAddress, Member::setAddress);
-		csvMember.addMapping("ZipCode", Member::getZipCode, Member::setZipCode);
-		csvMember.addMapping("City", Member::getCity, Member::setCity);
+		csvMember.addMapping("[Telephon]", Member::getTelephonNumber, Member::setTelephonNumber);
+		csvMember.addMapping("[Address]", Member::getAddress, Member::setAddress);
+		csvMember.addMapping("[ZipCode]", Member::getZipCode, Member::setZipCode);
+		csvMember.addMapping("[City]", Member::getCity, Member::setCity);
 	}
 }

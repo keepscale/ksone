@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.enumeration.MembershipRulesType;
+import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
 import org.crossfit.app.exception.rules.NoSubscriptionAvailableException;
@@ -45,6 +46,11 @@ public class ExceptionTranslator {
     public ResponseEntity<String> processEmailAlreadyUseError(MethodArgumentNotValidException ex) {
 		return ResponseEntity.badRequest().header("Failure", "Cet email est deja attribué a quelqu'un d'autre.").body(null);
     }
+
+    @ExceptionHandler(CSVParseException.class)
+    public  ResponseEntity<String> processCSVParseException(CSVParseException ex) {
+		return ResponseEntity.badRequest().header("Failure", ex.getMessage()).body(null);
+    }
     
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -53,6 +59,7 @@ public class ExceptionTranslator {
         return new ErrorDTO(ErrorConstants.ERR_CONCURRENCY_FAILURE);
     }
 
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
