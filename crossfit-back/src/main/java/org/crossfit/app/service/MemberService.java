@@ -1,11 +1,9 @@
 package org.crossfit.app.service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -31,12 +29,10 @@ import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -340,6 +336,22 @@ public class MemberService {
 
 	public Optional<Member> findMemberByUuid(String uuid) {
 		return memberRepository.findOneByUuid(uuid);
+	}
+
+	public int updateInMass(Collection<Member> membersToUpdate) {
+		int count = 0;
+    	for (Member memberOfCSV : membersToUpdate) {
+			Optional<Member> findById = memberRepository.findById(memberOfCSV.getId());
+			if(findById.isPresent()) {
+				count++;
+				Member memberDB = findById.get();
+				memberDB.setNumber(memberOfCSV.getNumber());
+				memberDB.setGivenMedicalCertificate(memberOfCSV.hasGivenMedicalCertificate());
+				memberDB.setMedicalCertificateDate(memberOfCSV.getMedicalCertificateDate());
+				memberRepository.save(memberDB);
+			}
+		}
+    	return count;
 	}
 	
 }

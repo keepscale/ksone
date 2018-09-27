@@ -1,10 +1,12 @@
 package org.crossfit.app.web.rest.api;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
@@ -35,6 +38,7 @@ import org.crossfit.app.service.TimeService;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
+import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
@@ -60,6 +64,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import net.bytebuddy.asm.Advice.Return;
 
 /**
  * REST controller for managing Member.
@@ -169,6 +175,7 @@ public class MemberResource {
 
 	/**
 	 * GET /members -> get all the members.
+	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/members.csv", method = RequestMethod.GET, produces = "text/csv;charset=utf-8")
 	public String getAllAsCSV(
@@ -181,7 +188,7 @@ public class MemberResource {
 			@RequestParam(value = "with_customcriteria_encours", required = false) String withCustomCriteriaEncoursAt,
 			@RequestParam(value = "include_actif", required = false) boolean includeActif,
 			@RequestParam(value = "include_not_enabled", required = false) boolean includeNotEnabled,
-			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException {
+			@RequestParam(value = "include_bloque", required = false) boolean includeBloque) throws URISyntaxException, IOException {
 		
 		Pageable generatePageRequest =  new PageRequest(0, Integer.MAX_VALUE);
 		
@@ -191,16 +198,22 @@ public class MemberResource {
 		return CSV.members().format(page);
 	}
 	
-	
-    @PostMapping("members/import")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes) {
+	@PostMapping("members/import")
+	public ResponseEntity<Void> handleFileUpload(
+			@RequestParam("file") MultipartFile file)
+			throws CSVParseException {
 
+		Collection<Member> membersToUpdate;
+		try {
 
-    	CSV.members().parse(new InputStreamReader(file.getInputStream()));
+			membersToUpdate = CSV.members().parse(new InputStreamReader(file.getInputStream()));
+		} catch (IOException e) {
+			throw new CSVParseException("Impossible de récupérer le fichier envoyé: " + e.getMessage(), e);
+		}
+		
+		int count = memberService.updateInMass(membersToUpdate);
 
-    	
-
+		return ResponseEntity.ok().headers(HeaderUtil.createAlert("crossfitApp.member.import.ok", count+"")).build();
     }
     
 

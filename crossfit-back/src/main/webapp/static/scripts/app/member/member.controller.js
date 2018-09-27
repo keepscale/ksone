@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MemberController', function ($scope, $window, Member, Membership, Authority,DateUtils, ParseLinks) {
+    .controller('MemberController', function ($scope, $window, Member, Membership, Authority,DateUtils, ParseLinks, AlertService) {
         $scope.members = [];
         $scope.page = 1;
         $scope.per_page = 20;
@@ -204,6 +204,10 @@ angular.module('crossfitApp')
             
 			$window.open("api/members.csv?"+params);
 		};
+		
+		$scope.onErrorImport = function(response){
+			AlertService.error(response.headers('Failure'));
+		}
 		
         $scope.init = function(){
         	Membership.query({}, function(result){
