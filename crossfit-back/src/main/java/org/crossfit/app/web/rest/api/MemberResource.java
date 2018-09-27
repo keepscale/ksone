@@ -1,8 +1,8 @@
 package org.crossfit.app.web.rest.api;
 
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +28,7 @@ import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.service.CSV;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.MemberService;
 import org.crossfit.app.service.TimeService;
@@ -38,7 +39,6 @@ import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -52,11 +52,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * REST controller for managing Member.
@@ -184,38 +187,22 @@ public class MemberResource {
 		
 		Page<Member> page = doFindAll(generatePageRequest, search, includeMembershipsIds, includeRoles, withHealthIndicators, withCustomCriteria, withCustomCriteriaExpireAt, withCustomCriteriaEncoursAt, includeActif, includeNotEnabled, includeBloque );
 		
-		StringBuffer sb = new StringBuffer();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-		sb.append("[Id];[MemberNumber];[Title];[FirstName];[LastName];[Email];[CardNumber];[hasCertMed];[certMedDate];[Telephon];[Address];[ZipCode];[City]\n");		
-		for (Member m : page) {
-			append(sb, m.getId()).append(";");
-			append(sb, m.getNumber()).append(";");
-			append(sb, m.getTitle()).append(";");
-			append(sb, m.getFirstName()).append(";");
-			append(sb, m.getLastName()).append(";");
-			append(sb, m.getLogin()).append(";");
-			append(sb, m.getCardUuid()).append(";");
-			append(sb, m.hasGivenMedicalCertificate()).append(";");
-			append(sb, m.getMedicalCertificateDate(), sdf).append(";");
-			append(sb, m.getTelephonNumber()).append(";");
-			append(sb, m.getAddress()).append(";");
-			append(sb, m.getZipCode()).append(";");
-			append(sb, m.getCity()).append("\n");
-		}
-		return sb.toString();
+		
+		return CSV.members().format(page);
 	}
 	
-	private StringBuffer append(StringBuffer sb, LocalDate localDate, SimpleDateFormat sdf) {
-		return localDate == null ? append(sb, "") : append(sb, sdf.format(localDate.toDate()));
-	}
+	
+    @PostMapping("members/import")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes) {
 
 
-	private static final StringBuffer append(StringBuffer sb, Object value){
-		sb.append("\"").append(value == null ? "" : value).append("\"");
-		return sb;
-	}
+    	CSV.members().parse(new InputStreamReader(file.getInputStream()));
 
+    	
+
+    }
+    
 
 	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, boolean includeAllRoles,
 			boolean includeActif, boolean includeNotEnabled, boolean includeBloque) {
