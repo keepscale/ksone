@@ -2,7 +2,7 @@
 
 angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 'ui.calendar',
                'ui.bootstrap', // for modal dialogs
-    'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker', 'ng-fastclick', 'nvd3'])
+    'ngResource', 'ui.router', 'ngCookies', 'ngCacheBuster', 'ui.bootstrap.datetimepicker', 'ng-fastclick', 'nvd3', 'lr.upload'])
 
     .run(function ($rootScope, $location, $window, $http, $state, $translate, DateUtils, Language, Auth, Principal, CrossfitBox, Version) {
 

@@ -141,12 +141,22 @@
 			
 			<div class="col-xs-2">
 		        <div class="form-group pull-right" style="margin-left: 5px;">
-				    <button type="button" class="btn btn-primary" ng-click="search()">
-				        <span translate="entity.action.search">Search</span>
-				    </button> 
-				    <button type="button" class="btn btn-primary" ng-click="export()">
-				        <span translate="entity.action.export">Export</span>
+				    
+					<button type="button" class="btn btn-primary" title="{{'entity.action.search' | translate}}" ng-click="search()" >
+						<span class="glyphicon glyphicon-search"></span>
+					</button>
+				    <button type="button" class="btn btn-primary" title="{{'entity.action.export' | translate}}" ng-click="export()">
+						<span class="glyphicon glyphicon-cloud-download"></span>
 				    </button>
+				    <div class="btn btn-primary btn-upload" title="{{'entity.action.import' | translate}}" 
+				    	upload-button 
+				    	url="api/members/import" 
+				    	accept="text/csv"
+				    	on-success="onSuccessImport(response)"
+				    	on-error="onErrorImport(response)">
+						<span class="glyphicon glyphicon-cloud-upload"></span>
+					</div>
+
 				</div>
 				<div class="form-group pull-right form-inline">
 					<label>{{totalMember}} membres</label>

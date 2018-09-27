@@ -90,6 +90,7 @@
             "view": "Voir",
             "lock": "Bloquer",
             "export": "Export",
+            "import": "Import...",
             "generate": "Génération...",
             "saveAndValidate" : "Sauvegarder et Valider"
         },
