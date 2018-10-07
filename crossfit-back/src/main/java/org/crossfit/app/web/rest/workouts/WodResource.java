@@ -2,39 +2,28 @@ package org.crossfit.app.web.rest.workouts;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.workouts.Equipment;
-import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.WodPublication;
-import org.crossfit.app.domain.workouts.enumeration.WodCategory;
-import org.crossfit.app.domain.workouts.enumeration.WodScore;
 import org.crossfit.app.domain.workouts.result.WodResult;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
-import org.crossfit.app.web.rest.dto.WodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.workouts.dto.WodResultCompute;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for managing Bill.
+ * REST controller for managing Wod.
  */
 @RestController
 @RequestMapping("/api")
@@ -89,7 +78,7 @@ public class WodResource {
 	/**
 	 * GET /wod -> get all the wod.
 	 */
-	@RequestMapping(value = "/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "manage/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Wod>> getWods(
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "start", required = false) String startStr,
@@ -112,7 +101,7 @@ public class WodResource {
 				.filter(d->d.isAfter(nowAsLocalDate.minusDays(1)))
 				.min(LocalDate::compareTo).orElse(null);
 		};
-		List<Wod> result = wodService.findAllVisibleWod(customSearch, start, end).stream().sorted(
+		List<Wod> result = wodService.findAllWod(customSearch, start, end).stream().sorted(
 				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList());
 		
@@ -120,7 +109,7 @@ public class WodResource {
 	}
 	
 
-	@RequestMapping(value = "/wod/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "manage/wod/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Wod> getWod(@PathVariable Long id){
 		
 		Wod result = wodService.findOne(id);
@@ -128,14 +117,54 @@ public class WodResource {
 	}
 	
 
-	@RequestMapping(value = "/wod/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "manage/wod/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> deleteWod(@PathVariable Long id){
 		 wodService.deleteWodAndResult(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+
+	/**
+	 * POST /wod -> Create a new wod.
+	 */
+	@RequestMapping(value = "manage/wod", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Wod> create(@Valid @RequestBody Wod wod) throws URISyntaxException {
+		log.debug("REST request to save Wod : {}", wod);
+		if (wod.getId() != null) {
+			return ResponseEntity.badRequest().header("Failure", "A new wod cannot already have an ID").body(null);
+		}
+		Wod result = wodService.save(wod);
+		return ResponseEntity.created(new URI("/api/wod/" + result.getId()))
+				.headers(HeaderUtil.createEntityCreationAlert("wod", result.getId().toString())).body(result);
+	}
+
+	
+	/**
+	 * PUT /wod -> Updates an existing wod.
+	 */
+
+	@RequestMapping(value = "manage/wod", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Wod> update(@Valid @RequestBody Wod wod) throws URISyntaxException {
+		log.debug("REST request to update Wod : {}", wod);
+		if (wod.getId() == null) {
+			return create(wod);
+		}
+		Wod result = wodService.save(wod);
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(" wod", result.getId().toString()))
+				.body(result);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
-	@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	//@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId){
 		
 		Wod wod = wodService.findOne(wodId);
@@ -163,67 +192,6 @@ public class WodResource {
 		
 		return new ResponseEntity<>(rankings, HttpStatus.OK);
 	}
-
-
-	/**
-	 * POST /wod -> Create a new wod.
-	 */
-	@RequestMapping(value = "/wod", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Wod> create(@Valid @RequestBody Wod wod) throws URISyntaxException {
-		log.debug("REST request to save Wod : {}", wod);
-		if (wod.getId() != null) {
-			return ResponseEntity.badRequest().header("Failure", "A new wod cannot already have an ID").body(null);
-		}
-		Wod result = wodService.save(wod);
-		return ResponseEntity.created(new URI("/api/wod/" + result.getId()))
-				.headers(HeaderUtil.createEntityCreationAlert("wod", result.getId().toString())).body(result);
-	}
-
 	
-	/**
-	 * PUT /wod -> Updates an existing wod.
-	 */
-
-	@RequestMapping(value = "/wod", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Wod> update(@Valid @RequestBody Wod wod) throws URISyntaxException {
-		log.debug("REST request to update Wod : {}", wod);
-		if (wod.getId() == null) {
-			return create(wod);
-		}
-		Wod result = wodService.save(wod);
-		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(" wod", result.getId().toString()))
-				.body(result);
-	}
 	
-	/**
-	 * GET /wod/scores -> get all the wod scores.
-	 */
-	@RequestMapping(value = "/wod/scores", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WodScore[]> getWodScore(){
-		return new ResponseEntity<>(WodScore.values(), HttpStatus.OK);
-	}
-	/**
-	 * GET /wod/categories -> get all the wod categories.
-	 */
-	@RequestMapping(value = "/wod/categories", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<WodCategory[]> getWodCategory(){
-		return new ResponseEntity<>(WodCategory.values(), HttpStatus.OK);
-	}
-
-	/**
-	 * GET /wod/equipments -> get all the equipments.
-	 */
-	@RequestMapping(value = "/wod/equipments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Equipment>> getEquipments(@RequestParam(name="search", required=false) String search){
-		
-		return new ResponseEntity<>(wodService.findAllEquipment(search), HttpStatus.OK);
-	}
-	
-	/**
-	 * GET /wod/movements -> get all the movements.
-	 */
-	@RequestMapping(value = "/wod/movements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Movement>> getMovements(@RequestParam(name="search", required=false) String search){		
-		return new ResponseEntity<>(wodService.findAllMovement(search), HttpStatus.OK);
-	}
 }

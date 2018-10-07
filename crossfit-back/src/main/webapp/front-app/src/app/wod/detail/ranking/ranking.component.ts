@@ -5,6 +5,7 @@ import { WodResultRanking } from '../../domain/wod-result-ranking.model';
 import { WodResult } from '../../domain/wod-result.model';
 import { Wod } from '../../domain/wod.model';
 import { Principal } from '../../../shared/auth/principal.service';
+import { WodResultService } from '../../wod-result.service';
 
 @Component({
   selector: 'app-ranking',
@@ -23,7 +24,7 @@ export class RankingComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     private router: Router,
     private principal: Principal,
-    private service: WodService) { }
+    private service: WodResultService) { }
 
   ngOnInit() {
     this.loadRanking();

@@ -22,7 +22,7 @@ export class WodService {
   
  
   findAll(search?: WodSearchRequest){
-    return this.http.get<Wod[]>("/api/wod", {
+    return this.http.get<Wod[]>("/api/manage/wod", {
         params: new HttpParams()
         .set("query", search.query)
         .set("start", moment(search.start).format("YYYY-MM-DD"))
@@ -32,15 +32,15 @@ export class WodService {
   }
 
   save(wod:Wod){
-    return this.http.put<Wod>("/api/wod", wod);
+    return this.http.put<Wod>("/api/manage/wod", wod);
   }
 
   delete(wod: Wod){
-    return this.http.delete("/api/wod/" + wod.id);
+    return this.http.delete("/api/manage/wod/" + wod.id);
   }
 
   get(id){
-    return this.http.get<Wod>("/api/wod/" + id);
+    return this.http.get<Wod>("/api/manage/wod/" + id);
   }
 
   getScores(){
@@ -56,20 +56,4 @@ export class WodService {
     return this.http.get<Equipment[]>("/api/wod/equipments");
   }
   
-  findAllWodAtDateWithMyResult(date: Date){
-    return this.http.get<Wod[]>("/api/wod/" + date + "/withMyResult");
-  }
-
-  getMyResult(wodId){
-    return this.http.get<WodResult[]>("/api/wod/" + wodId + "/results");
-  }
-  saveOrUpdateResult(wod:Wod, result:WodResult){
-    return this.http.put<WodResult>("/api/wod/" + wod.id + "/results", result);
-  }
-  deleteResult(wod:Wod, result:WodResult){
-    return this.http.delete("/api/wod/" + wod.id + "/results/" + result.id);
-  }
-  getRanking(wodId){
-    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/ranking");
-  }
 }
