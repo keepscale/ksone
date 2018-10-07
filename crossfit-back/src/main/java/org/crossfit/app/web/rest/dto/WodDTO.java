@@ -3,10 +3,10 @@ package org.crossfit.app.web.rest.dto;
 import java.util.function.Function;
 
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodResult;
 import org.crossfit.app.domain.workouts.WodShareProperties;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
+import org.crossfit.app.domain.workouts.result.WodResult;
 import org.joda.time.LocalDate;
 
 public class WodDTO {

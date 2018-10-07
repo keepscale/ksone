@@ -1,7 +1,7 @@
 package org.crossfit.app.web.rest.workouts.dto;
 
 import org.crossfit.app.domain.enumeration.Title;
-import org.crossfit.app.domain.workouts.ResultCategory;
+import org.crossfit.app.domain.workouts.result.ResultCategory;
 import org.joda.time.LocalDate;
 
 public class WodResultCompute {

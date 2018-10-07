@@ -5,7 +5,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.workouts.WodResult;
+import org.crossfit.app.domain.workouts.result.WodResult;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
