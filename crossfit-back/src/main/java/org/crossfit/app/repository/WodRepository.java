@@ -17,7 +17,7 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ "left join fetch w.taggedEquipments "
     		+ "left join fetch w.publications "
     		+ "where w.box = :box "
-    		+ "and (w.shareProperties.visibility = 'PUBLIC' or w.shareProperties.owner = :owner) "
+    		//+ "and (w.shareProperties.visibility = 'PUBLIC' or w.shareProperties.owner = :owner) "
     		+ "and ( "
     		+ "	lower(w.name) like :search "
     		+ "	or lower(w.category) like :search "
@@ -26,7 +26,7 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ ") "
     		+ "and exists ( select pub from w.publications pub where  (:start <= pub.endAt )  AND ( pub.startAt <= :end ) ) "
     		+ "")
-	Set<Wod> findAllVisible(@Param("box") CrossFitBox box, @Param("owner") Member owner, @Param("search") String search, @Param("start") LocalDate start, @Param("end") LocalDate end);
+	Set<Wod> findAll(@Param("box") CrossFitBox box, @Param("search") String search, @Param("start") LocalDate start, @Param("end") LocalDate end);
 
 
     @Query("select w from Wod w "

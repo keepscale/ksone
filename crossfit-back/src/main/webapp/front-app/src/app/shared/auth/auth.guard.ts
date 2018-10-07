@@ -17,7 +17,13 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     
       if (this.principal.isAuthenticated()){
-        return this.checkAuthority(this.principal);
+        if (this.checkAuthority(this.principal)){
+          return true;
+        }
+        else{
+          console.log("Vous n'avez pas le role "+this.authorities);
+          return false;
+        }
       }
 
 
@@ -26,7 +32,16 @@ export class AuthGuard implements CanActivate {
           if (!this.principal.isAuthenticated()){
             this.router.navigate(['/login']);
           }
-          this.authenticationState.next(this.principal.isAuthenticated() && this.checkAuthority(this.principal));
+          if (this.principal.isAuthenticated()){
+            if (this.checkAuthority(this.principal)){
+              this.authenticationState.next(true);
+              return;
+            }
+            else{
+              console.log("Vous n'avez pas le role "+this.authorities);
+            }
+          }
+          this.authenticationState.next(false);
         }
       );  
       

@@ -8,6 +8,7 @@ import { Principal } from '../../shared/auth/principal.service';
 import { Wod } from '../../wod/domain/wod.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { WodResultService } from '../../wod/wod-result.service';
 
 export class BookingsDay{
   date: Date;
@@ -27,7 +28,7 @@ export class ActivityComponent implements OnInit {
 
   constructor(private toolbar: ToolBarService, 
     private bookingService:BookingService, 
-    private wodService:WodService, 
+    private wodService: WodResultService, 
     private router: Router,
     private route: ActivatedRoute,
     private principal: Principal) { }

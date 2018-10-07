@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WodService } from '../wod.service';
 import { ToolBarService } from '../../toolbar/toolbar.service';
 import * as moment from 'moment';
+import { WodResultService } from '../wod-result.service';
 
 @Component({
   selector: 'app-delete',
@@ -22,6 +23,7 @@ export class DeleteComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private service: WodService,
+    private wodResultService: WodResultService,
     private toolbar: ToolBarService) { }
 
   ngOnInit() {
@@ -41,7 +43,7 @@ export class DeleteComponent implements OnInit {
         }
       );
 
-      this.service.getRanking(wodId).subscribe(ranking=>{
+      this.wodResultService.getRanking(wodId).subscribe(ranking=>{
         this.countResult = ranking.length;
         this.enabledDeleteButton = this.countResult === 0;
       });

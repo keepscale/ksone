@@ -4,6 +4,7 @@ import { Wod } from '../../domain/wod.model';
 import { WodResult } from '../../domain/wod-result.model';
 import { WodService } from '../../wod.service';
 import { Principal } from '../../../shared/auth/principal.service';
+import { WodResultService } from '../../wod-result.service';
 
 @Component({
   selector: 'app-myresult',
@@ -37,7 +38,7 @@ export class MyResultComponent implements OnInit {
 
   constructor(
     private principal: Principal,
-    private service: WodService) { }
+    private service: WodResultService) { }
 
   ngOnInit() {
   }

@@ -39,10 +39,7 @@ public class WodService {
 
     private final Logger log = LoggerFactory.getLogger(WodService.class);
 
-
-    @Inject
-    private TimeService timeService;
-    
+   
     @Inject
     private CrossFitBoxSerivce boxService;
 
@@ -68,9 +65,9 @@ public class WodService {
 	}
 
 
-	public Set<Wod> findAllVisibleWod(String search, LocalDate start, LocalDate end) {
-		log.debug("findAllVisibleWod(search={}", search);
-		return wodRepository.findAllVisible(boxService.findCurrentCrossFitBox(), SecurityUtils.getCurrentMember(), search, start, end);
+	public Set<Wod> findAllWod(String search, LocalDate start, LocalDate end) {
+		log.debug("findAllVisibleWod(search={}, start={}, end={}", search, start, end);
+		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search, start, end);
 	}
 
 	public Wod save(@Valid Wod dto) {
