@@ -3,7 +3,7 @@ package org.crossfit.app.domain.workouts.enumeration;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import org.crossfit.app.domain.workouts.WodResult;
+import org.crossfit.app.domain.workouts.result.WodResult;
 
 public enum WodScore {
 

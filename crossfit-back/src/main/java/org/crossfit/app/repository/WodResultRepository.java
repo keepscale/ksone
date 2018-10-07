@@ -5,7 +5,7 @@ import java.util.Set;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodResult;
+import org.crossfit.app.domain.workouts.result.WodResult;
 import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

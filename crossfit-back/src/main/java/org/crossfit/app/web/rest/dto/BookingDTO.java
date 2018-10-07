@@ -18,7 +18,7 @@ import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.WodResult;
+import org.crossfit.app.domain.workouts.result.WodResult;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
