@@ -13,4 +13,4 @@ import { SharedModule } from '../shared/shared.module';
   ],
   declarations: [WeekPlanningComponent]
 })
-export class PlanningModule { }
+export class EventsModule { }
