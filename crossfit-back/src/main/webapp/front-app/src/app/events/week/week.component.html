@@ -4,16 +4,21 @@
   <button mat-raised-button (click)="today()">
     Aujourd'hui
   </button>
-  <button mat-icon-button (click)="add(-1, 'w')">
+  <button mat-icon-button (click)="prev()">
     <mat-icon>chevron_left</mat-icon>
   </button>
-  <button mat-icon-button (click)="add(1, 'w')">
+  <button mat-icon-button (click)="next()">
     <mat-icon>chevron_right</mat-icon>
   </button>
   <span class="current-month">
       {{currentDate.format('MMMM YYYY')}}
   </span>
 </div>
+
+<div class="view-buttons">
+wienws
+</div>
+
 <table>
   <thead>
     <tr>

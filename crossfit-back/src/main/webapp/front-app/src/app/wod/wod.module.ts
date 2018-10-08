@@ -13,11 +13,11 @@ import { DeleteComponent } from './delete/delete.component';
 import { DatePublicationDialogComponent } from './edit/date-publication-dialog/date-publication-dialog.component';
 
 const wodsRoutes: Routes = [
-  { path: 'wod-planning',  component: WodListComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/new',  component: EditComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/:id/edit',  component: EditComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/:id/detail',  component: DetailComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/:id/delete',  component: DeleteComponent, canActivate: [RoleCoachGuard] }
+  { path: 'wod',              component: WodListComponent,  canActivate: [RoleCoachGuard] },
+  { path: 'wod/new',          component: EditComponent,     canActivate: [RoleCoachGuard] },
+  { path: 'wod/:id/edit',     component: EditComponent,     canActivate: [RoleCoachGuard] },
+  { path: 'wod/:id/detail',   component: DetailComponent,   canActivate: [RoleCoachGuard] },
+  { path: 'wod/:id/delete',   component: DeleteComponent,   canActivate: [RoleCoachGuard] }
 ];
 
 @NgModule({
