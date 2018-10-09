@@ -29,7 +29,7 @@ export class EventsCellComponent implements OnInit {
 
   public getWeeks(){
     let totalWeek = moment(this.days[this.days.length-1].date).diff(this.days[0].date, 'week');
-    return new Array(totalWeek+1).keys();
+    return new Array(totalWeek).keys();
   }
   public getDaysOfWeek(week: number): Day[] {
     return this.days.slice((week-1)*7, (week*7)-1);

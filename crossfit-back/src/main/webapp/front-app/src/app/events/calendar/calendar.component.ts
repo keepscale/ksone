@@ -35,7 +35,7 @@ export class CalendarComponent implements OnInit {
 
   days: Day[] = [];
 
-  mode: CalendarMode = this.availableModes[1];
+  mode: CalendarMode = this.availableModes[2];
   
   @Output() onAddEvent = new EventEmitter<Date>();
   @Output() onEditEvent = new EventEmitter<Event>();
