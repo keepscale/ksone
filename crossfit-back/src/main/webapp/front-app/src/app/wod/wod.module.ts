@@ -8,9 +8,9 @@ import { EditComponent } from './edit/edit.component';
 import { DetailComponent } from './detail/detail.component';
 import { MyResultComponent } from './detail/myresult/myresult.component';
 import { RankingComponent } from './detail/ranking/ranking.component';
-import { PlanningModule } from '../planning/planning.module';
 import { DeleteComponent } from './delete/delete.component';
 import { DatePublicationDialogComponent } from './edit/date-publication-dialog/date-publication-dialog.component';
+import { EventsModule } from '../events/events.module';
 
 const wodsRoutes: Routes = [
   { path: 'wod',              component: WodListComponent,  canActivate: [RoleCoachGuard] },
@@ -25,7 +25,7 @@ const wodsRoutes: Routes = [
     SharedModule,
     RouterModule.forChild(wodsRoutes),
     CommonModule,
-    PlanningModule
+    EventsModule
   ],
   exports: [
     MyResultComponent, RankingComponent
