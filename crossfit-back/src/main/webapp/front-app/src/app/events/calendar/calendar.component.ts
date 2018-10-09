@@ -10,7 +10,7 @@ export interface CalendarMode{
   name: string;
   addValue: number;
   addUnit: moment.DurationInputArg2;
-  startOfUnit: moment.unitOfTime.StartOf;
+  startOfUnit: moment.unitOfTime.StartOf[];
 
   display: string;
 }
@@ -24,11 +24,11 @@ export interface CalendarMode{
 export class CalendarComponent implements OnInit {
 
   availableModes: CalendarMode[] = [
-    {name:"Day",      addValue: 1, addUnit: 'd',  startOfUnit: "day",     display: 'column'},
-    {name:"Week",     addValue: 7, addUnit: 'd',  startOfUnit: "isoWeek", display: 'column'},
-    {name:"Month",    addValue: 1, addUnit: 'M',  startOfUnit: "month",   display: 'cell'},
-    {name:"Planning", addValue: 7, addUnit: 'd',  startOfUnit: "day",     display: 'row'},
-    {name:"4Days",    addValue: 4, addUnit: 'd',  startOfUnit: "day",     display: 'column'},
+    {name:"Day",      addValue: 1, addUnit: 'd',  display: 'column',  startOfUnit: ["day"]               },
+    {name:"Week",     addValue: 7, addUnit: 'd',  display: 'column',  startOfUnit: ["isoWeek"]           },
+    {name:"Month",    addValue: 1, addUnit: 'M',  display: 'cell',    startOfUnit: ["month", "isoWeek"]  },
+    {name:"Planning", addValue: 7, addUnit: 'd',  display: 'row',     startOfUnit: ["day"]               },
+    {name:"4Days",    addValue: 4, addUnit: 'd',  display: 'column',  startOfUnit: ["day"]               },
   ];
 
   currentDate: moment.Moment;
@@ -77,8 +77,11 @@ export class CalendarComponent implements OnInit {
     
     this.days = [];
     let start = moment(this.currentDate);
-    let end = moment(start.startOf(this.mode.startOfUnit)).add(this.mode.addValue, this.mode.addUnit);
-
+    let end = moment(this.currentDate);
+    this.mode.startOfUnit.forEach(unit => {
+      start.startOf(unit);
+      end.endOf(unit);
+    });
     
     let curday = moment(start);
     do{
@@ -94,7 +97,7 @@ export class CalendarComponent implements OnInit {
     this.onEditEvent.emit(event);
   }
 
-  addEvent(date:moment.Moment){
-    this.onAddEvent.emit(date.toDate());
+  addEvent(date:Date){
+    this.onAddEvent.emit(date);
   }
 }
