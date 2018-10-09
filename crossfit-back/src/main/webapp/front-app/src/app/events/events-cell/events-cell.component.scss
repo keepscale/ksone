@@ -14,19 +14,42 @@ $light2: darken($light, 3%);
 	}
 }
 
-mat-card{
-	margin: 30px 5px 5px;
-	padding: 5px;
-	cursor: pointer;
-	overflow: hidden;
-	mat-card-title{
-		text-align: center;
+.cell-header {
+	span{
+		display: none;
 	}
-	mat-card-actions{
-		text-align: right;
+	.day-number{
+		display: block;
+		font-size: 0.8em;
+		border-radius: 50%;
+		padding: 2px;
+		text-align: center;
+		width: 15px;
+		height: 15px;
+	
+		&.active{
+			background: $blue;
+			color: #fff;
+		}
 	}
 }
 
+
+.cell-header-row-0.cell-header-col-0 {
+	
+	.day-number{
+		float: left;
+	}
+	.month{
+		display: block;
+		font-size: 0.8em;
+		padding: 2px;
+	}
+}
+
+.cell-header-row-0 .day-name{
+	display: block;
+}
 
 table{
 	width: 100%;
@@ -35,48 +58,6 @@ table{
 	table-layout: fixed;
 	margin-bottom: 50px;
 
-	thead{
-		tr{
-			th{
-				background: $blue;
-				color: $light;
-				padding: 0.5em;
-				overflow: hidden;
-
-				&:first-child{
-					border-radius:3px 0 0 0;
-				} 
-				&:last-child{
-					border-radius:0 3px  0 0;
-				}
-
-				.day{
-					display: block;
-					font-size: 1.2em;
-					border-radius: 50%;
-					width: 30px;
-					height: 30px;
-					margin: 0 auto 5px;
-					padding: 5px;
-					line-height: 1.8;
-
-					&.active{
-						background: $light;
-						color: $blue;
-					}
-				}
-
-				.short{
-					display: none;
-				}
-
-				i{
-					vertical-align: middle;
-					font-size: 2em;
-				}
-			}
-		}
-	}
 	tbody{
 		tr{
 			td{
@@ -95,71 +76,8 @@ table{
 
   		@media(max-width:60em){
 
-    			thead{
-				      tr{
-					        th{
-						          .long{
-							            display: none;
-						          }
-
-          						.short{
-							            display: block;
-						          }
-
-        					}
-				      }
-			    }
-
-    			tbody{
-				      tr{
-					        td{
-						          &.hour{
-							            span{
-								              transform:rotate(270deg);
-              -webkit-transform:rotate(270deg);
-              -moz-transform:rotate(270deg);
-							            }
-						          }
-        		}
-				      }
-			    }
-		  }
+		}
 
 	  	@media(max-width:27em){
-    			thead{
-				      tr{
-					        th{
-						          font-size: 65%;
-						          .day{
-							            display: block;
-							            font-size: 1.2em;
-							            border-radius: 50%;
-							            			width: 20px;
-							            height: 20px;
-							            margin: 0 auto 5px;
-							            padding: 5px;
-
-            							&.active{
-							              	background: $light;
-								              color: $blue;
-							            }
-						          }
-					        }
-				      }
-			    }
-			    tbody{
-				      tr{
-					        td{
-						          &.hour{
-							            font-size: 1.7em;
-							            span{
-							              transform:translateY(16px)rotate(270deg);
-              -webkit-transform:translateY(16px)rotate(270deg);
-              -moz-transform:translateY(16px)rotate(270deg);
-							            }
-						          }
-        	}
-				      }
-			    }
-		  }
+		}
 	}
