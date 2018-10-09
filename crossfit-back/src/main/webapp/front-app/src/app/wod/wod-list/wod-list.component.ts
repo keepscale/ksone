@@ -3,10 +3,10 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 import { WodService, WodSearchRequest } from '../wod.service';
 import { Wod } from '../domain/wod.model';
 import { Principal } from '../../shared/auth/principal.service';
-import { Event } from '../../planning/event';
-import { EventService } from '../../planning/event.service';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { EventService } from '../../events/event.service';
+import { Event } from '../../events/event';
 
 
 @Component({

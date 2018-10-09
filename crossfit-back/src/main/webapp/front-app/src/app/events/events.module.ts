@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WeekPlanningComponent } from './week-planning/week-planning.component';
 import { SharedModule } from '../shared/shared.module';
+import { CalendarComponent } from './calendar/calendar.component';
+import { EventsTableComponent } from './events-table/events-table.component';
 
 @NgModule({
   imports: [
@@ -9,8 +10,8 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule
   ],
   exports: [
-    WeekPlanningComponent
+    CalendarComponent
   ],
-  declarations: [WeekPlanningComponent]
+  declarations: [CalendarComponent, EventsTableComponent]
 })
 export class EventsModule { }
