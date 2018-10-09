@@ -1,0 +1,23 @@
+<table>
+  <tbody>
+    <tr *ngFor="let week of getWeeks()">
+      <td *ngFor="let day of getDaysOfWeek(week)">
+
+        <div class="cell-header cell-header-{{week}}">
+          <span class="day" [ngClass]="{'active':day.date.isSame(now, 'd')}">{{day.date.date()}}</span>
+          <span class="long">{{day.date.format('dddd')}}</span>
+          <span class="short">{{day.date.format('ddd')}}</span>
+        </div>
+        
+        <button class="day-action-menu" mat-icon-button (click)="addEvent(day.date)" *ngIf="onAddEvent.observers.length!=0">
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <mat-card *ngFor="let event of day.events" (click)="editEvent(event)">
+          <mat-card-title>{{event.title}}</mat-card-title>
+          <mat-card-content>{{event.detail}}</mat-card-content>
+        </mat-card>
+      </td>
+    </tr>
+  </tbody>
+</table>

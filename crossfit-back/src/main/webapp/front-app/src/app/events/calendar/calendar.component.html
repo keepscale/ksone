@@ -25,4 +25,5 @@
   </mat-form-field>
 </div>
 
-<events-table [days]=days (onAddEvent)="addEvent($event)" (onEditEvent)="editEvent($event)"></events-table>
+<events-table *ngIf="mode.display=='column'"  [days]=days (onAddEvent)="addEvent($event)" (onEditEvent)="editEvent($event)"></events-table>
+<events-cell *ngIf="mode.display=='cell'"     [days]=days (onAddEvent)="addEvent($event)" (onEditEvent)="editEvent($event)"></events-cell>
