@@ -12,8 +12,9 @@ export class Event{
 
     payload: any;
     
-    constructor(refId:any, date: moment.Moment | Date, previousEvent: Event, start: moment.Moment | Date, end: moment.Moment | Date, title: string, detail?: string, payload?: any){
+    constructor(refId:any, positionInDay: number, date: moment.Moment | Date, previousEvent: Event, start: moment.Moment | Date, end: moment.Moment | Date, title: string, detail?: string, payload?: any){
         this.refId = refId;
+        this.positionInDay = positionInDay;
         this.date = moment(date);
         this.start = moment(start);
         this.end = moment(end);
@@ -24,11 +25,15 @@ export class Event{
     }
 
     get positionOfPreviousEvent(){
-        return this._prevEvent.positionInDay;
+        return this.isFirstEventOccurence ? -1 : this._prevEvent.positionInDay;
     } 
 
     get isFirstEventOccurence(){
         return this._prevEvent == null;
+    }
+
+    public compateTo(a:Event, b:Event){
+        return Math.min(a.positionOfPreviousEvent, b.positionOfPreviousEvent);
     }
 }
 
@@ -41,8 +46,10 @@ export class Day{
     }
 
     get eventsRangePosition() : number[]{
+        if (!this.events) return [];
         let max = Math.max.apply(null, this.events.map(e=>e.positionInDay));
-        return Array.from(Array(max).keys());
+        if (max===-Infinity) return [];
+        return Array.from(Array(max+1).keys());
     }
 
     public getEventAtPosition(position: number): Event{

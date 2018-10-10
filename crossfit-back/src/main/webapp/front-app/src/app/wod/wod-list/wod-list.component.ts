@@ -54,12 +54,14 @@ export class WodListComponent implements OnInit {
           let actual = moment(start);
           let end = moment(pub.endAt);
           let previous = null;
+          let i = 0;
           do{
-            let e = new Event(w.id, moment(actual), previous, start, end, w.name, w.description, w);
+            let e = new Event(w.id, i, moment(actual), previous, start, end, w.name, w.description, w);
             previous = e;
             events.push(e);
             actual.add(1,'d');
-          }while(actual.isBefore(end))
+            i++;
+          }while(actual.isSameOrBefore(end))
         })
       })
       this.eventService.setEvents(events);
