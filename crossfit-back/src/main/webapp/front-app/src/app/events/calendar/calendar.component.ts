@@ -48,11 +48,14 @@ export class CalendarComponent implements OnInit {
       this.days.forEach(day => {
         day.events = events.filter(e=>e.date.isSame(day.date, 'd'));
 
-        day.events.forEach(event=>{
+        day.events.sort((a,b)=>a.compateTo(b)).forEach(event=>{
           if (event.isFirstEventOccurence //new start event
             || day.date.isSame(moment(this.days[0].date)) // debut du calendar
             || day.date.isSame(moment(day.date).startOf('isoWeek'))){ // ou debut de semaine 
             event.positionInDay = this.findMinPosition(day.events); // calculate position
+          }
+          else{
+            event.positionInDay = event.positionOfPreviousEvent;
           }
           return event;
         });
@@ -71,7 +74,7 @@ export class CalendarComponent implements OnInit {
     return pos;
   }
   isPositionFree(position:number, events: Event[]){
-    return events.filter(e=>e.positionInDay===position).length > 0;
+    return events.filter(e=>e.positionInDay===position).length === 0;
   }
 
 
