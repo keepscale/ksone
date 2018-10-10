@@ -47,35 +47,54 @@ export class CalendarComponent implements OnInit {
     this.eventService.eventSource$.subscribe(events=>{
       this.days.forEach(day => {
         day.events = events.filter(e=>e.date.isSame(day.date, 'd'));
+
+        day.events.forEach(event=>{
+          if (event.isFirstEventOccurence //new start event
+            || day.date.isSame(moment(this.days[0].date)) // debut du calendar
+            || day.date.isSame(moment(day.date).startOf('isoWeek'))){ // ou debut de semaine 
+            event.positionInDay = this.findMinPosition(day.events); // calculate position
+          }
+          return event;
+        });
       });
     })
     let date = this.route.snapshot.queryParamMap.get("date");
    
-    this.goTo(date ? moment(date) : moment());
+    this.calculateDays(date ? moment(date) : moment());
+  }
+
+  findMinPosition(events: Event[]) : number{
+    let pos = 0;
+    while(pos < 100 && !this.isPositionFree(pos, events)){
+      pos++;
+    }
+    return pos;
+  }
+  isPositionFree(position:number, events: Event[]){
+    return events.filter(e=>e.positionInDay===position).length > 0;
   }
 
 
   onSelectView(event:MatSelectChange){
     this.mode = event.value;
-    this.goTo(this.currentDate);
+    this.calculateDays(this.currentDate);
   }
 
   today(){
-    this.goTo(moment());
+    this.calculateDays(moment());
   }
 
   next(){
-    this.goTo(this.currentDate.add(this.mode.addValue, this.mode.addUnit));
+    this.calculateDays(this.currentDate.add(this.mode.addValue, this.mode.addUnit));
   }
   
   prev(){
-    this.goTo(this.currentDate.add(-1*this.mode.addValue, this.mode.addUnit));
+    this.calculateDays(this.currentDate.add(-1*this.mode.addValue, this.mode.addUnit));
   }
   
-  private goTo(date){
+  private calculateDays(date){
     this.currentDate = moment(date);
     
-    this.days = [];
     let start = moment(this.currentDate);
     let end = moment(this.currentDate);
     this.mode.startOfUnit.forEach(unit => {
@@ -83,13 +102,15 @@ export class CalendarComponent implements OnInit {
       end.endOf(unit);
     });
     
+    let newDays = [];
     let curday = moment(start);
     do{
-      this.days.push(new Day(moment(curday)));
+      newDays.push(new Day(moment(curday)));
       curday.add(1, 'd');
     }
     while(curday.isBefore(end));
 
+    this.days = newDays;
     this.eventService.sendEventRequest(new EventRequest(start.toDate(), end.toDate()));
   }
 

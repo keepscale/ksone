@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { CalendarComponent } from './calendar/calendar.component';
 import { EventsTableComponent } from './events-table/events-table.component';
 import { EventsCellComponent } from './events-cell/events-cell.component';
+import { EventCellComponent } from './event-cell/event-cell.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { EventsCellComponent } from './events-cell/events-cell.component';
   exports: [
     CalendarComponent
   ],
-  declarations: [CalendarComponent, EventsTableComponent, EventsCellComponent]
+  declarations: [CalendarComponent, EventsTableComponent, EventsCellComponent, EventCellComponent]
 })
 export class EventsModule { }
