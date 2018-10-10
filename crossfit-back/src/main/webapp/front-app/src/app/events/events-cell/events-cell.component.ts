@@ -9,7 +9,8 @@ import * as moment from 'moment';
 })
 export class EventsCellComponent implements OnInit {
 
-  @Input() days: Day[] = [];
+  _days: Day[] = [];
+  weeks: number[] = [];
 
   @Output() onAddEvent = new EventEmitter<Date>();
   @Output() onEditEvent = new EventEmitter<Event>();
@@ -26,12 +27,22 @@ export class EventsCellComponent implements OnInit {
   addEvent(date:moment.Moment){
     this.onAddEvent.emit(date.toDate());
   }
+  
+  @Input()
+  set days(days: Day[]) {
+    let firstDay = days[0].date;
+    let lastDay = days[days.length-1].date;
+    let totalWeek = Math.ceil(moment(lastDay).diff(firstDay, 'week', true));
 
-  public getWeeks(){
-    let totalWeek = moment(this.days[this.days.length-1].date).diff(this.days[0].date, 'week');
-    return new Array(totalWeek).keys();
+    this._days = days;
+    this.weeks = Array.apply(null, {length: totalWeek}).map(Number.call, Number);
+    console.log(this.days);
   }
+  get days() {
+    return this._days;
+  }
+
   public getDaysOfWeek(week: number): Day[] {
-    return this.days.slice((week-1)*7, (week*7)-1);
+    return this.days.slice((week)*7, ((week+1)*7));
   }
 }

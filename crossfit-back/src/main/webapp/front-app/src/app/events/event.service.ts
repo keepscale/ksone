@@ -17,7 +17,6 @@ export class EventService {
   constructor() { }
 
   setEvents(events: Event[]){
-    console.log(events);
     this.eventSource.next(events);
   }
 

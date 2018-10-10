@@ -22,7 +22,8 @@ $light2: darken($light, 3%);
 		display: block;
 		font-size: 0.8em;
 		border-radius: 50%;
-		padding: 2px;
+		padding: 3px;
+
 		text-align: center;
 		width: 15px;
 		height: 15px;
@@ -35,7 +36,7 @@ $light2: darken($light, 3%);
 }
 
 
-.cell-header-row-0.cell-header-col-0 {
+.cell-header-day-1{
 	
 	.day-number{
 		float: left;
@@ -43,7 +44,7 @@ $light2: darken($light, 3%);
 	.month{
 		display: block;
 		font-size: 0.8em;
-		padding: 2px;
+		padding: 3px;
 	}
 }
 

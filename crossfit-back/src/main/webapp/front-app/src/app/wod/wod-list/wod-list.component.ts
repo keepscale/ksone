@@ -28,7 +28,7 @@ export class WodListComponent implements OnInit {
     private principal: Principal) { }
 
   ngOnInit() {
-    this.toolbar.setTitle("Planning des wods")
+    //this.toolbar.setTitle("Planning des wods")
     this.toolbar.setSearchPlaceHolder("Rechercher des wods")
     this.toolbar.setOnSearch(this.onSearch.bind(this));
 
@@ -53,8 +53,11 @@ export class WodListComponent implements OnInit {
           let start = moment(pub.startAt);
           let actual = moment(start);
           let end = moment(pub.endAt);
+          let previous = null;
           do{
-            events.push(new Event(moment(actual), w.name, w.description, w));
+            let e = new Event(w.id, moment(actual), previous, start, end, w.name, w.description, w);
+            previous = e;
+            events.push(e);
             actual.add(1,'d');
           }while(actual.isBefore(end))
         })
