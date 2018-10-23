@@ -1,13 +1,8 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { Day } from '../event';
+import { OnInit, EventEmitter, Output, Input } from '@angular/core';
 import * as moment from 'moment';
+import { Day } from './event';
 
-@Component({
-  selector: 'events-cell',
-  templateUrl: './events-cell.component.html',
-  styleUrls: ['./events-cell.component.scss']
-})
-export class EventsCellComponent implements OnInit {
+export class AbstractCalendarComponent implements OnInit {
 
   _days: Day[] = [];
   weeks: number[] = [];
@@ -38,6 +33,7 @@ export class EventsCellComponent implements OnInit {
     this.weeks = Array.apply(null, {length: totalWeek}).map(Number.call, Number);
     console.log(this.days);
   }
+
   get days() {
     return this._days;
   }
