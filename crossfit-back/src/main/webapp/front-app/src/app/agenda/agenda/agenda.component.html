@@ -1,0 +1,29 @@
+
+<div class="navigation-buttons">
+
+  <button mat-raised-button (click)="today()">
+    Aujourd'hui
+  </button>
+  <button mat-icon-button (click)="prev()">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <button mat-icon-button (click)="next()">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  <span class="current-month">
+      {{currentDate.format('MMMM YYYY')}}
+  </span>
+</div>
+
+<div class="view-buttons">
+  <mat-form-field>
+    <mat-select [(ngModel)]="mode" name="mode" (selectionChange)="onSelectView($event)">
+      <mat-option *ngFor="let m of availableModes" [value]="m">
+        {{'calendar.view.' + m.name | translate}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<calendar-column *ngIf="days && mode.display=='column'"  [days]="days" (onAddEvent)="addEvent($event)" (onEditEvent)="editEvent($event)"></calendar-column>
+<calendar-cell *ngIf="days && mode.display=='cell'"     [days]="days" (onAddEvent)="addEvent($event)" (onEditEvent)="editEvent($event)"></calendar-cell>

@@ -17,7 +17,7 @@
           <mat-icon>add</mat-icon>
         </button>
 
-        <mat-card *ngFor="let event of day.events" (click)="editEvent(event)">
+        <mat-card *ngFor="let event of day.eventsByPosition" (click)="editEvent(event)">
           <mat-card-title>{{event.title}}</mat-card-title>
           <mat-card-content>{{event.detail}}</mat-card-content>
         </mat-card>

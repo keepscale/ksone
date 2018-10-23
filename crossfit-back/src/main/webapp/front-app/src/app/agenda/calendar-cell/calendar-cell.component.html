@@ -13,11 +13,8 @@
           <mat-icon>add</mat-icon>
         </button>
 
-        <ul>
-          <li *ngFor="let position of day.eventsRangePosition;" >
-            <event-cell [event]=day.getEventAtPosition(position)></event-cell>
-          </li>
-        </ul>
+        <events-list [day]=day></events-list>
+        
       </td>
     </tr>
   </tbody>

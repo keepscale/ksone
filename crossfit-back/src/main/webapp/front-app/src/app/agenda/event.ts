@@ -32,8 +32,8 @@ export class Event{
         return this._prevEvent == null;
     }
 
-    public compateTo(a:Event, b:Event){
-        return Math.min(a.positionOfPreviousEvent, b.positionOfPreviousEvent);
+    public compateTo(b:Event){
+        return Math.min(this.positionOfPreviousEvent, b.positionOfPreviousEvent);
     }
 }
 
@@ -45,6 +45,10 @@ export class Day{
         this.date = moment(date);
     }
 
+    get eventsByPosition(): Event[]{
+        return this.events ? this.events.sort((a,b)=>a.compateTo(b)) : [];
+    }
+    /*
     get eventsRangePosition() : number[]{
         if (!this.events) return [];
         let max = Math.max.apply(null, this.events.map(e=>e.positionInDay));
@@ -54,5 +58,5 @@ export class Day{
 
     public getEventAtPosition(position: number): Event{
         return this.events.find(e=>e.positionInDay == position);
-    }
+    }*/
 }

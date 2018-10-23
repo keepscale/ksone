@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { Event, Day } from '../event';
 import { EventService, EventRequest } from '../event.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { MatSelectChange } from '@angular/material';
 
 export interface CalendarMode{
@@ -11,27 +11,28 @@ export interface CalendarMode{
   addValue: number;
   addUnit: moment.DurationInputArg2;
   startOfUnit: moment.unitOfTime.StartOf[];
+  endOfUnit: moment.unitOfTime.StartOf;
 
   display: string;
 }
 
 
 @Component({
-  selector: 'calendar-events',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  selector: 'agenda',
+  templateUrl: './agenda.component.html',
+  styleUrls: ['./agenda.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class AgendaComponent implements OnInit {
 
   availableModes: CalendarMode[] = [
-    {name:"Day",      addValue: 1, addUnit: 'd',  display: 'column',  startOfUnit: ["day"]               },
-    {name:"Week",     addValue: 7, addUnit: 'd',  display: 'column',  startOfUnit: ["isoWeek"]           },
-    {name:"Month",    addValue: 1, addUnit: 'M',  display: 'cell',    startOfUnit: ["month", "isoWeek"]  },
-    {name:"Planning", addValue: 7, addUnit: 'd',  display: 'row',     startOfUnit: ["day"]               },
-    {name:"4Days",    addValue: 4, addUnit: 'd',  display: 'column',  startOfUnit: ["day"]               },
+    {name:"Day",      addValue: 1, addUnit: 'd',  display: 'column',  startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"Week",     addValue: 7, addUnit: 'd',  display: 'column',  startOfUnit: ["isoWeek"],         endOfUnit: "day"},
+    {name:"Month",    addValue: 1, addUnit: 'M',  display: 'cell',    startOfUnit: ["month", "isoWeek"],endOfUnit: "isoWeek"},
+    {name:"Planning", addValue: 7, addUnit: 'd',  display: 'row',     startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"4Days",    addValue: 4, addUnit: 'd',  display: 'column',  startOfUnit: ["day"],             endOfUnit: "day"},
   ];
 
-  currentDate: moment.Moment;
+  currentDate: moment.Moment = moment();
 
   days: Day[] = [];
 
@@ -41,7 +42,7 @@ export class CalendarComponent implements OnInit {
   @Output() onEditEvent = new EventEmitter<Event>();
 
 
-  constructor(private eventService: EventService, private route:ActivatedRoute) { }
+  constructor(private eventService: EventService, private route:ActivatedRoute, private router:Router) { }
 
   ngOnInit() {
     this.eventService.eventSource$.subscribe(events=>{
@@ -61,9 +62,14 @@ export class CalendarComponent implements OnInit {
         });
       });
     })
-    let date = this.route.snapshot.queryParamMap.get("date");
-   
-    this.calculateDays(date ? moment(date) : moment());
+
+    this.route.queryParams.subscribe(params=>{
+      this.currentDate = params["date"] ? moment(params["date"]) : moment();
+      this.mode = this.availableModes.find(p=>p.name===params["mode"]);
+      this.mode = this.mode == undefined ? this.availableModes[2] : this.mode;
+      this.reCalculateDays();
+    })   
+    
   }
 
   findMinPosition(events: Event[]) : number{
@@ -79,31 +85,40 @@ export class CalendarComponent implements OnInit {
 
 
   onSelectView(event:MatSelectChange){
-    this.mode = event.value;
-    this.calculateDays(this.currentDate);
+    this.navigateTo(this.currentDate, event.value);
   }
 
   today(){
-    this.calculateDays(moment());
+    this.navigateTo(moment());
   }
 
   next(){
-    this.calculateDays(this.currentDate.add(this.mode.addValue, this.mode.addUnit));
+    this.navigateTo(this.currentDate.add(this.mode.addValue, this.mode.addUnit));
   }
   
   prev(){
-    this.calculateDays(this.currentDate.add(-1*this.mode.addValue, this.mode.addUnit));
+    this.navigateTo(this.currentDate.add(-1*this.mode.addValue, this.mode.addUnit));
+  }
+
+  private navigateTo(date, mode?: CalendarMode){
+    this.currentDate = moment(date);
+    this.mode = mode ? mode : this.mode;
+    const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
+    queryParams['date'] = this.currentDate.format("Y-MM-D")
+    queryParams['mode'] = this.mode.name;
+    this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
   
-  private calculateDays(date){
-    this.currentDate = moment(date);
+  private reCalculateDays(){
     
     let start = moment(this.currentDate);
-    let end = moment(this.currentDate);
     this.mode.startOfUnit.forEach(unit => {
       start.startOf(unit);
-      end.endOf(unit);
     });
+    let end = moment(start)
+      .add(this.mode.addValue, this.mode.addUnit)
+      .add(-1, 'd')
+      .endOf(this.mode.endOfUnit);
     
     let newDays = [];
     let curday = moment(start);

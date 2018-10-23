@@ -10,7 +10,7 @@ import { MyResultComponent } from './detail/myresult/myresult.component';
 import { RankingComponent } from './detail/ranking/ranking.component';
 import { DeleteComponent } from './delete/delete.component';
 import { DatePublicationDialogComponent } from './edit/date-publication-dialog/date-publication-dialog.component';
-import { EventsModule } from '../events/events.module';
+import { AgendaModule } from '../agenda/agenda.module';
 
 const wodsRoutes: Routes = [
   { path: 'wod',              component: WodListComponent,  canActivate: [RoleCoachGuard] },
@@ -25,7 +25,7 @@ const wodsRoutes: Routes = [
     SharedModule,
     RouterModule.forChild(wodsRoutes),
     CommonModule,
-    EventsModule
+    AgendaModule
   ],
   exports: [
     MyResultComponent, RankingComponent
