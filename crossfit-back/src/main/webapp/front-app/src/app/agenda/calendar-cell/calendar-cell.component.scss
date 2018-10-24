@@ -4,53 +4,6 @@ $blue: #626E7E;
 $light: lighten($blue, 40%);
 $light2: darken($light, 3%);
 
-.day-action-menu{
-	float: right;
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
-	.material-icons{
-		font-size: 18px;
-	}
-}
-
-.cell-header {
-	span{
-		display: none;
-	}
-	.day-number{
-		display: block;
-		font-size: 0.8em;
-		border-radius: 50%;
-		padding: 3px;
-
-		text-align: center;
-		width: 15px;
-		height: 15px;
-	
-		&.active{
-			background: $blue;
-			color: #fff;
-		}
-	}
-}
-
-
-.cell-header-day-1{
-	
-	.day-number{
-		float: left;
-	}
-	.month{
-		display: block;
-		font-size: 0.8em;
-		padding: 3px;
-	}
-}
-
-.cell-header-row-0 .day-name{
-	display: block;
-}
 
 table{
 	width: 100%;
@@ -66,7 +19,7 @@ table{
 				vertical-align: top;
 				border-left: 1px solid $blue;
 				position: relative;
-				height: 32px;
+				height: 80px;
 
 				&:last-child{
 					border-right:1px solid $blue;
