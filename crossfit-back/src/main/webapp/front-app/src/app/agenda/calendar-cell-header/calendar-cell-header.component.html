@@ -1,0 +1,18 @@
+
+<div class="cell-header 
+  cell-header-row-{{rowIdx}} 
+  cell-header-col-{{colIdx}} 
+  cell-header-day-{{day.date.date()}}">
+
+  <button class="day-action-menu" mat-icon-button (click)="addEvent(day.date)" *ngIf="onAddEvent.observers.length!=0">
+    <mat-icon>add</mat-icon>
+  </button>
+  
+  <span class="day-name">{{day.date.format('dddd')}}</span>
+  <span class="day-number" [ngClass]="{'active':day.date.isSame(now, 'd')}">{{day.date.date()}}</span>
+  <span class="month">{{day.date.format('MMM')}}</span>
+
+
+
+</div>
+  

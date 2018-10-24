@@ -1,8 +1,13 @@
-import { OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { Day } from '../event';
 import * as moment from 'moment';
-import { Day } from './event';
 
-export class AbstractCalendarComponent implements OnInit {
+@Component({
+  selector: 'calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss']
+})
+export class CalendarComponent implements OnInit {
 
   _days: Day[] = [];
   weeks: number[] = [];

@@ -1,17 +1,28 @@
 <table>
+  <thead>
+    <tr>
+      <th *ngFor="let day of getDaysOfWeek(0); let i=index">
+        <calendar-cell-header
+          [rowIdx]=0
+          [colIdx]=i
+          [day]=day>
+        </calendar-cell-header>
+      </th>
+    </tr>
+  </thead>
   <tbody>
     <tr *ngFor="let week of weeks">
       <td *ngFor="let day of getDaysOfWeek(week); let i=index">
 
         <calendar-cell-header
-          [rowIdx]=week
+          [rowIdx]=1
           [colIdx]=i
           [day]=day
           (onAddEvent)=addEvent>
         </calendar-cell-header>
+        
 
         <events-list [day]=day></events-list>
-        
       </td>
     </tr>
   </tbody>
