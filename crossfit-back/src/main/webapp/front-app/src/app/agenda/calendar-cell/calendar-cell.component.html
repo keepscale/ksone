@@ -1,18 +1,26 @@
-<table>
-  <tbody>
-    <tr *ngFor="let week of weeks">
-      <td *ngFor="let day of getDaysOfWeek(week); let i=index">
 
-        <calendar-cell-header
-          [rowIdx]=week
-          [colIdx]=i
-          [day]=day
-          (onAddEvent)=addEvent>
-        </calendar-cell-header>
+<div class="cell
+  cell-row-{{rowIdx}} 
+  cell-col-{{colIdx}} 
+  cell-day-{{day.date.date()}}">
 
-        <events-list [day]=day></events-list>
-        
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <div class="cell-header">
+
+    <button class="day-action-menu" mat-icon-button (click)="addEvent(day.date)" *ngIf="onAddEvent.observers.length!=0">
+      <mat-icon>add</mat-icon>
+    </button>
+    
+    <span class="day-name">{{day.date.format('dddd')}}</span>
+    <span class="day-number" [ngClass]="{'active':day.date.isSame(now, 'd')}">{{day.date.date()}}</span>
+    <span class="month">{{day.date.format('MMM')}}</span>
+  </div>
+
+  <div class="cell-content">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="cell-footer">
+
+  </div>
+</div>
+  

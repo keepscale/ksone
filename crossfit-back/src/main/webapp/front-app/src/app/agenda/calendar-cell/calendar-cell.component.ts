@@ -2,11 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Day } from '../event';
 
 @Component({
-  selector: 'calendar-cell-header',
-  templateUrl: './calendar-cell-header.component.html',
-  styleUrls: ['./calendar-cell-header.component.scss']
+  selector: 'calendar-cell',
+  templateUrl: './calendar-cell.component.html',
+  styleUrls: ['./calendar-cell.component.scss']
 })
-export class CalendarCellHeaderComponent implements OnInit {
+export class CalendarCellComponent implements OnInit {
 
   @Input() rowIdx: number;
   @Input() colIdx: number;
