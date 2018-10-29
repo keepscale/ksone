@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { AgendaComponent } from './agenda/agenda.component';
 import { EventsListComponent } from './events-list/events-list.component';
-import { CalendarCellHeaderComponent } from './calendar-cell-header/calendar-cell-header.component';
 import { CalendarComponent } from './calendar/calendar.component';
 
 @NgModule({
@@ -14,6 +13,6 @@ import { CalendarComponent } from './calendar/calendar.component';
   exports: [
     AgendaComponent
   ],
-  declarations: [AgendaComponent, CalendarComponent, EventsListComponent, CalendarCellHeaderComponent]
+  declarations: [AgendaComponent, CalendarComponent, EventsListComponent]
 })
 export class AgendaModule { }

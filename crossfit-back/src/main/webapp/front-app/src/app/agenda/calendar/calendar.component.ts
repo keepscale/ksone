@@ -10,7 +10,8 @@ import * as moment from 'moment';
 export class CalendarComponent implements OnInit {
 
   _days: Day[] = [];
-  weeks: number[] = [];
+  totalDaysByRow: number;
+  rows: number[] = [];
 
   @Output() onAddEvent = new EventEmitter<Date>();
   @Output() onEditEvent = new EventEmitter<Event>();
@@ -32,18 +33,18 @@ export class CalendarComponent implements OnInit {
   set days(days: Day[]) {
     let firstDay = days[0].date;
     let lastDay = days[days.length-1].date;
-    let totalWeek = Math.ceil(moment(lastDay).diff(firstDay, 'week', true));
+    let totalDaysToDisplay = Math.ceil(moment(lastDay).diff(firstDay, 'd', true));
+    let totalRows = Math.ceil(totalDaysToDisplay / this.totalDaysByRow);
 
     this._days = days;
-    this.weeks = Array.apply(null, {length: totalWeek}).map(Number.call, Number);
-    console.log(this.days);
+    this.rows = Array.apply(null, {length: totalRows}).map(Number.call, Number);
   }
 
   get days() {
     return this._days;
   }
 
-  public getDaysOfWeek(week: number): Day[] {
-    return this.days.slice((week)*7, ((week+1)*7));
+  public getDaysOfRowIdx(rowidx: number): Day[] {
+    return this.days.slice(rowidx*this.totalDaysByRow, (rowidx+1)*this.totalDaysByRow);
   }
 }
