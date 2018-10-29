@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Day } from '../event';
 
 @Component({
@@ -10,9 +10,15 @@ export class EventsListComponent implements OnInit {
 
   @Input() day: Day;
 
+  @Output() onEditEvent = new EventEmitter<Event>();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  editEvent(event: Event){
+    this.onEditEvent.emit(event);
   }
 
 }

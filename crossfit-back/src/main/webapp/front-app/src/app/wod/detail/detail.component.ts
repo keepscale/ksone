@@ -14,7 +14,6 @@ import * as moment from 'moment';
 })
 export class DetailComponent implements OnInit {
 
-  status: string;
   error: string;
   wod: Wod;
   
@@ -26,23 +25,20 @@ export class DetailComponent implements OnInit {
     private principal: Principal) { }
 
   ngOnInit() {
+    this.toolbar.setLoadingData(true);
     this.toolbar.setTitle("Détail d'un wod");
-    this.toolbar.setOnGoBack(()=>{
-      let adate = this.wod.publications.length == 0 ? null : moment(this.wod.publications[0].startAt).format("YYYY-MM-DD");
-      this.router.navigate(['wod-planning'], {queryParams:{'date': adate}});
-      }
-    );
 
-    let wodId = +this.route.snapshot.paramMap.get('id');
-    if (wodId){
-      this.service.get(wodId).subscribe(w=>{
+    this.route.params.subscribe(params=>{
+        this.service.get(params["id"]).subscribe(w=>{
+          if (w==null) return;
           this.wod = w;
           this.wod.publications = this.wod.publications.sort((pub1,pub2)=>{return moment(pub2.endAt).diff(moment(pub1.endAt));});
         },
         err=>{
           this.toolbar.goBack();
-        }
+        },
+        ()=>this.toolbar.setLoadingData(false)
       );
-    }
+    })
   }
 }

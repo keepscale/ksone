@@ -10,10 +10,11 @@ import * as moment from 'moment';
 export class CalendarComponent implements OnInit {
 
   _days: Day[] = [];
+  @Input()
   totalDaysByRow: number;
   rows: number[] = [];
 
-  @Output() onAddEvent = new EventEmitter<Date>();
+  @Output() onAddEvent = new EventEmitter<Day>();
   @Output() onEditEvent = new EventEmitter<Event>();
   
   constructor() { }
@@ -25,8 +26,8 @@ export class CalendarComponent implements OnInit {
     this.onEditEvent.emit(event);
   }
 
-  addEvent(date:moment.Moment){
-    this.onAddEvent.emit(date.toDate());
+  addEvent(day:Day){
+    this.onAddEvent.emit(day);
   }
   
   @Input()
@@ -34,8 +35,8 @@ export class CalendarComponent implements OnInit {
     let firstDay = days[0].date;
     let lastDay = days[days.length-1].date;
     let totalDaysToDisplay = Math.ceil(moment(lastDay).diff(firstDay, 'd', true));
-    let totalRows = Math.ceil(totalDaysToDisplay / this.totalDaysByRow);
-
+    let totalRows = Math.max(Math.ceil(totalDaysToDisplay / this.totalDaysByRow), 1);
+    console.log("deb: "+moment(firstDay)+" - fin:" + moment(lastDay) + " - totalDaysToDisplay:"+totalDaysToDisplay+"/totalDaysByRow:"+this.totalDaysByRow+" =>totalrow:"+totalRows);
     this._days = days;
     this.rows = Array.apply(null, {length: totalRows}).map(Number.call, Number);
   }

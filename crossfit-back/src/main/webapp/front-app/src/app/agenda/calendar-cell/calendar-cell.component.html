@@ -6,13 +6,13 @@
 
   <div class="cell-header">
 
-    <button class="day-action-menu" mat-icon-button (click)="addEvent(day.date)" *ngIf="onAddEvent.observers.length!=0">
+    <button class="day-action-menu" mat-icon-button (click)="addEvent(day)" *ngIf="onAddEvent.observers.length!=0">
       <mat-icon>add</mat-icon>
     </button>
     
-    <span class="day-name">{{day.date.format('dddd')}}</span>
-    <span class="day-number" [ngClass]="{'active':day.date.isSame(now, 'd')}">{{day.date.date()}}</span>
-    <span class="month">{{day.date.format('MMM')}}</span>
+    <span *ngIf="showDayName" class="day-name">{{day.date.format('dddd')}}</span>
+    <span class="day-number" [ngClass]="{'active':day.date.isSame(now, 'd'), 'big-center': showBigCenterDayNumber}">{{day.date.date()}}</span>
+    <span *ngIf="showMonth" class="month">{{day.date.format('MMM')}}</span>
   </div>
 
   <div class="cell-content">

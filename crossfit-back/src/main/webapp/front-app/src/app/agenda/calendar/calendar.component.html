@@ -2,11 +2,14 @@
   <thead>
     <tr>
       <th *ngFor="let day of getDaysOfRowIdx(0); let i=index">
-        <calendar-cell-header
+        <calendar-cell
+          [showDayName]=true
+          [showBigCenterDayNumber]=true
+          [showMonth]=false
           [rowIdx]=0
           [colIdx]=i
           [day]=day>
-        </calendar-cell-header>
+        </calendar-cell>
       </th>
     </tr>
   </thead>
@@ -18,9 +21,9 @@
           [rowIdx]=row
           [colIdx]=i
           [day]=day
-          (onAddEvent)=addEvent>
+          (onAddEvent)=addEvent($event)>
 
-          <events-list [day]=day></events-list>
+          <events-list [day]=day (onEditEvent)=editEvent($event)></events-list>
 
         </calendar-cell>
       </td>

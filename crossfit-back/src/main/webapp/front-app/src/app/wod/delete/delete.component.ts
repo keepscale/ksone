@@ -16,7 +16,6 @@ export class DeleteComponent implements OnInit {
   wod: Wod;
   countResult: number;
   enabledDeleteButton: boolean;
-  status: string;
   error: any;
 
   constructor(
@@ -28,41 +27,29 @@ export class DeleteComponent implements OnInit {
 
   ngOnInit() {
     this.toolbar.setTitle("Supprimer le wod");
-    this.toolbar.setOnGoBack(()=>{
-      this.router.navigate(['wod', this.wod.id, 'detail']);
-      }
-    );
-    
-    let wodId = +this.route.snapshot.paramMap.get('id');
-    if (wodId){
-      this.service.get(wodId).subscribe(w=>{
+    this.toolbar.setLoadingData(true);
+    this.route.params.subscribe(params=>{
+        this.service.get(params["id"]).subscribe(w=>{
+          if (w==null) return;
           this.wod = w;
         },
         err=>{
           this.toolbar.goBack();
-        }
+        },
+        ()=>this.toolbar.setLoadingData(false)
       );
-
-      this.wodResultService.getRanking(wodId).subscribe(ranking=>{
-        this.countResult = ranking.length;
-        this.enabledDeleteButton = this.countResult === 0;
-      });
-    }
-    else{
-      this.toolbar.goBack();
-    }
+    })
   }
 
   onDelete(){
-    this.status = "wait";
-    this.error = "";
+    this.toolbar.setLoadingData(true);
     this.service.delete(this.wod).subscribe(res=>{
-      this.router.navigate(["wod-planning"]);
+      this.router.navigate(["wod/calendar"]);
     },
     err=>{
-      this.status = "error";
       this.error = err;
-    })
+    },
+    ()=>this.toolbar.setLoadingData(false))
   }
 
 }

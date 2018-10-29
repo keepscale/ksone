@@ -1,4 +1,6 @@
 <mat-toolbar color="primary" class="mat-elevation-z8"> 
+  
+  <mat-progress-bar mode="indeterminate" *ngIf="loadingData"></mat-progress-bar>
 
   <mat-toolbar-row *ngIf="!showSearchToolBar">
     <button *ngIf="isAuthenticated()"
@@ -60,4 +62,5 @@
     </mat-form-field>
     
   </mat-toolbar-row>
+
 </mat-toolbar>
