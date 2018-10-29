@@ -2,6 +2,7 @@ import { Injectable, Testability } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { MenuItem } from './menu-item.model';
+import { Location } from '@angular/common';
 
 
 @Injectable()
@@ -13,18 +14,29 @@ export class ToolBarService {
     private allowSearch = new Subject<boolean>();
     private onSearch: Function;
 
-    
+   /* 
     private allowGoBack = new Subject<boolean>();
     private onGoBack: Function;
-
+*/
     private menuItemsAdded = new Subject<MenuItem>();
  
+    private loadingData = new Subject<boolean>();
+
+    
+  constructor(private _location: Location) { }
 
     setTitle(title: string) {
         this.title.next(title);
     }
     getTitle(): Observable<any> {
         return this.title.asObservable();
+    }
+    
+    setLoadingData(loading: boolean) {
+        this.loadingData.next(loading);
+    }
+    getLoadingData(): Observable<boolean> {
+        return this.loadingData.asObservable();
     }
 
     addMenuItem(action: Function, icon:string, text:string){
@@ -58,7 +70,7 @@ export class ToolBarService {
     }
 
 
-    
+    /*
     setOnGoBack(onGoBack: Function) {
         this.allowGoBack.next(true);
         this.onGoBack = onGoBack;
@@ -68,5 +80,10 @@ export class ToolBarService {
     }
     goBack(){
         this.onGoBack.call(this);
+    }
+    */
+
+    goBack(){
+        this._location.back();
     }
 }

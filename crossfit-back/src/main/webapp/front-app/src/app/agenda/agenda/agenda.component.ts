@@ -11,9 +11,9 @@ export interface CalendarMode{
   addValue: number;
   addUnit: moment.DurationInputArg2;
   startOfUnit: moment.unitOfTime.StartOf[];
-  endOfUnit: moment.unitOfTime.StartOf;
+  endOfUnit: moment.unitOfTime.StartOf | moment.unitOfTime.StartOf[];
 
-  display: string;
+  daysByRow: number;
 }
 
 
@@ -25,11 +25,11 @@ export interface CalendarMode{
 export class AgendaComponent implements OnInit {
 
   availableModes: CalendarMode[] = [
-    {name:"Day",      addValue: 1, addUnit: 'd',  display: 'column',  startOfUnit: ["day"],             endOfUnit: "day"},
-    {name:"Week",     addValue: 7, addUnit: 'd',  display: 'column',  startOfUnit: ["isoWeek"],         endOfUnit: "day"},
-    {name:"Month",    addValue: 1, addUnit: 'M',  display: 'cell',    startOfUnit: ["month", "isoWeek"],endOfUnit: "isoWeek"},
-    {name:"Planning", addValue: 7, addUnit: 'd',  display: 'row',     startOfUnit: ["day"],             endOfUnit: "day"},
-    {name:"4Days",    addValue: 4, addUnit: 'd',  display: 'column',  startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"Day",      addValue: 1, addUnit: 'd',  daysByRow: 1,  startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"Week",     addValue: 7, addUnit: 'd',  daysByRow: 7,  startOfUnit: ["isoWeek"],         endOfUnit: "day"},
+    {name:"Month",    addValue: 1, addUnit: 'M',  daysByRow: 7,  startOfUnit: ["month", "isoWeek"],endOfUnit: ["month", "isoWeek"]},
+    {name:"Planning", addValue: 7, addUnit: 'd',  daysByRow: 1,  startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"4Days",    addValue: 4, addUnit: 'd',  daysByRow: 4,  startOfUnit: ["day"],             endOfUnit: "day"},
   ];
 
   currentDate: moment.Moment = moment();
@@ -117,9 +117,16 @@ export class AgendaComponent implements OnInit {
     });
     let end = moment(start)
       .add(this.mode.addValue, this.mode.addUnit)
-      .add(-1, 'd')
-      .endOf(this.mode.endOfUnit);
-    
+      .add(-1, 'd');
+    if (typeof this.mode.endOfUnit === 'string'){
+      end.endOf(this.mode.endOfUnit);
+    }
+    else{
+      this.mode.endOfUnit.forEach(unit => {
+        end.endOf(unit);
+      });
+    }
+    console.log("end:"+end);
     let newDays = [];
     let curday = moment(start);
     do{
@@ -136,7 +143,7 @@ export class AgendaComponent implements OnInit {
     this.onEditEvent.emit(event);
   }
 
-  addEvent(date:Date){
-    this.onAddEvent.emit(date);
+  addEvent(day:Day){
+    this.onAddEvent.emit(day.date.toDate());
   }
 }

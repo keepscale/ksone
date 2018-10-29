@@ -1,13 +1,26 @@
+
+$blue: rgb(40, 95, 167);
+$light: lighten($blue, 40%);
+$dark: darken($blue, 3%);
+
 ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 li{
-    background-color: red;
-    margin: 2px;
-    padding: 2px;
+    color: $light;
+    background-color: $dark;
+    margin: 4px;
+    padding: 4px;
     border-radius: 2px;
 
     font-size: 12px;
+}
+
+li:hover{
+    cursor: pointer;
+    margin: 4px 0px;
+    padding: 4px 6px;
+
 }

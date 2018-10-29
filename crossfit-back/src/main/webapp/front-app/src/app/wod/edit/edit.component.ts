@@ -24,7 +24,6 @@ export class EditComponent implements OnInit {
   availableWodCategories: String[];
   availableMovements: Movement[] = [];
   availableEquipments: Equipment[] = [];
-  status: string;
   error: string;
   wod: Wod;
 
@@ -37,21 +36,13 @@ export class EditComponent implements OnInit {
     private dialog: MatDialog) { }
 
   ngOnInit() {
+    this.toolbar.setLoadingData(true);
+
     this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
     this.service.getScores().subscribe(res=>this.availableWodScore=res);
     this.service.getMovements().subscribe(res=>this.availableMovements=res);
     this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
     let id = this.route.snapshot.paramMap.get('id');
-    this.toolbar.setOnGoBack(()=>{
-      
-        if (!this.wod.id){
-          this.router.navigate(['wod'], {queryParams:{'date': this.route.snapshot.queryParamMap.get("date")}});
-        }
-        else{
-          this.router.navigate(['wod', this.wod.id, 'detail']);
-        }
-      }
-    );
     this.toolbar.addMenuItem(this.showAddPublicationDate.bind(this), "event", "Ajouter une date");
 
     if (!id){
@@ -64,6 +55,7 @@ export class EditComponent implements OnInit {
       this.wod.score = "FOR_TIME";
       this.wod.name = "WOD";
       this.addPublicationDate(date);
+      this.toolbar.setLoadingData(false);
     }
     else{
       this.service.get(id).subscribe(w=>{
@@ -73,6 +65,7 @@ export class EditComponent implements OnInit {
         err=>{
           this.router.navigate(["wod"]);
         }
+        ,()=>this.toolbar.setLoadingData(false)
       )
     }
   }
@@ -135,17 +128,16 @@ export class EditComponent implements OnInit {
   }
 
   onSubmit() {
-    this.status = "wait";
+    this.toolbar.setLoadingData(true);
     this.service.save(this.wod).subscribe(
       success=>{
-        this.status = "success";
         this.wod.id = success.id;
         this.toolbar.goBack();
       },
       e=>{
-        this.status = "error";
         this.error = e.error;
-      }
+      },
+      ()=>this.toolbar.setLoadingData(false)
     );
     
   }

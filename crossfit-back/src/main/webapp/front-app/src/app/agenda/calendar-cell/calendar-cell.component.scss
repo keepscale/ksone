@@ -3,15 +3,21 @@ $blue: #626E7E;
 $light: lighten($blue, 40%);
 $light2: darken($light, 3%);
 
-
+:host{
+    height: 100%;
+    display: block;
+}
+.cell{
+	height: 100%;
+}
 
 .cell-header {
 	min-height: 30px;
-	
-	> * {
+
+	.month, .day-action-menu{
 		display: none;
 	}
-	
+
 	.day-action-menu{
 		float: right;
 		width: 30px;
@@ -37,12 +43,26 @@ $light2: darken($light, 3%);
 			color: #fff;
 		}
 	}
+
+	.day-number.big-center{
+		font-size: 1.2em;
+		width: 30px;
+		height: 30px;
+		margin: 0 auto 5px;
+		padding: 5px;
+		line-height: 1.8;
+
+		&.active{
+			background: $light;
+			color: $blue;
+		}
+	}
 }
 
 
-.cell-header-day-1{
+.cell-day-1{
 	
-	.day-number{
+	.day-number:not(.big-center){
 		float: left;
 	}
 	.month{
@@ -52,11 +72,7 @@ $light2: darken($light, 3%);
 	}
 }
 
-.cell-header-row-0 {
-    .day-name{
-        display: block;
-    }
-    .day-number, .month{
-        display: none;
-    }
+
+.cell:hover .day-action-menu{
+	display: block;
 }

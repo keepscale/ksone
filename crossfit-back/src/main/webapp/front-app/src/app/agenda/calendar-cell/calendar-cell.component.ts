@@ -11,15 +11,21 @@ export class CalendarCellComponent implements OnInit {
   @Input() rowIdx: number;
   @Input() colIdx: number;
   @Input() day: Day;
+
   
-  @Output() onAddEvent = new EventEmitter<Date>();
+  @Input() showDayName: boolean = false;  
+  @Input() showMonth: boolean = true;
+  
+  @Input() showBigCenterDayNumber: boolean = false;
+  
+  @Output() onAddEvent = new EventEmitter<Day>();
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  addEvent(date:Date){
-    this.onAddEvent.emit(date);
+  addEvent(day:Day){
+    this.onAddEvent.emit(day);
   }
 }
