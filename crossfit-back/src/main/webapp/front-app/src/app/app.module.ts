@@ -14,6 +14,7 @@ import { ToolbarModule } from './toolbar/toolbar.module';
 import { BookingModule } from './booking/booking.module';
 import { AccountComponent } from './account/account.component';
 import { AccountModule } from './account/account.module';
+import { ErrorComponent } from './error/error/error.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -25,7 +26,8 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ErrorComponent
   ],
   imports: [
     HttpClientModule,

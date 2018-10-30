@@ -14,8 +14,9 @@ export class ToolBarService {
     private allowSearch = new Subject<boolean>();
     private onSearch: Function;
 
-   /* 
     private allowGoBack = new Subject<boolean>();
+
+   /* 
     private onGoBack: Function;
 */
     private menuItemsAdded = new Subject<MenuItem>();
@@ -83,6 +84,12 @@ export class ToolBarService {
     }
     */
 
+    setAllowGoBack(allow: boolean) {
+        this.allowGoBack.next(allow);
+    }
+    getAllowGoBack(): Observable<boolean>{
+        return this.allowGoBack.asObservable();
+    }
     goBack(){
         this._location.back();
     }
