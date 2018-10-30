@@ -28,7 +28,7 @@ export class AgendaComponent implements OnInit {
     {name:"Day",      addValue: 1, addUnit: 'd',  daysByRow: 1,  startOfUnit: ["day"],             endOfUnit: "day"},
     {name:"Week",     addValue: 7, addUnit: 'd',  daysByRow: 7,  startOfUnit: ["isoWeek"],         endOfUnit: "day"},
     {name:"Month",    addValue: 1, addUnit: 'M',  daysByRow: 7,  startOfUnit: ["month", "isoWeek"],endOfUnit: ["month", "isoWeek"]},
-    {name:"Planning", addValue: 7, addUnit: 'd',  daysByRow: 1,  startOfUnit: ["day"],             endOfUnit: "day"},
+    {name:"Planning", addValue: 5, addUnit: 'd',  daysByRow: 1,  startOfUnit: ["day"],             endOfUnit: "day"},
     {name:"4Days",    addValue: 4, addUnit: 'd',  daysByRow: 4,  startOfUnit: ["day"],             endOfUnit: "day"},
   ];
 

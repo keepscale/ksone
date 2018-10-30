@@ -49,7 +49,7 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getTitle().subscribe(t=>this.title=t); 
     this.toolbar.getSearchPlaceHolder().subscribe(t=>this.searchPlaceHolder=t);
     this.toolbar.getAllowSearch().subscribe(a=>this.showSearchButton=a);
-    //this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
+    this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
     this.toolbar.getMenuItemAdded().subscribe(item=>this.menuItems.push(item));
     this.toolbar.getLoadingData().subscribe(loading=>this.loadingData=loading);
 

@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { EventService } from 'src/app/agenda/event.service';
 import { Event } from 'src/app/agenda/event';
+import { AbstractComponent } from 'src/app/common/abstract.component';
+import { ErrorService } from 'src/app/error/error.service';
+import { RunnerService } from 'src/app/common/runner.service';
 
 
 @Component({
@@ -15,55 +18,54 @@ import { Event } from 'src/app/agenda/event';
   styleUrls: ['./wod-calendar.component.scss'],
   providers: [EventService]
 })
-export class WodCalendarComponent implements OnInit {
+export class WodCalendarComponent extends AbstractComponent implements OnInit {
 
-  currentMemberId: number;
   wods:Wod[] = [];
 
 
-  constructor(private toolbar: ToolBarService, 
+  constructor(
+    protected toolbar: ToolBarService, 
+    protected runner: RunnerService<Wod[]>, 
+    protected principal: Principal,
     private wodService: WodService,
     private eventService: EventService,
-    private router: Router,
-    private principal: Principal) { }
+    private router: Router) {
+      super(toolbar, runner, principal);
+  }
 
   ngOnInit() {
-    this.toolbar.setTitle("Planning des wods");
-
-    this.principal.identity().subscribe(p=>this.currentMemberId=p.id);
-
+    this.title = "Planning des wods";
     this.eventService.eventRequested$.subscribe(req=>this.search(new WodSearchRequest(null, req.start, req.end)));
-
+    super.ngOnInit();
   }
   
-  search(search:WodSearchRequest){
-    this.toolbar.setLoadingData(true);
-    this.wodService.findAll(search).subscribe(
-      result=>{
-        this.wods=result;
+  search(search:WodSearchRequest){    
+    this.runner.run(
+      this.wodService.findAll(search),
+      result=>this.searchResult(result));
+  }
 
-        let events = [];
-        this.wods.forEach(w=>{
-          w.publications.forEach(pub=>{
-            let start = moment(pub.startAt);
-            let actual = moment(start);
-            let end = moment(pub.endAt);
-            let previous = null;
-            let i = 0;
-            do{
-              let e = new Event(w.id, i, moment(actual), previous, start, end, w.name, w.description, w);
-              previous = e;
-              events.push(e);
-              actual.add(1,'d');
-              i++;
-            }while(actual.isSameOrBefore(end))
-          })
-        })
-        this.eventService.setEvents(events);
-      },
-      error=>{},
-      ()=>{this.toolbar.setLoadingData(false);} 
-    );
+  searchResult(result: Wod[]){
+    this.wods=result;
+
+    let events = [];
+    this.wods.forEach(w=>{
+      w.publications.forEach(pub=>{
+        let start = moment(pub.startAt);
+        let actual = moment(start);
+        let end = moment(pub.endAt);
+        let previous = null;
+        let i = 0;
+        do{
+          let e = new Event(w.id, i, moment(actual), previous, start, end, w.name, w.description, w);
+          previous = e;
+          events.push(e);
+          actual.add(1,'d');
+          i++;
+        }while(actual.isSameOrBefore(end))
+      })
+    })
+    this.eventService.setEvents(events);
   }
 
   newWod(date: Date){
@@ -75,6 +77,6 @@ export class WodCalendarComponent implements OnInit {
   }
 
   isOwner(wod:Wod){
-    return this.currentMemberId == wod.shareProperties.ownerId;
+    return this.currentUser.id == wod.shareProperties.ownerId;
   }
 }
