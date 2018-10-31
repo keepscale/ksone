@@ -1,5 +1,6 @@
 package org.crossfit.app.web.rest.util;
 
+import org.crossfit.app.web.rest.dto.PaginateList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,9 @@ import org.springframework.http.HttpHeaders;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility class for handling pagination.
@@ -63,4 +67,11 @@ public class PaginationUtil {
         headers.add(HttpHeaders.LINK, link);
         return headers;
     }
+
+	public static <E> PaginateList<E> getPaginateList(HttpServletRequest request) {
+		Map<String, String[]> params = request.getParameterMap();
+		int pageIndex = Long.valueOf(params.getOrDefault("pageIndex", new String[]{"-1"})[0]).intValue();
+		int pageSize = Long.valueOf(params.getOrDefault("pageSize", new String[]{"-1"})[0]).intValue();
+		return new PaginateList<>(pageIndex, pageSize);
+	}
 }

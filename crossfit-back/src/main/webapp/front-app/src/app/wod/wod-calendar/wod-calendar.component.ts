@@ -3,13 +3,15 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 import { WodService, WodSearchRequest } from '../wod.service';
 import { Wod } from '../domain/wod.model';
 import { Principal } from '../../shared/auth/principal.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { EventService } from 'src/app/agenda/event.service';
 import { Event } from 'src/app/agenda/event';
 import { AbstractComponent } from 'src/app/common/abstract.component';
 import { ErrorService } from 'src/app/error/error.service';
 import { RunnerService } from 'src/app/common/runner.service';
+import { PaginateList } from 'src/app/common/paginate-list.model';
+import { ListComponent } from '../list/list.component';
 
 
 @Component({
@@ -20,35 +22,32 @@ import { RunnerService } from 'src/app/common/runner.service';
 })
 export class WodCalendarComponent extends AbstractComponent implements OnInit {
 
-  wods:Wod[] = [];
-
-
   constructor(
     protected toolbar: ToolBarService, 
-    protected runner: RunnerService<Wod[]>, 
+    protected runner: RunnerService<any>, 
     protected principal: Principal,
-    private wodService: WodService,
-    private eventService: EventService,
-    private router: Router) {
+    protected wodService: WodService,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    private eventService: EventService) {
       super(toolbar, runner, principal);
   }
-
-  ngOnInit() {
-    this.title = "Planning des wods";
-    this.eventService.eventRequested$.subscribe(req=>this.search(new WodSearchRequest(null, req.start, req.end)));
-  }
   
-  search(search:WodSearchRequest){    
-    this.runner.run(
-      this.wodService.findAll(search),
-      result=>this.searchResult(result));
+
+  ngOnInit() {   
+    this.title = "Planning des wods";
+    this.eventService.eventRequested$.subscribe(req=>{
+      
+      this.runner.run(
+        this.wodService.findAll(new WodSearchRequest(null, req.start, req.end)),
+        result=>this.searchResult(result));
+      
+    });
   }
 
-  searchResult(result: Wod[]){
-    this.wods=result;
-
+  searchResult(list: PaginateList<Wod>){
     let events = [];
-    this.wods.forEach(w=>{
+    list.results.forEach(w=>{
       w.publications.forEach(pub=>{
         let start = moment(pub.startAt);
         let actual = moment(start);

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,9 @@ import org.crossfit.app.domain.workouts.result.WodResult;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
+import org.crossfit.app.web.rest.dto.PaginateList;
 import org.crossfit.app.web.rest.util.HeaderUtil;
+import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.crossfit.app.web.rest.workouts.dto.WodResultCompute;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -79,10 +82,11 @@ public class WodResource {
 	 * GET /wod -> get all the wod.
 	 */
 	@RequestMapping(value = "manage/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Wod>> getWods(
+	public ResponseEntity<PaginateList<Wod>> getWods(
 			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "start", required = false) String startStr,
-			@RequestParam(value = "end", required = false) String endStr){
+			@RequestParam(value = "end", required = false) String endStr,
+			HttpServletRequest request){
 
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		
@@ -107,7 +111,8 @@ public class WodResource {
 				)
 				.collect(Collectors.toList());
 		
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		
+		return new ResponseEntity<>(PaginationUtil.<Wod>getPaginateList(request).paginate(result), HttpStatus.OK);
 	}
 	
 
