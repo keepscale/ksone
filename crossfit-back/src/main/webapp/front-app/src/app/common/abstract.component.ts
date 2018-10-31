@@ -1,27 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ToolBarService } from 'src/app/toolbar/toolbar.service';
 import { Principal } from 'src/app/shared/auth/principal.service';
 import { User } from '../shared/domain/user.model';
-import { Observable, PartialObserver } from 'rxjs';
+import { Observable, PartialObserver, Subscription } from 'rxjs';
 import { ErrorService } from '../error/error.service';
 import { RunnerService } from './runner.service';
+import { BaseComponent } from './base.component';
 
-export class AbstractComponent implements OnInit {
+export class AbstractComponent extends BaseComponent implements OnDestroy {
 
-  protected title: string;
+  protected principalSubscription: Subscription;
   protected currentUser: User;
 
   constructor(
     protected toolbar: ToolBarService,
     protected runner: RunnerService<any>,
     protected principal: Principal) { 
-
-      this.principal.identity().subscribe(user=>this.currentUser = user);
+      super(toolbar, runner);
+      this.principalSubscription = 
+        this.principal.identity().subscribe(user=>this.currentUser = user);
 
   }
 
-  ngOnInit() {
-    this.toolbar.setTitle(this.title)
+  ngOnDestroy(){
+    if (this.principalSubscription)
+      this.principalSubscription.unsubscribe();
   }
-
 }

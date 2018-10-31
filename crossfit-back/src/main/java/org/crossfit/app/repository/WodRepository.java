@@ -24,9 +24,10 @@ public interface WodRepository  extends JpaRepository<Wod,Long> {
     		+ "	or lower(w.score) like :search "
     		+ "	or lower(w.description) like :search "
     		+ ") "
-    		+ "and exists ( select pub from w.publications pub where  (:start <= pub.endAt )  AND ( pub.startAt <= :end ) ) "
+    		+ "and ( true = :dontFilterPublication OR ( exists ( select pub from w.publications pub where  (:start <= pub.endAt )  AND ( pub.startAt <= :end ) ) ) )"
     		+ "")
-	Set<Wod> findAll(@Param("box") CrossFitBox box, @Param("search") String search, @Param("start") LocalDate start, @Param("end") LocalDate end);
+	Set<Wod> findAll(@Param("box") CrossFitBox box, @Param("search") String search, 
+			@Param("dontFilterPublication") boolean dontFilterPublication, @Param("start") LocalDate start, @Param("end") LocalDate end);
 
 
     @Query("select w from Wod w "

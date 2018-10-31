@@ -12,7 +12,6 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule, MatToolbarModule
   ],
   declarations: [ToolbarComponent],
-  exports: [ToolbarComponent],
-  providers: [ToolBarService]
+  exports: [ToolbarComponent]
 })
 export class ToolbarModule { }

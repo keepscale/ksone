@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Principal } from '../auth/principal.service';
 import { ToolBarService } from '../../toolbar/toolbar.service';
+import { BaseComponent } from 'src/app/common/base.component';
+import { RunnerService } from 'src/app/common/runner.service';
+import { mergeMap } from 'rxjs/operators';
 
 
 @Component({
@@ -10,54 +13,43 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit {
 
   username: string;
   password: string;
   rememberme: boolean;
 
-  error;
-  loginFailed: boolean;
-  status: string;
-
-
-  constructor(private authService: AuthService,  private router: Router, private principal: Principal, private toolbar: ToolBarService) { }
+  constructor(
+    private authService: AuthService,  
+    private router: Router, 
+    private principal: Principal, 
+    protected toolbar: ToolBarService,
+    protected runner: RunnerService<any>) { 
+    super(toolbar, runner);
+  }
 
   ngOnInit() {
-    this.toolbar.setTitle("Connexion");
+    this.title = "Connexion";
     this.rememberme = true;
-    this.loginFailed = false;
   }
 
   onLogin() {
-    this.status = "wait";
-    this.loginFailed = false;
-
-    this.authService.login(this.username, this.password, this.rememberme).subscribe(
-      result=>{
-        this.loginFailed = false;
-        this.principal.identity(true).subscribe((account) => {
-            // After the login the language will be changed to
-            // the language selected by the user during his registration
-            /*if (account !== null) {
-                this.languageService.changeLanguage(account.langKey);
-            }*/
-          this.status = "success";
+    
+    this.runner.run(
+      this.authService.login(this.username, this.password, this.rememberme).pipe(
+        mergeMap(result=>this.principal.identity(true))
+      ),
+      res=>{
+        if (this.principal.hasAnyAuthority(['ROLE_COACH'])){
           this.router.navigate(['']);
-        },
-        err=>{
-          this.status = "error";
-          this.error = err.error;
-        });
-
+        }
+        else{
+          this.router.navigate(['/account']);     
+        }
       },
-      error=>{
-        this.status = "error";
-        this.error = new Object();
-        this.error.message = error;
-        this.loginFailed = true;
-      }
+      "Email ou mot de passe incorrect"
     );
+
   }
 
 }

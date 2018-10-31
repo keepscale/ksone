@@ -67,7 +67,7 @@ public class WodService {
 
 	public Set<Wod> findAllWod(String search, LocalDate start, LocalDate end) {
 		log.debug("findAllVisibleWod(search={}, start={}, end={}", search, start, end);
-		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search, start, end);
+		return wodRepository.findAll(boxService.findCurrentCrossFitBox(), search, start==null || end==null,start, end);
 	}
 
 	public Wod save(@Valid Wod dto) {

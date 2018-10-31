@@ -21,13 +21,18 @@ export class AppComponent  implements OnDestroy{
   private _mobileQueryListener: () => void;
 
   constructor(
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, 
+    changeDetectorRef: ChangeDetectorRef, 
+    media: MediaMatcher, 
+    public toolbar: ToolBarService, 
     public translate: TranslateService, 
     private principal: Principal) {
 
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryPortrait = media.matchMedia('(max-width: 400px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this._mobileQueryListener = () => {
+      changeDetectorRef.detectChanges();
+      this.toolbar.setCanCloseSideNav(this.mobileQuery.matches);
+    }
     this.mobileQuery.addListener(this._mobileQueryListener);
 
     translate.addLangs(['en', 'fr']);

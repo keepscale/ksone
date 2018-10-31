@@ -11,9 +11,11 @@ import { DeleteComponent } from './delete/delete.component';
 import { DatePublicationDialogComponent } from './edit/date-publication-dialog/date-publication-dialog.component';
 import { AgendaModule } from '../agenda/agenda.module';
 import { WodCalendarComponent } from './wod-calendar/wod-calendar.component';
+import { ListComponent } from './list/list.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod/calendar',     component: WodCalendarComponent, canActivate: [RoleCoachGuard] },
+  { path: 'wod/search',       component: ListComponent,  canActivate: [RoleCoachGuard] },
   { path: 'wod/create',       component: EditComponent,     canActivate: [RoleCoachGuard] },
   { path: 'wod/:id/edit',     component: EditComponent,     canActivate: [RoleCoachGuard] },
   { path: 'wod/:id/detail',   component: DetailComponent,   canActivate: [RoleCoachGuard] },
@@ -33,7 +35,7 @@ const wodsRoutes: Routes = [
   entryComponents: [DatePublicationDialogComponent],
   declarations: [WodCalendarComponent, EditComponent, DetailComponent, 
     MyResultComponent, RankingComponent, DeleteComponent, 
-    DatePublicationDialogComponent],
+    DatePublicationDialogComponent, ListComponent],
   providers: []
 })
 export class WodModule { }

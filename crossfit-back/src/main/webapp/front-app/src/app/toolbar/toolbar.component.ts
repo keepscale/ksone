@@ -19,6 +19,7 @@ export class ToolbarComponent implements OnInit {
 
   title: string;
 
+  canCloseSideNav: boolean;
 
   showSearchToolBar: boolean;
   showSearchButton: boolean;
@@ -33,7 +34,7 @@ export class ToolbarComponent implements OnInit {
 
   displayName;
 
-  loadingData = true;
+  loadingData = false;
 
   @Output() toggleSideNav = new EventEmitter<void>();
 
@@ -52,6 +53,7 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getAllowGoBack().subscribe(a=>this.showGoBackButton=a);
     this.toolbar.getMenuItemAdded().subscribe(item=>this.menuItems.push(item));
     this.toolbar.getLoadingData().subscribe(loading=>this.loadingData=loading);
+    this.toolbar.getAllowCloseSideNav().subscribe(value=>this.canCloseSideNav=value);
 
     this.principal.identity().subscribe(res=>{
       this.displayName = res != null ? res.firstName + " " + res.lastName : "";

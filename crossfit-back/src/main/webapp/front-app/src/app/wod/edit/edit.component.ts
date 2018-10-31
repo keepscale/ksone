@@ -2,72 +2,84 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Wod, WodPublication } from '../domain/wod.model';
 import { WodService } from '../wod.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { Movement } from '../domain/movement.model';
-import { MatAutocompleteSelectedEvent, MatAutocomplete, MatDatepickerInputEvent, MatDialog } from '@angular/material';
+import {  MatDatepickerInputEvent, MatDialog } from '@angular/material';
 import { OptionSelectedEvent } from '../../shared/text-complete/text-complete.directive';
 import { Equipment } from '../domain/equipment.model';
 import { Taggable } from '../domain/taggable.model';
 import { ToolBarService } from '../../toolbar/toolbar.service';
 import * as moment from 'moment';
 import { DatePublicationDialogComponent } from './date-publication-dialog/date-publication-dialog.component';
+import { DetailComponent } from '../detail/detail.component';
+import { Principal } from 'src/app/shared/auth/principal.service';
+import { RunnerService } from 'src/app/common/runner.service';
+import { Observable, of } from 'rxjs';
+
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss']
 })
-export class EditComponent implements OnInit {
+export class EditComponent extends DetailComponent {
   
   
   availableWodScore: String[];
   availableWodCategories: String[];
   availableMovements: Movement[] = [];
   availableEquipments: Equipment[] = [];
-  error: string;
-  wod: Wod;
 
   constructor(
-    private service: WodService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location, 
-    private toolbar: ToolBarService,
-    private dialog: MatDialog) { }
+    protected toolbar: ToolBarService, 
+    protected runner: RunnerService<Wod>, 
+    protected principal: Principal,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected service: WodService,
+    private dialog: MatDialog) { 
+      super(toolbar, runner, principal, route, router, service);
+    }
 
   ngOnInit() {
-    this.toolbar.setLoadingData(true);
-
-    this.service.getCategories().subscribe(res=>this.availableWodCategories=res);
-    this.service.getScores().subscribe(res=>this.availableWodScore=res);
-    this.service.getMovements().subscribe(res=>this.availableMovements=res);
-    this.service.getEquipments().subscribe(res=>this.availableEquipments=res);
-    let id = this.route.snapshot.paramMap.get('id');
+    super.ngOnInit();
     this.toolbar.addMenuItem(this.showAddPublicationDate.bind(this), "event", "Ajouter une date");
+  }
 
+  loadWod(id: number): Observable<any>[]{
+    let observables:Observable<any>[] = [];
     if (!id){
+
       let dateParam = this.route.snapshot.queryParamMap.get("date");
       let date = dateParam == null ? new Date() : new Date(dateParam);
 
-      this.toolbar.setTitle("Plannifier un WOD pour le " + moment(date).format("DD/MM/YYYY"));
-      this.wod = new Wod();
-      this.wod.category = "CUSTOM";
-      this.wod.score = "FOR_TIME";
-      this.wod.name = "WOD";
-      this.addPublicationDate(date);
-      this.toolbar.setLoadingData(false);
+      this.title = "Plannifier un WOD pour le " + moment(date).format("DD/MM/YYYY");
+
+      let w = new Wod();
+      w.category = "CUSTOM";
+      w.score = "FOR_TIME";
+      w.name = "WOD";
+      w.publications.push(new WodPublication(date));
+      observables[0] = of(w);
     }
     else{
-      this.service.get(id).subscribe(w=>{
-          this.wod = w;
-          this.toolbar.setTitle("Modifier un WOD");
-        },
-        err=>{
-          this.router.navigate(["wod"]);
-        }
-        ,()=>this.toolbar.setLoadingData(false)
-      )
+      this.title = "Modfier un WOD";
+      observables[0] = this.service.get(id);
     }
+
+    observables[1] = this.service.getCategories();
+    observables[2] = this.service.getScores();
+    observables[3] = this.service.getMovements();
+    observables[4] = this.service.getEquipments();
+    return observables;
+  }
+
+  wodLoaded(result: any[]){
+    super.wodLoaded(result);
+    
+    this.availableWodCategories = result[1];
+    this.availableWodScore = result[2];
+    this.availableMovements = result[3];
+    this.availableEquipments = result[4];
   }
 
   showAddPublicationDate(){
@@ -128,18 +140,10 @@ export class EditComponent implements OnInit {
   }
 
   onSubmit() {
-    this.toolbar.setLoadingData(true);
-    this.service.save(this.wod).subscribe(
-      success=>{
-        this.wod.id = success.id;
-        this.toolbar.goBack();
-      },
-      e=>{
-        this.error = e.error;
-      },
-      ()=>this.toolbar.setLoadingData(false)
-    );
-    
+    this.runner.run(
+      this.service.save(this.wod),
+      res=>this.toolbar.goBack()
+    )
   }
 
 }

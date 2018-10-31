@@ -22,11 +22,17 @@ export class WodService {
   
  
   findAll(search?: WodSearchRequest){
+    let params = new HttpParams()
+    if (search.query)
+      params = params.set("query", search.query);
+    if (search.start)
+      params = params.set("start", moment(search.start).format("YYYY-MM-DD"))
+    if (search.end)
+      params = params.set("end", moment(search.end).format("YYYY-MM-DD"));
+
+
     return this.http.get<Wod[]>("/api/manage/wod", {
-        params: new HttpParams()
-        .set("query", search.query)
-        .set("start", moment(search.start).format("YYYY-MM-DD"))
-        .set("end", moment(search.end).format("YYYY-MM-DD"))
+        params: params
       }
     );
   }
@@ -36,7 +42,7 @@ export class WodService {
   }
 
   delete(wod: Wod){
-    return this.http.delete("/api/manage/wod/" + wod.id);
+    return this.http.delete<void>("/api/manage/wod/" + wod.id);
   }
 
   get(id){
@@ -56,4 +62,10 @@ export class WodService {
     return this.http.get<Equipment[]>("/api/wod/equipments");
   }
   
+
+
+  
+  importWods(){
+    return this.http.post<void>("/admin/wod/import", null);
+  }
 }
