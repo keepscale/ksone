@@ -15,7 +15,7 @@ import { ListComponent } from './list/list.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod/calendar',     component: WodCalendarComponent, canActivate: [RoleCoachGuard] },
-  { path: 'wod/search',       component: ListComponent,  canActivate: [RoleCoachGuard] },
+  { path: 'wod/search',       component: ListComponent,     canActivate: [RoleCoachGuard] },
   { path: 'wod/create',       component: EditComponent,     canActivate: [RoleCoachGuard] },
   { path: 'wod/:id/edit',     component: EditComponent,     canActivate: [RoleCoachGuard] },
   { path: 'wod/:id/detail',   component: DetailComponent,   canActivate: [RoleCoachGuard] },

@@ -7,6 +7,8 @@ import { Principal } from 'src/app/shared/auth/principal.service';
 import { WodService, WodSearchRequest } from '../wod.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as moment from 'moment';
+import { PaginateList } from 'src/app/common/paginate-list.model';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-list',
@@ -15,18 +17,20 @@ import * as moment from 'moment';
 })
 export class ListComponent  extends AbstractComponent implements OnInit {
 
-  wods:Wod[] = [];
-  search: WodSearchRequest = new WodSearchRequest();
+  list:PaginateList<Wod>;
   displayedColumns: string[] = ['id', 'name', 'category', 'score'];
 
+  query: string;
+
+  defaultPageSize: number = 10;
 
   constructor(
     protected toolbar: ToolBarService, 
     protected runner: RunnerService<any>, 
     protected principal: Principal,
-    private wodService: WodService,
-    private route: ActivatedRoute,
-    private router: Router) {
+    protected wodService: WodService,
+    protected route: ActivatedRoute,
+    protected router: Router) {
       super(toolbar, runner, principal);
   }
 
@@ -37,37 +41,40 @@ export class ListComponent  extends AbstractComponent implements OnInit {
     }
     
     this.route.queryParams.subscribe(params=>{
-      this.search = new WodSearchRequest();
-      this.search.query = params["query"];
-      this.search.start = params["start"] ? moment(params["start"]).toDate() : null;
-      this.search.end = params["end"] ? moment(params["end"]).toDate() : null;
+      let search = new WodSearchRequest();
+      search.query = params["query"];
+      search.pageEvent = new PageEvent();
+      search.pageEvent.pageIndex = params["pageIndex"] ? params["pageIndex"] : 0;
+      search.pageEvent.pageSize = params["pageSize"] ? params["pageSize"] : this.defaultPageSize;
       
       this.runner.run(
-        this.wodService.findAll(this.search),
-        result=>this.searchResult(result));
+        this.wodService.findAll(search),
+        result=>this.searchResult(result));             
     })   
   }
 
   
-  private updateQueryParam(){
+  submitSearchForm(){
     const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
-    queryParams['query'] = this.search.query;
-    queryParams['start'] = this.search.start ? moment(this.search.start).format("Y-MM-D") : null;
-    queryParams['end'] = this.search.end ? moment(this.search.end).format("Y-MM-D") : null;
+    queryParams['query'] = this.query;
+    queryParams['pageIndex'] = null;
+    queryParams['pageSize'] = null;
+    this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
+  }
+  
+  paginate(pageEvent: PageEvent){
+    const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
+    queryParams['pageIndex'] = pageEvent.pageIndex;
+    queryParams['pageSize'] = pageEvent.pageSize;
     this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
 
   clearSearch(){
-    this.search = new WodSearchRequest();
-    this.updateQueryParam();
+    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
   }
 
-  onSearch(){
-    this.updateQueryParam();
-  }
-  
-  searchResult(result: Wod[]){
-    this.wods = result;
+  searchResult(result: PaginateList<Wod>){
+    this.list = result;
   }
 
   importWods(){

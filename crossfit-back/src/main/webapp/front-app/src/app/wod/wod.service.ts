@@ -7,9 +7,11 @@ import { Observable } from 'rxjs';
 import { WodResult } from './domain/wod-result.model';
 import { WodResultRanking } from './domain/wod-result-ranking.model';
 import * as moment from 'moment';
+import { PaginateList } from '../common/paginate-list.model';
+import { PageEvent } from '@angular/material';
 
 export class WodSearchRequest{
-  constructor(public query?: string, public start?: Date, public end?: Date){}
+  constructor(public query?: string, public start?: Date, public end?: Date, public pageEvent?: PageEvent){}
 }
 
 @Injectable({
@@ -30,8 +32,12 @@ export class WodService {
     if (search.end)
       params = params.set("end", moment(search.end).format("YYYY-MM-DD"));
 
+    if (search.pageEvent){
+      params = params.set("pageIndex", String(search.pageEvent.pageIndex));
+      params = params.set("pageSize", String(search.pageEvent.pageSize));
+    }
 
-    return this.http.get<Wod[]>("/api/manage/wod", {
+    return this.http.get<PaginateList<Wod>>("/api/manage/wod", {
         params: params
       }
     );
