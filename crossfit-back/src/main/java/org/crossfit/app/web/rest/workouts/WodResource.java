@@ -80,17 +80,17 @@ public class WodResource {
 	 */
 	@RequestMapping(value = "manage/wod", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Wod>> getWods(
-			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "start", required = false) String startStr,
 			@RequestParam(value = "end", required = false) String endStr){
 
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		
-		search = search == null ? "" :search;
-		String customSearch = "%" + search.replaceAll("\\*", "%").toLowerCase() + "%";
+		query = query == null ? "" :query;
+		String customSearch = "%" + query.replaceAll("\\*", "%").toLowerCase() + "%";
 
-		LocalDate start = LocalDate.parse(startStr);
-		LocalDate end = LocalDate.parse(endStr);
+		LocalDate start = StringUtils.isEmpty(startStr) ? null : LocalDate.parse(startStr);
+		LocalDate end = StringUtils.isEmpty(endStr) ? null : LocalDate.parse(endStr);
 		
 		LocalDate nowAsLocalDate = timeService.nowAsLocalDate(box);
 		
@@ -102,7 +102,9 @@ public class WodResource {
 				.min(LocalDate::compareTo).orElse(null);
 		};
 		List<Wod> result = wodService.findAllWod(customSearch, start, end).stream().sorted(
-				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder())))
+				Comparator.comparing(plusPetiteDateApresMaintenant, Comparator.nullsLast(Comparator.naturalOrder()))
+				.thenComparing(Comparator.comparing(Wod::getName, Comparator.nullsLast(Comparator.naturalOrder())))
+				)
 				.collect(Collectors.toList());
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);

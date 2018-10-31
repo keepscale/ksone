@@ -14,7 +14,8 @@ import { ToolbarModule } from './toolbar/toolbar.module';
 import { BookingModule } from './booking/booking.module';
 import { AccountComponent } from './account/account.component';
 import { AccountModule } from './account/account.module';
-import { ErrorComponent } from './error/error/error.component';
+import { ErrorComponent } from './error/error.component';
+import { ErrorModule } from './error/error.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -26,8 +27,7 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ErrorComponent
+    AppComponent
   ],
   imports: [
     HttpClientModule,
@@ -43,12 +43,14 @@ const appRoutes: Routes = [
       appRoutes,
       { 
         enableTracing: false,
-        useHash: true 
+        useHash: true ,
+        scrollPositionRestoration: 'enabled'
       } // <-- debugging purposes only
     ),
     BrowserModule,
     BrowserAnimationsModule,
     LayoutModule,
+    ErrorModule,
     MatSidenavModule,
     WodModule,
     BookingModule,

@@ -8,6 +8,5 @@ export class AbstractDetailComponent extends AbstractComponent implements OnInit
 
   ngOnInit() {
     this.toolbar.setAllowGoBack(true);
-    super.ngOnInit();
   }
 }

@@ -36,7 +36,6 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
   ngOnInit() {
     this.title = "Planning des wods";
     this.eventService.eventRequested$.subscribe(req=>this.search(new WodSearchRequest(null, req.start, req.end)));
-    super.ngOnInit();
   }
   
   search(search:WodSearchRequest){    

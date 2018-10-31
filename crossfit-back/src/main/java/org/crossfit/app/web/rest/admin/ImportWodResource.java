@@ -41,7 +41,7 @@ import com.opencsv.CSVReader;
 public class ImportWodResource {
 
 	
-	private static final String WOD_CSV_FILE_PATH = "classpath://datas/wod.csv";
+	private static final String WOD_CSV_FILE_PATH = "classpath:datas/wod.csv";
 
 	@Inject
 	private WodService wodService;
@@ -61,7 +61,7 @@ public class ImportWodResource {
         log.debug("REST request to import wod");
 
 
-		try(CSVReader csv = new CSVReader(new InputStreamReader(new FileInputStream(ResourceUtils.getFile(WOD_CSV_FILE_PATH))));){
+		try(CSVReader csv = new CSVReader(new InputStreamReader(new FileInputStream(ResourceUtils.getFile(WOD_CSV_FILE_PATH))), ';', '"');){
         	List<Wod> wodsToCreate = csv.readAll().stream().map(line->{
         		Wod wod = new Wod();
         		wod.setName(line[0]);

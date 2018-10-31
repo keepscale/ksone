@@ -3,7 +3,7 @@
   <mat-progress-bar mode="indeterminate" *ngIf="loadingData"></mat-progress-bar>
 
   <mat-toolbar-row *ngIf="!showSearchToolBar">
-    <button *ngIf="isAuthenticated()"
+    <button *ngIf="isAuthenticated() && canCloseSideNav"
       type="button"
       aria-label="Toggle sidenav"
       mat-icon-button

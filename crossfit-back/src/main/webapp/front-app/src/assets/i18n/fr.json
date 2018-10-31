@@ -2,12 +2,16 @@
 	"button":{
 		"cancel": "Annuler",
 		"save": "Sauvegarder",
-		"delete": "Supprimer"
+		"delete": "Supprimer",
+		"search": "Rechercher"
 	},
 	"app": {
 		"menu": {
 			"activity": "Activité",
-			"wod.planning": "Planning des wods",
+			"wod": {
+				"planning": "Planning des wods",
+				"search": "Liste des wods"
+			},
 			"logout": "Déconnexion"
 		}
 	},

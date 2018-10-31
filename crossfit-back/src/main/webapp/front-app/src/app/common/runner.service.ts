@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { ErrorService } from '../error/error.service';
 import { ToolBarService } from '../toolbar/toolbar.service';
 
@@ -12,14 +12,29 @@ export class RunnerService<T> {
     private toolbar: ToolBarService,
     private error: ErrorService) { }
 
+  forkJoin(observables: Observable<any>[], next?: (value: any[]) => void, overridedFailureMessage?: string){
+    
+    this.toolbar.setLoadingData(true);
 
-  run(observable: Observable<T>, next?: (value: T) => void){
+    forkJoin(observables).subscribe(
+      next,
+      err=> {
+        this.toolbar.setLoadingData(false);
+        this.error.manage(err, overridedFailureMessage);
+      },
+      ()=>  this.toolbar.setLoadingData(false));
+  }
+
+  run(observable: Observable<T>, next?: (value: T) => void, overridedFailureMessage?: string){
 
     this.toolbar.setLoadingData(true);
 
     observable.subscribe(
       next,
-      err=> this.error.manage(err),
+      err=> {
+        this.toolbar.setLoadingData(false);
+        this.error.manage(err, overridedFailureMessage);
+      },
       ()=>  this.toolbar.setLoadingData(false));
   }
 }

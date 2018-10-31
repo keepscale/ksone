@@ -1,14 +1,13 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!wod || countResult===null"></mat-progress-bar>
 
-
-<form novalidate *ngIf="wod && countResult >= 0" (ngSubmit)="onDelete()">
+<form novalidate *ngIf="wod" (ngSubmit)="onDelete()">
 
   <div class="form-container">
       
     
     <h2>Etes vous certain de vouloir supprimer le wod '{{wod.name}}' ?</h2>
 
-    <mat-checkbox [(ngModel)]="enabledDeleteButton" name="enabledDeleteButton" *ngIf="countResult > 0">Supprimer également les scores saisi par les membres (soit {{countResult}} résultats)</mat-checkbox>
+    <mat-checkbox [(ngModel)]="enabledDeleteButton" name="enabledDeleteButton" *ngIf="countResult > 0">
+      Supprimer également les scores saisi par les membres (soit {{countResult}} résultats)</mat-checkbox>
 
 
 
@@ -16,7 +15,6 @@
       <button mat-raised-button color="primary" [disabled]="!enabledDeleteButton">
         Supprimer
       </button>
-      <app-status-bar [error]="error" [status]="status"></app-status-bar>
     </div>
   </div>
 </form>

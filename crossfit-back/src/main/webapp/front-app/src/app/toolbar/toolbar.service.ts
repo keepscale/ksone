@@ -5,11 +5,15 @@ import { MenuItem } from './menu-item.model';
 import { Location } from '@angular/common';
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ToolBarService {
 
     private title = new Subject<string>();
     private searchPlaceHolder = new Subject<string>();
+
+    private allowCloseSideNav = new Subject<boolean>();
  
     private allowSearch = new Subject<boolean>();
     private onSearch: Function;
@@ -68,6 +72,13 @@ export class ToolBarService {
     }
     search(query: string){
         this.onSearch.call(this, query);
+    }
+
+    setCanCloseSideNav(value: boolean){
+        this.allowCloseSideNav.next(value);
+    }
+    getAllowCloseSideNav(): Observable<boolean>{
+        return this.allowCloseSideNav.asObservable();
     }
 
 

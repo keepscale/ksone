@@ -5,15 +5,17 @@
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #sidenav (click)="sidenav.close()"
+    <mat-sidenav #sidenav (click)="mobileQuery.matches && sidenav.close()"
     (closedStart)="toolbar.sideNavChange(false)"
     (openedStart)="toolbar.sideNavChange(true)"
       [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [disableClose]="!mobileQuery.matches"
+      [opened]="!mobileQuery.matches"
       [fixedInViewport]="true" 
       fixedTopGap="56">
       <mat-nav-list>
-        <a mat-list-item routerLink="/activity" routerLinkActive="active">{{ 'app.menu.activity' | translate }}</a>
-        <a mat-list-item routerLink="/wod/calendar" *ngIf="isInRole('ROLE_COACH')" routerLinkActive="active">{{ 'app.menu.wod.planning' | translate }}</a>
+          <a mat-list-item routerLink="/wod/calendar" *ngIf="isInRole('ROLE_COACH')" routerLinkActive="active">{{ 'app.menu.wod.planning' | translate }}</a>
+          <a mat-list-item routerLink="/wod/search" *ngIf="isInRole('ROLE_COACH')" routerLinkActive="active">{{ 'app.menu.wod.search' | translate }}</a>
         <a mat-list-item routerLink="/logout" routerLinkActive="active">{{ 'app.menu.logout' | translate }}</a>
       </mat-nav-list>
     </mat-sidenav>
