@@ -4,7 +4,7 @@
 
   <div class="form-container">
     <mat-form-field>
-      <input matInput [(ngModel)]="query" name="query" placeholder="Filter">
+      <input matInput [(ngModel)]="search.query" name="query" placeholder="Filter">
     </mat-form-field>
   </div>
     
@@ -13,7 +13,7 @@
   </div>
   
 
-  <table mat-table [dataSource]="list.results" matSort>
+  <table mat-table [dataSource]="list ? list.results : []" matSort>
 
     <!-- ID Column -->
     <ng-container matColumnDef="id">

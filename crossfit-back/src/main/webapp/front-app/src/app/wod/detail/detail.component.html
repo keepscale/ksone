@@ -32,15 +32,11 @@
       
       </mat-card-content>
       <mat-card-actions>
-        <a [routerLink]="['..','edit']">
-          <button mat-button >
-            <mat-icon attr.aria-label="{{'wod.edit.button.label' | translate}}">edit</mat-icon>
-          </button>
+        <a [routerLink]="['..','edit']" mat-button color="primary" disabled=canEdit()>
+          <mat-icon attr.aria-label="{{'wod.edit.button.label' | translate}}">edit</mat-icon>
         </a>
-        <a [routerLink]="['..','delete']">
-          <button mat-button >
-            <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
-          </button>
+        <a [routerLink]="['..','delete']" mat-button color="primary" disabled=canDelete()>
+          <mat-icon attr.aria-label="{{'wod.delete.button.label' | translate}}">delete</mat-icon>
         </a>
       </mat-card-actions>
     </mat-card>  

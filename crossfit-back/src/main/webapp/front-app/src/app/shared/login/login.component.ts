@@ -31,6 +31,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.title = "Connexion";
     this.rememberme = true;
+    this.principal.identity(true).subscribe(res=>{
+      if (res != null){
+        this.redirectAfterLogin();
+      }
+    })
   }
 
   onLogin() {
@@ -39,17 +44,19 @@ export class LoginComponent extends BaseComponent implements OnInit {
       this.authService.login(this.username, this.password, this.rememberme).pipe(
         mergeMap(result=>this.principal.identity(true))
       ),
-      res=>{
-        if (this.principal.hasAnyAuthority(['ROLE_COACH'])){
-          this.router.navigate(['']);
-        }
-        else{
-          this.router.navigate(['/account']);     
-        }
-      },
+      res=>this.redirectAfterLogin(),
       "Email ou mot de passe incorrect"
     );
 
+  }
+
+  redirectAfterLogin(){
+    if (this.principal.hasAnyAuthority(['ROLE_COACH'])){
+      this.router.navigate(['']);
+    }
+    else{
+      this.router.navigate(['/account']);     
+    }
   }
 
 }

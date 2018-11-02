@@ -42,7 +42,6 @@ export class EditComponent extends DetailComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    this.toolbar.addMenuItem(this.showAddPublicationDate.bind(this), "event", "Ajouter une date");
   }
 
   loadWod(id: number): Observable<any>[]{

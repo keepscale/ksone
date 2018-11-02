@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { MenuItem } from './menu-item.model';
 import { Location } from '@angular/common';
+import { Principal } from '../shared/auth/principal.service';
 
 
 @Injectable({
@@ -28,7 +29,7 @@ export class ToolBarService {
     private loadingData = new Subject<boolean>();
 
     
-  constructor(private _location: Location) { }
+  constructor(private _location: Location, private principal: Principal) { }
 
     setTitle(title: string) {
         this.title.next(title);
@@ -44,12 +45,14 @@ export class ToolBarService {
         return this.loadingData.asObservable();
     }
 
-    addMenuItem(action: Function, icon:string, text:string){
-        let i = new MenuItem();
-        i.action = action;
-        i.icon = icon;
-        i.text = text;
-        this.menuItemsAdded.next(i);
+    addMenuItem(roles: string|string[], action: Function, icon:string, text:string){
+        if (this.principal.hasAnyAuthority(roles)){
+            let i = new MenuItem();
+            i.action = action;
+            i.icon = icon;
+            i.text = text;
+            this.menuItemsAdded.next(i);
+        }
     }
 
     getMenuItemAdded(){

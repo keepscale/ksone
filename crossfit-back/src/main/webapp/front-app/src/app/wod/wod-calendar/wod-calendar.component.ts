@@ -75,6 +75,6 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
   }
 
   isOwner(wod:Wod){
-    return this.currentUser.id == wod.shareProperties.ownerId;
+    return this.principal.identity().toPromise().then(user=>user.id == wod.shareProperties.ownerId);
   }
 }
