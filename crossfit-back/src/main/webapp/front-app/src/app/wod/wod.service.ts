@@ -11,7 +11,7 @@ import { PaginateList } from '../common/paginate-list.model';
 import { PageEvent } from '@angular/material';
 
 export class WodSearchRequest{
-  constructor(public query?: string, public start?: Date, public end?: Date, public pageEvent?: PageEvent){}
+  constructor(public query?: string, public start?: Date, public end?: Date, public pageIndex?: number, public pageSize?: number){}
 }
 
 @Injectable({
@@ -32,10 +32,10 @@ export class WodService {
     if (search.end)
       params = params.set("end", moment(search.end).format("YYYY-MM-DD"));
 
-    if (search.pageEvent){
-      params = params.set("pageIndex", String(search.pageEvent.pageIndex));
-      params = params.set("pageSize", String(search.pageEvent.pageSize));
-    }
+    if (search.pageIndex)
+      params = params.set("pageIndex", String(search.pageIndex));
+    if (search.pageSize)
+      params = params.set("pageSize", String(search.pageSize));
 
     return this.http.get<PaginateList<Wod>>("/api/manage/wod", {
         params: params

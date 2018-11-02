@@ -41,7 +41,6 @@ export class DetailComponent extends AbstractDetailComponent implements OnInit, 
     });
   }
   ngOnDestroy(){
-    super.ngOnDestroy();
     if (this.paramsSubscription)
       this.paramsSubscription.unsubscribe();
   }
@@ -52,6 +51,14 @@ export class DetailComponent extends AbstractDetailComponent implements OnInit, 
 
   wodLoaded(result: any[]){
     this.wod = result[0];
-    this.wod.publications = this.wod.publications.sort((pub1,pub2)=>{return moment(pub2.endAt).diff(moment(pub1.endAt));});
+    this.wod.publications = this.wod.publications.sort(
+      (pub1,pub2)=>{return moment(pub2.endAt).diff(moment(pub1.endAt));});
+  }
+
+  canEdit(){
+    return true;
+  }
+  canDelete(){
+    return false;
   }
 }

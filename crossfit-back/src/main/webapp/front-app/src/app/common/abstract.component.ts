@@ -7,23 +7,13 @@ import { ErrorService } from '../error/error.service';
 import { RunnerService } from './runner.service';
 import { BaseComponent } from './base.component';
 
-export class AbstractComponent extends BaseComponent implements OnDestroy {
-
-  protected principalSubscription: Subscription;
-  protected currentUser: User;
+export class AbstractComponent extends BaseComponent {
 
   constructor(
     protected toolbar: ToolBarService,
     protected runner: RunnerService<any>,
     protected principal: Principal) { 
       super(toolbar, runner);
-      this.principalSubscription = 
-        this.principal.identity().subscribe(user=>this.currentUser = user);
 
-  }
-
-  ngOnDestroy(){
-    if (this.principalSubscription)
-      this.principalSubscription.unsubscribe();
   }
 }

@@ -19,6 +19,8 @@ import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatI
   MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule, MatPaginatorModule } from '@angular/material';
 import { TextCompleteModule } from './text-complete/text-complete.module';
 import { StatusBarComponent } from './status-bar/status-bar.component';
+import { IfHasAnyRoleDirective } from './auth/if-has-any-role.directive';
+import { IfIsAuthenticatedDirective } from './auth/if-is-authenticated.directive';
   
 
 const loginRoutes: Routes = [
@@ -44,7 +46,7 @@ const loginRoutes: Routes = [
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
     MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
     MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule,
-    StatusBarComponent, MatPaginatorModule
+    StatusBarComponent, MatPaginatorModule, IfHasAnyRoleDirective, IfIsAuthenticatedDirective
   ],
   providers:[
 	  AuthGuard,
@@ -55,6 +57,7 @@ const loginRoutes: Routes = [
 	  AuthService,
 	  Principal,
   ],
-  declarations: [LoginComponent, LogoutComponent, SubmitButtonComponent, StatusBarComponent]
+  declarations: [LoginComponent, LogoutComponent, SubmitButtonComponent, StatusBarComponent, 
+    IfIsAuthenticatedDirective, IfHasAnyRoleDirective]
 })
 export class SharedModule { }

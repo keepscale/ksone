@@ -18,9 +18,9 @@ import { PageEvent } from '@angular/material';
 export class ListComponent  extends AbstractComponent implements OnInit {
 
   list:PaginateList<Wod>;
-  displayedColumns: string[] = ['id', 'name', 'category', 'score'];
+  displayedColumns: string[] = [/*'id', */'name', 'category', 'score'];
 
-  query: string;
+  search = new WodSearchRequest();
 
   defaultPageSize: number = 10;
 
@@ -36,29 +36,43 @@ export class ListComponent  extends AbstractComponent implements OnInit {
 
   ngOnInit() {
     this.title = "Liste des wods";
-    if (this.principal.hasAnyAuthority(['ROLE_ADMIN'])){
-      this.toolbar.addMenuItem(this.importWods.bind(this), "cloud_upload", "Importer les wods");
-    }
     
+    this.toolbar.addMenuItem('ROLE_ADMIN', this._importWods.bind(this), "cloud_upload", "Importer les wods");
+
     this.route.queryParams.subscribe(params=>{
-      let search = new WodSearchRequest();
-      search.query = params["query"];
-      search.pageEvent = new PageEvent();
-      search.pageEvent.pageIndex = params["pageIndex"] ? params["pageIndex"] : 0;
-      search.pageEvent.pageSize = params["pageSize"] ? params["pageSize"] : this.defaultPageSize;
-      
-      this.runner.run(
-        this.wodService.findAll(search),
-        result=>this.searchResult(result));             
+      this.search.query = params["query"];
+      this.search.pageIndex = params["pageIndex"] ? params["pageIndex"] : 0;
+      this.search.pageSize = params["pageSize"] ? params["pageSize"] : this.defaultPageSize;
+      this._refreshData();   
     })   
+  }
+
+  _refreshData(){
+    this.runner.run(
+      this.wodService.findAll(this.search),
+      result=>this.searchResult(result));     
+  }
+  _importWods(){
+    this.runner.run(
+      this.wodService.importWods(),
+      result=>this.importWodsDone()
+    )
   }
 
   
   submitSearchForm(){
     const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
-    queryParams['query'] = this.query;
+    if (this.search.query === queryParams['query']){
+      this._refreshData();
+    }
+    else{
+      queryParams['refresh'] = null;
+    }
+
+    queryParams['query'] = this.search.query;
     queryParams['pageIndex'] = null;
     queryParams['pageSize'] = null;
+
     this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
   
@@ -69,18 +83,12 @@ export class ListComponent  extends AbstractComponent implements OnInit {
     this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
 
-  clearSearch(){
-    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+  importWodsDone(){
+    this.router.navigate([], { relativeTo: this.route, queryParams: {'import':'done'} });
   }
 
   searchResult(result: PaginateList<Wod>){
     this.list = result;
   }
 
-  importWods(){
-    this.runner.run(
-      this.wodService.importWods(),
-      res=>this.clearSearch()
-    )
-  }
 }

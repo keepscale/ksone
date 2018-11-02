@@ -48,14 +48,7 @@ export class AppComponent  implements OnDestroy{
   }
 
   ngOnInit() {
+    this.principal.identity();
   }
-
-
-  isAuthenticated(){
-    return this.principal.isAuthenticated() || false;
-  }
-
-  isInRole(roleName: string): boolean{
-    return this.principal.hasAnyAuthority([roleName]);
-  }
+  
 }

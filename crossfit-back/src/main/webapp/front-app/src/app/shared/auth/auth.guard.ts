@@ -28,24 +28,26 @@ export class AuthGuard implements CanActivate {
 
 
       this.principal.identity(true).subscribe(
-        res=>{
-          if (!this.principal.isAuthenticated()){
-            this.router.navigate(['/login']);
-          }
-          if (this.principal.isAuthenticated()){
-            if (this.checkAuthority(this.principal)){
-              this.authenticationState.next(true);
-              return;
-            }
-            else{
-              console.log("Vous n'avez pas le role "+this.authorities);
-            }
-          }
-          this.authenticationState.next(false);
-        }
+        res=>this.checkAfterIdentityResolve(),err=>this.checkAfterIdentityResolve()
       );  
       
       return this.authenticationState;
+  }
+
+  checkAfterIdentityResolve(){    
+    if (!this.principal.isAuthenticated()){
+      this.router.navigate(['/login']);
+    }
+    if (this.principal.isAuthenticated()){
+      if (this.checkAuthority(this.principal)){
+        this.authenticationState.next(true);
+        return;
+      }
+      else{
+        console.log("Vous n'avez pas le role "+this.authorities);
+      }
+    }
+    this.authenticationState.next(false);
   }
 
   checkAuthority(principal: Principal): boolean{
