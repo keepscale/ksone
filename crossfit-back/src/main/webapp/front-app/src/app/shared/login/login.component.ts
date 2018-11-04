@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Principal } from '../auth/principal.service';
@@ -6,6 +6,7 @@ import { ToolBarService } from '../../toolbar/toolbar.service';
 import { BaseComponent } from 'src/app/common/base.component';
 import { RunnerService } from 'src/app/common/runner.service';
 import { mergeMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,7 +14,9 @@ import { mergeMap } from 'rxjs/operators';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent extends BaseComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
+
+  loginSub: Subscription;
 
   username: string;
   password: string;
@@ -37,13 +40,14 @@ export class LoginComponent extends BaseComponent implements OnInit {
       }
     })
   }
+  ngOnDestroy() {
+    if(this.loginSub) this.loginSub.unsubscribe();
+  }
 
   onLogin() {
     
     this.runner.run(
-      this.authService.login(this.username, this.password, this.rememberme).pipe(
-        mergeMap(result=>this.principal.identity(true))
-      ),
+      this.authService.login(this.username, this.password, this.rememberme),
       res=>this.redirectAfterLogin(),
       "Email ou mot de passe incorrect"
     );

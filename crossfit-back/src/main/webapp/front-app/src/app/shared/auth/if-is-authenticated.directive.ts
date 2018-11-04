@@ -16,28 +16,14 @@ export class IfIsAuthenticatedDirective implements OnInit, OnDestroy {
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
     private principal: Principal) {
-
+      
+    this.auth$ = this.principal.authenticationUpdated$.subscribe(res=>{
+      this._refresh();
+    });
   }
 
-  ngOnInit() {/*
-    this.auth$ = this.principal.identity()
-    .pipe( tap(()       => this.viewContainer.clear()))
-    .pipe( filter(user  => {
-      if ( (this.appAuthenticated && this.principal.isAuthenticated())
-       ||  (!this.appAuthenticated && !this.principal.isAuthenticated()) ){
-        return true;
-      }
-      else{
-        return false;
-      }
-    }))
-    .subscribe(()       => this.viewContainer.createEmbeddedView(this.templateRef));
-*/
-    if ( (this.appAuthenticated && this.principal.isAuthenticated())
-    ||  (!this.appAuthenticated && !this.principal.isAuthenticated()) ){
-      this.viewContainer.createEmbeddedView(this.templateRef);
-      
-   }
+  ngOnInit() {
+    this.principal.identity().subscribe(user=>{}, error=>{this._refresh()});
   }
 
   ngOnDestroy() {
@@ -45,4 +31,15 @@ export class IfIsAuthenticatedDirective implements OnInit, OnDestroy {
       this.auth$.unsubscribe();
   }
 
+  _refresh(){
+    if ( (this.appAuthenticated && this.principal.isAuthenticated())){
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+    else if (!this.appAuthenticated && !this.principal.isAuthenticated()){
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+    else{
+      this.viewContainer.clear();
+    }
+  }
 }

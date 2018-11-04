@@ -55,7 +55,7 @@ export class ToolbarComponent implements OnInit {
     this.toolbar.getLoadingData().subscribe(loading=>this.loadingData=loading);
     this.toolbar.getAllowCloseSideNav().subscribe(value=>this.canCloseSideNav=value);
 
-    this.principal.identity().subscribe(res=>{
+    this.principal.authenticationUpdated$.subscribe(res=>{
       this.displayName = res != null ? res.firstName + " " + res.lastName : "";
     });
 

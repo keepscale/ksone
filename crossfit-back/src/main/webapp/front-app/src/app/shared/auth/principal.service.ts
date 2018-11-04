@@ -42,28 +42,25 @@ export class Principal {
         // check and see if we have retrieved the userIdentity data from the server.
         // if we have, reuse it by immediately resolving
         if (this.userIdentity) {
-            this.authenticationState.next(this.userIdentity);
+            //this.authenticationState.next(this.userIdentity);
             return of(this.userIdentity);
         }
-        
-
-        // retrieve the userIdentity data from the server, update the identity object, and then resolve.
-        return this.account.get().pipe(map(
-            user=>{
-                if (user) {
-                    this.userIdentity = user;
-                    this.authenticated = true;
-                } else {
-                    this.userIdentity = null;
-                    this.authenticated = false;
+        else{
+            // retrieve the userIdentity data from the server, update the identity object, and then resolve.
+            return this.account.get().pipe(map(
+                user=>{
+                    if (user) {
+                        this.userIdentity = user;
+                        this.authenticated = true;
+                    } else {
+                        this.userIdentity = null;
+                        this.authenticated = false;
+                    }
+                    this.authenticationState.next(this.userIdentity);
+                    return user;
                 }
-                this.authenticationState.next(this.userIdentity);
-                return this.userIdentity;
-            },
-            err=>{
-                this.authenticationState.next(this.userIdentity);
-            }
-        ));
+            ));
+        }
     }
 
     isAuthenticated(): boolean {

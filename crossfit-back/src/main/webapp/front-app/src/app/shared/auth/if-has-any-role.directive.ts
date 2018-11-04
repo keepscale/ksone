@@ -16,21 +16,27 @@ export class IfHasAnyRoleDirective implements OnInit, OnDestroy {
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
     private principal: Principal) {
-
+      
+      this.auth$ = this.principal.authenticationUpdated$.subscribe(res=>{
+        this._refresh();
+      });
   }
-
+  
   ngOnInit() {
-    
-    this.auth$ = this.principal.identity()
-    .pipe( tap(()       => this.viewContainer.clear()))
-    .pipe( filter(user  => this.principal.hasAnyAuthority(this.roles)))
-    .subscribe(()       => this.viewContainer.createEmbeddedView(this.templateRef));
-    
+    this.principal.identity().subscribe(user=>{}, error=>{this._refresh()});
   }
-
+  
   ngOnDestroy() {
     if(this.auth$)
       this.auth$.unsubscribe();
   }
 
+  _refresh(){
+    if (this.principal.hasAnyAuthority(this.roles)){
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+    else{
+      this.viewContainer.clear();
+    }
+  }
 }
