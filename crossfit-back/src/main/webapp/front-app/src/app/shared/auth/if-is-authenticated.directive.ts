@@ -12,18 +12,20 @@ export class IfIsAuthenticatedDirective implements OnInit, OnDestroy {
   @Input('appAuthenticated') appAuthenticated: boolean = true;
   auth$: Subscription;
 
+  viewCreated = false;
+
   constructor(
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
     private principal: Principal) {
       
-    this.auth$ = this.principal.authenticationUpdated$.subscribe(res=>{
+    this.auth$ = this.principal.authenticationUpdated$.subscribe(res=>{ 
       this._refresh();
     });
   }
 
   ngOnInit() {
-    this.principal.identity().subscribe(user=>{}, error=>{this._refresh()});
+    this.principal.identity().subscribe(user=>this._refresh());
   }
 
   ngOnDestroy() {
@@ -32,13 +34,14 @@ export class IfIsAuthenticatedDirective implements OnInit, OnDestroy {
   }
 
   _refresh(){
-    if ( (this.appAuthenticated && this.principal.isAuthenticated())){
-      this.viewContainer.createEmbeddedView(this.templateRef);
-    }
-    else if (!this.appAuthenticated && !this.principal.isAuthenticated()){
-      this.viewContainer.createEmbeddedView(this.templateRef);
+    if (this.appAuthenticated == this.principal.isAuthenticated()){
+      if (!this.viewCreated ){
+        this.viewCreated = true;
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      }
     }
     else{
+      this.viewCreated = false;
       this.viewContainer.clear();
     }
   }

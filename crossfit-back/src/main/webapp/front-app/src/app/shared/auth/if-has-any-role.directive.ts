@@ -4,13 +4,14 @@ import { tap, filter } from 'rxjs/operators';
 import { Principal } from './principal.service';
 
 @Directive({
-  selector: '[hasAnyRole]'
+  selector: '[appHasAnyRole]'
 })
 export class IfHasAnyRoleDirective implements OnInit, OnDestroy {
 
   auth$: Subscription;
+  viewCreated = false;
 
-  @Input('hasAnyRole') roles: string[]|string;
+  @Input('appHasAnyRole') roles: string[]|string;
 
   constructor(
     private templateRef: TemplateRef<any>,
@@ -23,7 +24,7 @@ export class IfHasAnyRoleDirective implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    this.principal.identity().subscribe(user=>{}, error=>{this._refresh()});
+    this.principal.identity().subscribe(user=>this._refresh());
   }
   
   ngOnDestroy() {
@@ -33,9 +34,13 @@ export class IfHasAnyRoleDirective implements OnInit, OnDestroy {
 
   _refresh(){
     if (this.principal.hasAnyAuthority(this.roles)){
-      this.viewContainer.createEmbeddedView(this.templateRef);
+      if (!this.viewCreated ){
+        this.viewCreated = true;
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      }
     }
     else{
+      this.viewCreated = false;
       this.viewContainer.clear();
     }
   }

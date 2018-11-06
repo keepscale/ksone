@@ -1,4 +1,4 @@
-import { Component, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState, MediaMatcher } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { MatDrawerContent, MatSidenav } from '@angular/material';
 })
 export class AppComponent  implements OnDestroy{
 
+  @ViewChildren('sidenav') sidenav: QueryList<MatSidenav>;
 
   mobileQuery: MediaQueryList;
   mobileQueryPortrait: MediaQueryList;
@@ -41,6 +42,8 @@ export class AppComponent  implements OnDestroy{
     const browserLang = translate.getBrowserLang();
     //translate.use(browserLang.match(/en|fr/) ? browserLang : 'fr');
     translate.use('fr');
+
+    this.principal.authenticationUpdated$.subscribe(user=>changeDetectorRef.detectChanges());
   }
 
   ngOnDestroy(): void {
@@ -48,7 +51,10 @@ export class AppComponent  implements OnDestroy{
   }
 
   ngOnInit() {
-    this.principal.identity();
   }
   
+
+  toggle(){
+    this.sidenav.first.toggle();
+  }
 }
