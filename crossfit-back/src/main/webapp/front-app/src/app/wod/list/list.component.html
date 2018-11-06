@@ -12,6 +12,12 @@
     <submit-button [i18n]="'button.search'"></submit-button>
   </div>
   
+  
+  <mat-paginator *ngIf="list" 
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    [length]="list.length"
+    [pageSize]="list.pageSize"
+    (page)="paginate($event)"></mat-paginator>
 
   <table mat-table [dataSource]="list ? list.results : []" matSort>
 

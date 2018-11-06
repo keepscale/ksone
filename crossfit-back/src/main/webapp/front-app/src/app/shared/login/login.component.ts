@@ -34,7 +34,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.title = "Connexion";
     this.rememberme = true;
-    this.principal.identity(true).subscribe(res=>{
+    this.loginSub = this.principal.identity(true).subscribe(res=>{
       if (res != null){
         this.redirectAfterLogin();
       }

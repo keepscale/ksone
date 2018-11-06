@@ -1,5 +1,3 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!account"></mat-progress-bar>
-
 <div class="account-container" *ngIf="account">
 
   <form novalidate (ngSubmit)="onSubmit()">
@@ -64,13 +62,11 @@
         </mat-form-field>
       </div>
 
-  </div>
+    </div>
 
-  <div class="form-footer">
-    <submit-button></submit-button>
-
-    <mat-progress-bar mode="indeterminate" *ngIf="status=='wait'"></mat-progress-bar>
-  </div>
+    <div class="form-footer">
+      <submit-button></submit-button>
+    </div>
 
   </form>
 

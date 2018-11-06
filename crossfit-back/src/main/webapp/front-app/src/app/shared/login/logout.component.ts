@@ -1,24 +1,41 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Principal } from '../auth/principal.service';
+import { BaseComponent } from 'src/app/common/base.component';
+import { ToolBarService } from 'src/app/toolbar/toolbar.service';
+import { RunnerService } from 'src/app/common/runner.service';
+import { map, tap } from 'rxjs/operators';
 
 
 @Component({
-  template:""
+  template:"<p>Déconnexion en cours....</p>"
 })
-export class LogoutComponent implements OnInit {
+export class LogoutComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
 
-  constructor(private authService: AuthService,  private router: Router, private principal: Principal) { }
-
-  ngOnInit() {
-    this.authService.logout().subscribe(
-      res=>{
-        this.router.navigate(['/']);
-      }
-    );
+  constructor(
+    private authService: AuthService, 
+    private principal: Principal,  
+    private route: ActivatedRoute, 
+    private router: Router, 
+    protected toolbar: ToolBarService,
+    protected runner: RunnerService<any>) { 
+    super(toolbar, runner);
   }
 
+  ngOnInit() {
+    this.title = "Déconnexion";
+        
+    this.authService.logout().subscribe(()=>{
+      this.principal.logout();
+      this.router.navigate(['/login']);
+    });
+    
+  }
+
+  ngOnDestroy(){
+
+  }
 }

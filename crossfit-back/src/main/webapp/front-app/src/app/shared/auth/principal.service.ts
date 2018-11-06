@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { AccountService } from './account.service';
 import { User } from '../domain/user.model';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -59,7 +59,8 @@ export class Principal {
                     this.authenticationState.next(this.userIdentity);
                     return user;
                 }
-            ));
+            ))
+            .pipe(catchError(error=>of(this.userIdentity)));
         }
     }
 
@@ -69,5 +70,10 @@ export class Principal {
 
     isIdentityResolved(): boolean {
         return this.userIdentity !== undefined;
+    }
+    logout(){
+        this.userIdentity = undefined;
+        this.authenticated = false;
+        this.authenticationState.next(this.userIdentity);
     }
 }
