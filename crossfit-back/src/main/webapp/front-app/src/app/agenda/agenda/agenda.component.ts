@@ -38,6 +38,7 @@ export class AgendaComponent implements OnInit {
 
   mode: CalendarMode = this.availableModes[2];
   
+  @Input() addEventMenu;
   @Output() onAddEvent = new EventEmitter<Date>();
   @Output() onEditEvent = new EventEmitter<Event>();
 

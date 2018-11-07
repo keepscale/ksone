@@ -1,2 +1,17 @@
 
-<agenda (onAddEvent)=newWod($event) (onEditEvent)="editWod($event)"></agenda>
+<agenda [addEventMenu]="addMenu" (onEditEvent)="editWod($event)"></agenda>
+
+
+
+<mat-menu #addMenu="matMenu">
+    <ng-template matMenuContent let-day="day">
+        <button mat-menu-item (click)="newWod(day.date)">
+            <mat-icon>add</mat-icon>
+            <span>Nouveau wod</span>
+        </button>
+        <button mat-menu-item (click)="pickAWodForDate(day.date)">
+            <mat-icon>search</mat-icon>
+            <span>Trouver un wod existant</span>
+        </button>
+    </ng-template>
+</mat-menu>

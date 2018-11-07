@@ -14,6 +14,7 @@ export class CalendarComponent implements OnInit {
   totalDaysByRow: number;
   rows: number[] = [];
 
+  @Input() addEventMenu;
   @Output() onAddEvent = new EventEmitter<Day>();
   @Output() onEditEvent = new EventEmitter<Event>();
   

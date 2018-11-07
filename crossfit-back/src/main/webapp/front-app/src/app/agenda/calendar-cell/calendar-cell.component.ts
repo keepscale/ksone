@@ -18,6 +18,7 @@ export class CalendarCellComponent implements OnInit {
   
   @Input() showBigCenterDayNumber: boolean = false;
   
+  @Input() addEventMenu;
   @Output() onAddEvent = new EventEmitter<Day>();
 
   constructor() { }
