@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Planifier un wod pour le {{data.date | date:'dd/MM/yyyy'}}</h1>
+<div mat-dialog-content>
+  
+
+    <form novalidate (ngSubmit)="submitSearchForm()">
+
+        <div class="form-container">
+          <mat-form-field>
+            <input matInput [(ngModel)]="search.query" name="query" placeholder="Filter">
+          </mat-form-field>
+        </div>
+          
+        <div class="form-footer">
+          <submit-button [i18n]="'button.search'"></submit-button>
+        </div>
+  
+    </form>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+</div>
