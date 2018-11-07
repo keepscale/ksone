@@ -25,4 +25,4 @@
   </mat-form-field>
 </div>
 
-<calendar [days]="days" [totalDaysByRow]=mode.daysByRow (onAddEvent)=addEvent($event) (onEditEvent)="editEvent($event)"></calendar>
+<calendar [days]="days" [totalDaysByRow]=mode.daysByRow [addEventMenu]=addEventMenu (onAddEvent)=addEvent($event) (onEditEvent)="editEvent($event)"></calendar>

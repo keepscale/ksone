@@ -6,8 +6,13 @@
 
   <div class="cell-header">
 
-    <button class="day-action-menu" mat-icon-button (click)="addEvent(day)" *ngIf="onAddEvent.observers.length!=0">
+    <button class="day-action-menu" mat-icon-button (click)="addEvent(day)" *ngIf="addEventMenu == null">
       <mat-icon>add</mat-icon>
+    </button>
+
+    
+    <button class="day-action-menu" mat-icon-button [matMenuTriggerFor]=addEventMenu [matMenuTriggerData]="{day: day}" *ngIf="addEventMenu">
+        <mat-icon>more_vert</mat-icon>
     </button>
     
     <span *ngIf="showDayName" class="day-name">{{day.date.format('dddd')}}</span>
