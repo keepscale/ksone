@@ -12,6 +12,8 @@ import { ErrorService } from 'src/app/error/error.service';
 import { RunnerService } from 'src/app/common/runner.service';
 import { PaginateList } from 'src/app/common/paginate-list.model';
 import { ListComponent } from '../list/list.component';
+import { MatDialog } from '@angular/material';
+import { WoDDialogPickerComponent } from '../wod-dialog-picker/wod-dialog-picker.component';
 
 
 @Component({
@@ -29,7 +31,8 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
     protected wodService: WodService,
     protected route: ActivatedRoute,
     protected router: Router,
-    private eventService: EventService) {
+    private eventService: EventService,
+    public dialog: MatDialog) {
       super(toolbar, runner, principal);
   }
   
@@ -76,5 +79,17 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
 
   isOwner(wod:Wod){
     return this.principal.identity().toPromise().then(user=>user.id == wod.shareProperties.ownerId);
+  }
+
+
+  pickAWodForDate(date: Date): void {
+    const dialogRef = this.dialog.open(WoDDialogPickerComponent, {
+      width: "80%",
+      data: {date: date}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }

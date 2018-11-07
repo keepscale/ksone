@@ -12,6 +12,7 @@ import { DatePublicationDialogComponent } from './edit/date-publication-dialog/d
 import { AgendaModule } from '../agenda/agenda.module';
 import { WodCalendarComponent } from './wod-calendar/wod-calendar.component';
 import { ListComponent } from './list/list.component';
+import { WoDDialogPickerComponent } from './wod-dialog-picker/wod-dialog-picker.component';
 
 const wodsRoutes: Routes = [
   { path: 'wod/calendar',     component: WodCalendarComponent, canActivate: [RoleCoachGuard] },
@@ -32,10 +33,10 @@ const wodsRoutes: Routes = [
   exports: [
     MyResultComponent, RankingComponent
   ],
-  entryComponents: [DatePublicationDialogComponent],
+  entryComponents: [DatePublicationDialogComponent, WoDDialogPickerComponent],
   declarations: [WodCalendarComponent, EditComponent, DetailComponent, 
     MyResultComponent, RankingComponent, DeleteComponent, 
-    DatePublicationDialogComponent, ListComponent],
+    DatePublicationDialogComponent, ListComponent, WoDDialogPickerComponent],
   providers: []
 })
 export class WodModule { }
