@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ClosedDayRepository extends JpaRepository<ClosedDay,Long> {
 	
-    @Query("select day from ClosedDay day where day.box =:box AND day.startAt between :startAt and :endAt")
+    @Query("select day from ClosedDay day where day.box =:box AND day.startAt <=  :endAt and day.endAt >= :startAt")
 	List<ClosedDay> findAllByBoxAndBetween(@Param("box") CrossFitBox box, @Param("startAt") DateTime startAt, @Param("endAt") DateTime endAt);
 
 	static final String BY_ID = " cd.id = :id ";
