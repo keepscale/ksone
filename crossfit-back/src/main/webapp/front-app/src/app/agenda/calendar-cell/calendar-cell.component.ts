@@ -8,6 +8,8 @@ import { Day } from '../event';
 })
 export class CalendarCellComponent implements OnInit {
 
+  now = new Date();
+
   @Input() rowIdx: number;
   @Input() colIdx: number;
   @Input() day: Day;
