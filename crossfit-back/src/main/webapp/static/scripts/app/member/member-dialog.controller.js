@@ -47,7 +47,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
         };
         
 
-        $scope.deleteSubscriptionAtIndex = function(idx) {
+        $scope.deleteSubscription = function(subscription) {
+        	var idx = $scope.member.subscriptions.indexOf(subscription);
         	$scope.member.subscriptions.splice(idx, 1);
         };
         

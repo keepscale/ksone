@@ -336,7 +336,7 @@ h1{
 }
 
 
-.bill .datetimepicker-wrapper > input{
+.datetimepicker-wrapper > input{
     width: 100px;
 }
 
@@ -402,6 +402,17 @@ datetimepicker.has-error input{
 
 .modal-header .navbar-nav > li > a {
     padding: 10px 20px;
+}
+
+@media (max-width: 767px) {
+    .modal-header .navbar-nav > li > a {
+    	padding: 10px 10px;
+	  	overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    max-width: 80px;
+	}
+
 }
 .modal-header .modal-title-center{
     text-align: center;
