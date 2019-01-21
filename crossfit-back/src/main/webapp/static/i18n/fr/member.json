@@ -58,7 +58,7 @@
 			"address.placeholder" : "Adresse",
 			"zipCode.placeholder" : "Code postal",
 			"city.placeholder" : "Ville",
-			"givenMedicalCertificate.selected.label" : "Certificat médical donné, et daté au",
+			"givenMedicalCertificate.selected.label" : "Certificat médical daté au",
 			"givenMedicalCertificate.notselected.label" : "Certificat médical",
 			"comments" : "Infos. complémentaires",
 			"comments.placeholder" : "",
