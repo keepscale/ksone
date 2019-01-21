@@ -27,6 +27,8 @@
     "ng-fastclick": "^1.0.2",
     "sockjs-client": "1.1.4",
     "stomp-websocket": "2.3.4",
-    "angular-upload": "^1.0.12"
+    "angular-upload": "^1.0.12",
+    "angular-signature": "^1.0.3",
+    "signature_pad": "^2.3.0"
   }
 }
