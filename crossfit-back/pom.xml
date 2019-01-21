@@ -304,6 +304,7 @@
 		              <jsSourceDir>static</jsSourceDir>
 		              <jsSourceFiles>
 		              
+						<jsSourceFile>/bower_components/signature_pad/signature_pad.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/sockjs-client/dist/sockjs.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/stomp-websocket/lib/stomp.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
@@ -326,6 +327,7 @@
 						<jsSourceFile>/bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-local-storage/dist/angular-local-storage.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-cache-buster/angular-cache-buster.js</jsSourceFile>
+						<jsSourceFile>/bower_components/angular-signature/src/signature.js</jsSourceFile>
 						        
 						        
 						<jsSourceFile>/bower_components/moment/min/moment.min.js</jsSourceFile>
