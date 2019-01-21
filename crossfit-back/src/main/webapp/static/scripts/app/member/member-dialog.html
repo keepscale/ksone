@@ -209,14 +209,14 @@
   			<div class="col-xs-12">
 						
 		    	<div class="row form-group" ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
-			        <div class="col-xs-4"> 
+			        <div class="col-xs-12 col-sm-6 col-lg-4"> 
 						<select
 							class="form-control" id="field_membership" name="membership"
 							ng-model="subscription.membership" required ng-click="calculateEndDate(subscription)"
 							ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
 						</select>
 					</div>
-					<div class="col-xs-4"> 
+					<div class="col-xs-12 col-sm-6 col-lg-4"> 
 															
 						<datetimepicker name="subscriptionStartDate" how-weeks="false" ng-class="caculateCssDate(subscription, subscriptions[$index-1], subscriptions[$index+1], 'desc' )"
 						show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
@@ -226,13 +226,13 @@
 	       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
      	
 					</div>
-					<div class="col-xs-2">
+					<div class="col-xs-10 col-sm-10 col-lg-2">
 					 
 						  <select class="form-control" id="sel1" ng-model="subscription.paymentMethod" required>
 						    <option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.' + p | translate }}</option>
 						  </select>
 					</div>
-			        <div class="col-xs-2">
+			        <div class="col-xs-2 col-sm-2 col-lg-2">
 			        
 		  				<button type="button" class="btn btn-danger" ng-click="deleteSubscriptionAtIndex($index)" ng-disabled="subscription.bookingCount > 0">
 							<span class="glyphicon glyphicon-remove"></span>

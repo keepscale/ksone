@@ -99,9 +99,6 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Column(name = "uuid", length = 36, nullable = false, unique = true)
     private String uuid;
     
-    @Size(max = 36)
-    @Column(name = "iban", length = 36, unique = true)
-    private String iban;
 
     @NotNull
     @Email
