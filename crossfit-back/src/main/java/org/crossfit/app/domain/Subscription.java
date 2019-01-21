@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
@@ -69,6 +70,11 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
     
+/*
+    @Size(max = 36)
+    @Column(name = "iban", length = 36, unique = true)
+    private String iban;
+  */  
     public Long getId() {
         return id;
     }
