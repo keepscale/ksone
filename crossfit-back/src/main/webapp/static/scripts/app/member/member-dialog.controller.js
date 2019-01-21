@@ -56,13 +56,20 @@ angular.module('crossfitApp').controller('MemberDialogController',
         		$scope.addMonthToSubscriptionEndDate(subscription);
         	}
         }
-        $scope.caculateCssDate = function(actual, prev){
-        	if (actual != null && prev != null && prev.subscriptionEndDate.getTime() > actual.subscriptionStartDate.getTime()){
-        		return "has-error";
+        $scope.caculateCssDate = function(actual, prev, next, dir){
+
+        	if (actual != null && actual.subscriptionEndDate != null){
+	        	if (actual.subscriptionEndDate.getTime() < actual.subscriptionStartDate.getTime()){
+	        		return "has-error";
+	        	}
         	}
-        	if (actual.subscriptionEndDate.getTime() < actual.subscriptionStartDate.getTime()){
-        		return "has-error";
-        	}
+        	
+        	var compareTo = dir === 'asc' ? prev : next;
+        	
+        	if (compareTo != null && compareTo.subscriptionEndDate != null && 
+    				compareTo.subscriptionEndDate.getTime() > actual.subscriptionStartDate.getTime()){
+    			return "has-error";
+    		}
         }
         
         $scope.addMonthToSubscriptionEndDate = function(subscription){

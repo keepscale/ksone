@@ -35,7 +35,7 @@ angular.module('crossfitApp')
                     $modal.open({
                         templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
-                        size: 'lg',
+                        size: 'xl',
                         resolve: {
                             entity: function () {
                                 return {
@@ -69,7 +69,7 @@ angular.module('crossfitApp')
                     $modal.open({
                         templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
-                        size: 'lg',
+                        size: 'xl',
                         resolve: {
                             entity: ['Member', function(Member) {
                                 return Member.get({id : $stateParams.id});

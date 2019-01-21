@@ -4,13 +4,11 @@
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
 			aria-hidden="true" ng-click="clear()">&times;</button>
-		<h4 class="modal-title" id="myMemberLabel"
-			translate="crossfitApp.member.home.createOrEditLabel">Create or
-			edit a Member</h4>
-	</div>
-	
-	<div class="modal-body">
-		<jh-alert-error></jh-alert-error>
+		
+		<h4 class="modal-title modal-title-center">
+			<span ng-show="member.number">N°{{member.number}} - </span> 
+			<span style="text-transform: capitalize;"><span translate="crossfitApp.member.title.{{member.title}}"></span> {{member.firstName}} {{member.lastName}}</span>
+		</h4>
 		
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
 			<ul class="nav navbar-nav">
@@ -36,7 +34,10 @@
 				</li>
 			</ul>
 		</nav>
-		
+	</div>
+	
+	<div class="modal-body">
+		<jh-alert-error></jh-alert-error>
 		
 		<div class="row" ng-show="view == 'infoperso'">
 		  <div class="col-xs-12">
@@ -207,7 +208,7 @@
 		<div class="row form-group" ng-show="view == 'abonnements'">
   			<div class="col-xs-12">
 						
-		    	<div class="row form-group" ng-repeat="subscription in member.subscriptions"> 
+		    	<div class="row form-group" ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
 			        <div class="col-xs-4"> 
 						<select
 							class="form-control" id="field_membership" name="membership"
@@ -217,10 +218,10 @@
 					</div>
 					<div class="col-xs-4"> 
 															
-			          <datetimepicker name="subscriptionStartDate" how-weeks="false" ng-class="caculateCssDate(subscription, member.subscriptions[$index-1] )"
-			          show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
-			          		ng-model="subscription.subscriptionStartDate"></datetimepicker>
-
+						<datetimepicker name="subscriptionStartDate" how-weeks="false" ng-class="caculateCssDate(subscription, subscriptions[$index-1], subscriptions[$index+1], 'desc' )"
+						show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
+								ng-model="subscription.subscriptionStartDate"></datetimepicker>
+	
 						<datetimepicker name="subscriptionEndDate" how-weeks="false" show-meridian="false" 
 	       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
      	

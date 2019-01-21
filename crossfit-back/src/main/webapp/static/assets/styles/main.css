@@ -396,7 +396,21 @@ datetimepicker.has-error input{
 
 
 
+.modal-header .navbar{
+	margin: 5px 0 0;
+}
 
+.modal-header .navbar-nav > li > a {
+    padding: 10px 20px;
+}
+.modal-header .modal-title-center{
+    text-align: center;
+}
+.modal-xl {
+	width: 95%;
+	height: 100%;
+	margin: 10px auto;
+}
 
 
 
