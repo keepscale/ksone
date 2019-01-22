@@ -336,7 +336,7 @@ h1{
 }
 
 
-.datetimepicker-wrapper > input{
+.datetimepicker-wrapper > input.form-control{
     width: 100px;
 }
 
