@@ -4,6 +4,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
     ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking', 'Authority', 'Bill',
         function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking, Authority, Bill) {
 
+    	$scope.now = new Date();
+    	
     	$scope.view = "infoperso";
     	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
