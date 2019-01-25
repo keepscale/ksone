@@ -219,71 +219,144 @@
 						</button>
 			        </div>
 				</div>
-					
 				<ul class="list-group">
-			    	<li class="list-group-item form-group" ng-class="{'list-group-item-success':now < subscription.subscriptionEndDate}" ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
+			    	<li class="list-group-item form-group" ng-class="{'list-group-item-success':now < subscription.subscriptionEndDate}" 
+			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
 			    	
-			    		<div class="form-inline">	
-
-	     					<select ng-disabled="subscription.bookingCount > 0"
-								class="form-control" id="field_membership" name="membership"
-								ng-model="subscription.membership" required ng-click="calculateEndDate(subscription)"
-								ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
-							</select>
-							
-							<datetimepicker name="subscriptionStartDate" how-weeks="false" ng-class="caculateCssDate(subscription, subscriptions[$index-1], subscriptions[$index+1], 'desc' )"
-							show-meridian="false" date-format="dd/MM/yyyy" hidden-time="true"
-									ng-model="subscription.subscriptionStartDate"></datetimepicker>
-		
-							<datetimepicker name="subscriptionEndDate" how-weeks="false" show-meridian="false" 
-		       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
-	     	
-		    		
-								
-							<select class="form-control" id="sel1" ng-model="subscription.paymentMethod" required>
-							  <option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.' + p | translate }}</option>
-							</select>
-							
-							<div class="form-group" ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
-							
-								<input type="text" class="form-control" id="iban" name="iban"
-									placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
-									ng-model="subscription.directDebitIban" ng-minlength=36 ng-maxlength=36
-									required maxlength="36">
-							
-								<input type="text" class="form-control" id="bic" name="bic"
-									placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
-									ng-model="subscription.directDebitBic" ng-minlength=8 ng-maxlength=8
-									required maxlength="8">
-							
-								<input type="number" class="form-control" ng-model="subscription.directDebitFirstPaymentTaxIncl" ng-minlength=1 ng-maxlength=12 required maxlength="12">
-								
-								
-		
-								<datetimepicker name="subscriptionDirectDebitAfterDate" how-weeks="false" show-meridian="false" 
-			       						date-format="dd/MM/yyyy" hidden-time="true" ng-model="subscription.directDebitAfterDate"></datetimepicker>
-			       						
-			       						
-								<input type="number" class="form-control" ng-model="subscription.directDebitatDayOfMonth" ng-minlength=1 ng-maxlength=2 required maxlength="2">
-		     	
+						<div class="row">
+							<div class="col-xs-10 col-sm-5 form-group">
+								<select ng-disabled="subscription.bookingCount > 0"
+									class="form-control" id="field_membership" name="membership"
+									ng-model="subscription.membership" required
+									ng-click="calculateEndDate(subscription)"
+									ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
+								</select>
+							</div>					
+							<div class="col-xs-2 visible-xs">
+								<div class="pull-right">
+									<span ng-if="subscription.bookingCount>0"
+										style="white-space: nowrap;">{{subscription.bookingCount}}
+										résa.</span>
+									<button ng-if="subscription.bookingCount==0" type="button"
+										class="btn btn-danger"
+										ng-click="deleteSubscription(subscription)"
+										ng-disabled="subscription.bookingCount > 0">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</div>
 							</div>
-						  
-					        <div class="pull-right"> 
-					        
-								<span style="white-space: nowrap;">{{subscription.bookingCount}} résa.</span>
-					        
-				  				<button type="button" class="btn btn-danger" ng-click="deleteSubscription(subscription)" ng-disabled="subscription.bookingCount > 0">
-									<span class="glyphicon glyphicon-remove"></span>
-								</button>
-								
+							
+							<div class="col-xs-10 col-sm-5 form-group">
+		
+								<div class="form-inline">
+		
+									<datetimepicker name="subscriptionStartDate" how-weeks="false"
+										ng-class="caculateCssDate(subscription, subscriptions[$index-1], subscriptions[$index+1], 'desc' )"
+										show-meridian="false" date-format="dd/MM/yyyy"
+										hidden-time="true" ng-model="subscription.subscriptionStartDate"></datetimepicker>
+		
+									<datetimepicker name="subscriptionEndDate" how-weeks="false"
+										show-meridian="false" date-format="dd/MM/yyyy"
+										hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
+								</div>
+		
 							</div>
-						
-			    		</div>
-	  						
-				        
-			        </li>
-	    		</ul>
-		        
+										
+							<div class="col-sm-2 hidden-xs">
+								<div class="pull-right">
+									<span ng-if="subscription.bookingCount>0"
+										style="white-space: nowrap;">{{subscription.bookingCount}}
+										résa.</span>
+									<button ng-if="subscription.bookingCount==0" type="button"
+										class="btn btn-danger"
+										ng-click="deleteSubscription(subscription)"
+										ng-disabled="subscription.bookingCount > 0">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</div>
+							</div>
+							
+							<div class="col-xs-12 col-sm-12 form-group">
+								<select class="form-control" id="sel1"
+									ng-model="subscription.paymentMethod" required>
+									<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
+										+ p | translate }}</option>
+								</select>
+							</div>
+							
+						</div>
+	
+						<div class="panel panel-default"  ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
+							<div class="panel-heading">Info. Prélèvement</div>
+							<div class="panel-body">
+							
+								<div class="row">
+								
+									<div class="col-xs-5 col-sm-3 col-md-2 form-group">
+					  					<label>A partir du </label>
+		
+										<datetimepicker class="input-group" name="subscriptionDirectDebitAfterDate"
+											how-weeks="false" show-meridian="false"
+											date-format="dd/MM/yyyy" hidden-time="true"
+											ng-model="subscription.directDebitAfterDate"></datetimepicker>
+									</div>
+									
+									<div class="col-xs-7 col-sm-4 form-group">
+					  					<label>Jour prélèvement</label>
+				  					    <div class="input-group">		
+		  									<span class="input-group-addon">Le</span>	  															
+												
+											<input type="number" class="form-control" style="text-align: right"
+												ng-model="subscription.directDebitatDayOfMonth" ng-minlength=1
+												ng-maxlength=2 required maxlength="2">
+											
+		  									<span class="input-group-addon hidden-xs">de chaque mois</span>
+										</div>
+									</div>
+									
+									<div class="col-xs-12 col-sm-3 form-group">
+					  					<label>Premier paiement de </label>
+				  					    <div class="input-group">			  					
+											<input type="number" style="text-align: right"
+												class="form-control "
+												ng-model="subscription.directDebitFirstPaymentTaxIncl"
+												ng-minlength=1 ng-maxlength=12 required maxlength="12" />
+		  									<span class="input-group-addon">€</span>
+										</div>
+									</div>
+									<div class="col-sm-offset-2">
+									</div>
+									
+									<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 form-group">	
+									
+					  					<label>IBAN</label>
+				  					    <div>
+											<input type="text" class="form-control" id="iban" name="iban"
+												placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
+												ng-model="subscription.directDebitIban" ng-minlength=36
+												ng-maxlength=36 required maxlength="36" /> 
+				  					    </div>
+			  					    </div>
+			  					    
+									<div class="col-xs-12 col-sm-4 col-lg-3 form-group">
+			
+					  					<label>BIC</label>
+				  					    <div>
+											<input type="text"
+												class="form-control" id="bic" name="bic"
+												placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
+												ng-model="subscription.directDebitBic" ng-minlength=8
+												ng-maxlength=8 required maxlength="8" /> 
+										</div>
+									</div>
+				
+								</div>		
+							</div>
+						</div>	
+					
+					</li>
+				</ul>
+			    		  		
 		        
 		        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
 			        <div class="col-xs-12"> 
