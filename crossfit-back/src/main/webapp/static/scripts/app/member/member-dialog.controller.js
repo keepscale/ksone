@@ -39,12 +39,34 @@ angular.module('crossfitApp').controller('MemberDialogController',
 	            });
             }
         }
+        
+        $scope.isOpen = function(sub){
+        	return $scope.openedSubscription.indexOf(sub) > -1;
+        }
 
+        $scope.openedSubscription = [];
+        
+        $scope.toggle = function(event, sub){
+
+        	
+        	var idx = $scope.openedSubscription.indexOf(sub);
+
+			// Is currently selected
+			if (idx > -1) {
+				$scope.openedSubscription.splice(idx, 1);
+			}
+
+			// Is newly selected
+			else {
+				$scope.openedSubscription.push(sub);
+			}
+        }
 
         $scope.addSubscription = function() {
         	//TODO: Recupere les membership par defaut
         	$scope.member.subscriptions.push({
-        		subscriptionStartDate : new Date()
+        		subscriptionStartDate : new Date(),
+        		bookingCount: 0
         	});
         };
         

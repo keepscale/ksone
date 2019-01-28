@@ -208,7 +208,7 @@
 		</div>
 		
 		
-		<div class="row" ng-show="view == 'abonnements'">
+		<div class="row member-subscriptions" ng-show="view == 'abonnements'">
   			<div class="col-xs-12">	
   			
   							
@@ -219,12 +219,31 @@
 						</button>
 			        </div>
 				</div>
-				<ul class="list-group">
-			    	<li class="list-group-item form-group" ng-class="{'list-group-item-success':now < subscription.subscriptionEndDate}" 
+		    	<div class="panel panel-default form-group" ng-class="{'panel-primary open-sub':now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate, 'open-sub': isOpen(subscription)}"
 			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
+					<div class="panel-heading" >
+					
+				  		<button type="button" class="btn btn-sm btn-default toggle-button" ng-click="toggle($event, subscription)"
+				  			ng-disabled="now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate">
+							<span class="glyphicon glyphicon-{{isOpen(subscription) ? 'collapse-down' : 'expand'}}"></span>
+				  		</button>
+										
+						<span ng-if="subscription.membership">
+						{{subscription.subscriptionStartDate | date: 'dd/MM/yyyy'}} > {{subscription.subscriptionEndDate | date: 'dd/MM/yyyy'}} 
+						| {{subscription.membership.name}}
+						<span ng-if="subscription.bookingCount>0"
+										style="white-space: nowrap;">
+						| {{subscription.bookingCount}} résa.</span>
+						</span>
+						<span ng-if="!subscription.membership">Sélectionner un abonnement</span>
+					
+					</div>
+
+					<div class="panel-body">
 			    	
 						<div class="row">
 							<div class="col-xs-10 col-sm-5 form-group">
+			  					<label>Type d'abonnement </label>
 								<select ng-disabled="subscription.bookingCount > 0"
 									class="form-control" id="field_membership" name="membership"
 									ng-model="subscription.membership" required
@@ -247,7 +266,7 @@
 							</div>
 							
 							<div class="col-xs-10 col-sm-5 form-group">
-		
+			  					<label>Début / Fin </label>		
 								<div class="form-inline">
 		
 									<datetimepicker name="subscriptionStartDate" how-weeks="false"
@@ -277,6 +296,7 @@
 							</div>
 							
 							<div class="col-xs-12 col-sm-12 form-group">
+			  					<label>Mode de paiement</label>		
 								<select class="form-control" id="sel1"
 									ng-model="subscription.paymentMethod" required>
 									<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
@@ -303,28 +323,28 @@
 									
 									<div class="col-xs-7 col-sm-4 form-group">
 					  					<label>Jour prélèvement</label>
-				  					    <div class="input-group">		
+				  					    <div class="input-group" style="max-width: 230px;">		
 		  									<span class="input-group-addon">Le</span>	  															
 												
 											<input type="number" class="form-control" style="text-align: right"
 												ng-model="subscription.directDebitatDayOfMonth" ng-minlength=1
-												ng-maxlength=2 required maxlength="2">
+												ng-maxlength=2 maxlength="2">
 											
 		  									<span class="input-group-addon hidden-xs">de chaque mois</span>
 										</div>
 									</div>
 									
-									<div class="col-xs-12 col-sm-3 form-group">
+									<div class="col-xs-12 col-sm-4 form-group">
 					  					<label>Premier paiement de </label>
 				  					    <div class="input-group">			  					
 											<input type="number" style="text-align: right"
 												class="form-control "
 												ng-model="subscription.directDebitFirstPaymentTaxIncl"
-												ng-minlength=1 ng-maxlength=12 required maxlength="12" />
+												ng-minlength=1 ng-maxlength=12 maxlength="12" />
 		  									<span class="input-group-addon">€</span>
 										</div>
 									</div>
-									<div class="col-sm-offset-2">
+									<div class="col-sm-offset-1">
 									</div>
 									
 									<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 form-group">	
@@ -334,7 +354,7 @@
 											<input type="text" class="form-control" id="iban" name="iban"
 												placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
 												ng-model="subscription.directDebitIban" ng-minlength=36
-												ng-maxlength=36 required maxlength="36" /> 
+												ng-maxlength=36 maxlength="36" /> 
 				  					    </div>
 			  					    </div>
 			  					    
@@ -345,8 +365,8 @@
 											<input type="text"
 												class="form-control" id="bic" name="bic"
 												placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
-												ng-model="subscription.directDebitBic" ng-minlength=8
-												ng-maxlength=8 required maxlength="8" /> 
+												ng-model="subscription.directDebitBic" ng-minlength=8 disabled
+												ng-maxlength=8 maxlength="8" /> 
 										</div>
 									</div>
 				
@@ -354,9 +374,8 @@
 							</div>
 						</div>	
 					
-					</li>
-				</ul>
-			    		  		
+					</div>
+		    	</div>	  		
 		        
 		        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
 			        <div class="col-xs-12"> 
