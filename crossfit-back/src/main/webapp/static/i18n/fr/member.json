@@ -62,6 +62,8 @@
 			"givenMedicalCertificate.notselected.label" : "Certificat médical",
 			"comments" : "Infos. complémentaires",
 			"comments.placeholder" : "",
+			"iban.placeholder": "FRXX BBBB BGGG GGCC CCCC CCCC CKK",
+			"bic.placeholder" : "DAAE FR PP CCT",
 			"role" : {
 				"ROLE_ADMIN" : "Administrateur",
 				"ROLE_MANAGER" : "Manager",

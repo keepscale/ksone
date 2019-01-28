@@ -424,5 +424,13 @@ datetimepicker.has-error input{
 }
 
 
+.member-subscriptions .panel-body{
+	display: none;
+}
+
+.member-subscriptions .panel.open-sub .panel-body{
+	display: block;
+}
+
 
 
