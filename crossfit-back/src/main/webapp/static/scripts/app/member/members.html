@@ -233,7 +233,7 @@
                 'danger': member.locked, 
                 'warning': !member.enabled, 
                 'success': member.enabled && !member.locked}">
-                    <td> <a href="#" ui-sref="member.edit({id:member.id})"> {{member.lastName}} {{member.firstName}} </a></td>
+                    <td> <a href="#" ui-sref="member.edit.view({id:member.id, view:'infoperso'})"> {{member.lastName}} {{member.firstName}} </a></td>
                     <td> <a href="mailto:{{member.email}}">{{member.email}}</a></td>
                     <td> <a href="tel:{{member.telephonNumber}}">{{member.telephonNumber}}</a></td>
                     

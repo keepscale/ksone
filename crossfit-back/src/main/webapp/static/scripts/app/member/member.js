@@ -78,8 +78,14 @@ angular.module('crossfitApp')
                     }).result.then(function(result) {
                         $state.go('member', null, { reload: true });
                     }, function() {
-                        $state.go('^');
+                        $state.go('member', null, { reload: true });
                     })
                 }]
-            });
+            })
+            
+            .state('member.edit.view', {
+                parent: 'member.edit',
+                url: '/{view}'
+            })
+            ;
     });
