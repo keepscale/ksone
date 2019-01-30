@@ -6,25 +6,36 @@ angular.module('crossfitApp').controller('MemberDialogController',
 
     	$scope.now = new Date();
     	
-    	$scope.view = "infoperso";
+    	$scope.view = $stateParams.view;
     	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
         $scope.memberships = Membership.query();
         $scope.roles = Authority.query();
         $scope.paymentMethods = Bill.paymentMethods();
         
-        
+        $scope.$on('$locationChangeSuccess', function(event) { 
+        	$scope.view = $stateParams.view;
+        });
 
         var onSaveFinished = function (result) {
+            $scope.$emit('crossfitApp:memberUpdate', result);
+        };
+        var onSaveFinishedClose = function (result) {
             $scope.$emit('crossfitApp:memberUpdate', result);
             $modalInstance.close(result);
         };
 
+        $scope.saveAndQuit = function () {
+        	$scope._save(onSaveFinishedClose);
+        }
         $scope.save = function () {
+        	$scope._save(onSaveFinished);
+        }
+        $scope._save = function (callBack) {
             if ($scope.member.id != null) {
-                Member.update($scope.member, onSaveFinished);
+                Member.update($scope.member, callBack);
             } else {
-                Member.save($scope.member, onSaveFinished);
+                Member.save($scope.member, callBack);
             }
         };
 
