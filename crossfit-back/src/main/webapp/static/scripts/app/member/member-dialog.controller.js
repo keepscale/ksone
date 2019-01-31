@@ -24,6 +24,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
                     $modalInstance.close(result);
             	}
             	else{
+            		$scope.member = Member.get({id : result.id});
+                    $scope.loadBooking();
             	}
             };
             
