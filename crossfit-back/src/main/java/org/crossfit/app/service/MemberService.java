@@ -241,7 +241,7 @@ public class MemberService {
 			initAccountAndSendMail(member);
 		}
 		//Supprime les subscription qui ne sont plus dans le dto
-		member.getSubscriptions().removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->dto.getId().equals(sub.getId())));
+		member.getSubscriptions().removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->sub.getId().equals(dto.getId())));
 		
 		
 		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {

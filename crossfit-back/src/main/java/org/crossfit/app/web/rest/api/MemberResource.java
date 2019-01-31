@@ -110,11 +110,9 @@ public class MemberResource {
 		if (member.getId() != null) {
 			return ResponseEntity.badRequest().header("Failure", "A new member cannot already have an ID").body(null);
 		}
-		
-		Member result = memberService.doSave(member);
-		
+		MemberDTO result = MemberDTO.MAPPER.apply(memberService.doSave(member));
 		return ResponseEntity.created(new URI("/api/members/" + result.getId()))
-				.headers(HeaderUtil.createEntityCreationAlert("member", result.getId().toString())).body(doGet(result.getId()));
+				.headers(HeaderUtil.createEntityCreationAlert("member", result.getId().toString())).body(result);
 	}
 
 	
@@ -128,9 +126,9 @@ public class MemberResource {
 		if (member.getId() == null) {
 			return create(member);
 		}
-		Member result = memberService.doSave(member);
+		MemberDTO result = MemberDTO.MAPPER.apply(memberService.doSave(member));
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("member", member.getId().toString()))
-				.body(doGet(result.getId()));
+				.body(result);
 	}
 
 	/**
