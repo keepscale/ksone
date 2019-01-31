@@ -1,5 +1,5 @@
 
-<form name="form" role="form" novalidate ng-submit="saveAndQuit()">
+<form name="form" role="form" novalidate ng-submit="save(true)">
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
@@ -291,7 +291,7 @@
 							
 							<div class="col-sm-4 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>		
-									<button ng-if="subscription.signatureDate == null" type="button"
+									<button ng-if="subscription.id != null && subscription.signatureDate == null" type="button"
 										class="btn btn-danger form-control"
 										ng-click="prepareSignature(subscription)">Générer contrat
 									</button>
@@ -434,7 +434,7 @@
 		<button type="button"
 			ng-disabled="form.$invalid"
 			class="btn btn-primary hidden-xs"
-			ng-click="save()">
+			ng-click="save(false)">
 			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
 				translate="entity.action.save">Save</span>
 		</button>
