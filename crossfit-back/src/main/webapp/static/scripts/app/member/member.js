@@ -78,7 +78,7 @@ angular.module('crossfitApp')
                     }).result.then(function(result) {
                         $state.go('member', null, { reload: true });
                     }, function() {
-                        $state.go('member', null, { reload: true });
+                        $state.go('member', null);
                     })
                 }]
             })

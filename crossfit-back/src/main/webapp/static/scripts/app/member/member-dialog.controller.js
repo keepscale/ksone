@@ -7,7 +7,6 @@ angular.module('crossfitApp').controller('MemberDialogController',
     	$scope.now = new Date();
     	
     	$scope.view = $stateParams.view;
-    	$scope.showAllForm = ! $state.is('member.editMembership');
         $scope.member = entity;
         $scope.memberships = Membership.query();
         $scope.roles = Authority.query();
@@ -17,21 +16,17 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	$scope.view = $stateParams.view;
         });
 
-        var onSaveFinished = function (result) {
-            $scope.$emit('crossfitApp:memberUpdate', result);
-        };
-        var onSaveFinishedClose = function (result) {
-            $scope.$emit('crossfitApp:memberUpdate', result);
-            $modalInstance.close(result);
-        };
-
-        $scope.saveAndQuit = function () {
-        	$scope._save(onSaveFinishedClose);
-        }
-        $scope.save = function () {
-        	$scope._save(onSaveFinished);
-        }
-        $scope._save = function (callBack) {
+        
+        $scope.save = function (andQuit) {
+        	var callBack = function(result){
+                $scope.$emit('crossfitApp:memberUpdate', result);
+            	if (andQuit){
+                    $modalInstance.close(result);
+            	}
+            	else{
+            	}
+            };
+            
             if ($scope.member.id != null) {
                 Member.update($scope.member, callBack);
             } else {
