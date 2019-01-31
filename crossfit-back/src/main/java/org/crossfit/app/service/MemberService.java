@@ -240,18 +240,35 @@ public class MemberService {
 			member.setLogin(memberdto.getEmail().toLowerCase());
 			initAccountAndSendMail(member);
 		}
-		member.getSubscriptions().clear();
+		//Supprime les subscription qui ne sont plus dans le dto
+		member.getSubscriptions().removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->dto.getId().equals(sub.getId())));
+		
+		
 		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
-			Subscription s = new Subscription();
-        	s.setMember(member);
+			Subscription s;
+			
+			if (dto.getId() == null) {
+				s = new Subscription();
+				s.setMember(member);
+				member.getSubscriptions().add(s);
+			}
+			else {
+				s = member.getSubscriptions().stream().filter(sub->sub.getId().equals(dto.getId())).findFirst()
+				.orElseThrow(()->new IllegalStateException("La souscription " + dto.getId() + " n'appartient pas à l'utilisateur " + memberdto.getId()));
+			}
         	
-			s.setId(dto.getId());
+        	
         	s.setMembership(dto.getMembership());
         	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
         	s.setPaymentMethod(dto.getPaymentMethod());
         	
-			member.getSubscriptions().add(s);
+        	s.setDirectDebitAfterDate(dto.getDirectDebitAfterDate());
+        	s.setDirectDebitAtDayOfMonth(dto.getDirectDebitAtDayOfMonth());
+        	s.setDirectDebitFirstPaymentTaxIncl(dto.getDirectDebitFirstPaymentTaxIncl());
+        	s.setDirectDebitIban(dto.getDirectDebitIban());
+        	s.setDirectDebitBic(dto.getDirectDebitBic());        	
+        	
 		}
 		member = memberRepository.save(member);
 		return member;
