@@ -1,5 +1,5 @@
 
-<form name="form" role="form" novalidate ng-submit="save()">
+<form name="form" role="form" novalidate ng-submit="saveAndQuit()">
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
@@ -13,22 +13,22 @@
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
 			<ul class="nav navbar-nav">
 				<li ng-class="{active:view=='infoperso'}">
-					<a ng-click="showView('infoperso')"> 
+					<a ui-sref="member.edit.view({view:'infoperso'})"> 
 						<span>{{'crossfitApp.member.infoperso'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='abonnements'}">
-					<a ng-click="showView('abonnements')"> 
+					<a ui-sref="member.edit.view({view:'abonnements'})"> 
 						<span>{{'crossfitApp.member.abonnements'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='reservations'}">
-					<a ng-click="showView('reservations')"> 
+					<a ui-sref="member.edit.view({view:'reservations'})"> 
 						<span>{{'crossfitApp.member.reservations'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='authority'}">
-					<a ng-click="showView('authority')"> 
+					<a ui-sref="member.edit.view({view:'authority'})"> 
 						<span>{{'crossfitApp.member.authority'|translate}}</span>
 					</a>
 				</li>
@@ -37,7 +37,6 @@
 	</div>
 	
 	<div class="modal-body">
-		<jh-alert-error></jh-alert-error>
 		
 		<div class="row" ng-show="view == 'infoperso'">
 		  <div class="col-md-12 col-lg-8">
@@ -228,21 +227,34 @@
 							<span class="glyphicon glyphicon-{{isOpen(subscription) ? 'collapse-down' : 'expand'}}"></span>
 				  		</button>
 										
+						<span ng-if="subscription.membership" class="hidden-xs">
+							{{subscription.subscriptionStartDate | date: 'dd/MM/yyyy'}} > {{subscription.subscriptionEndDate | date: 'dd/MM/yyyy'}} |
+						</span>	
 						<span ng-if="subscription.membership">
-						{{subscription.subscriptionStartDate | date: 'dd/MM/yyyy'}} > {{subscription.subscriptionEndDate | date: 'dd/MM/yyyy'}} 
-						| {{subscription.membership.name}}
-						<span ng-if="subscription.bookingCount>0"
-										style="white-space: nowrap;">
-						| {{subscription.bookingCount}} résa.</span>
+							{{subscription.membership.name}}
 						</span>
 						<span ng-if="!subscription.membership">Sélectionner un abonnement</span>
+						
+						
+						
+						<div class="pull-right">
+							<span ng-if="subscription.bookingCount>0"
+								style="white-space: nowrap;">{{subscription.bookingCount}}
+								résa.</span>
+							<button ng-if="subscription.bookingCount==0" type="button"
+								class="btn btn-danger"
+								ng-click="deleteSubscription(subscription)"
+								ng-disabled="subscription.bookingCount > 0">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</div>
 					
 					</div>
 
 					<div class="panel-body">
 			    	
 						<div class="row">
-							<div class="col-xs-10 col-sm-5 form-group">
+							<div class="col-xs-12 col-sm-5 col-lg-3 form-group">
 			  					<label>Type d'abonnement </label>
 								<select ng-disabled="subscription.bookingCount > 0"
 									class="form-control" id="field_membership" name="membership"
@@ -250,22 +262,9 @@
 									ng-click="calculateEndDate(subscription)"
 									ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
 								</select>
-							</div>					
-							<div class="col-xs-2 visible-xs">
-								<div class="pull-right">
-									<span ng-if="subscription.bookingCount>0"
-										style="white-space: nowrap;">{{subscription.bookingCount}}
-										résa.</span>
-									<button ng-if="subscription.bookingCount==0" type="button"
-										class="btn btn-danger"
-										ng-click="deleteSubscription(subscription)"
-										ng-disabled="subscription.bookingCount > 0">
-										<span class="glyphicon glyphicon-remove"></span>
-									</button>
-								</div>
-							</div>
+							</div>				
 							
-							<div class="col-xs-10 col-sm-5 form-group">
+							<div class="col-xs-12 col-sm-7 col-lg-3 form-group">
 			  					<label>Début / Fin </label>		
 								<div class="form-inline">
 		
@@ -280,28 +279,22 @@
 								</div>
 		
 							</div>
-										
-							<div class="col-sm-2 hidden-xs">
-								<div class="pull-right">
-									<span ng-if="subscription.bookingCount>0"
-										style="white-space: nowrap;">{{subscription.bookingCount}}
-										résa.</span>
-									<button ng-if="subscription.bookingCount==0" type="button"
-										class="btn btn-danger"
-										ng-click="deleteSubscription(subscription)"
-										ng-disabled="subscription.bookingCount > 0">
-										<span class="glyphicon glyphicon-remove"></span>
-									</button>
-								</div>
-							</div>
 							
-							<div class="col-xs-12 col-sm-12 form-group">
+							<div class="col-xs-12 col-sm-8 col-lg-3 form-group">
 			  					<label>Mode de paiement</label>		
 								<select class="form-control" id="sel1"
 									ng-model="subscription.paymentMethod" required>
 									<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
 										+ p | translate }}</option>
 								</select>
+							</div>
+							
+							<div class="col-sm-4 col-lg-3 form-group hidden-xs">
+			  						<label>&nbsp</label>		
+									<button ng-if="subscription.signatureDate == null" type="button"
+										class="btn btn-danger form-control"
+										ng-click="prepareSignature(subscription)">Générer contrat
+									</button>
 							</div>
 							
 						</div>
@@ -427,6 +420,9 @@
 				</label>
 			</div>
 		</div>
+		
+		
+		<jh-alert-error></jh-alert-error>
     </div>
 
 	<div class="modal-footer">
@@ -435,11 +431,18 @@
 			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
 				translate="entity.action.cancel">Cancel</span>
 		</button>
+		<button type="button"
+			ng-disabled="form.$invalid"
+			class="btn btn-primary hidden-xs"
+			ng-click="save()">
+			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
+				translate="entity.action.save">Save</span>
+		</button>
 		<button type="submit"
 			ng-disabled="form.$invalid"
 			class="btn btn-primary">
 			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
-				translate="entity.action.save">Save</span>
+				translate="entity.action.saveAndQuit">Save & Quit</span>
 		</button>
 	</div>
 </form>
