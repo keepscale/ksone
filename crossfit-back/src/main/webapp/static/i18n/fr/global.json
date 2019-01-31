@@ -87,6 +87,7 @@
             "edit": "",
             "delete": "Suppr.",
             "save": "Sauvegarder",
+            "saveAndQuit": "Sauvegarder & Quitter",
             "view": "Voir",
             "lock": "Bloquer",
             "export": "Export",
