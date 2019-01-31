@@ -27,7 +27,7 @@
 		
        	<addColumn tableName="SUBSCRIPTION">
        	
-            <column name="direct_debit_iban" type="varchar(36)">
+            <column name="direct_debit_iban" type="varchar(34)">
             	<constraints nullable="true"/>
             </column>
             <column name="direct_debit_bic" type="varchar(8)">
@@ -44,6 +44,10 @@
             <column name="direct_debit_at_day_of_month" type="int">
                 <constraints nullable="true" />
             </column>
+            
+			<column name="signature_data" type="blob" />
+			<column name="signature_date" type="TIMESTAMP WITH TIME ZONE" />
+			
         </addColumn>
 	</changeSet>
 </databaseChangeLog>
