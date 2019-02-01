@@ -27,7 +27,11 @@ angular.module('crossfitApp')
             })
             .state('member.new', {
                 parent: 'member',
-                url: '/new',
+                url: '/new?view',
+                reloadOnSearch : false,
+                params: {
+                	view: 'infoperso'
+                },
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
@@ -55,13 +59,17 @@ angular.module('crossfitApp')
                     }).result.then(function(result) {
                         $state.go('member', null, { reload: true });
                     }, function() {
-                        $state.go('member');
+                        $state.go('member', null, { reload: true });
                     })
                 }]
             })
             .state('member.edit', {
                 parent: 'member',
-                url: '/{id}/edit',
+                url: '/{id}/edit?view',
+                reloadOnSearch : false,
+                params: {
+                	view: 'infoperso'
+                },
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
@@ -81,11 +89,5 @@ angular.module('crossfitApp')
                         $state.go('member', null);
                     })
                 }]
-            })
-            
-            .state('member.edit.view', {
-                parent: 'member.edit',
-                url: '/{view}'
-            })
-            ;
+            });
     });

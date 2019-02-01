@@ -1,0 +1,90 @@
+<div ng-cloak>
+	
+	<form ng-submit="search()">
+
+		<div class="row">
+			<div class="col-lg-12">
+			   	<jh-alert></jh-alert>
+		    </div>
+		</div>
+		
+		<div class="row">
+			
+			<div class="word-doc">
+				
+				<div class="row">
+					<div class="logo"><img src="logo.png"/></div>
+					
+					<div class="contract-number">
+						<span>Contrat d’adhésion n° {{sub.id}}</span>
+						<span>à durée indéterminée</span>
+					</div>
+				</div>
+				<div class="preambule">
+					Préalablement à la signature de ce contrat, l’adhérent désigné ci-dessous a visité les installations, et a pris connaissance des prestations proposées ainsi que du règlement intérieur.
+				</div>
+				<div class="title">
+					Désignation
+				</div>
+				<div class="paragraphe">				
+					<div class="italic">Entre</div>
+					
+					<div class="line"><label>Civilité : </label><span>{{sub.member.title}}</span><span class="points"></span></div>
+					<div class="line"><label>Nom : </label><span>{{sub.member.nom}}</span><span class="points"></span></div>
+					<div class="line"><label>Prénom : </label><span>{{sub.member.prenom}}</span><span class="points"></span></div>
+					<div class="line"><label>Adresse : </label><span>{{sub.member.address}}</span><span class="points"></span></div>
+					<div class="line">
+						<div class="moitie"><label>Code postal : </label><span>{{sub.member.zipCode}}</span><span class="points"></span></div>
+						<div class="moitie"><label>Ville : </label><span>{{sub.member.city}}</span><span class="points"></span></div>
+					</div>
+					<div class="line">
+						<div class="moitie"><label>Tél : </label><span>{{sub.member.telephonNumber}}</span><span class="points"></span></div>
+						<div class="moitie"><label>Mail : </label><span>{{sub.member.email}}</span><span class="points"></span></div>
+					</div>
+					
+					Ci-après désigné « l’adhérent », d’une part,
+				</div>
+				
+				<div class="paragraphe">				
+					<div class="italic">Et</div>
+					
+					<div class="line">
+						
+						KOOPER inc, Société par Actions Simplifiée ayant son siège au 24/26 Boulevard du 26ème RI – 54 000 NANCY, au capital de 7 500 euros, immatriculée au RCS NANCY - SIRET 820 035 004 00010 - APE/NAF 8551Z. 
+						Personne morale représentant l’affiliation « CROSSFIT NANCY »,
+						Ci-après désignée « KOOPER inc - CROSSFIT NANCY Affiliate », d’autre part, 
+						S’établit un lien de droit de par la signature du présent document. 
+						
+						Tout litige entre les parties signataires sera réglé directement entre elles conformément à l’article 1165 du Code Civil.
+
+					</div>
+				</div>
+
+				<div class="title">
+					Formule d'adhésion
+				</div>
+
+				<div class="paragraphe">	
+					<table>
+						<thead>
+							<tr>
+								<th>Désignation</th>
+								<th>Prestation</th>
+								<th>Tarif unitaire TTC</th>
+								<th>Quantité</th>
+								<th>Prix total</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+		</div>
+		
+	</form>
+</div>
+

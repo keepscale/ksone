@@ -13,22 +13,22 @@
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
 			<ul class="nav navbar-nav">
 				<li ng-class="{active:view=='infoperso'}">
-					<a ui-sref="member.edit.view({view:'infoperso'})"> 
+					<a ui-sref=".({view:'infoperso'})"> 
 						<span>{{'crossfitApp.member.infoperso'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='abonnements'}">
-					<a ui-sref="member.edit.view({view:'abonnements'})"> 
+					<a ui-sref=".({view:'abonnements'})"> 
 						<span>{{'crossfitApp.member.abonnements'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='reservations'}">
-					<a ui-sref="member.edit.view({view:'reservations'})"> 
+					<a ui-sref=".({view:'reservations'})"> 
 						<span>{{'crossfitApp.member.reservations'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='authority'}">
-					<a ui-sref="member.edit.view({view:'authority'})"> 
+					<a ui-sref=".({view:'authority'})"> 
 						<span>{{'crossfitApp.member.authority'|translate}}</span>
 					</a>
 				</li>
@@ -291,10 +291,10 @@
 							
 							<div class="col-sm-4 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>		
-									<button ng-if="subscription.id != null && subscription.signatureDate == null" type="button"
-										class="btn btn-danger form-control"
-										ng-click="prepareSignature(subscription)">Générer contrat
-									</button>
+			  						<a ui-sref="subscription-sign({id: subscription.id})" ui-sref-opts="{relative: false}" target="_blank" 
+			  							ng-if="subscription.id != null && subscription.signatureDate == null" >
+										<button type="button" class="btn btn-danger form-control">Générer contrat</button>
+									</a>
 							</div>
 							
 						</div>
