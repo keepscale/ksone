@@ -101,7 +101,7 @@ public class MembershipResource {
 				.stream().map(convert(false)).collect(Collectors.toList());
 	}
 
-	private Function<Membership, MembershipDTO> convert(boolean withrelation) {
+	public static final Function<Membership, MembershipDTO> convert(boolean withrelation) {
 		return (membership)->{
 			MembershipDTO result = new MembershipDTO();
 			result.setId(membership.getId());

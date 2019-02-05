@@ -291,7 +291,7 @@
 							
 							<div class="col-sm-4 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>		
-			  						<a ui-sref="subscription-sign({id: subscription.id})" ui-sref-opts="{relative: false}" target="_blank" 
+			  						<a ui-sref="subscription-sign({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank" 
 			  							ng-if="subscription.id != null && subscription.signatureDate == null" >
 										<button type="button" class="btn btn-danger form-control">Générer contrat</button>
 									</a>

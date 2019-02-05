@@ -38,6 +38,9 @@ navbar-collapse.collapse {
 #page-wrapper{
 	margin-top: 80px;	
 }
+#page-wrapper.subscription-sign{
+	margin-top: 60px;	
+}
 .navbar-nav .badge{
 	background-color: red;
 	position: absolute;
@@ -101,6 +104,9 @@ navbar-collapse.collapse {
 	
 	#page-wrapper{
 		margin-top: 45px;	
+	}
+	#page-wrapper.subscription-sign{
+		margin-top: 30px;	
 	}
 }
 
@@ -434,3 +440,36 @@ datetimepicker.has-error input{
 
 
 
+
+
+.word-container{
+	background-color: #f3f3f3;
+}
+
+.word-doc{
+	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+	background-color: #FFF;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.paragraphe{
+	margin: 10px 0;
+	clear: both;
+}
+.line .moitie{
+	width: 50%;
+	float: right;
+}
+.word-doc .dotted{
+	border-bottom: 1px dotted;
+}
+
+.dotted label, .dotted span{
+    display: inline-block;
+    vertical-align: bottom;
+    height: 33px;
+    background-color: #fff;
+    margin-bottom: -1px;
+    padding-top: 15px;
+}

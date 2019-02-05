@@ -125,9 +125,7 @@ public class AccountResource {
             				s.setMaxCount(sumRules.get().getNumberOfSession());
             			}
             			
-            			Membership m = new Membership();
-            			m.setName(subscription.getMembership().getName());
-            			s.setMembership(m);
+            			s.setMembership(MembershipResource.convert(false).apply(subscription.getMembership()));
             			
             			dto.getSubscriptions().add(s);
             			

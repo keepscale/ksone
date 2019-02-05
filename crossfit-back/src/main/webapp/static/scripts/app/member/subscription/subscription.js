@@ -4,8 +4,8 @@ angular.module('crossfitApp')
     .config(function ($stateProvider) {
         $stateProvider
             .state('subscription-sign', {
-                parent: 'site',
-                url: '/subscriptions/{id}/sign',
+                parent: 'member',
+                url: '/{memberId}/subscriptions/{subscriptionId}/sign',
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                     pageTitle: 'crossfitApp.subscription.sign.title'
