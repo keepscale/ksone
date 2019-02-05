@@ -2,11 +2,12 @@
 
 angular.module('crossfitApp')
     .controller('SignSubscriptionController', 
-    		['$scope', '$stateParams', '$state',
-	function($scope, $stateParams, $state) {
+    		['$scope', '$stateParams', '$state', 'Member', 'Subscription',
+	function($scope, $stateParams, $state, Member, Subscription) {
 
         $scope.init = function(){
-        	console.log("Loading subscription " + $stateParams.id)
+        	$scope.member = Member.get({id : $stateParams.memberId});
+        	$scope.sub = Subscription.get({id : $stateParams.subscriptionId});
         }
         
         $scope.init();

@@ -15,6 +15,7 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -136,9 +137,10 @@ public class SubscriptionResource {
 	 */
 
 	@RequestMapping(value = "/subscriptions/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Subscription> get(@PathVariable Long id) {
+	public ResponseEntity<SubscriptionDTO> get(@PathVariable Long id) {
 		log.debug("REST request to get Subscription : {}", id);
 		return Optional.ofNullable(doGet(id))
+				.map(SubscriptionDTO.fullMapper)
 				.map(subscription -> new ResponseEntity<>(subscription, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}

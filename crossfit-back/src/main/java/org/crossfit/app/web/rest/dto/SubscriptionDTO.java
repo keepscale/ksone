@@ -20,6 +20,7 @@ import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
+import org.crossfit.app.web.rest.api.MembershipResource;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -43,18 +44,22 @@ public class SubscriptionDTO implements Serializable {
 	public static Function<Subscription, SubscriptionDTO> fullMapper = s->{
 		SubscriptionDTO dto = new SubscriptionDTO();
 		dto.setId(s.getId());
-		dto.setMembership(s.getMembership());
+		dto.setMembership(MembershipResource.convert(false).apply(s.getMembership()));
 		dto.setSubscriptionStartDate(s.getSubscriptionStartDate());
 		dto.setSubscriptionEndDate(s.getSubscriptionEndDate());
 		dto.setPaymentMethod(s.getPaymentMethod());
-		
+		dto.setDirectDebitAfterDate(s.getDirectDebitAfterDate());
+		dto.setDirectDebitAtDayOfMonth(s.getDirectDebitAtDayOfMonth());
+		dto.setDirectDebitBic(s.getDirectDebitBic());
+		dto.setDirectDebitFirstPaymentTaxIncl(s.getDirectDebitFirstPaymentTaxIncl());
+		dto.setDirectDebitIban(s.getDirectDebitIban());
 		return dto;
 	};
 	
     private Long id;
 
     @NotNull
-    private Membership membership;
+    private MembershipDTO membership;
     
     @NotNull        
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -139,11 +144,11 @@ public class SubscriptionDTO implements Serializable {
         return Objects.hashCode(id);
     }
 
-	public Membership getMembership() {
+	public MembershipDTO getMembership() {
 		return membership;
 	}
 
-	public void setMembership(Membership membership) {
+	public void setMembership(MembershipDTO membership) {
 		this.membership = membership;
 	}
 

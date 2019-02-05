@@ -20,11 +20,13 @@ import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.repository.AuthorityRepository;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
+import org.crossfit.app.web.rest.api.MembershipResource;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
@@ -55,6 +57,9 @@ public class MemberService {
 
     @Inject
     private MemberRepository memberRepository;
+    
+    @Inject
+    private MembershipRepository membershipRepository;
 
     @Inject
     private SubscriptionRepository subscriptionRepository;
@@ -258,7 +263,7 @@ public class MemberService {
 			}
         	
         	
-        	s.setMembership(dto.getMembership());
+        	s.setMembership(membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox));
         	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
         	s.setPaymentMethod(dto.getPaymentMethod());
