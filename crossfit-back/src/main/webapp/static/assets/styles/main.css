@@ -453,11 +453,19 @@ datetimepicker.has-error input{
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
-.paragraphe{
+.word-doc .paragraphe{
 	margin: 10px 0;
-	clear: both;
+	padding-bottom: 10px;
 }
-.line .moitie{
+.word-doc .paragraphe:after{
+    content: '';
+    display: block;
+    clear: both;	
+}
+.word-doc .paragraphe .italic + .line{
+    padding-top: 15px;
+}
+.word-doc .line .moitie{
 	width: 50%;
 	float: right;
 }
@@ -465,11 +473,22 @@ datetimepicker.has-error input{
 	border-bottom: 1px dotted;
 }
 
-.dotted label, .dotted span{
+.word-doc .dotted label, .word-doc .dotted span{
     display: inline-block;
     vertical-align: bottom;
-    height: 33px;
     background-color: #fff;
-    margin-bottom: -1px;
-    padding-top: 15px;
+    margin-bottom: -6px;
+    padding-right: 3px;
+}
+
+.word-doc .italic{
+    font-weight: bold;
+}
+
+.word-doc .title{
+    color: #FFF;
+    background-color: #57718a;
+    margin: 10px -15px 0px -15px;
+    padding: 5px 5px 5px 10px;
+    font-weight: bold;
 }
