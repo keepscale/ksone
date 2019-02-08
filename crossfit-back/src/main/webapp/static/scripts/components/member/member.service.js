@@ -22,6 +22,8 @@ angular.module('crossfitApp')
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionStartDate);
 						sub.subscriptionEndDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionEndDate);
+						sub.directDebitAfterDate = DateUtils.convertLocaleDateFromServer(sub.directDebitAfterDate);
+						sub.signatureDate = DateUtils.convertDateTimeFromServer(sub.directDebitAfterDate);
 					}
                     return data;
                 }
@@ -35,7 +37,10 @@ angular.module('crossfitApp')
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
 						sub.subscriptionEndDate = DateUtils.convertLocaleDateToServer(sub.subscriptionEndDate);
-					}
+						sub.directDebitAfterDate = DateUtils.convertLocaleDateToServer(sub.directDebitAfterDate);
+						sub.signatureDate = DateUtils.convertLocaleDateTimeToServer(sub.signatureDate);
+
+                    }
                     
                     return angular.toJson(data);
                 }
@@ -49,7 +54,10 @@ angular.module('crossfitApp')
 						var sub = data.subscriptions[i];
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateToServer(sub.subscriptionStartDate);
 						sub.subscriptionEndDate = DateUtils.convertLocaleDateToServer(sub.subscriptionEndDate);
-					}
+						sub.directDebitAfterDate = DateUtils.convertLocaleDateToServer(sub.directDebitAfterDate);
+						sub.signatureDate = DateUtils.convertLocaleDateTimeToServer(sub.signatureDate);
+
+                    }
                     
                     return angular.toJson(data);
                 }

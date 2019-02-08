@@ -52,6 +52,7 @@ public class SubscriptionDTO implements Serializable {
 		dto.setDirectDebitAtDayOfMonth(s.getDirectDebitAtDayOfMonth());
 		dto.setDirectDebitBic(s.getDirectDebitBic());
 		dto.setDirectDebitFirstPaymentTaxIncl(s.getDirectDebitFirstPaymentTaxIncl());
+		dto.setDirectDebitFirstPaymentMethod(s.getDirectDebitFirstPaymentMethod());
 		dto.setDirectDebitIban(s.getDirectDebitIban());
 		return dto;
 	};
@@ -84,6 +85,8 @@ public class SubscriptionDTO implements Serializable {
     private String directDebitBic;
 
     private Double directDebitFirstPaymentTaxIncl;
+    
+    private PaymentMethod directDebitFirstPaymentMethod;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
@@ -95,6 +98,8 @@ public class SubscriptionDTO implements Serializable {
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     private DateTime signatureDate;
+    
+    private String signatureDataEncoded;
         
     public Long getId() {
         return id;
@@ -200,6 +205,14 @@ public class SubscriptionDTO implements Serializable {
 		this.directDebitFirstPaymentTaxIncl = directDebitFirstPaymentTaxIncl;
 	}
 
+	public PaymentMethod getDirectDebitFirstPaymentMethod() {
+		return directDebitFirstPaymentMethod;
+	}
+
+	public void setDirectDebitFirstPaymentMethod(PaymentMethod directDebitFirstPaymentMethod) {
+		this.directDebitFirstPaymentMethod = directDebitFirstPaymentMethod;
+	}
+
 	public LocalDate getDirectDebitAfterDate() {
 		return directDebitAfterDate;
 	}
@@ -223,4 +236,13 @@ public class SubscriptionDTO implements Serializable {
 	public void setSignatureDate(DateTime signatureDate) {
 		this.signatureDate = signatureDate;
 	}
+
+	public String getSignatureDataEncoded() {
+		return signatureDataEncoded;
+	}
+
+	public void setSignatureDataEncoded(String signatureDataEncoded) {
+		this.signatureDataEncoded = signatureDataEncoded;
+	}
+	
 }

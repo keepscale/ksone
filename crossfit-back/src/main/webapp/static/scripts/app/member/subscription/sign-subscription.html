@@ -90,7 +90,7 @@
 			</div>
 			
 			<div class="paragraphe">	
-				{{sub.resiliationInformation}}
+				{{sub.membership.resiliationInformation}}
 			</div>
 			
 			<div class="title">
@@ -163,9 +163,13 @@ L’abonné est informé de la possibilité qui lui est offerte par l’article 
 					<li>Que les documents fournis par ses soins dans le cadre de cette adhésion sont valides et conformes pour faire valoir ce que de droit : copie d’une pièce d’identité non expirée, certificat médical de moins de 3 mois autorisant la pratique du CrossFit</li>
 				</ul>
 				
-				<input type="button" value="Lu et approuvé" 
-					ng-click="readAndApproved()"
-					style="margin: 0 50%;"/>
+				<input type="button" value="Lu et approuvé" ng-if="sub.signatureDate == null"
+					ng-click="readAndApproved()"/>
+					
+				<div ng-if="sub.signatureDate != null">
+					Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+					<img alt="" src="{{sub.signatureDataEncoded}}">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -178,13 +182,14 @@ L’abonné est informé de la possibilité qui lui est offerte par l’article 
 					<div class="modal-header">
 						Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
 					</div>
-					<div class="modal-body">
+					<div class="modal-body" style="height: 220px;">
 						<signature-pad accept="accept" clear="clear" height="220"
+							dataurl="sub.signatureDataEncoded"
 							width="568" disabled="false"></signature-pad>
 					</div>
 					<div class="modal-footer">
 						<button ng-click="clear()">Effacer</button>
-						<button ng-click="signature = accept()">Signer</button>
+						<button ng-click="sign()">Signer</button>
 					</div>
 				</form>
             </div>

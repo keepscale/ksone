@@ -23,8 +23,10 @@
 
 	<changeSet id="201902071647" author="lgangloff">
 		
+		<dropColumn tableName="SUBSCRIPTION" columnName="signature_data"/>
 		
        	<addColumn tableName="SUBSCRIPTION">
+       		<column name="signature_data_base64" type="clob"/>
             <column name="direct_debit_first_payment_method" type="varchar(64)">
             	<constraints nullable="true"/>
             </column>
@@ -32,10 +34,10 @@
         
        	<addColumn tableName="MEMBERSHIP">
             <column name="information" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="resiliation_information" type="varchar(1024)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
        	</addColumn>
 	</changeSet>

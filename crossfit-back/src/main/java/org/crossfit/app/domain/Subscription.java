@@ -88,6 +88,9 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 
     @Column(name = "direct_debit_first_payment_tax_incl")
     private Double directDebitFirstPaymentTaxIncl;
+    
+    @Column(name = "direct_debit_first_payment_method")
+    private PaymentMethod directDebitFirstPaymentMethod;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @Column(name = "direct_debit_after_date")
@@ -96,11 +99,10 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "direct_debit_at_day_of_month")
     private Integer directDebitAtDayOfMonth;
 
-    @Lob
     @Basic(fetch=FetchType.LAZY)
-    @Column(name = "signature_data")
+    @Column(name = "signature_data_base64")
     @JsonIgnore
-    private byte[] signatureData;
+    private String signatureDataEncoded;
     
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "signature_date")
@@ -229,12 +231,20 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 		this.directDebitAtDayOfMonth = directDebitAtDayOfMonth;
 	}
 
-	public byte[] getSignatureData() {
-		return signatureData;
+	public PaymentMethod getDirectDebitFirstPaymentMethod() {
+		return directDebitFirstPaymentMethod;
 	}
 
-	public void setSignatureData(byte[] signatureData) {
-		this.signatureData = signatureData;
+	public void setDirectDebitFirstPaymentMethod(PaymentMethod directDebitFirstPaymentMethod) {
+		this.directDebitFirstPaymentMethod = directDebitFirstPaymentMethod;
+	}
+
+	public String getSignatureDataEncoded() {
+		return signatureDataEncoded;
+	}
+
+	public void setSignatureDataEncoded(String signatureDataEncoded) {
+		this.signatureDataEncoded = signatureDataEncoded;
 	}
 
 	public DateTime getSignatureDate() {

@@ -39,6 +39,8 @@ public class MembershipService {
 			membership = new Membership();
 		}
 		membership.setName(membershipDto.getName());
+		membership.setInformation(membershipDto.getInformation());
+		membership.setResiliationInformation(membershipDto.getResiliationInformation());
 		membership.setPriceTaxIncl(membershipDto.getPriceTaxIncl());
 		membership.setTaxPerCent(membershipDto.getTaxPerCent());
         membership.setBox(currentCrossFitBox);
