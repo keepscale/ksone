@@ -271,6 +271,7 @@ public class MemberService {
         	s.setDirectDebitAfterDate(dto.getDirectDebitAfterDate());
         	s.setDirectDebitAtDayOfMonth(dto.getDirectDebitAtDayOfMonth());
         	s.setDirectDebitFirstPaymentTaxIncl(dto.getDirectDebitFirstPaymentTaxIncl());
+        	s.setDirectDebitFirstPaymentMethod(dto.getDirectDebitFirstPaymentMethod());
         	s.setDirectDebitIban(dto.getDirectDebitIban());
         	s.setDirectDebitBic(dto.getDirectDebitBic());        	
         	

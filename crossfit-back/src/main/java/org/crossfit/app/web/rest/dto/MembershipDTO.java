@@ -18,9 +18,13 @@ import org.crossfit.app.domain.MembershipRules;
 public class MembershipDTO implements Serializable {
 
     private Long id;
-    
+
     @NotNull        
     private String name;
+     
+    private String information;
+    
+    private String resiliationInformation;
     
     @NotNull        
     private double priceTaxIncl;
@@ -54,7 +58,23 @@ public class MembershipDTO implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-        
+    
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
+	public String getResiliationInformation() {
+		return resiliationInformation;
+	}
+
+	public void setResiliationInformation(String resiliationInformation) {
+		this.resiliationInformation = resiliationInformation;
+	}
+
 	public double getPriceTaxIncl() {
 		return priceTaxIncl;
 	}

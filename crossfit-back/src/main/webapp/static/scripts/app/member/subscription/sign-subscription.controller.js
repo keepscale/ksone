@@ -15,6 +15,12 @@ angular.module('crossfitApp')
             $('#signature').modal('show');
         }
         
+        $scope.sign = function(){
+            $('#signature').modal('hide');
+        	Subscription.sign($scope.sub);
+            $scope.init();
+        }
+        
         $scope.init();
 	}
 ]);
