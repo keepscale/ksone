@@ -280,7 +280,7 @@
 		
 							</div>
 							
-							<div class="col-xs-12 col-sm-8 col-lg-3 form-group">
+							<div class="col-xs-12 col-sm-6 col-lg-3 form-group">
 			  					<label>Mode de paiement</label>		
 								<select class="form-control" id="sel1"
 									ng-model="subscription.paymentMethod" required>
@@ -289,11 +289,15 @@
 								</select>
 							</div>
 							
-							<div class="col-sm-4 col-lg-3 form-group hidden-xs">
+							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>		
 			  						<a ui-sref="subscription-sign({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank" 
-			  							ng-if="subscription.id != null && subscription.signatureDate == null" >
-										<button type="button" class="btn btn-danger form-control">Générer contrat</button>
+			  							ng-if="subscription.id != null" >
+										<button type="button" class="btn btn-primary form-control">
+											<span ng-if="subscription.signatureDate == null">Générer contrat</span>
+											<span ng-if="subscription.signatureDate != null">Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
+
+										</button>
 									</a>
 							</div>
 							
@@ -309,7 +313,7 @@
 					  					<label>A partir du </label>
 		
 										<datetimepicker class="input-group" name="subscriptionDirectDebitAfterDate"
-											how-weeks="false" show-meridian="false"
+											how-weeks="false" show-meridian="false" required
 											date-format="dd/MM/yyyy" hidden-time="true"
 											ng-model="subscription.directDebitAfterDate"></datetimepicker>
 									</div>
@@ -341,7 +345,7 @@
 									<div class="col-xs-12 col-sm-6 col-md-3 form-group">
 					  					<label>Réglé en</label>		
 										<select class="form-control" id="sel2"
-											ng-model="subscription.directDebitFirstPaymentMethod" required>
+											ng-model="subscription.directDebitFirstPaymentMethod">
 											<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
 												+ p | translate }}</option>
 										</select>

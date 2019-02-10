@@ -11,13 +11,17 @@ angular.module('crossfitApp')
         }
         
         $scope.readAndApproved = function(){
-        	$scope.sub.signatureDate = new Date();
+        	$scope.subSigned = {
+    			id: $scope.sub.id,
+      			signatureDate: new Date(),
+      			signatureDataEncoded : null        			
+        	};
             $('#signature').modal('show');
         }
         
         $scope.sign = function(){
             $('#signature').modal('hide');
-        	Subscription.sign($scope.sub);
+        	Subscription.sign($scope.subSigned);
             $scope.init();
         }
         

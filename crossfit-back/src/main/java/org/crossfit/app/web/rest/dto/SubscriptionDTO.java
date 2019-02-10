@@ -54,6 +54,8 @@ public class SubscriptionDTO implements Serializable {
 		dto.setDirectDebitFirstPaymentTaxIncl(s.getDirectDebitFirstPaymentTaxIncl());
 		dto.setDirectDebitFirstPaymentMethod(s.getDirectDebitFirstPaymentMethod());
 		dto.setDirectDebitIban(s.getDirectDebitIban());
+		dto.setSignatureDataEncoded(s.getSignatureDataEncoded());
+		dto.setSignatureDate(s.getSignatureDate());
 		return dto;
 	};
 	
