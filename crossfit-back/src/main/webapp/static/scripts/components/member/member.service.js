@@ -23,7 +23,7 @@ angular.module('crossfitApp')
 						sub.subscriptionStartDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionStartDate);
 						sub.subscriptionEndDate = DateUtils.convertLocaleDateFromServer(sub.subscriptionEndDate);
 						sub.directDebitAfterDate = DateUtils.convertLocaleDateFromServer(sub.directDebitAfterDate);
-						sub.signatureDate = DateUtils.convertDateTimeFromServer(sub.directDebitAfterDate);
+						sub.signatureDate = DateUtils.convertDateTimeFromServer(sub.signatureDate);
 					}
                     return data;
                 }

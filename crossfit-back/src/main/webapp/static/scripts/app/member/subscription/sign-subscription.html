@@ -167,8 +167,9 @@ L’abonné est informé de la possibilité qui lui est offerte par l’article 
 					ng-click="readAndApproved()"/>
 					
 				<div ng-if="sub.signatureDate != null">
+					<img alt="" src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
+					{{member.firstName}} {{member.lastName}} <br/>
 					Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
-					<img alt="" src="{{sub.signatureDataEncoded}}">
 				</div>
 			</div>
 		</div>
@@ -180,11 +181,11 @@ L’abonné est informé de la possibilité qui lui est offerte par l’article 
             <div class="modal-content">
                 <form name="signatureForm">
 					<div class="modal-header">
-						Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+						Contrat lu et approuvé le {{subSigned.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
 					</div>
 					<div class="modal-body" style="height: 220px;">
 						<signature-pad accept="accept" clear="clear" height="220"
-							dataurl="sub.signatureDataEncoded"
+							dataurl="subSigned.signatureDataEncoded"
 							width="568" disabled="false"></signature-pad>
 					</div>
 					<div class="modal-footer">
