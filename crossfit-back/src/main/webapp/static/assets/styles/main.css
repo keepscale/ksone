@@ -493,6 +493,10 @@ datetimepicker.has-error input{
     font-weight: bold;
 }
 
-.ng-invalid-required{
-	border-right: 2px solid red;
+div.ng-invalid-required,
+input.ng-invalid-required,
+datetimepicker.ng-invalid-required,
+select.ng-invalid-required{
+	border-left: 2px solid red;
+	magin-left: -1px;
 }

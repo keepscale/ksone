@@ -218,7 +218,11 @@
 						</button>
 			        </div>
 				</div>
-		    	<div class="panel panel-default form-group" ng-class="{'panel-primary open-sub':now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate, 'open-sub': isOpen(subscription)}"
+		    	<div class="panel panel-default form-group" 
+		    			ng-class="{
+		    			 'panel-primary open-sub':now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate,
+		    			 'open-sub': isOpen(subscription),
+		    			 'ng-invalid-required': isSubscriptionInvalid(subscription) }"
 			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
 					<div class="panel-heading" >
 					
@@ -302,8 +306,10 @@
 							
 						</div>
 	
-						<div class="panel panel-default"  ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
-							<div class="panel-heading">Info. Prélèvement</div>
+						<div class="panel panel-default" ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
+							<div class="panel-heading">
+								Info. Prélèvement	
+							</div>
 							<div class="panel-body">
 							
 								<div class="row">
@@ -348,6 +354,7 @@
 										<select class="form-control" id="sel2"
 											ng-required="mustFillDirectDebitInfo(subscription)"
 											ng-model="subscription.directDebitFirstPaymentMethod">
+											<option value=""></option>
 											<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
 												+ p | translate }}</option>
 										</select>
@@ -360,7 +367,7 @@
 				  					    <div>
 											<input type="text" class="form-control" id="iban" name="iban"
 												placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
-												ng-model="subscription.directDebitIban" ng-minlength=34
+												ng-model="subscription.directDebitIban" 
 												ng-required="mustFillDirectDebitInfo(subscription)"
 												ng-maxlength=34 maxlength="34" /> 
 				  					    </div>
@@ -373,7 +380,7 @@
 											<input type="text"
 												class="form-control" id="bic" name="bic"
 												placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
-												ng-model="subscription.directDebitBic" ng-minlength=8
+												ng-model="subscription.directDebitBic" 
 												ng-required="mustFillDirectDebitInfo(subscription)"
 												ng-maxlength=8 maxlength="8" /> 
 										</div>

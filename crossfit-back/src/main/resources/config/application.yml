@@ -40,6 +40,7 @@ spring:
             hibernate.id.new_generator_mappings: false
 #            hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
     jackson.serialization.fail-on-empty-beans: false
+    jackson.deserialization.read-unknown-enum-values-as-null: true
     messages: 
         cache-seconds: 1
         basename: i18n/messages
