@@ -117,6 +117,19 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	subscription.subscriptionEndDate = d;
         }
         
+        $scope.mustFillDirectDebitInfo = function(subscription){
+        	if (subscription.paymentMethod=='DIRECT_DEBIT'){
+        		return 
+	        		subscription.directDebitAfterDate != null/* ||
+	        		subscription.directDebitAtDayOfMonth != null/* ||
+	        		subscription.directDebitFirstPaymentTaxIncl != null ||
+	        		subscription.directDebitFirstPaymentMethod != null ||
+	        		subscription.directDebitIban != null ||
+	        		subscription.directDebitBic != null*/;
+        	}
+        	return false;
+        }
+        
         $scope.showView = function(viewname){
         	$scope.view = viewname;
         }

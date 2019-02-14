@@ -492,3 +492,7 @@ datetimepicker.has-error input{
     padding: 5px 5px 5px 10px;
     font-weight: bold;
 }
+
+.ng-invalid-required{
+	border-right: 2px solid red;
+}
