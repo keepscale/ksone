@@ -1,0 +1,47 @@
+
+body {
+    background: #fff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+
+.footer {
+	display: none;
+}
+
+.navbar{
+	display: none;
+}
+
+.modal{
+	display: none;
+}
+
+#page-wrapper{
+	margin-top: 0 !important;
+	padding: 0 15px;
+}
+.word-container{
+	background-color: #FFF;
+}
+
+.word-doc{
+	width: auto;
+	border-radius: none;
+	box-shadow: none;
+	background-color: #FFF;
+	margin: 0px;
+}
+.word-doc .paragraphe{
+	padding: 0 10px;
+	text-align: justify;
+}
+
+.word-doc .dotted{
+	border-bottom: none;
+}
+
+.word-doc .title{
+    background-color: #57718a;
+}
