@@ -493,6 +493,65 @@ datetimepicker.has-error input{
     font-weight: bold;
 }
 
+.word-doc .logo{
+	float: left;
+}
+.word-doc .logo img{
+	height: 100px;
+	margin-right: 20px;
+}
+.word-doc span.contract-number{
+	padding-top: 20px;
+	display: block;
+	font-size: 24px;
+	font-weight: bold;
+	font-style: italic;
+}
+.word-doc .preambule{
+	clear: both;	
+}
+
+.word-doc table{
+	width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.word-doc table thead th{
+	text-align: center;
+}
+.word-doc table .text-right{
+	text-align: right;
+}
+.word-doc table .background-blue{
+	background-color: rgb(51,120,165);
+	color: white;
+}
+.word-doc table th,
+.word-doc table td{
+	padding: 10px;
+	border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 0px;
+	-webkit-print-color-adjust: exact;
+}
+
+.word-doc .sepa {
+	border: 1px solid black;
+	padding: 5px;
+}
+.word-doc .sepa .intro{
+	font-size: 10px;
+	height: 70px;
+}
+.word-doc .sepa .intro img{
+	float: left;
+	height: 70px;
+}
+.word-doc .sepa .beneficiaire{
+	text-align: center;
+}
+
+
 div.ng-invalid-required,
 input.ng-invalid-required,
 datetimepicker.ng-invalid-required,

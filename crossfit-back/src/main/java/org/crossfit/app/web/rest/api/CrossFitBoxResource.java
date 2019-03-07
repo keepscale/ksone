@@ -10,7 +10,10 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.repository.CrossFitBoxRepository;
+import org.crossfit.app.security.AuthoritiesConstants;
+import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.web.rest.dto.SimpleBoxDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -65,12 +68,14 @@ public class CrossFitBoxResource {
     @RequestMapping(value = "/boxs/current",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CrossFitBox> current() {
+    public ResponseEntity<?> current() {
         log.debug("REST request to get Current CrossFitBox");
+
+        
         return Optional.ofNullable(boxService.findCurrentCrossFitBox())
             .map(crossFitBox -> new ResponseEntity<>(
-                crossFitBox,
-                HttpStatus.OK))
+            		SecurityUtils.isUserInAnyRole(AuthoritiesConstants.ADMIN) ? 
+            				crossFitBox : new SimpleBoxDTO(crossFitBox), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

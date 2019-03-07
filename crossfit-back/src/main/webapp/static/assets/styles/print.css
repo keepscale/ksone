@@ -3,6 +3,8 @@ body {
     background: #fff;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
+    
+    font-size: 14px;
 }
 
 
@@ -20,7 +22,7 @@ body {
 
 #page-wrapper{
 	margin-top: 0 !important;
-	padding: 0 15px;
+	padding: 0 0;
 }
 .word-container{
 	background-color: #FFF;
@@ -38,8 +40,12 @@ body {
 	text-align: justify;
 }
 
+.no-page-break{
+    page-break-inside: avoid;
+}
+
 .word-doc .dotted{
-	border-bottom: none;
+	/*border-bottom: none;*/
 }
 
 .word-doc .title{
