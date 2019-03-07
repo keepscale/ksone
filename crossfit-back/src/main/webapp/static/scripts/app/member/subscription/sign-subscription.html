@@ -3,16 +3,18 @@
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 word-doc">
 			
 			<div class="paragraphe">
-				<div class="logo"><img src="logo.png"/></div>
+				<div class="logo"><img src="{{logoUrl}}"/></div>
 				
-				<div class="contract-number">
-					<span>Contrat d’adhésion n° {{sub.id}}</span>
+				<div class="">
+					<span class="contract-number">Contrat d’adhésion n° {{sub.id}}</span>
 					<span>à durée indéterminée</span>
 				</div>
+				
+				<div class="preambule">
+					Préalablement à la signature de ce contrat, l’adhérent désigné ci-dessous a visité les installations, et a pris connaissance des prestations proposées ainsi que du règlement intérieur.
+				</div>
 			</div>
-			<div class="preambule paragraphe">
-				Préalablement à la signature de ce contrat, l’adhérent désigné ci-dessous a visité les installations, et a pris connaissance des prestations proposées ainsi que du règlement intérieur.
-			</div>
+			
 			<div class="title">
 				Désignation
 			</div>
@@ -57,119 +59,155 @@
 			</div>
 
 			<div class="paragraphe">	
-				<table class="table table-bordered">
+				<table border="0">
 					<thead>
 						<tr>
-							<th>Désignation</th>
-							<th>Prestation</th>
-							<th>Tarif mensuel TTC</th>
+							<th class="background-blue">Désignation</th>
+							<th class="background-blue">Prestation</th>
+							<th class="background-blue">Tarif mensuel TTC</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td>{{sub.membership.name}}</td>
 							<td>{{sub.membership.information}}</td>
-							<td>{{sub.membership.priceTaxIncl | currency:'€' }}</td>
+							<td class="text-right">{{sub.membership.priceTaxIncl | currency:'€' }}</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr> 
-							<th colspan="2">Réglement du premier mois en {{'crossfitApp.bill.paymentMethod.enum.' + sub.directDebitFirstPaymentMethod | translate }}</th>
-							<th>{{sub.directDebitFirstPaymentTaxIncl | currency:'€' }}</th>
+							<th class="background-blue" colspan="2">Réglement du premier mois en {{'crossfitApp.bill.paymentMethod.enum.' + sub.directDebitFirstPaymentMethod | translate }}</th>
+							<th class="text-right">{{sub.directDebitFirstPaymentTaxIncl | currency:'€' }}</th>
 						</tr>
 						<tr> 
-							<th colspan="2">Montant des mensualités à compter du {{sub.directDebitAfterDate | date:'dd/MM/yyyy'}} le {{sub.directDebitAtDayOfMonth}} de chaque mois</th>
-							<th>{{sub.membership.priceTaxIncl | currency:'€' }}</th>
+							<th class="background-blue" colspan="2">Montant des mensualités à compter du {{sub.directDebitAfterDate | date:'dd/MM/yyyy'}} le {{sub.directDebitAtDayOfMonth}} de chaque mois</th>
+							<th class="text-right">{{sub.membership.priceTaxIncl | currency:'€' }}</th>
 						</tr>
 					</tfoot>
 				</table>
 			</div>
 			
-			<div class="title">
-				Résiliation
+			<div class="no-page-break">
+				<div class="title">
+					Résiliation
+				</div>
+				
+				<div class="paragraphe">	
+					{{sub.membership.resiliationInformation}}
+				</div>
 			</div>
 			
-			<div class="paragraphe">	
-				{{sub.membership.resiliationInformation}}
-			</div>
-			
-			<div class="title">
-				Mode de règlement récurrent - mandat de Prélèvement  SEPA
-			</div>			
-			
-			<div class="paragraphe">
-			
+			<div class="no-page-break">
+				
+				<div class="title">
+					Mode de règlement récurrent - mandat de Prélèvement  SEPA
+				</div>			
+				
+				<div class="paragraphe">
+					<div class="sepa">
+						<div class="intro">
+							<img src="{{logoUrl}}">
+En signant ce formulaire de mandat, vous authorisez la société KOOPER inc - CROSSFIT NANCY Affiliate à envoyer des instructions à votre banque pour débiter votre compte, et votre banque à débiter votre compte conformément aux instructions de KOOPER inc - CROSSFIT NANCY Affiliate. Vous bénéficiez du droit d’être remboursé par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. Une demande de remboursement doit être présentée : dans les 8 semaines suivant la date de débit de votre compte pour un prélèvement autorisé, sans tarder et au plus tard dans les 13 mois en cas de prélèvement non authorisé, et vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque.
+						</div>
+						
+					
+						<div class="line">
+						
+							<div class="moitie beneficiaire">
+Pour le compte de: <br/>
+Kooper inc <br/>
+24/26 bd du 26ème Régiment d’Infanterie 54000 Nancy
+							</div>
+							
+							<div class="moitie">
+								<div class="line">
+									<div class="moitie dotted"><label>Prénom : </label><span>{{member.firstName}}</span></div>
+									<div class="moitie dotted"><label>Nom : </label><span>{{member.lastName}}</span></div>
+								</div>
+								<div class="line dotted"><label>Adresse : </label><span>{{member.address}}</span></div>
+								<div class="line">
+									<div class="moitie dotted"><label>Ville : </label><span>{{member.city}}</span></div>
+									<div class="moitie dotted"><label>Code postal : </label><span>{{member.zipCode}}</span></div>
+								</div>
+							</div>
+							
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</div>
 			</div>
 						
 			<div class="title">
 				Conditions générales de vente
 			</div>	
 			
-			<div class="paragraphe">
+			
+<div class="paragraphe no-page-break">
 KOOPER inc - CROSSFIT NANCY Affiliate se réserve le droit de modifier ses conditions générales de vente à tout moment. 
 Les conditions générales de vente applicables sont celles en vigueur à la date de conclusion du contrat d’adhésion par l’adhérent.
 
-<br/><br/>I. Objet du Contrat : Après avoir visité les installations, acté des horaires d’ouverture de la salle et pris connaissance des prestations proposées et du règlement intérieur, l’adhérent déclare souscrire auprès de l’établissement CROSSFIT NANCY un contrat d’adhésion nominatif et incessible, afin de bénéficier de ses prestations.
+</div><div class="paragraphe no-page-break">I. Objet du Contrat : Après avoir visité les installations, acté des horaires d’ouverture de la salle et pris connaissance des prestations proposées et du règlement intérieur, l’adhérent déclare souscrire auprès de l’établissement CROSSFIT NANCY un contrat d’adhésion nominatif et incessible, afin de bénéficier de ses prestations.
 
-<br/><br/>II. Services compris : Toutes activités de cours collectifs à thème, en salle ou en extérieur selon le planning de l’année en cours (horaires des cours susceptibles d’être modifiés durant l’année).
+</div><div class="paragraphe no-page-break">II. Services compris : Toutes activités de cours collectifs à thème, en salle ou en extérieur selon le planning de l’année en cours (horaires des cours susceptibles d’être modifiés durant l’année).
 
-<br/><br/>III. Prix : Le prix de vente (avec réductions éventuelles) des abonnements et des entrées individuelles à la salle est celui       en vigueur au jour de la conclusion de la vente. Les prix sont affichés en permanence au sein des locaux et peuvent être communiqués à tout moment sur simple demande de l’adhérent.
+</div><div class="paragraphe no-page-break">III. Prix : Le prix de vente (avec réductions éventuelles) des abonnements et des entrées individuelles à la salle est celui       en vigueur au jour de la conclusion de la vente. Les prix sont affichés en permanence au sein des locaux et peuvent être communiqués à tout moment sur simple demande de l’adhérent.
 En cas de hausse des prix postérieure à la vente d’une entrée individuelle ou de la souscription d’un abonnement, KOOPER Inc
 – CROSSFIT NANCY Affiliate s’engage à appliquer les tarifs en vigueur au jour de la passation de la commande ou de l’adhésion.
 
 
-<br/><br/>IV. Services hors abonnement : L’accès à des cours  individuels/séances  de  coaching  personnalisé  n’est  pas  compris  dans l’abonnement. L’adhérent devra s’en acquitter en sus auprès du prestataire concerné. La validité de cette prestation  sera limitée à la date de péremption du contrat de l’adhérent. La liste des services compris dans le contrat ou non, peut     faire l’objet de modifications à l’initiative de la salle CROSSFIT NANCY, dans les conditions de l’article R132.2 du Code de la Consommation. Certains types d’abonnement pourront faire l’objet de restrictions d’horaires, prestations qui seront stipulées dans les observations. Un complément financier pourra être demandé dans le cadre de la création d’activités ou d’horaires supplémentaires ultérieurement à la date de signature du présent contrat.
+</div><div class="paragraphe no-page-break">IV. Services hors abonnement : L’accès à des cours  individuels/séances  de  coaching  personnalisé  n’est  pas  compris  dans l’abonnement. L’adhérent devra s’en acquitter en sus auprès du prestataire concerné. La validité de cette prestation  sera limitée à la date de péremption du contrat de l’adhérent. La liste des services compris dans le contrat ou non, peut     faire l’objet de modifications à l’initiative de la salle CROSSFIT NANCY, dans les conditions de l’article R132.2 du Code de la Consommation. Certains types d’abonnement pourront faire l’objet de restrictions d’horaires, prestations qui seront stipulées dans les observations. Un complément financier pourra être demandé dans le cadre de la création d’activités ou d’horaires supplémentaires ultérieurement à la date de signature du présent contrat.
 
-<br/><br/>V. Paiement : Carte d’abonnement : L’adhérent règle à son inscription le montant forfaitaire en vigueur de la carte d’adhérent ainsi que la première prestation, payables le jour même, sans escompte, lui ouvrant droit à une adhésion à la formule de son choix. Aucun remboursement a posteriori ne pourra être effectué, dans la mesure où l’abonnement a été souscrit suite à une démarche volontaire de la part de l’abonné.
+</div><div class="paragraphe no-page-break">V. Paiement : Carte d’abonnement : L’adhérent règle à son inscription le montant forfaitaire en vigueur de la carte d’adhérent ainsi que la première prestation, payables le jour même, sans escompte, lui ouvrant droit à une adhésion à la formule de son choix. Aucun remboursement a posteriori ne pourra être effectué, dans la mesure où l’abonnement a été souscrit suite à une démarche volontaire de la part de l’abonné.
 Abonnement mensuel : Aucune suspension d’abonnement ne pourra être acceptée. En cas de non-paiement de deux mensualités successives, cet abonnement sera considéré comme résilié de plein droit par KOOPER inc - CROSSFIT NANCY Affiliate. dans ce cas, l’accès à la salle et la pratique des activités ne seront plus autorisés à l’adhérent, qui perdra le bénéfice de sa carte d’abonnement et de reconduction, et ne pourra prétendre à aucun remboursement.
 
 Les factures émises par KOOPER inc - CROSSFIT NANCY Affiliate. sont payables dès réception, par prélèvement automatique récurrent, ou par virement, carte bancaire, ou chèque, au siège social de KOOPER Inc. Aucun escompte n’est consenti pour paiement anticipé. Le montant des factures ne peut en aucun cas être minoré par l’adhérent des sommes qui peuvent lui  être éventuellement dues par KOOPER Inc. Toute facture non payée à son échéance, se verra majorée de plein droit et sans mise en demeure, d’intérêts conventionnels de retard de trois fois le taux d’intérêt légal, tout mois entamé étant dû. de plus, tout adhérent professionnel, en situation de retard ou de non-paiement, sera de plein droit débiteur dès le lendemain de l’échéance, d’une indemnité forfaitaire pour frais de recouvrement de 40 €, conformément à l’article d 441-5 du Code de commerce. Indépendamment de ce qui précède, KOOPER Inc. se réserve le droit sans que l’adhérent ne puisse demander quelque indemnisation que ce soit de ce chef, d‘interrompre l’abonnement jusqu’au paiement de la ou des factures échues, non payées en ce comprises les majorations de ces dernières.
 
 Tous litiges d’ordre judiciaire se régleront devant le tribunal compétent le plus proche de la salle CrossFit NANCY sans que l’autre partie ne puisse demander une quelconque indemnité de déplacement ou autre.
 
-<br/><br/>v	. Résiliation : L’adhérent ayant souscrit au contrat peut demander la résiliation de son contrat d’abonnement, en cas        de non utilisation définitive des prestations de la salle CrossFit NANCY par l’envoi d’une lettre recommandée avec accusé de réception, adressée au co-contractant. Cette résiliation ne sera effective qu’à l’issue d’un délai de 30 jours de préavis à compter de la date de réception de la demande par KOOPER inc - CROSSFIT NANCY Affiliate. dans ce cas, les montants forfaitaires    des cartes d’abonnement et du mois de préavis ne pourront faire l’objet d’aucun remboursement quel que soit le motif de la résiliation.
+</div><div class="paragraphe no-page-break">v	. Résiliation : L’adhérent ayant souscrit au contrat peut demander la résiliation de son contrat d’abonnement, en cas        de non utilisation définitive des prestations de la salle CrossFit NANCY par l’envoi d’une lettre recommandée avec accusé de réception, adressée au co-contractant. Cette résiliation ne sera effective qu’à l’issue d’un délai de 30 jours de préavis à compter de la date de réception de la demande par KOOPER inc - CROSSFIT NANCY Affiliate. dans ce cas, les montants forfaitaires    des cartes d’abonnement et du mois de préavis ne pourront faire l’objet d’aucun remboursement quel que soit le motif de la résiliation.
 
-<br/><br/>vi	. Conditions d’accès à la salle CrossFit NANCY : L’accès de l’adhérent à la salle ne sera autorisé qu’après que ce  dernier ait « badgé » sa carte d’adhérent à l’entrée, selon les horaires indiqués à la salle. Des horaires et un planning de cours allégés pourront être prévus du 1et juillet au 31 août de chaque année, une fermeture technique en août pourra être instaurée, ainsi que des horaires allégés les jours fériés : l’équipe de CROSSFIT NANCY préviendra alors ses adhérents via communication formelle (affichage d’une note interne et e-mailing). L’accès de toute personne non inscrite à la salle est formellement interdit, exception faite d’une visite accompagnée par un membre du personnel.
+</div><div class="paragraphe no-page-break">vi	. Conditions d’accès à la salle CrossFit NANCY : L’accès de l’adhérent à la salle ne sera autorisé qu’après que ce  dernier ait « badgé » sa carte d’adhérent à l’entrée, selon les horaires indiqués à la salle. Des horaires et un planning de cours allégés pourront être prévus du 1et juillet au 31 août de chaque année, une fermeture technique en août pourra être instaurée, ainsi que des horaires allégés les jours fériés : l’équipe de CROSSFIT NANCY préviendra alors ses adhérents via communication formelle (affichage d’une note interne et e-mailing). L’accès de toute personne non inscrite à la salle est formellement interdit, exception faite d’une visite accompagnée par un membre du personnel.
  
-<br/><br/>vii	. Etat de santé / dopage : L’adhérent atteste que sa condition physique et son état de santé lui permettent de pratiquer les activités de la salle. Il s’engage à remettre au plus tard dans les 8 jours qui suivent son inscription, un certificat médical d’aptitude daté de moins de 3 mois. Les conseillers sportifs de la salle CrossFit NANCY, à disposition de l’adhérent, et à la demande exclusive de ce dernier, pourront établir durant un entretien, un programme personnalisé et suivi, adapté à ses objectifs, ainsi qu’à sa constitution physique et médicale. En cas de modification de son état de santé, l’adhérent s’engage à fournir un certificat médical mis à jour à la salle CROSSFIT NANCY. L’adhérent s’engage à ne pas utiliser, ni commercialiser, toute substance chimique, organique ou assimilée, interdite ou recommandée par les services d’hygiène, la médecine sportive et les services de stupéfiants. Le non-respect de cette clause entraînera l’exclusion immédiate de la salle, sans préavis ni indemnité.
+</div><div class="paragraphe no-page-break">vii	. Etat de santé / dopage : L’adhérent atteste que sa condition physique et son état de santé lui permettent de pratiquer les activités de la salle. Il s’engage à remettre au plus tard dans les 8 jours qui suivent son inscription, un certificat médical d’aptitude daté de moins de 3 mois. Les conseillers sportifs de la salle CrossFit NANCY, à disposition de l’adhérent, et à la demande exclusive de ce dernier, pourront établir durant un entretien, un programme personnalisé et suivi, adapté à ses objectifs, ainsi qu’à sa constitution physique et médicale. En cas de modification de son état de santé, l’adhérent s’engage à fournir un certificat médical mis à jour à la salle CROSSFIT NANCY. L’adhérent s’engage à ne pas utiliser, ni commercialiser, toute substance chimique, organique ou assimilée, interdite ou recommandée par les services d’hygiène, la médecine sportive et les services de stupéfiants. Le non-respect de cette clause entraînera l’exclusion immédiate de la salle, sans préavis ni indemnité.
 
-<br/><br/>iX . Responsabilité : Conformément à la loi du 16/07/1984, relative à l’organisation et à la promotion des activités physiques et sportives, modifiée par la loi du au 13/07/1992, la salle CROSSFIT NANCY a souscrit une assurance de responsabilité civile et multirisque professionnelle pour son activité et celle de son personnel auprès de la compagnie dont les coordonnées sont affichées à la salle. La responsabilité de KOOPER inc - CROSSFIT NANCY Affiliate ne pourra être recherchée en cas d’accident résultant de l’inobservation des dispositions du présent contrat, des consignes mentionnées dans le règlement intérieur ci- après, ou d’une utilisation anormale des installations et appareils mis à disposition, ou d’un entraînement en autonomie dans le cadre des créneaux dits d’Open Box. L’adhérent qui contreviendrait, soit aux consignes d’utilisation des matériels, soit aux remarques faites par le personnel de la salle dans le cadre de ses activités, verra limité ou exclu son droit d’indemnisation en cas de dommage. La salle CROSSFIT NANCY ne saurait être tenue responsable de la violation délibérée de ses obligations par l’adhérent, et ne saurait en supporter les conséquences en vertu du droit commun de la responsabilité. Toute déclaration d’événement qui serait amenée à faire jouer les éventuelles garanties de la salle, devra faire l’objet d’une déclaration par   écrit en ARP au plus tard sous huit jours, sous peine de déchéance. de son côté, l’adhérent devra être titulaire d’une police d’assurance de personne, au titre de sa responsabilité civile, et renonce à couvrir ses activités au sein de la salle CROSSFIT NANCY par la souscription d’un contrat individuel accident auprès de l’assureur de KOOPER inc - CROSSFIT NANCY Affiliate,  en garantie complémentaire et à sa charge; le cas échéant il pourra en faire la demande expresse pat lettre recommandée directement auprès de KOOPER inc - CROSSFIT NANCY Affiliate.
+</div><div class="paragraphe no-page-break">iX . Responsabilité : Conformément à la loi du 16/07/1984, relative à l’organisation et à la promotion des activités physiques et sportives, modifiée par la loi du au 13/07/1992, la salle CROSSFIT NANCY a souscrit une assurance de responsabilité civile et multirisque professionnelle pour son activité et celle de son personnel auprès de la compagnie dont les coordonnées sont affichées à la salle. La responsabilité de KOOPER inc - CROSSFIT NANCY Affiliate ne pourra être recherchée en cas d’accident résultant de l’inobservation des dispositions du présent contrat, des consignes mentionnées dans le règlement intérieur ci- après, ou d’une utilisation anormale des installations et appareils mis à disposition, ou d’un entraînement en autonomie dans le cadre des créneaux dits d’Open Box. L’adhérent qui contreviendrait, soit aux consignes d’utilisation des matériels, soit aux remarques faites par le personnel de la salle dans le cadre de ses activités, verra limité ou exclu son droit d’indemnisation en cas de dommage. La salle CROSSFIT NANCY ne saurait être tenue responsable de la violation délibérée de ses obligations par l’adhérent, et ne saurait en supporter les conséquences en vertu du droit commun de la responsabilité. Toute déclaration d’événement qui serait amenée à faire jouer les éventuelles garanties de la salle, devra faire l’objet d’une déclaration par   écrit en ARP au plus tard sous huit jours, sous peine de déchéance. de son côté, l’adhérent devra être titulaire d’une police d’assurance de personne, au titre de sa responsabilité civile, et renonce à couvrir ses activités au sein de la salle CROSSFIT NANCY par la souscription d’un contrat individuel accident auprès de l’assureur de KOOPER inc - CROSSFIT NANCY Affiliate,  en garantie complémentaire et à sa charge; le cas échéant il pourra en faire la demande expresse pat lettre recommandée directement auprès de KOOPER inc - CROSSFIT NANCY Affiliate.
 
-<br/><br/>X . Vestiaires, douches et WC : La salle met à disposition de l’adhérent des casiers individuels dans ses vestiaires. Leur utilisation est limitée à la durée de la séance d’entraînement. Il est rappelé expressément à l’adhérent que les casiers ne feront l’objet d’aucune surveillance spécifique; il reconnaît avoir été informé du risque encouru de laisser tout objet de valeur dans les vestiaires à usage collectif. L’adhérent fait son affaire personnelle quant au système de sécurité de son casier, notamment par le fait d’apporter son propre cadenas.
+</div><div class="paragraphe no-page-break">X . Vestiaires, douches et WC : La salle met à disposition de l’adhérent des casiers individuels dans ses vestiaires. Leur utilisation est limitée à la durée de la séance d’entraînement. Il est rappelé expressément à l’adhérent que les casiers ne feront l’objet d’aucune surveillance spécifique; il reconnaît avoir été informé du risque encouru de laisser tout objet de valeur dans les vestiaires à usage collectif. L’adhérent fait son affaire personnelle quant au système de sécurité de son casier, notamment par le fait d’apporter son propre cadenas.
 
 La salle met également à disposition des douches et WC : l’adhérent s’engage à respecter les règles de savoir-vivre, d’hygiène et de sécurité.
 
-<br/><br/>Xi . Règlement intérieur : L’adhérent déclare avoir pris connaissance et accepté les consignes de comportement de sécurité du règlement intérieur, dont un exemplaire lui a été présenté à son inscription. Il reconnaît à la direction de la salle le droit d’exclure de l’établissement, par lettre motivée avec accusé de réception, toute personne dont l’attitude, le comportement voire la tenue seraient contraires aux bonnes mœurs, aux règles d’hygiène et de sécurité, ou notoirement gênant les autres adhérents, ou non-conformes au présent contrat ou au règlement intérieur.
+</div><div class="paragraphe no-page-break">Xi . Règlement intérieur : L’adhérent déclare avoir pris connaissance et accepté les consignes de comportement de sécurité du règlement intérieur, dont un exemplaire lui a été présenté à son inscription. Il reconnaît à la direction de la salle le droit d’exclure de l’établissement, par lettre motivée avec accusé de réception, toute personne dont l’attitude, le comportement voire la tenue seraient contraires aux bonnes mœurs, aux règles d’hygiène et de sécurité, ou notoirement gênant les autres adhérents, ou non-conformes au présent contrat ou au règlement intérieur.
 
-<br/><br/>Xii . Loi informatique & libertés : Le traitement informatique du dossier de l’adhérent dans le cadre de la loi « informatique et libertés » du 16/01/1978, lui ouvre un droit de rectification et d’opposition aux données du dossier. Sauf avis contraire de sa part, ces données pourront être exploitées par la salle ou l’un de ses partenaires, afin d’informer d’éventuelles autres prestations de KOOPER inc - CROSSFIT NANCY Affiliate.
+</div><div class="paragraphe no-page-break">Xii . Loi informatique & libertés : Le traitement informatique du dossier de l’adhérent dans le cadre de la loi « informatique et libertés » du 16/01/1978, lui ouvre un droit de rectification et d’opposition aux données du dossier. Sauf avis contraire de sa part, ces données pourront être exploitées par la salle ou l’un de ses partenaires, afin d’informer d’éventuelles autres prestations de KOOPER inc - CROSSFIT NANCY Affiliate.
 
-<br/><br/>Xiii . Lois applicables - réclamations : Les présentes conditions générales sont soumises à l’application du droit français en vigueur.
+</div><div class="paragraphe no-page-break">Xiii . Lois applicables - réclamations : Les présentes conditions générales sont soumises à l’application du droit français en vigueur.
 Toute réclamation ou contestation doit être transmise par écrit à KOOPER Inc - 24/26 Boulevard du 26ème RI 54000 NANCY, ou à l’adresse suivante : contact@crossfit-nancy.fr.
 Les différends qui viendraient à se produire à propos de la validité, de l’interprétation, de l’exécution ou de l’inexécution des présentes conditions seront soumis à la médiation.
 L’abonné est informé de la possibilité qui lui est offerte par l’article L 152-1 du Code de la consommation, en cas de litige résultant des présentes conditions générales, d’avoir recours au médiateur national de la consommation. L’adhérent est informé que la saisine du médiateur ne peut intervenir qu’après avoir tenté au préalable de résoudre le litige directement auprès de KOOPER Inc par une réclamation écrite. En cas d’échec de la procédure de médiation, les différends qui viendraient à se produire à propos de la validité, de l’interprétation, de l’exécution ou de l’inexécution des présentes CGU seront soumis, par la partie la plus diligente, à la compétence exclusive des tribunaux du ressort de Nancy, nonobstant pluralité de défendeurs ou appel en garantie.
-			
-			</div>
-			
+</div>
 			
 			
-			<div class="title">
-				Signature du Contrat d’adhésion
-			</div>	
-			<div class="paragraphe">
-				L’adhérent déclare signer le présent contrat selon sa propre volonté, et atteste :
-				<ul>
-					<li>Qu’il a pris connaissance des conditions générales de vente exposées au verso du présent contrat d’adhésion</li>
-					<li>Qu’un exemplaire du règlement intérieur lui a été présenté</li>
-					<li>Que les documents fournis par ses soins dans le cadre de cette adhésion sont valides et conformes pour faire valoir ce que de droit : copie d’une pièce d’identité non expirée, certificat médical de moins de 3 mois autorisant la pratique du CrossFit</li>
-				</ul>
-				
-				<input type="button" value="Lu et approuvé" ng-if="sub.signatureDate == null"
-					ng-click="readAndApproved()"/>
+			
+			<div class="no-page-break">			
+				<div class="title">
+					Signature du Contrat d’adhésion
+				</div>	
+				<div class="paragraphe">
+					L’adhérent déclare signer le présent contrat selon sa propre volonté, et atteste :
+					<ul>
+						<li>Qu’il a pris connaissance des conditions générales de vente exposées au verso du présent contrat d’adhésion</li>
+						<li>Qu’un exemplaire du règlement intérieur lui a été présenté</li>
+						<li>Que les documents fournis par ses soins dans le cadre de cette adhésion sont valides et conformes pour faire valoir ce que de droit : copie d’une pièce d’identité non expirée, certificat médical de moins de 3 mois autorisant la pratique du CrossFit</li>
+					</ul>
 					
-				<div ng-if="sub.signatureDate != null">
-					<img alt="" src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
-					{{member.firstName}} {{member.lastName}} <br/>
-					Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+					<input type="button" value="Lu et approuvé" ng-if="sub.signatureDate == null"
+						ng-click="readAndApproved()"/>
+						
+					<div ng-if="sub.signatureDate != null">
+						<img alt="" src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
+						{{member.firstName}} {{member.lastName}} <br/>
+						Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+					</div>
 				</div>
 			</div>
 		</div>
