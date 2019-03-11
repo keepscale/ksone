@@ -473,13 +473,17 @@ datetimepicker.has-error input{
 	border-bottom: 1px dotted;
 }
 
-.word-doc .dotted label, .word-doc .dotted span{
+.word-doc .line label, .word-doc .line span{
     display: inline-block;
     vertical-align: bottom;
     background-color: #fff;
     margin-bottom: -6px;
     padding-right: 3px;
 }
+ .word-doc .line input{
+    vertical-align: bottom;
+    margin-bottom: -3px;
+ }
 
 .word-doc .italic{
     font-weight: bold;
