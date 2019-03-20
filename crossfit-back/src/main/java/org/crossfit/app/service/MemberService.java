@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.repository.AuthorityRepository;
@@ -251,6 +252,7 @@ public class MemberService {
 		
 		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
 			Subscription s;
+        	Membership membership = membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox);
 			
 			if (dto.getId() == null) {
 				s = new Subscription();
@@ -263,7 +265,7 @@ public class MemberService {
 			}
         	
         	
-        	s.setMembership(membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox));
+			s.setMembership(membership);
         	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
         	s.setPaymentMethod(dto.getPaymentMethod());
@@ -274,9 +276,8 @@ public class MemberService {
         	s.setDirectDebitFirstPaymentMethod(dto.getDirectDebitFirstPaymentMethod());
         	s.setDirectDebitIban(dto.getDirectDebitIban());
         	s.setDirectDebitBic(dto.getDirectDebitBic());        	
-        	
 		}
-		member = memberRepository.save(member);
+		member = memberRepository.saveAndFlush(member);
 		return member;
 	}
 

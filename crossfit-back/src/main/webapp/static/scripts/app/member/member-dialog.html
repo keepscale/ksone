@@ -223,7 +223,7 @@
 		    			 'panel-primary open-sub':now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate,
 		    			 'open-sub': isOpen(subscription),
 		    			 'ng-invalid-required': isSubscriptionInvalid(subscription) }"
-			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:'-subscriptionEndDate') "> 
+			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:['!!id', '-subscriptionEndDate']) "> 
 					<div class="panel-heading" >
 					
 				  		<button type="button" class="btn btn-sm btn-default toggle-button" ng-click="toggle($event, subscription)"

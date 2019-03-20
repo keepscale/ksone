@@ -4,7 +4,6 @@
 # Crossfit 2.0
 
 TODO: 
- voir ajout d'abo KO
  bouton suppression résa sur la homepage en mobile
  envoi contrat pdf par mail
  versioner modele de contrat (v1, avenant, etc.)
