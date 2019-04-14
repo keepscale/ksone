@@ -7,19 +7,37 @@
 		
 		<h4 class="modal-title modal-title-center">
 			<span ng-show="member.number">N°{{member.number}} - </span> 
-			<span style="text-transform: capitalize;"><span translate="crossfitApp.member.title.{{member.title}}"></span> {{member.firstName}} {{member.lastName}}</span>
+			<span style="text-transform: capitalize;"><span ng-if="member.title" translate="crossfitApp.member.title.{{member.title}}"></span> {{member.firstName}} {{member.lastName}}</span>
 		</h4>
 		
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-show="view == 'abonnements'">
+					<a ng-click="addSubscription()">
+						<span class="glyphicon glyphicon-plus" title="Ajouter un abonnement"></span>
+					</a>
+				</li>
+				<li ng-show="view == 'mandats'">
+					<a ng-click="addMandat()">
+						<span class="glyphicon glyphicon-plus" title="Ajouter un mandat"></span>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-left">
 				<li ng-class="{active:view=='infoperso'}">
 					<a ui-sref=".({view:'infoperso'})"> 
 						<span>{{'crossfitApp.member.infoperso'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='abonnements'}">
-					<a ui-sref=".({view:'abonnements'})"> 
+					<a ui-sref=".({view:'abonnements'})">
 						<span>{{'crossfitApp.member.abonnements'|translate}}</span>
+					</a>
+				</li>
+				<li ng-class="{active:view=='mandats'}">
+					<a ui-sref=".({view:'mandats'})">
+						<span>{{'crossfitApp.member.mandats'|translate}}</span>
 					</a>
 				</li>
 				<li ng-class="{active:view=='reservations'}">
@@ -37,16 +55,22 @@
 	</div>
 	
 	<div class="modal-body">
-		
-		<div class="row" ng-show="view == 'infoperso'">
+
+		<div class="col-xs-12 col-sm-6 form-group" ng-if="!member">
+			<div class="wait-spinner"></div>
+			<span>Chargement en cours, veuillez patienter...</span>
+		</div>
+
+		<div class="row" ng-show="view == 'infoperso' && member">
+
 		  <div class="col-md-12 col-lg-8">
-	    	<div class="row"> 
+	    	<div class="row">
 				<div class="col-xs-12 col-sm-6 form-group">
 					<input
 						type="text" class="form-control" id="id" name="id"
 						ng-model="member.id" readonly>
 				</div>
-				
+
 				<div class="col-xs-12 col-sm-6 form-group">
 					<input type="text" class="form-control" id="number" name="number"
 						placeholder="{{'crossfitApp.member.number.placeholder' | translate}}"
@@ -55,9 +79,9 @@
 			</div>
 		    <div class="row">
 		  		<div class="col-xs-12">
-					
-			    	<div class="row"> 
-			    							
+
+			    	<div class="row">
+
 				        <div class="form-group col-xs-12 col-sm-2">
 				            <select class="form-control" name="title" ng-model="member.title"
 							id="field_title" required>
@@ -65,7 +89,7 @@
 								<option value="MR" translate="crossfitApp.member.title.MR">Mr</option>
 							</select>
 				        </div>
-				        <div class="form-group col-xs-6 col-sm-5">			        
+				        <div class="form-group col-xs-6 col-sm-5">
 							<input type="text" class="form-control" id="firstName" name="firstName"
 								placeholder="{{'crossfitApp.member.firstname.placeholder' | translate}}"
 								ng-model="member.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
@@ -78,7 +102,7 @@
 								required maxlength="50">
 				        </div>
 			        </div>
-			    	<div class="row"> 
+			    	<div class="row">
 				        <div class="col-xs-12">
 				    	  	<div ng-show="form.firstName.$invalid">
 								<p class="help-block" ng-show="form.firstName.$error.required"
@@ -88,8 +112,8 @@
 								<p class="help-block" ng-show="form.firstName.$error.maxlength"
 									translate="crossfitApp.member.messages.validate.firstname.maxlength"> Your first name cannot be longer than 50 characters.</p>
 							</div>
-				    	
-				    	
+
+
 							<div ng-show="form.lastName.$invalid">
 								<p class="help-block" ng-show="form.lastName.$error.required"
 									translate="crossfitApp.member.messages.validate.lastname.required">Your
@@ -105,9 +129,9 @@
 					</div>
 				</div>
 		    </div>
-		    
+
 		    <div class="row form-group">
-		        <div class="col-xs-6">			        
+		        <div class="col-xs-6">
 					<input type="text" class="form-control" id="nickName" name="nickName"
 						placeholder="{{'crossfitApp.member.nickName.placeholder' | translate}}"
 						ng-model="member.nickName" ng-minlength=1 ng-maxlength=50 maxlength="50">
@@ -119,7 +143,7 @@
 						ng-model="member.cardUuid" ng-minlength=1 ng-maxlength=255 maxlength="255">
 		        </div>
 			</div>
-		    
+
 		    <div class="row form-group">
 		    	<div class="col-xs-12">
 		    		<input type="text" class="form-control" id="address" name="address"
@@ -138,17 +162,17 @@
 						placeholder="{{'crossfitApp.member.city.placeholder' | translate}}"
 						ng-model="member.city" ng-maxlength=100 maxlength="100">
 		    	</div>
-		    	
+
 		        <div class="form-group col-xs-12 col-sm-3">
 					<select id="langKey" name="langKey" class="form-control"
 						ng-model="member.langKey" ng-controller="LanguageController"
 						ng-options="code as (code | findLanguageFromKey) for code in languages"></select>
 				</div>
 	    	</div>
-	    	
+
 		    <div class="row">
 		  		<div class="col-xs-12">
-			    	<div class="row"> 
+			    	<div class="row">
 				    	<div class="form-group col-xs-12 col-sm-8">
 				    		<input type="email" class="form-control" id="email" name="email"
 							placeholder="{{'crossfitApp.member.email.placeholder' | translate}}"
@@ -161,8 +185,8 @@
 								ng-model="member.telephonNumber">
 				    	</div>
 				    </div>
-			    	<div class="row"> 
-				    	<div class="col-xs-12">		    	
+			    	<div class="row">
+				    	<div class="col-xs-12">
 				    		<div ng-show="form.email.$invalid">
 								<p class="help-block" ng-show="form.email.$error.required"
 									translate="crossfitApp.member.messages.validate.email.required">Your e-mail
@@ -181,17 +205,17 @@
 					</div>
 				</div>
 	    	</div>
-	    	
-	    	
+
+
 		  </div>
 		  <div class="col-md-12 col-lg-4">
-	    	<div class="row form-group"> 				
-				<div class="col-xs-12">				
+	    	<div class="row form-group">
+				<div class="col-xs-12">
 					<label class="checkbox-inline">
-					  <input type="checkbox" ng-model="member.givenMedicalCertificate"> 					  
+					  <input type="checkbox" ng-model="member.givenMedicalCertificate">
 					  {{'crossfitApp.member.givenMedicalCertificate.'+(member.givenMedicalCertificate ? 'selected' : 'notselected')+'.label' | translate}}
-					</label>					
-					<datetimepicker ng-show="member.givenMedicalCertificate" name="medicalCertificateDate" how-weeks="false" show-meridian="false" 
+					</label>
+					<datetimepicker ng-show="member.givenMedicalCertificate" name="medicalCertificateDate" how-weeks="false" show-meridian="false"
        						date-format="dd/MM/yyyy" hidden-time="true" ng-model="member.medicalCertificateDate"></datetimepicker>
 				</div>
 			</div>
@@ -205,42 +229,33 @@
 	  		</div>
 		  </div>
 		</div>
-		
-		
-		<div class="row member-subscriptions" ng-show="view == 'abonnements'">
-  			<div class="col-xs-12">	
-  			
-  							
-		    	<div class="row form-group">  
-			        <div class="col-xs-12"> 
-		  				<button type="button" class="btn btn-primary pull-right" ng-click="addSubscription()">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
-			        </div>
-				</div>
-		    	<div class="panel panel-default form-group" 
+
+
+		<div class="row member-subscriptions" ng-show="view == 'abonnements' && member">
+  			<div class="col-xs-12">
+		    	<div class="panel panel-default form-group"
 		    			ng-class="{
 		    			 'panel-primary open-sub':now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate,
-		    			 'open-sub': isOpen(subscription),
+		    			 'open-sub': isOpen(openedSubscription, subscription),
 		    			 'ng-invalid-required': isSubscriptionInvalid(subscription) }"
-			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:['!!id', '-subscriptionEndDate']) "> 
+			    		ng-repeat="subscription in subscriptions = (member.subscriptions | orderBy:['!!id', '-subscriptionEndDate']) ">
 					<div class="panel-heading" >
-					
-				  		<button type="button" class="btn btn-sm btn-default toggle-button" ng-click="toggle($event, subscription)"
+
+				  		<button type="button" class="btn btn-sm btn-default toggle-button" ng-click="toggle($event, openedSubscription, subscription)"
 				  			ng-disabled="now < subscription.subscriptionEndDate || !subscription.subscriptionEndDate">
-							<span class="glyphicon glyphicon-{{isOpen(subscription) ? 'collapse-down' : 'expand'}}"></span>
+							<span class="glyphicon glyphicon-{{isOpen(openedSubscription, subscription) ? 'collapse-down' : 'expand'}}"></span>
 				  		</button>
-										
+
 						<span ng-if="subscription.membership" class="hidden-xs">
 							{{subscription.subscriptionStartDate | date: 'dd/MM/yyyy'}} > {{subscription.subscriptionEndDate | date: 'dd/MM/yyyy'}} |
-						</span>	
+						</span>
 						<span ng-if="subscription.membership">
 							{{subscription.membership.name}}
 						</span>
 						<span ng-if="!subscription.membership">Sélectionner un abonnement</span>
-						
-						
-						
+
+
+
 						<div class="pull-right">
 							<span ng-if="subscription.bookingCount>0"
 								style="white-space: nowrap;">{{subscription.bookingCount}}
@@ -252,11 +267,11 @@
 								<span class="glyphicon glyphicon-remove"></span>
 							</button>
 						</div>
-					
+
 					</div>
 
 					<div class="panel-body">
-			    	
+
 						<div class="row">
 							<div class="col-xs-12 col-sm-5 col-lg-3 form-group">
 			  					<label>Type d'abonnement </label>
@@ -266,36 +281,36 @@
 									ng-click="calculateEndDate(subscription)"
 									ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
 								</select>
-							</div>				
-							
+							</div>
+
 							<div class="col-xs-12 col-sm-7 col-lg-3 form-group">
-			  					<label>Début / Fin </label>		
+			  					<label>Début / Fin </label>
 								<div class="form-inline">
-		
+
 									<datetimepicker name="subscriptionStartDate" how-weeks="false"
 										ng-class="caculateCssDate(subscription, subscriptions[$index-1], subscriptions[$index+1], 'desc' )"
 										show-meridian="false" date-format="dd/MM/yyyy"
 										hidden-time="true" ng-model="subscription.subscriptionStartDate"></datetimepicker>
-		
+
 									<datetimepicker name="subscriptionEndDate" how-weeks="false"
 										show-meridian="false" date-format="dd/MM/yyyy"
 										hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
 								</div>
-		
+
 							</div>
-							
+
 							<div class="col-xs-12 col-sm-6 col-lg-3 form-group">
-			  					<label>Mode de paiement</label>		
+			  					<label>Mode de paiement</label>
 								<select class="form-control" id="sel1"
 									ng-model="subscription.paymentMethod" required>
 									<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
 										+ p | translate }}</option>
 								</select>
 							</div>
-							
+
 							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
-			  						<label>&nbsp</label>		
-			  						<a ui-sref="subscription-sign({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank" 
+			  						<label>&nbsp</label>
+			  						<a ui-sref="subscription-sign({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
 			  							ng-if="subscription.id != null" >
 										<button type="button" class="btn btn-primary form-control" ng-disabled="isSubscriptionNotValidForSign(subscription)">
 											<span ng-if="subscription.signatureDate == null">Générer contrat</span>
@@ -303,43 +318,43 @@
 										</button>
 									</a>
 							</div>
-							
+
 						</div>
-	
+
 						<div class="panel panel-default" ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
 							<div class="panel-heading">
-								Info. Prélèvement	
+								Info. Prélèvement
 							</div>
 							<div class="panel-body">
-							
+
 								<div class="row">
-								
+
 									<div class="col-xs-12 col-sm-4 col-md-3 form-group">
 					  					<label>A partir du </label>
-		
+
 										<datetimepicker class="input-group" name="subscriptionDirectDebitAfterDate"
 											how-weeks="false" show-meridian="false" ng-required="mustFillDirectDebitInfo(subscription)"
 											date-format="dd/MM/yyyy" hidden-time="true"
 											ng-model="subscription.directDebitAfterDate"></datetimepicker>
 									</div>
-									
+
 									<div class="col-xs-12 col-sm-8 col-md-3 form-group">
 					  					<label>Jour prélèvement</label>
-				  					    <div class="input-group" style="max-width: 230px;">		
-		  									<span class="input-group-addon">Le</span>	  															
-												
+				  					    <div class="input-group" style="max-width: 230px;">
+		  									<span class="input-group-addon">Le</span>
+
 											<input type="number" class="form-control" style="text-align: right"
 												ng-model="subscription.directDebitAtDayOfMonth" ng-minlength=1
 												ng-required="mustFillDirectDebitInfo(subscription)"
 												ng-maxlength=2 maxlength="2">
-											
+
 		  									<span class="input-group-addon hidden-xs hidden-md">de chaque mois</span>
 										</div>
 									</div>
-									
+
 									<div class="col-xs-12 col-sm-6 col-md-3 form-group">
 					  					<label>Premier paiement de </label>
-				  					    <div class="input-group">			  					
+				  					    <div class="input-group">
 											<input type="number" style="text-align: right"
 												class="form-control "
 												ng-model="subscription.directDebitFirstPaymentTaxIncl"
@@ -348,9 +363,9 @@
 		  									<span class="input-group-addon">€</span>
 										</div>
 									</div>
-									
+
 									<div class="col-xs-12 col-sm-6 col-md-3 form-group">
-					  					<label>Réglé en</label>		
+					  					<label>Réglé en</label>
 										<select class="form-control" id="sel2"
 											ng-required="mustFillDirectDebitInfo(subscription)"
 											ng-model="subscription.directDebitFirstPaymentMethod">
@@ -359,42 +374,15 @@
 												+ p | translate }}</option>
 										</select>
 									</div>
-									
-									
-									<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 form-group">	
-									
-					  					<label>IBAN</label>
-				  					    <div>
-											<input type="text" class="form-control" id="iban" name="iban"
-												placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
-												ng-model="subscription.directDebitIban" 
-												ng-required="mustFillDirectDebitInfo(subscription)"
-												ng-maxlength=34 maxlength="34" /> 
-				  					    </div>
-			  					    </div>
-			  					    
-									<div class="col-xs-12 col-sm-4 col-lg-3 form-group">
-			
-					  					<label>BIC</label>
-				  					    <div>
-											<input type="text"
-												class="form-control" id="bic" name="bic"
-												placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
-												ng-model="subscription.directDebitBic" 
-												ng-required="mustFillDirectDebitInfo(subscription)"
-												ng-maxlength=8 maxlength="8" /> 
-										</div>
-									</div>
-				
-								</div>		
+								</div>
 							</div>
-						</div>	
-					
+						</div>
+
 					</div>
-		    	</div>	  		
-		        
+		    	</div>
+
 		        <div class="row form-group" ng-show="form.subscriptionStartDate.$invalid || form.subscriptionEndDate.$invalid || form.membership.$invalid">
-			        <div class="col-xs-12"> 
+			        <div class="col-xs-12">
 						<p class="help-block" ng-show="form.subscriptionStartDate.$error.required"
 							translate="crossfitApp.member.messages.validate.subscriptionStartDate.required">subscriptionStartDate is required.</p>
 						<p class="help-block" ng-show="form.subscriptionEndDate.$error.required"
@@ -403,38 +391,124 @@
 							translate="crossfitApp.member.messages.validate.membership.required">field_membership is required.</p>
 					</div>
 				</div>
-				
-						       
-				
+
+
+
 			</div>
 		</div>
-		
-		
-		
+
+
+		<div class="row member-mandats" ng-show="view == 'mandats' && member">
+			<div class="col-xs-12">
+				<div class="panel panel-default form-group"
+					 ng-class="{'ng-invalid-required': isMandatInvalid(mandat) }"
+					 ng-repeat="mandat in member.mandates">
+					<div class="panel-heading" >
+						<span ng-if="mandat.rum">{{mandat.rum}} - </span>
+						<span ng-if="mandat.status" translate="crossfitApp.member.mandat.status.{{mandat.status}}"></span>
+						<span ng-if="!mandat.id">Renseigner les informations du mandat</span>
+
+
+					</div>
+
+					<div class="panel-body">
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-4 form-group">
+
+								<label>RUM</label>
+								<div>
+									<input type="text" class="form-control" id="rum" name="rum"
+										   placeholder="{{'crossfitApp.member.rum.placeholder' | translate}}"
+										   ng-model="mandat.rum"
+										   ng-required="true"
+										   ng-maxlength=35 maxlength="35" />
+								</div>
+							</div>
+
+							<div class="col-xs-12 col-sm-4 form-group">
+
+								<label>ICS</label>
+								<div>
+									<input type="text"
+										   class="form-control" id="ics" name="ics"
+										   placeholder="{{'crossfitApp.member.ics.placeholder' | translate}}"
+										   ng-model="mandat.ics"
+										   ng-required="true"
+										   ng-maxlength=64 maxlength="64" />
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 form-group">
+
+								<label>IBAN</label>
+								<div>
+									<input type="text" class="form-control" id="iban" name="iban"
+										   placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
+										   ng-model="mandat.iban"
+										   ng-required="true"
+										   ng-maxlength=34 maxlength="34" />
+								</div>
+							</div>
+
+							<div class="col-xs-12 col-sm-4 col-lg-3 form-group">
+
+								<label>BIC</label>
+								<div>
+									<input type="text"
+										   class="form-control" id="bic" name="bic"
+										   placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
+										   ng-model="mandat.bic"
+										   ng-required="true"
+										   ng-maxlength=8 maxlength="8" />
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+				<div ng-if="member.mandates.length == 0">
+					Aucun mandats
+				</div>
+			</div>
+		</div>
+
 		<div class="row form-group" ng-show="view == 'reservations'">
   			<div class="col-xs-12"  style="max-height: 400px; overflow-y: scroll;">
-  			
-				<ul class="list-group" ng-if="member.bookings.length">
-					<li class="list-group-item" ng-repeat="booking in member.bookings">
-																			
+
+				<ul class="list-group" ng-if="memberBookings.length">
+					<li class="list-group-item" ng-repeat="booking in memberBookings">
+
 						<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
-							
+
 				       	{{booking.startAt | date:"EEE dd MMM yyyy 'à' HH:mm"}} - {{booking.title}}
-				       						
+
 						<button type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
 	                    	<span class="glyphicon glyphicon-remove"></span></button>
 					</li>
 				</ul>
-		
-				<div ng-if="!member.bookings || member.bookings.length == 0">
+
+				<div ng-if="memberBookings && memberBookings.length == 0">
 					Aucune réservation
+				</div>
+
+				<div class="col-xs-12 col-sm-6 form-group" ng-if="!memberBookings">
+					<div class="wait-spinner"></div>
+					<span>Chargement en cours, veuillez patienter...</span>
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		<div class="row form-group" ng-show="view == 'authority'">
+
+
+
+		<div class="row form-group" ng-show="view == 'authority' && member">
   			<div class="col-xs-12">
 				<label ng-repeat="role in roles" class="checkbox-inline" style="margin-left: 10px">
 				  <input type="checkbox" value="{{role}}"
@@ -443,8 +517,8 @@
 				</label>
 			</div>
 		</div>
-		
-		
+
+
 		<jh-alert-error></jh-alert-error>
     </div>
 

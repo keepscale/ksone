@@ -51,6 +51,7 @@
     <include file="classpath:config/liquibase/changelog/28_modify_wod_result.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/29_gestion_contrat.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/30_alter_gestion_contrat.xml" relativeToChangelogFile="false"/>
-    
+    <include file="classpath:config/liquibase/changelog/31_gestion_mandat.xml" relativeToChangelogFile="false"/>
+
 
 </databaseChangeLog>

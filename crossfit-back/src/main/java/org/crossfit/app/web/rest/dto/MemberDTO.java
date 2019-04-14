@@ -106,6 +106,7 @@ public class MemberDTO {
 
     private List<String> roles;
 
+	private List<MandateDTO> mandates = new ArrayList<>();
     private List<SubscriptionDTO> subscriptions = new ArrayList<>();
     private List<MembershipRules> rules = new ArrayList<>();
 
@@ -266,6 +267,14 @@ public class MemberDTO {
 
 	public void setLangKey(String langKey) {
 		this.langKey = langKey;
+	}
+
+	public List<MandateDTO> getMandates() {
+		return mandates;
+	}
+
+	public void setMandates(List<MandateDTO> mandates) {
+		this.mandates = mandates;
 	}
 
 	public List<SubscriptionDTO> getSubscriptions() {

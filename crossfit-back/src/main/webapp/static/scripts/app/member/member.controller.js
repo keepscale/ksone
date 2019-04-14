@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp')
-    .controller('MemberController', function ($scope, $window, Member, Membership, Authority,DateUtils, ParseLinks, AlertService) {
+    .controller('MemberController', function ($scope, $window, $state, $stateParams, Member, Membership, Authority,
+        DateUtils, ParseLinks, AlertService) {
         $scope.members = [];
         $scope.page = 1;
         $scope.per_page = 20;
@@ -16,12 +17,14 @@ angular.module('crossfitApp')
         $scope.healthIndicators = [];
         $scope.selectedHealthIndicators = [];
         $scope.selectedCustomCriteria = [];
+        $scope.searchLike = $stateParams.search;
         $scope.customCriteria = {
     		expire: new Date(),
     		encours: new Date()
         }
         
         $scope.loadAll = function() {
+            $state.go('.', {search: $scope.searchLike}, {notify: false});
             Member.query({
             	page: $scope.page, per_page: $scope.per_page, 
             	search: $scope.searchLike, 

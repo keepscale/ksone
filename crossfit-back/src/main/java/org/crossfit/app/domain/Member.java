@@ -159,7 +159,11 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
 
     @JsonIgnore
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<Subscription> subscriptions = new ArrayList<>();
+    private Set<Subscription> subscriptions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="member", cascade=CascadeType.ALL, orphanRemoval=true)
+    private Set<Mandate> mandates = new HashSet<>();
     
     public Long getId() {
         return id;
@@ -294,15 +298,23 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     }
     
 
-	public List<Subscription> getSubscriptions() {
+	public Set<Subscription> getSubscriptions() {
 		return subscriptions;
 	}
 
-	public void setSubscriptions(List<Subscription> subscriptions) {
+	public void setSubscriptions(Set<Subscription> subscriptions) {
 		this.subscriptions = subscriptions;
 	}
 
-	public String getNickName() {
+    public Set<Mandate> getMandates() {
+        return mandates;
+    }
+
+    public void setMandates(Set<Mandate> mandates) {
+        this.mandates = mandates;
+    }
+
+    public String getNickName() {
 		return nickName;
 	}
 

@@ -5,7 +5,7 @@ angular.module('crossfitApp')
         $stateProvider
             .state('member', {
                 parent: 'site',
-                url: '/members',
+                url: '/members?search',
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                     pageTitle: 'crossfitApp.member.home.title'
@@ -39,23 +39,7 @@ angular.module('crossfitApp')
                     $modal.open({
                         templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
-                        size: 'xl',
-                        resolve: {
-                            entity: function () {
-                                return {
-                                	title: 'MR', langKey: 'fr',
-                                	telephonNumber: null, sickNoteEndDate: null, 
-                                	membershipStartDate: null, membershipEndDate: null, 
-                                	level: null, id: null,
-                                	roles : ["ROLE_USER"],
-                                	subscriptions : [
-                                		{
-                                    		subscriptionStartDate : new Date()
-                                		}
-                                	]
-                            	};
-                            }
-                        }
+                        size: 'xl'
                     }).result.then(function(result) {
                         $state.go('member', null, { reload: true });
                     }, function() {
@@ -77,12 +61,7 @@ angular.module('crossfitApp')
                     $modal.open({
                         templateUrl: 'scripts/app/member/member-dialog.html?v='+$rootScope.VERSION,
                         controller: 'MemberDialogController',
-                        size: 'xl',
-                        resolve: {
-                            entity: ['Member', function(Member) {
-                                return Member.get({id : $stateParams.id});
-                            }]
-                        }
+                        size: 'xl'
                     }).result.then(function(result) {
                         $state.go('member', null, { reload: true });
                     }, function() {

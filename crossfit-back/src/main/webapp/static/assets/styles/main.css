@@ -420,6 +420,12 @@ datetimepicker.has-error input{
 	}
 
 }
+@media (max-width: 510px) {
+    .modal-header .navbar-nav > li > a {
+	    max-width: 55px;
+	}
+
+}
 .modal-header .modal-title-center{
     text-align: center;
 }
@@ -562,4 +568,29 @@ datetimepicker.ng-invalid-required,
 select.ng-invalid-required{
 	border-left: 2px solid red;
 	magin-left: -1px;
+}
+
+
+
+.wait-spinner {
+    float: left;
+}
+.wait-spinner:after {
+    content: " ";
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    border-radius: 50%;
+    border: 1px solid black;
+    border-color: black transparent black transparent;
+    animation: wait-spinner 1.2s linear infinite;
+}
+@keyframes wait-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

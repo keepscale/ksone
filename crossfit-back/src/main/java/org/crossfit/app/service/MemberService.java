@@ -15,21 +15,17 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.exception.EmailAlreadyUseException;
-import org.crossfit.app.repository.AuthorityRepository;
-import org.crossfit.app.repository.BookingRepository;
-import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.MembershipRepository;
-import org.crossfit.app.repository.PersistentTokenRepository;
-import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.repository.*;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
 import org.crossfit.app.web.rest.api.MembershipResource;
+import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
+import org.crossfit.app.web.rest.dto.SubscriptionDirectDebitDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -58,9 +54,14 @@ public class MemberService {
 
     @Inject
     private MemberRepository memberRepository;
-    
-    @Inject
-    private MembershipRepository membershipRepository;
+
+	@Inject
+	private MembershipRepository membershipRepository;
+
+	@Inject
+	private SubscriptionDirectDebitRepository subscriptionDirectDebitRepository;
+	@Inject
+	private MandateRepository mandateRepository;
 
     @Inject
     private SubscriptionRepository subscriptionRepository;
@@ -211,7 +212,7 @@ public class MemberService {
 		}
 		else{
 			
-			member = memberRepository.findOne(memberdto.getId());
+			member = memberRepository.findOneForUpdate(memberdto.getId());
 		}
 	
 		member.getAuthorities().clear();
@@ -241,43 +242,94 @@ public class MemberService {
 		member.setNumber(memberdto.getNumber());
 		member.setBox(currentCrossFitBox);
 
+		//Supprime les subscription qui ne sont plus dans le dto
+
+		final Set<Subscription> memberSubscriptions = member.getSubscriptions();
+		memberSubscriptions.removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->sub.getId().equals(dto.getId())));
+		
+		
+		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
+			Subscription s;
+			
+			if (dto.getId() == null) {
+				s = new Subscription();
+			}
+			else {
+				s = memberSubscriptions.stream().filter(sub->sub.getId().equals(dto.getId())).findFirst()
+				.orElseThrow(()->new IllegalStateException("La souscription " + dto.getId() + " n'appartient pas à l'utilisateur " + memberdto.getId()));
+			}
+        	
+        	
+        	s.setMembership(membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox));
+        	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
+        	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
+        	s.setPaymentMethod(dto.getPaymentMethod());
+
+        	if (s.getPaymentMethod() == PaymentMethod.DIRECT_DEBIT && dto.getDirectDebit() != null){
+				SubscriptionDirectDebit directDebit = Optional.ofNullable(s.getDirectDebit()).orElse(new SubscriptionDirectDebit());
+				SubscriptionDirectDebitDTO directDebitDto = dto.getDirectDebit();
+				directDebit.setAfterDate(directDebitDto.getAfterDate());
+				directDebit.setAmount(directDebitDto.getAmount());
+				directDebit.setAtDayOfMonth(directDebitDto.getAtDayOfMonth());
+				directDebit.setFirstPaymentMethod(directDebitDto.getFirstPaymentMethod());
+				directDebit.setFirstPaymentTaxIncl(directDebitDto.getFirstPaymentTaxIncl());
+				directDebit.setMandate(Optional.of(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
+
+			}
+        	else {
+        		if(s.getDirectDebit() != null){
+					subscriptionDirectDebitRepository.delete(s.getDirectDebit());
+				}
+        		s.setDirectDebit(null);
+			}
+
+			s.setMember(member);
+			memberSubscriptions.add(s);
+		}
+
+
+		//Supprime les mandats qui ne sont plus dans le dto
+		// &&
+		// qui ne sont pas utilisé dans une souscription
+		member.getMandates().removeIf(mandate-> {
+			return	memberdto.getMandates().stream().noneMatch(dto -> mandate.getId().equals(dto.getId())) &&
+					memberSubscriptions.stream().map(Subscription::getDirectDebit).noneMatch(deb-> mandate.equals(deb.getMandate()));
+		});
+
+
+		for (MandateDTO dto : memberdto.getMandates()) {
+			Mandate mandate;
+
+			if (dto.getId() == null) {
+				mandate = new Mandate();
+			}
+			else {
+				mandate = member.getMandates().stream().filter(man->man.getId().equals(dto.getId())).findFirst()
+						.orElseThrow(()->new IllegalStateException("Le mandat " + dto.getId() + " n'appartient pas à l'utilisateur " + memberdto.getId()));
+			}
+
+			//On ne met à jour que les mandats en attente d'approbation
+			if (mandate.getStatus() == MandateStatus.PENDING_CUSTOMER_APPROVAL){
+				mandate.setBic(dto.getBic());
+				mandate.setIban(dto.getIban());
+				mandate.setIcs(dto.getIcs());
+				mandate.setRum(dto.getRum());
+			}
+
+			mandate.setMember(member);
+			member.getMandates().add(mandate);
+		}
+
+
 		//L'email a changé ? on repasse par une validation d'email
 		if (!memberdto.getEmail().equals(member.getLogin())){
 			member.setLogin(memberdto.getEmail().toLowerCase());
 			initAccountAndSendMail(member);
 		}
-		//Supprime les subscription qui ne sont plus dans le dto
-		member.getSubscriptions().removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->sub.getId().equals(dto.getId())));
-		
-		
-		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
-			Subscription s;
-        	Membership membership = membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox);
-			
-			if (dto.getId() == null) {
-				s = new Subscription();
-				s.setMember(member);
-				member.getSubscriptions().add(s);
-			}
-			else {
-				s = member.getSubscriptions().stream().filter(sub->sub.getId().equals(dto.getId())).findFirst()
-				.orElseThrow(()->new IllegalStateException("La souscription " + dto.getId() + " n'appartient pas à l'utilisateur " + memberdto.getId()));
-			}
-        	
-        	
-			s.setMembership(membership);
-        	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
-        	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
-        	s.setPaymentMethod(dto.getPaymentMethod());
-        	
-        	s.setDirectDebitAfterDate(dto.getDirectDebitAfterDate());
-        	s.setDirectDebitAtDayOfMonth(dto.getDirectDebitAtDayOfMonth());
-        	s.setDirectDebitFirstPaymentTaxIncl(dto.getDirectDebitFirstPaymentTaxIncl());
-        	s.setDirectDebitFirstPaymentMethod(dto.getDirectDebitFirstPaymentMethod());
-        	s.setDirectDebitIban(dto.getDirectDebitIban());
-        	s.setDirectDebitBic(dto.getDirectDebitBic());        	
+		else{
+			memberRepository.saveAndFlush(member);
 		}
-		member = memberRepository.saveAndFlush(member);
+
 		return member;
 	}
 
@@ -295,9 +347,9 @@ public class MemberService {
 			member.setLastModifiedBy("system");
 		
 		member.setLastModifiedDate(DateTime.now(DateTimeZone.UTC));
-	
+
+		memberRepository.saveAndFlush(member);
 		mailService.sendActivationEmail(member, generatePassword);
-		memberRepository.save(member);
 	}
 	
 
