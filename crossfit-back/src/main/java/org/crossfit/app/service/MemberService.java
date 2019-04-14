@@ -1,27 +1,14 @@
 package org.crossfit.app.service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
-import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.*;
+import org.crossfit.app.domain.enumeration.MandateStatus;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.repository.*;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
-import org.crossfit.app.web.rest.api.MembershipResource;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
@@ -39,6 +26,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Service class for managing users.
