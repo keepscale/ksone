@@ -132,7 +132,7 @@ angular.module('crossfitApp')
 		
 		function handleVisibilityChange() {
 			if (document.hidden) {
-				$scope.closeWebsocket();
+				$scope.closeWebsocket(function(){});
 			}
 			else {
 				window.setTimeout(function(){

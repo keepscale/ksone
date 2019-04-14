@@ -31,11 +31,9 @@ import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
-import org.crossfit.app.service.CSV;
-import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.service.MemberService;
-import org.crossfit.app.service.TimeService;
+import org.crossfit.app.service.*;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
@@ -45,6 +43,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -94,7 +93,8 @@ public class MemberResource {
 	private MemberRepository memberRepository;
     @Inject
     private CardEventRepository cardEventRepository;
-
+	@Inject
+	private DirectDebitService directDebitService;
     @Inject
     private SubscriptionRepository subscriptionRepository;
     @Inject
@@ -329,20 +329,28 @@ public class MemberResource {
 		MemberDTO memberDTO = MemberDTO.MAPPER.apply(member);
 
 		memberDTO.setRoles(member.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()));
-		memberDTO.setSubscriptions(new ArrayList<>(subscriptionRepository.findAllByMember(member).stream().map(s ->{
-			
-			SubscriptionDTO dto = SubscriptionDTO.fullMapper.apply(s);
-			dto.setBookingCount(bookingRepository.countBySubscription(s));
-			return dto;
-			
-		})
-				.sorted((s1,s2)->{
-					int res = s1.getSubscriptionStartDate().compareTo(s2.getSubscriptionStartDate());
-					res = res != 0 ? res : s1.getSubscriptionEndDate().compareTo(s2.getSubscriptionEndDate()); 
-					return res;
-				})
-				.collect(Collectors.toList())));
-		
+		memberDTO.setSubscriptions(
+			new ArrayList<>(subscriptionRepository.findAllByMember(member).stream().map(s ->{
+
+				SubscriptionDTO dto = SubscriptionDTO.fullMapper.apply(s);
+				dto.setBookingCount(bookingRepository.countBySubscription(s));
+				return dto;
+
+			})
+			.sorted((s1,s2)->{
+				int res = s1.getSubscriptionStartDate().compareTo(s2.getSubscriptionStartDate());
+				res = res != 0 ? res : s1.getSubscriptionEndDate().compareTo(s2.getSubscriptionEndDate());
+				return res;
+			})
+			.collect(Collectors.toList())));
+
+		memberDTO.setMandates(
+				directDebitService.findAllMandateByMember(member).stream()
+				.map(MandateDTO.fullMapper)
+				.sorted(Comparator.comparing(MandateDTO::getStatus)
+						.thenComparing(MandateDTO::getSignatureDate))
+				.collect(Collectors.toList()));
+
 		return memberDTO;
 	}
 

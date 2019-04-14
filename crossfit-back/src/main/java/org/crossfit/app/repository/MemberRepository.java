@@ -65,6 +65,16 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "where m.id = :id")
     Member findOne(@Param("id") Long id);
 
+
+	@Query("select m from Member m "
+			+ "left join fetch m.authorities "
+			+ "left join fetch m.mandates "
+			+ "left join fetch m.subscriptions s "
+			+ "left join fetch s.directDebit sdeb "
+			+ "left join fetch sdeb.mandate mandate "
+			+ "where m.id = :id")
+	Member findOneForUpdate(@Param("id") Long id);
+
 	@Query("select m from Member m where m.cardUuid = :cardUuid and m.box = :box")
     Optional<Member> findOneByCardUuid(@Param("cardUuid") String cardUuid, @Param("box") CrossFitBox currentCrossFitBox);
 

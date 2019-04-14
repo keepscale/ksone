@@ -48,12 +48,8 @@ public class SubscriptionDTO implements Serializable {
 		dto.setSubscriptionStartDate(s.getSubscriptionStartDate());
 		dto.setSubscriptionEndDate(s.getSubscriptionEndDate());
 		dto.setPaymentMethod(s.getPaymentMethod());
-		dto.setDirectDebitAfterDate(s.getDirectDebitAfterDate());
-		dto.setDirectDebitAtDayOfMonth(s.getDirectDebitAtDayOfMonth());
-		dto.setDirectDebitBic(s.getDirectDebitBic());
-		dto.setDirectDebitFirstPaymentTaxIncl(s.getDirectDebitFirstPaymentTaxIncl());
-		dto.setDirectDebitFirstPaymentMethod(s.getDirectDebitFirstPaymentMethod());
-		dto.setDirectDebitIban(s.getDirectDebitIban());
+		if (s.getDirectDebit() != null)
+			dto.setDirectDebit(SubscriptionDirectDebitDTO.fullMapper.apply(s.getDirectDebit()));
 		dto.setSignatureDataEncoded(s.getSignatureDataEncoded());
 		dto.setSignatureDate(s.getSignatureDate());
 		return dto;
@@ -79,22 +75,8 @@ public class SubscriptionDTO implements Serializable {
     private Long bookingCount;
     private int maxCount;
     
-    
-    @Size(max = 34)
-    private String directDebitIban;
 
-    @Size(max = 8)
-    private String directDebitBic;
-
-    private Double directDebitFirstPaymentTaxIncl;
-    
-    private PaymentMethod directDebitFirstPaymentMethod;
-
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
-    private LocalDate directDebitAfterDate;
-    
-    private Integer directDebitAtDayOfMonth;
+    private SubscriptionDirectDebitDTO directDebit;
 
     
     @JsonSerialize(using = CustomDateTimeSerializer.class)
@@ -183,52 +165,12 @@ public class SubscriptionDTO implements Serializable {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public String getDirectDebitIban() {
-		return directDebitIban;
+	public SubscriptionDirectDebitDTO getDirectDebit() {
+		return directDebit;
 	}
 
-	public void setDirectDebitIban(String directDebitIban) {
-		this.directDebitIban = directDebitIban;
-	}
-
-	public String getDirectDebitBic() {
-		return directDebitBic;
-	}
-
-	public void setDirectDebitBic(String directDebitBic) {
-		this.directDebitBic = directDebitBic;
-	}
-
-	public Double getDirectDebitFirstPaymentTaxIncl() {
-		return directDebitFirstPaymentTaxIncl;
-	}
-
-	public void setDirectDebitFirstPaymentTaxIncl(Double directDebitFirstPaymentTaxIncl) {
-		this.directDebitFirstPaymentTaxIncl = directDebitFirstPaymentTaxIncl;
-	}
-
-	public PaymentMethod getDirectDebitFirstPaymentMethod() {
-		return directDebitFirstPaymentMethod;
-	}
-
-	public void setDirectDebitFirstPaymentMethod(PaymentMethod directDebitFirstPaymentMethod) {
-		this.directDebitFirstPaymentMethod = directDebitFirstPaymentMethod;
-	}
-
-	public LocalDate getDirectDebitAfterDate() {
-		return directDebitAfterDate;
-	}
-
-	public void setDirectDebitAfterDate(LocalDate directDebitAfterDate) {
-		this.directDebitAfterDate = directDebitAfterDate;
-	}
-
-	public Integer getDirectDebitAtDayOfMonth() {
-		return directDebitAtDayOfMonth;
-	}
-
-	public void setDirectDebitAtDayOfMonth(Integer directDebitAtDayOfMonth) {
-		this.directDebitAtDayOfMonth = directDebitAtDayOfMonth;
+	public void setDirectDebit(SubscriptionDirectDebitDTO directDebit) {
+		this.directDebit = directDebit;
 	}
 
 	public DateTime getSignatureDate() {

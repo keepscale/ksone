@@ -3,18 +3,7 @@ package org.crossfit.app.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -76,34 +65,16 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
-    
 
-    @Size(max = 34)
-    @Column(name = "direct_debit_iban", length = 34)
-    private String directDebitIban;
-
-    @Size(max = 8)
-    @Column(name = "direct_debit_bic", length = 8)
-    private String directDebitBic;
-
-    @Column(name = "direct_debit_first_payment_tax_incl")
-    private Double directDebitFirstPaymentTaxIncl;
-    
-    @Column(name = "direct_debit_first_payment_method")
-    private PaymentMethod directDebitFirstPaymentMethod;
-
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    @Column(name = "direct_debit_after_date")
-    private LocalDate directDebitAfterDate;
-    
-    @Column(name = "direct_debit_at_day_of_month")
-    private Integer directDebitAtDayOfMonth;
+    @JoinColumn(name = "subscription_direct_debit_id")
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private SubscriptionDirectDebit directDebit;
 
     @Basic(fetch=FetchType.LAZY)
     @Column(name = "signature_data_base64")
     @JsonIgnore
     private String signatureDataEncoded;
-    
+
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "signature_date")
     private DateTime signatureDate;
@@ -117,27 +88,18 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
         this.id = id;
     }
 
-    
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Subscription subscription = (Subscription) o;
-
-        if ( ! Objects.equals(id, subscription.id)) return false;
-
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subscription that = (Subscription) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id);
     }
 
     @Override
@@ -191,52 +153,12 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 		this.paymentMethod = paymentMethod;
 	}
 
-	public String getDirectDebitIban() {
-		return directDebitIban;
+	public SubscriptionDirectDebit getDirectDebit() {
+		return directDebit;
 	}
 
-	public void setDirectDebitIban(String directDebitIban) {
-		this.directDebitIban = directDebitIban;
-	}
-
-	public String getDirectDebitBic() {
-		return directDebitBic;
-	}
-
-	public void setDirectDebitBic(String directDebitBic) {
-		this.directDebitBic = directDebitBic;
-	}
-
-	public Double getDirectDebitFirstPaymentTaxIncl() {
-		return directDebitFirstPaymentTaxIncl;
-	}
-
-	public void setDirectDebitFirstPaymentTaxIncl(Double directDebitFirstPaymentTaxIncl) {
-		this.directDebitFirstPaymentTaxIncl = directDebitFirstPaymentTaxIncl;
-	}
-
-	public LocalDate getDirectDebitAfterDate() {
-		return directDebitAfterDate;
-	}
-
-	public void setDirectDebitAfterDate(LocalDate directDebitAfterDate) {
-		this.directDebitAfterDate = directDebitAfterDate;
-	}
-
-	public Integer getDirectDebitAtDayOfMonth() {
-		return directDebitAtDayOfMonth;
-	}
-
-	public void setDirectDebitAtDayOfMonth(Integer directDebitAtDayOfMonth) {
-		this.directDebitAtDayOfMonth = directDebitAtDayOfMonth;
-	}
-
-	public PaymentMethod getDirectDebitFirstPaymentMethod() {
-		return directDebitFirstPaymentMethod;
-	}
-
-	public void setDirectDebitFirstPaymentMethod(PaymentMethod directDebitFirstPaymentMethod) {
-		this.directDebitFirstPaymentMethod = directDebitFirstPaymentMethod;
+	public void setDirectDebit(SubscriptionDirectDebit directDebit) {
+		this.directDebit = directDebit;
 	}
 
 	public String getSignatureDataEncoded() {

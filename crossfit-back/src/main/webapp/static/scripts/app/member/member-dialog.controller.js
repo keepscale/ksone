@@ -1,13 +1,30 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$scope', '$stateParams', '$state', '$uibModalInstance', 'entity', 'Member', 'Membership', 'Booking', 'Authority', 'Bill',
-        function($scope, $stateParams, $state, $modalInstance, entity, Member, Membership, Booking, Authority, Bill) {
+    ['$q', '$scope', '$stateParams', '$state', '$uibModalInstance', 'Member', 'Membership', 'Booking', 'Authority', 'Bill',
+        function($q, $scope, $stateParams, $state, $modalInstance, Member, Membership, Booking, Authority, Bill) {
 
     	$scope.now = new Date();
-    	
-    	$scope.view = $stateParams.view;
-        $scope.member = entity;
+
+        $scope.member = {};
+        $scope.memberBookings = [];
+        $scope.view = $stateParams.view;
+
+        if (!$stateParams.id){
+            $scope.member = {
+                title: 'MR', langKey: 'fr',
+                telephonNumber: null, sickNoteEndDate: null,
+                membershipStartDate: null, membershipEndDate: null,
+                level: null, id: null,
+                roles : ["ROLE_USER"],
+                subscriptions : [
+                    {
+                        subscriptionStartDate : new Date()
+                    }
+                ]
+            };
+        }
+
         $scope.memberships = Membership.query();
         $scope.roles = Authority.query();
         $scope.paymentMethods = Bill.paymentMethods();
@@ -24,8 +41,13 @@ angular.module('crossfitApp').controller('MemberDialogController',
                     $modalInstance.close(result);
             	}
             	else{
-            		$scope.member = Member.get({id : result.id});
-                    $scope.loadBooking();
+            	    if (!$stateParams.id){
+                        $state.go('member.edit', {id: result.id});
+            	    }
+            	    else{
+                        $scope.loadMember();
+                        $scope.loadBooking();
+            	    }
             	}
             };
             
@@ -39,34 +61,45 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.clear = function() {
             $modalInstance.dismiss('cancel');
         };
-        
+
+        $scope.loadMember = function(){
+            if ($stateParams.id != null) {
+                $scope.member = null;
+                Member.get({id : $stateParams.id}, function(result){
+                    $scope.member = result;
+                });
+            }
+        }
         $scope.loadBooking = function(){
             if ($stateParams.id != null) {
+                $scope.memberBookings = null;
 	        	Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
-	            	$scope.member.bookings = resultBookings;
+	            	$scope.memberBookings = resultBookings;
 	            });
             }
         }
-        
-        $scope.isOpen = function(sub){
-        	return $scope.openedSubscription.indexOf(sub) > -1;
-        }
 
         $scope.openedSubscription = [];
+        $scope.openedMandats = [];
+
+        $scope.isOpen = function(arr, obj){
+        	return arr.indexOf(obj) > -1;
+        }
+
         
-        $scope.toggle = function(event, sub){
+        $scope.toggle = function(event, arr, obj){
 
         	
-        	var idx = $scope.openedSubscription.indexOf(sub);
+        	var idx = arr.indexOf(obj);
 
 			// Is currently selected
 			if (idx > -1) {
-				$scope.openedSubscription.splice(idx, 1);
+				arr.splice(idx, 1);
 			}
 
 			// Is newly selected
 			else {
-				$scope.openedSubscription.push(sub);
+				arr.push(obj);
 			}
         }
 
@@ -77,7 +110,14 @@ angular.module('crossfitApp').controller('MemberDialogController',
         		bookingCount: 0
         	});
         };
-        
+
+
+        $scope.addMandat = function() {
+        	$scope.member.mandates.push({
+        		rum : 'toto',
+        		ics: 'ABS'
+        	});
+        };
 
         $scope.deleteSubscription = function(subscription) {
         	var idx = $scope.member.subscriptions.indexOf(subscription);
@@ -175,5 +215,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
 			}
 		};
 
+
+        $scope.loadMember();
         $scope.loadBooking();
+
 }]);
