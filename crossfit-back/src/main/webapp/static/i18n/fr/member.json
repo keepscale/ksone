@@ -41,6 +41,18 @@
         	"infoperso" : "Infos Perso",
         	"abonnements" : "Abonnements",
         	"mandats" : "Mandats",
+        	"mandate" : {
+        		"status" : {
+        			"DRAFT" : "Brouillon",
+        			"PENDING_CUSTOMER_APPROVAL": "En attente d'approbation",
+				    "PENDING_SUBMISSION": "En attente de soumission",
+				    "SUBMITTED": "Soumis",
+				    "ACTIVE": "Actif",
+				    "FAILED": "Echoué",
+				    "CANCELLED": "Annulé",
+				    "EXPIRED": "Expiré"
+        		}
+        	},
         	"reservations" : "Réservations",
         	"authority" : "Roles",
         	"number.placeholder": "Num. Adhérent",

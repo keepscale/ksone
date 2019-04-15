@@ -110,18 +110,23 @@ angular.module('crossfitApp').controller('MemberDialogController',
         		bookingCount: 0
         	});
         };
+        $scope.deleteSubscription = function(subscription) {
+        	var idx = $scope.member.subscriptions.indexOf(subscription);
+        	$scope.member.subscriptions.splice(idx, 1);
+        };
 
 
         $scope.addMandat = function() {
         	$scope.member.mandates.push({
         		rum : 'toto',
-        		ics: 'ABS'
+        		ics: 'ABS',
+        		status: 'DRAFT'
         	});
         };
 
-        $scope.deleteSubscription = function(subscription) {
-        	var idx = $scope.member.subscriptions.indexOf(subscription);
-        	$scope.member.subscriptions.splice(idx, 1);
+        $scope.deleteMandate = function(mandate) {
+        	var idx = $scope.member.mandates.indexOf(mandate);
+        	$scope.member.mandates.splice(idx, 1);
         };
         
         $scope.calculateEndDate = function(subscription){

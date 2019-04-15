@@ -348,7 +348,8 @@ public class MemberResource {
 				directDebitService.findAllMandateByMember(member).stream()
 				.map(MandateDTO.fullMapper)
 				.sorted(Comparator.comparing(MandateDTO::getStatus)
-						.thenComparing(MandateDTO::getSignatureDate))
+						.thenComparing(MandateDTO::getSignatureDate, Comparator.nullsFirst(Comparator.reverseOrder()))
+						.thenComparing(MandateDTO::getCreatedDate, Comparator.nullsFirst(Comparator.reverseOrder())))
 				.collect(Collectors.toList()));
 
 		return memberDTO;

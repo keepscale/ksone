@@ -399,78 +399,109 @@
 
 
 		<div class="row member-mandats" ng-show="view == 'mandats' && member">
+		
+		
 			<div class="col-xs-12">
 				<div class="panel panel-default form-group"
 					 ng-class="{'ng-invalid-required': isMandatInvalid(mandat) }"
-					 ng-repeat="mandat in member.mandates">
+					 ng-repeat="mandate in member.mandates">
 					<div class="panel-heading" >
-						<span ng-if="mandat.rum">{{mandat.rum}} - </span>
-						<span ng-if="mandat.status" translate="crossfitApp.member.mandat.status.{{mandat.status}}"></span>
-						<span ng-if="!mandat.id">Renseigner les informations du mandat</span>
+						<span ng-if="mandate.rum">Mandat: {{mandate.rum}} - </span>
+						<span translate="crossfitApp.member.mandate.status.{{mandate.status}}"></span>
+						<span ng-if="mandate.createdDate"> | Créé le {{mandate.createdDate | date:"dd/MM/yyyy 'à' HH:mm"}}</span>
 
+
+						<div class="pull-right">
+							<button type="button"
+								class="btn btn-xs btn-danger"
+								ng-click="deleteMandate(mandate)"
+								ng-disabled="mandate.status != 'PENDING_CUSTOMER_APPROVAL' && mandate.id != null">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</div>
 
 					</div>
 
 					<div class="panel-body">
-
 						<div class="row">
-
-							<div class="col-xs-12 col-sm-4 form-group">
-
-								<label>RUM</label>
-								<div>
-									<input type="text" class="form-control" id="rum" name="rum"
-										   placeholder="{{'crossfitApp.member.rum.placeholder' | translate}}"
-										   ng-model="mandat.rum"
-										   ng-required="true"
-										   ng-maxlength=35 maxlength="35" />
+							<div class="col-sm-12 col-md-8">		
+								<div class="row">
+		
+									<div class="col-xs-12 col-sm-6 form-group">
+		
+										<label>RUM</label>
+										<div>
+											<input type="text" class="form-control" id="rum" name="rum"
+												   placeholder="{{'crossfitApp.member.rum.placeholder' | translate}}"
+												   ng-model="mandate.rum"
+												   ng-required="true" ng-disabled="mandate.id"
+												   ng-maxlength=35 maxlength="35" />
+										</div>
+									</div>
+		
+									<div class="col-xs-12 col-sm-6 form-group">
+		
+										<label>ICS</label>
+										<div>
+											<input type="text"
+												   class="form-control" id="ics" name="ics"
+												   placeholder="{{'crossfitApp.member.ics.placeholder' | translate}}"
+												   ng-model="mandate.ics"
+												   ng-required="true" ng-disabled="mandate.id"
+												   ng-maxlength=64 maxlength="64" />
+										</div>
+									</div>
+		
+								</div>
+		
+								<div class="row">
+		
+									<div class="col-xs-12 col-sm-8 form-group">
+		
+										<label>IBAN</label>
+										<div>
+											<input type="text" class="form-control" id="iban" name="iban"
+												   placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
+												   ng-model="mandate.iban"
+												   ng-required="true" ng-disabled="mandate.id"
+												   ng-maxlength=34 maxlength="34" />
+										</div>
+									</div>
+		
+									<div class="col-xs-12 col-sm-4 form-group">
+		
+										<label>BIC</label>
+										<div>
+											<input type="text"
+												   class="form-control" id="bic" name="bic"
+												   placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
+												   ng-model="mandate.bic"
+												   ng-required="true" ng-disabled="mandate.id"
+												   ng-maxlength=8 maxlength="8" />
+										</div>
+									</div>
+		
 								</div>
 							</div>
-
-							<div class="col-xs-12 col-sm-4 form-group">
-
-								<label>ICS</label>
-								<div>
-									<input type="text"
-										   class="form-control" id="ics" name="ics"
-										   placeholder="{{'crossfitApp.member.ics.placeholder' | translate}}"
-										   ng-model="mandat.ics"
-										   ng-required="true"
-										   ng-maxlength=64 maxlength="64" />
+							<div class="col-sm-12 col-md-4">		
+								<div class="row">
+									<div class="col-xs-12 form-group">
+										<label>Statut : {{'crossfitApp.member.mandate.status.'+ mandate.status | translate }}</label>
+									
+									
+				  						<a ui-sref="mandate-sign({memberId: member.id, mandateId: mandaten.id})" ui-sref-opts="{relative: false}" target="_blank"
+				  							ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'" >
+											<button type="button" class="btn btn-primary form-control">
+												<span>Signer le mandat</span>
+											</button>
+										</a>
+									
+									</div>
+									
+									
 								</div>
 							</div>
-
 						</div>
-
-						<div class="row">
-
-							<div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 form-group">
-
-								<label>IBAN</label>
-								<div>
-									<input type="text" class="form-control" id="iban" name="iban"
-										   placeholder="{{'crossfitApp.member.iban.placeholder' | translate}}"
-										   ng-model="mandat.iban"
-										   ng-required="true"
-										   ng-maxlength=34 maxlength="34" />
-								</div>
-							</div>
-
-							<div class="col-xs-12 col-sm-4 col-lg-3 form-group">
-
-								<label>BIC</label>
-								<div>
-									<input type="text"
-										   class="form-control" id="bic" name="bic"
-										   placeholder="{{'crossfitApp.member.bic.placeholder' | translate}}"
-										   ng-model="mandat.bic"
-										   ng-required="true"
-										   ng-maxlength=8 maxlength="8" />
-								</div>
-							</div>
-
-						</div>
-
 					</div>
 				</div>
 

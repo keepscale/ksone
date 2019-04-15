@@ -41,6 +41,7 @@ public class MandateDTO implements Serializable {
 		dto.setIcs(s.getIcs());
 		dto.setIban(s.getIban());
 		dto.setBic(s.getBic());
+		dto.setCreatedDate(s.getCreatedDate());
 		dto.setSignatureDataEncoded(s.getSignatureDataEncoded());
 		dto.setSignatureDate(s.getSignatureDate());
 		return dto;
@@ -62,6 +63,10 @@ public class MandateDTO implements Serializable {
 	@Size(max = 8)
 	private String bic;
 
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    private DateTime createdDate;
+    
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
     private DateTime signatureDate;
@@ -144,4 +149,13 @@ public class MandateDTO implements Serializable {
 	public void setSignatureDataEncoded(String signatureDataEncoded) {
 		this.signatureDataEncoded = signatureDataEncoded;
 	}
+
+	public DateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(DateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+	
 }
