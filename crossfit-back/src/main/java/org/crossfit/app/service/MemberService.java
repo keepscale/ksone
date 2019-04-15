@@ -285,7 +285,7 @@ public class MemberService {
 		// qui ne sont pas utilisé dans une souscription
 		member.getMandates().removeIf(mandate-> {
 			return	memberdto.getMandates().stream().noneMatch(dto -> mandate.getId().equals(dto.getId())) &&
-					memberSubscriptions.stream().map(Subscription::getDirectDebit).noneMatch(deb-> mandate.equals(deb.getMandate()));
+					memberSubscriptions.stream().map(Subscription::getDirectDebit).filter(Objects::nonNull).noneMatch(deb-> mandate.equals(deb.getMandate()));
 		});
 
 
