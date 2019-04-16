@@ -12,11 +12,11 @@ import javax.validation.Valid;
 
 import org.crossfit.app.domain.Membership;
 import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.exception.SubscriptionAlreadySignException;
+import org.crossfit.app.exception.AlreadySignedException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
-import org.crossfit.app.service.SubscriptionService;
+import org.crossfit.app.service.SignatureService;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
@@ -48,7 +48,7 @@ public class SubscriptionResource {
 	@Inject
 	private SubscriptionRepository subscriptionRepository;
 	@Inject
-	private SubscriptionService subscriptionService;
+	private SignatureService subscriptionService;
 	@Inject
 	private BookingRepository bookingRepository;
 	@Inject
@@ -169,14 +169,4 @@ public class SubscriptionResource {
 		subscriptionRepository.deleteById(id);
 	}
 	
-
-	@RequestMapping(value = "/subscriptions/sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Subscription> sign(@RequestBody SubscriptionDTO dto) throws URISyntaxException, SubscriptionAlreadySignException {
-		log.debug("REST request to sign Subscription : {}", dto);
-		
-		Subscription result = subscriptionService.sign(dto);
-		
-		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("subscription", result.getId().toString()))
-				.body(result);
-	}
 }

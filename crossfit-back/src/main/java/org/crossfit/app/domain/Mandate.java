@@ -16,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "MANDATE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Mandate extends AbstractAuditingEntity implements Serializable {
+public class Mandate extends AbstractAuditingEntity implements Serializable, Signable {
 
     private static final long serialVersionUID = 1L;
 

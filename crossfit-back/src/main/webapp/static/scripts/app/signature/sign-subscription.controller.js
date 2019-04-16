@@ -2,12 +2,12 @@
 
 angular.module('crossfitApp')
     .controller('SignSubscriptionController', 
-    		['$scope', '$stateParams', '$state', '$rootScope', 'Member', 'Subscription',
-	function($scope, $stateParams, $state, $rootScope, Member, Subscription) {
+    		['$scope', '$stateParams', '$state', '$rootScope', 'Member', 'Signature',
+	function($scope, $stateParams, $state, $rootScope, Member, Signature) {
 
         $scope.init = function(){
         	$scope.member = Member.get({id : $stateParams.memberId});
-        	$scope.sub = Subscription.get({id : $stateParams.subscriptionId});
+        	$scope.sub = $scope.member.subscriptions.find(m => m.id == $stateParams.subscriptionId);
         	$scope.logoUrl = $rootScope.box.billLogoUrl;
         }
         
@@ -22,7 +22,7 @@ angular.module('crossfitApp')
         
         $scope.sign = function(){
             $('#signature').modal('hide');
-        	Subscription.sign($scope.subSigned);
+            Signature.sign-subscription($scope.subSigned);
             $scope.init();
         }
         
