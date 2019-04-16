@@ -3,7 +3,7 @@
 angular.module('crossfitApp')
     .factory('Signature', function ($resource, DateUtils) {
         return $resource('', {}, {
-            'sign-subscription': {
+            'signsubscription': {
                 method: 'POST',
                 url: 'api/sign/subscription', 
                 transformRequest: function (data) {
@@ -16,7 +16,7 @@ angular.module('crossfitApp')
                     return angular.toJson(signature);
                 }
             },
-            'sign-mandate': {
+            'signmandate': {
                 method: 'POST',
                 url: 'api/sign/mandate', 
                 transformRequest: function (data) {

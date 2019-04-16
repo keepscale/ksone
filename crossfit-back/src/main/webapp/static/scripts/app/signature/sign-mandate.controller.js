@@ -13,21 +13,17 @@ angular.module('crossfitApp')
                 $scope.member = result;
             	$scope.mandate = $scope.member.mandates.find(m => m.id == $stateParams.mandateId);
 
-            	$scope.mandateSigned = {
-        			id: $scope.mandate.id,
-          			signatureDate: $scope.mandate.signatureDate != null ? $scope.mandate.signatureDate : new Date(),
-          			signatureDataEncoded : $scope.mandate.signatureDataEncoded
-            	};
+                $scope.mandateSigned = {
+                    id: $scope.mandate.id,
+                    signatureDate: $scope.mandate.signatureDate != null ? $scope.mandate.signatureDate : new Date(),
+                    signatureDataEncoded : $scope.mandate.signatureDataEncoded
+                };
             });
         	
         }
-        
-        $scope.clear = function(){
-        	$scope.mandateSigned.signatureDataEncoded = null;
-        }
-        
+
         $scope.sign = function(){
-            Signature.sign-mandate($scope.mandateSigned);
+            Signature.signmandate($scope.mandateSigned);
             $scope.init();
         }
         
