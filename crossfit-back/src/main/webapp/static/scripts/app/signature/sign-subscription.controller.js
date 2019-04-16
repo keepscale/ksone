@@ -6,8 +6,11 @@ angular.module('crossfitApp')
 	function($scope, $stateParams, $state, $rootScope, Member, Signature) {
 
         $scope.init = function(){
-        	$scope.member = Member.get({id : $stateParams.memberId});
-        	$scope.sub = $scope.member.subscriptions.find(m => m.id == $stateParams.subscriptionId);
+        	$scope.member = Member.get({id : $stateParams.memberId}, function(result){
+                $scope.member = result;
+        	    $scope.sub = $scope.member.subscriptions.find(m => m.id == $stateParams.subscriptionId);
+            });
+
         	$scope.logoUrl = $rootScope.box.billLogoUrl;
         }
         
