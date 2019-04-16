@@ -1,0 +1,9 @@
+{
+    "crossfitApp": {
+        "signature" : {
+        	"subscription.title" : "Signature contrat",
+        	"mandate.title" : "Signature mandat"
+        }
+    }
+}
+

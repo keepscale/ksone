@@ -13,18 +13,5 @@ angular.module('crossfitApp')
                     return data;
                 }
             },
-            'sign': {
-                method: 'POST',
-                url: 'api/subscriptions/sign', 
-                transformRequest: function (data) {
-                	var signature = {
-                		id : data.id,
-            			signatureDate: DateUtils.convertLocaleDateTimeToServer(data.signatureDate),
-						signatureDataEncoded: data.signatureDataEncoded
-                	}
-                    
-                    return angular.toJson(signature);
-                }
-            },
         });
     });

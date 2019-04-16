@@ -310,7 +310,7 @@
 
 							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>
-			  						<a ui-sref="subscription-sign({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
+			  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
 			  							ng-if="subscription.id != null" >
 										<button type="button" class="btn btn-primary form-control" ng-disabled="isSubscriptionNotValidForSign(subscription)">
 											<span ng-if="subscription.signatureDate == null">Générer contrat</span>
@@ -489,7 +489,7 @@
 										<label>Statut : {{'crossfitApp.member.mandate.status.'+ mandate.status | translate }}</label>
 									
 									
-				  						<a ui-sref="mandate-sign({memberId: member.id, mandateId: mandaten.id})" ui-sref-opts="{relative: false}" target="_blank"
+				  						<a ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank"
 				  							ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'" >
 											<button type="button" class="btn btn-primary form-control">
 												<span>Signer le mandat</span>

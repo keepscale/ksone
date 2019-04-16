@@ -407,8 +407,10 @@
 					    <jsSourceFile>/scripts/app/member/member-dialog.controller.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/member/member.service.js</jsSourceFile>
 
-					    <jsSourceFile>/scripts/app/member/subscription/subscription.js</jsSourceFile>
-					    <jsSourceFile>/scripts/app/member/subscription/sign-subscription.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/signature/signature.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/signature/sign-subscription.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/app/signature/sign-mandate.controller.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/signature/signature.service.js</jsSourceFile>
 				    
 					    <jsSourceFile>/scripts/app/admin/config/config.js</jsSourceFile>
 					    <jsSourceFile>/scripts/app/admin/config/config.controller.js</jsSourceFile>

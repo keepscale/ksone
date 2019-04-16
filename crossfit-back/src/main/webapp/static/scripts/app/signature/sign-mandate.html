@@ -1,0 +1,84 @@
+<div ng-cloak>
+	<div class="row word-container">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 word-doc">
+			
+			<div class="paragraphe">
+				<div class="logo"><img src="{{logoUrl}}"/></div>
+			</div>
+			
+			<div class="no-page-break">
+				
+				<div class="paragraphe">
+					<div class="sepa">
+						<div class="intro">
+							<img src="{{logoUrl}}">
+							En signant ce formulaire de mandat, vous autorisez la société KOOPER inc - CROSSFIT NANCY Affiliate 
+							à envoyer des instructions à votre banque pour débiter votre compte, 
+							et votre banque à débiter votre compte conformément aux instructions de KOOPER inc - CROSSFIT NANCY Affiliate. 
+							
+							Vous bénéficiez du droit d’être remboursé par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. 
+							Une demande de remboursement doit être présentée : dans les 8 semaines suivant la date de débit de votre compte pour un prélèvement autorisé, 
+							sans tarder et au plus tard dans les 13 mois en cas de prélèvement non authorisé, 
+							et vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque.
+						</div>
+						
+					
+						<div class="line">
+						
+							<div class="moitie beneficiaire">
+								Pour le compte de: <br/>
+								Kooper inc <br/>
+								24/26 bd du 26ème Régiment d’Infanterie 54000 Nancy
+							</div>
+							
+							<div class="moitie">
+								<div class="line">
+									<div class="moitie dotted"><label>Prénom : </label><span>{{member.firstName}}</span></div>
+									<div class="moitie dotted"><label>Nom : </label><span>{{member.lastName}}</span></div>
+								</div>
+								<div class="line dotted"><label>Adresse : </label><span>{{member.address}}</span></div>
+								<div class="line">
+									<div class="moitie dotted"><label>Ville : </label><span>{{member.city}}</span></div>
+									<div class="moitie dotted"><label>Code postal : </label><span>{{member.zipCode}}</span></div>
+								</div>
+								<div class="line"> <label>Paiement : </label> 
+									<input type="checkbox" checked="checked" readonly="readonly"/> <span>Récurrent </span>
+									<input type="checkbox" disabled="disabled"/> <span>Unique</span> 
+								</div>
+							</div>
+						</div>
+						
+						<div class="line"> 
+							<div class="moitie">
+								<div class="line"> <label>BIC : </label>  <span>{{mandate.bic}}</span></div>
+								<div class="line" style="margin: 6px; border: 1px solid black;">
+									<label style="float: left;">Signature : </label>
+									<img ng-if="mandate.signatureDate != null" alt="" src="{{mandate.signatureDataEncoded}}" height="100px" style="margin: 0 10px;"> <br/>
+									
+									<signature-pad ng-if="mandate.signatureDate == null" 
+											accept="accept" clear="clear" height="100"		width="400" 							
+											dataurl="mandateSigned.signatureDataEncoded"
+											disabled="false"></signature-pad>
+							
+								</div>
+							</div>
+							<div class="moitie">
+								<div class="line"> <label>A débiter sur : </label>  <span>{{mandate.iban}}</span></div>
+								<div class="line"> <label>Référence unique du mandat : </label>  <span>{{mandate.rum}}</span></div>
+								<div class="line"> <label>Identifiant Créancier SEPA : </label>  <span>{{mandate.ics}}</span></div>
+								<div class="line"> <span>Nancy, le {{mandateSigned.signatureDate | date:'dd/MM/yyyy'}}</span></div>
+							</div>
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</div>
+				
+				<div class="paragraphe">
+					<button ng-click="clear()">Effacer</button>
+					<button ng-click="sign()">Signer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

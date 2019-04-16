@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Entity
 @Table(name = "SUBSCRIPTION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Subscription extends AbstractAuditingEntity implements Serializable {
+public class Subscription extends AbstractAuditingEntity implements Serializable, Signable {
 
     /**
 	 * 
