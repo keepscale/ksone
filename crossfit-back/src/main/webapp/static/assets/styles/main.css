@@ -577,18 +577,14 @@ select.ng-invalid-required{
 
 
 
-.wait-spinner {
-    float: left;
-}
 .wait-spinner:after {
     content: " ";
     display: block;
-    width: 18px;
-    height: 18px;
-    margin-right: 5px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    border: 1px solid black;
-    border-color: black transparent black transparent;
+    border: 1px solid white;
+    border-color: white transparent white transparent;
     animation: wait-spinner 1.2s linear infinite;
 }
 @keyframes wait-spinner {
