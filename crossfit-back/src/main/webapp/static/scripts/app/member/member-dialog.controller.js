@@ -19,9 +19,11 @@ angular.module('crossfitApp').controller('MemberDialogController',
                 roles : ["ROLE_USER"],
                 subscriptions : [
                     {
-                        subscriptionStartDate : new Date()
+                        subscriptionStartDate : new Date(),
+                        bookingCount: 0
                     }
-                ]
+                ],
+                mandates: []
             };
         }
 
@@ -33,6 +35,9 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	$scope.view = $stateParams.view;
         });
 
+        $scope.isLoading = function(){
+        	return $scope.member==null || $scope.memberBookings == null;
+        }
         
         $scope.save = function (andQuit) {
         	var callBack = function(result){
@@ -45,8 +50,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
                         $state.go('member.edit', {id: result.id});
             	    }
             	    else{
-                        $scope.loadMember();
-                        $scope.loadBooking();
+            	    	$scope.refresh();
             	    }
             	}
             };
@@ -62,6 +66,11 @@ angular.module('crossfitApp').controller('MemberDialogController',
             $modalInstance.dismiss('cancel');
         };
 
+        $scope.refresh = function(){
+            $scope.loadMember();
+            $scope.loadBooking();
+        }
+        
         $scope.loadMember = function(){
             if ($stateParams.id != null) {
                 $scope.member = null;
@@ -220,8 +229,6 @@ angular.module('crossfitApp').controller('MemberDialogController',
 			}
 		};
 
-
-        $scope.loadMember();
-        $scope.loadBooking();
+		$scope.refresh();
 
 }]);
