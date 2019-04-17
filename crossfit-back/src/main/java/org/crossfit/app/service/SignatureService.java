@@ -6,6 +6,7 @@ import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Signable;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.exception.AlreadySignedException;
 import org.crossfit.app.repository.MandateRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
@@ -40,7 +41,7 @@ public class SignatureService {
 		Mandate mandate = mandateRepository.getOne(dto.getId());
 		
 		sign(mandate, dto.getSignatureDate(), dto.getSignatureDataEncoded());
-		
+		mandate.setStatus(MandateStatus.ACTIVE);
 		//TODO: generate pdf && send by mail ?
 		
 		return mandateRepository.save(mandate);

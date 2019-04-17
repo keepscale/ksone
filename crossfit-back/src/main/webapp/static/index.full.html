@@ -20,21 +20,19 @@
 		<link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css">
 		<link rel="stylesheet" href="bower_components/angular-upload/src/directives/btnUpload.min.css">
 		
-		
-        <link rel="stylesheet" type="text/css" href="assets/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="assets/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="assets/styles/print.css" media="print">
-        
         
         <!-- build:css assets/styles/main.css -->
         <!-- endbuild -->
     </head>
-    <body ng-app="crossfitApp">
+    <body ng-app="crossfitApp" class="state-{{toState.name}}">
         <!--[if lt IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 		<div id="wrapper">
 			<div ui-view="navbar" ng-cloak=""></div>
-			<div id="page-wrapper" class="{{toState.name}}">
+			<div id="page-wrapper">
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-lg-6 col-lg-offset-3">	

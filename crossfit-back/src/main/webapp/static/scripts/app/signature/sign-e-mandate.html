@@ -3,20 +3,36 @@
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 word-doc">
 
 			<div class="no-page-break">
-
+				<div class="row">
+				
+					<div class="col-xs-6">
+						<div class="row">
+							<div class="col-xs-6" ng-bind-html="box.sepa.beneficiaire"></div>
+						</div>
+					</div>
+					
+					<div class="col-xs-6">
+						<div class="row">
+							<div class="col-xs-6" ng-bind-html="box.sepa.headerTitle"></div>
+							</div>
+						</div>
+					</div>
+				
+				</div>
 				<div class="paragraphe">
 					<div class="sepa">
+					
 						<div class="intro">
 							<img src="{{box.sepa.logoURL}}">
 							<p ng-bind-html="box.sepa.legalText"></p>
 						</div>
-						
-						
+
+
 						<div class="line">
 
 							<div class="moitie beneficiaire">
 								Pour le compte de: <br/>
-								<p ng-bind-html="box.sepa.beneficiaire"></p>
+								
 							</div>
 
 							<div class="moitie">
@@ -36,22 +52,14 @@
 							</div>
 						</div>
 
-						<div style="clear: both"></div>
-						
-						<div class="line" style="margin-bottom: 10px;">
-							<label>A débiter sur : </label>  <span>IBAN {{mandate.iban}}</span> <label style="margin-left: 20px;">BIC : </label>  <span>{{mandate.bic}}</span>
-						</div>
-						
-						
-						<div class="line" style="margin-top: 5px;">
+						<div class="line">
 
 							<div class="moitie">
-							
+								<div class="line"> <label>BIC : </label>  <span>{{mandate.bic}}</span></div>
+
 								<div ng-if="mandate.signatureDate == null" >
 
-									<label class="line">Signature : 
-										<button ng-click="clear();mandateSigned.signatureDataEncoded=null;">Effacer</button>
-									</label>
+									<label class="line">Signature : </label>
 									<div class="line" style="margin-top: 6px; border: 1px solid black;">
 										<signature-pad
 												accept="accept" clear="clear" height="100"		width="400"
@@ -59,6 +67,12 @@
 												disabled="false"></signature-pad>
 
 									</div>
+
+									<div class="line">
+										<button ng-click="clear()">Effacer</button>
+										<button ng-click="sign()">Signer</button>
+									</div>
+
 								</div>
 
 								<div ng-if="mandate.signatureDate != null" class="line" style="margin-top: 6px; border: 1px solid black;">
@@ -67,19 +81,13 @@
 							</div>
 
 							<div class="moitie">
+								<div class="line"> <label>A débiter sur : </label>  <span>{{mandate.iban}}</span></div>
 								<div class="line"> <label>Référence unique du mandat : </label>  <span>{{mandate.rum}}</span></div>
 								<div class="line"> <label>Identifiant Créancier SEPA : </label>  <span>{{mandate.ics}}</span></div>
-								
+								<div class="line"> <span>Nancy, le {{mandateSigned.signatureDate | date:'dd/MM/yyyy'}}</span></div>
 							</div>
 						</div>
 						<div style="clear: both"></div>
-
-						<div class="line" style="margin-bottom: 5px;"> <span>Nancy, le {{mandateSigned.signatureDate | date:'dd/MM/yyyy'}}</span></div>
-
-						<div class="line" style="text-align: center;" ng-if="mandate.signatureDate == null">								
-							<button ng-click="sign()"  class="btn btn-sm btn-primary" ng-disabled="!mandateSigned.signatureDataEncoded">Signer le mandat</button>
-						</div>
-						
 					</div>
 				</div>
 			</div>
