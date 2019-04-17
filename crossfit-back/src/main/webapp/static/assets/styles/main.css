@@ -38,9 +38,18 @@ navbar-collapse.collapse {
 #page-wrapper{
 	margin-top: 80px;	
 }
-#page-wrapper.subscription-sign{
-	margin-top: 60px;	
+
+
+body.state-sign-subscription #page-wrapper,
+body.state-sign-mandate #page-wrapper{
+	margin-top: 0;	
 }
+body.state-sign-subscription .navbar-nav,
+body.state-sign-mandate .navbar-nav{
+	display: none;	
+}
+
+
 .navbar-nav .badge{
 	background-color: red;
 	position: absolute;
@@ -104,9 +113,6 @@ navbar-collapse.collapse {
 	
 	#page-wrapper{
 		margin-top: 45px;	
-	}
-	#page-wrapper.subscription-sign{
-		margin-top: 30px;	
 	}
 }
 
@@ -551,11 +557,10 @@ datetimepicker.has-error input{
 }
 .word-doc .sepa .intro{
 	font-size: 10px;
-	height: 70px;
 }
 .word-doc .sepa .intro img{
 	float: left;
-	height: 70px;
+	margin: 0 5px 5px 0;
 }
 .word-doc .sepa .beneficiaire{
 	text-align: center;

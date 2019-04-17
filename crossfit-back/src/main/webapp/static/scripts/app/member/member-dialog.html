@@ -404,7 +404,7 @@
 			<div class="col-xs-12">
 				<div class="panel panel-default form-group"
 					 ng-class="{'ng-invalid-required': isMandatInvalid(mandat) }"
-					 ng-repeat="mandate in member.mandates">
+					 ng-repeat="mandate in mandates = (member.mandates | orderBy:['!!id', '-createdDate']) ">
 					<div class="panel-heading" >
 						<span ng-if="mandate.rum">Mandat: {{mandate.rum}} - </span>
 						<span translate="crossfitApp.member.mandate.status.{{mandate.status}}"></span>
@@ -489,10 +489,10 @@
 										<label>Statut : {{'crossfitApp.member.mandate.status.'+ mandate.status | translate }}</label>
 									
 									
-				  						<a ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank"
-				  							ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'" >
+				  						<a ng-if="mandate.id" ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank">
 											<button type="button" class="btn btn-primary form-control">
-												<span>Signer le mandat</span>
+												<span ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'">Signer le mandat</span>
+												<span ng-if="mandate.signatureDate != null">Mandat signé le {{mandate.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
 											</button>
 										</a>
 									
