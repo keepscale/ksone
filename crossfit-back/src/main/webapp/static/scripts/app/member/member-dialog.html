@@ -304,10 +304,11 @@
 
 							<div class="col-xs-12 col-sm-6 col-lg-3 form-group">
 			  					<label>Mode de paiement</label>
-								<select class="form-control" id="sel1"
+								<select class="form-control" id="sel1" ng-click="paymentMethodChanged(subscription)"
 									ng-model="subscription.paymentMethod" required>
-									<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
-										+ p | translate }}</option>
+									<option ng-repeat="p in paymentMethods" value="{{p}}">
+										{{'crossfitApp.bill.paymentMethod.enum.' + p | translate }}
+									</option>
 								</select>
 							</div>
 
@@ -324,7 +325,7 @@
 
 						</div>
 
-						<div class="panel panel-default" ng-if="subscription.paymentMethod=='DIRECT_DEBIT'">
+						<div class="panel panel-default" ng-if="subscription.paymentMethod=='DIRECT_DEBIT' && subscription.directDebit">
 							<div class="panel-heading">
 								Info. Prélèvement
 							</div>
@@ -338,7 +339,7 @@
 										<datetimepicker class="input-group" name="subscriptionDirectDebitAfterDate"
 											how-weeks="false" show-meridian="false" ng-required="mustFillDirectDebitInfo(subscription)"
 											date-format="dd/MM/yyyy" hidden-time="true"
-											ng-model="subscription.directDebitAfterDate"></datetimepicker>
+											ng-model="subscription.directDebit.afterDate"></datetimepicker>
 									</div>
 
 									<div class="col-xs-12 col-sm-8 col-md-3 form-group">
@@ -347,20 +348,32 @@
 		  									<span class="input-group-addon">Le</span>
 
 											<input type="number" class="form-control" style="text-align: right"
-												ng-model="subscription.directDebitAtDayOfMonth" ng-minlength=1
+												ng-model="subscription.directDebit.atDayOfMonth" ng-minlength=1
 												ng-required="mustFillDirectDebitInfo(subscription)"
 												ng-maxlength=2 maxlength="2">
 
 		  									<span class="input-group-addon hidden-xs hidden-md">de chaque mois</span>
 										</div>
 									</div>
+									
+									<div class="col-xs-12 col-sm-12 col-md-6 form-group">
+					  					<label>Mandat </label>
+										<select ng-required="mustFillDirectDebitInfo(subscription)"
+											class="form-control" name="subscription.directDebit.mandate"
+											ng-model="subscription.directDebit.mandate"
+											ng-options='mandate as ( mandate.rum + (mandate.status === "ACTIVE" ? "" : " ( " + ( "crossfitApp.member.mandate.status."+mandate.status | translate) + " )" )) for mandate in (member.mandates | filter:{status:"ACTIVE"} ) track by mandate.id '>
+											<option value="">Choississez un mandat</option>
+										</select>
+									</div>
+								</div>
+								<div class="row">								
 
 									<div class="col-xs-12 col-sm-6 col-md-3 form-group">
 					  					<label>Premier paiement de </label>
 				  					    <div class="input-group">
 											<input type="number" style="text-align: right"
 												class="form-control "
-												ng-model="subscription.directDebitFirstPaymentTaxIncl"
+												ng-model="subscription.directDebit.firstPaymentTaxIncl"
 												ng-required="mustFillDirectDebitInfo(subscription)"
 												ng-minlength=1 ng-maxlength=12 maxlength="12" />
 		  									<span class="input-group-addon">€</span>
@@ -371,7 +384,7 @@
 					  					<label>Réglé en</label>
 										<select class="form-control" id="sel2"
 											ng-required="mustFillDirectDebitInfo(subscription)"
-											ng-model="subscription.directDebitFirstPaymentMethod">
+											ng-model="subscription.directDebit.firstPaymentMethod">
 											<option value=""></option>
 											<option ng-repeat="p in paymentMethods" value="{{p}}">{{'crossfitApp.bill.paymentMethod.enum.'
 												+ p | translate }}</option>
