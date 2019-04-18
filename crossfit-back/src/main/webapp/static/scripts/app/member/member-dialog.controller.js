@@ -170,33 +170,39 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	
         	subscription.subscriptionEndDate = d;
         }
-        
+        $scope.paymentMethodChanged = function(subscription){
+        	/*if (subscription.paymentMethod=='DIRECT_DEBIT' && subscription.directDebit){
+        		var defaultDate = new Date(subscription.subscriptionStartDate.getFullYear(), subscription.subscriptionStartDate.getMonth()+1, 0);
+        		subscription.directDebit.atDayOfMonth = subscription.directDebit.atDayOfMonth || 5;
+        		subscription.directDebit.afterDate = subscription.directDebit.afterDate || defaultDate;
+        	}*/
+        }
         $scope.isSubscriptionInvalid = function(s){
         	var invalid = !s.membership || 
         		!s.subscriptionEndDate || !s.subscriptionStartDate &&
         		!s.paymentMethod;
         	
         	if (!invalid && $scope.mustFillDirectDebitInfo(s)){
-        		invalid = !s.directDebitAfterDate ||
-	        		!s.directDebitAtDayOfMonth ||
-	        		!s.directDebitFirstPaymentTaxIncl ||
-	        		!s.directDebitFirstPaymentMethod ||
-	        		!s.directDebitIban ||
-	        		!s.directDebitBic;
+        		var dd = s.directDebit;
+        		invalid = !dd.afterDate ||
+	        		!dd.atDayOfMonth ||
+	        		!dd.firstPaymentTaxIncl ||
+	        		!dd.firstPaymentMethod ||
+	        		!dd.mandate;
         	}
         	
         	return invalid;
         }
         
         $scope.mustFillDirectDebitInfo = function(s){
+        	var directDebit = s.directDebit || {};
     		var must =	s.paymentMethod=='DIRECT_DEBIT' && 
     			(
-	        		s.directDebitAfterDate ||
-	        		s.directDebitAtDayOfMonth ||
-	        		s.directDebitFirstPaymentTaxIncl ||
-	        		s.directDebitFirstPaymentMethod ||
-	        		s.directDebitIban ||
-	        		s.directDebitBic 
+					directDebit.afterDate ||
+					directDebit.atDayOfMonth ||
+					directDebit.firstPaymentTaxIncl ||
+					directDebit.firstPaymentMethod ||
+					directDebit.mandate
     		);
     		return must;
         }

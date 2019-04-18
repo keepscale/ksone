@@ -76,7 +76,7 @@ public class SubscriptionDTO implements Serializable {
     private int maxCount;
     
 
-    private SubscriptionDirectDebitDTO directDebit;
+    private SubscriptionDirectDebitDTO directDebit = new SubscriptionDirectDebitDTO();
 
     
     @JsonSerialize(using = CustomDateTimeSerializer.class)
