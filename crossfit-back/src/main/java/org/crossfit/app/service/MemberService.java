@@ -257,7 +257,7 @@ public class MemberService {
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
         	s.setPaymentMethod(dto.getPaymentMethod());
 
-        	if (s.getPaymentMethod() == PaymentMethod.DIRECT_DEBIT && dto.getDirectDebit() != null){
+        	if (mustSaveDirectDebit(dto)){
 				SubscriptionDirectDebit directDebit = Optional.ofNullable(s.getDirectDebit()).orElse(new SubscriptionDirectDebit());
 				SubscriptionDirectDebitDTO directDebitDto = dto.getDirectDebit();
 				directDebit.setAfterDate(directDebitDto.getAfterDate());
@@ -266,7 +266,9 @@ public class MemberService {
 				directDebit.setFirstPaymentMethod(directDebitDto.getFirstPaymentMethod());
 				directDebit.setFirstPaymentTaxIncl(directDebitDto.getFirstPaymentTaxIncl());
 				directDebit.setMandate(Optional.of(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
-
+				
+				directDebit.setSubscription(s);
+	    		s.setDirectDebit(directDebit);
 			}
         	else {
         		if(s.getDirectDebit() != null){
@@ -323,6 +325,15 @@ public class MemberService {
 		}
 
 		return member;
+	}
+
+	private boolean mustSaveDirectDebit(SubscriptionDTO dto) {
+		SubscriptionDirectDebitDTO directDebit = dto.getDirectDebit();
+		if (dto.getPaymentMethod() == PaymentMethod.DIRECT_DEBIT && directDebit != null) {
+			return directDebit.getAfterDate() != null || directDebit.getAmount() != null || directDebit.getAtDayOfMonth() != null
+					|| directDebit.getFirstPaymentMethod() != null || directDebit.getFirstPaymentTaxIncl() != null || directDebit.getMandate() != null;
+		}
+		return false;
 	}
 
 	public void initAccountAndSendMail(Member member) {

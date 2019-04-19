@@ -171,11 +171,20 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	subscription.subscriptionEndDate = d;
         }
         $scope.paymentMethodChanged = function(subscription){
-        	/*if (subscription.paymentMethod=='DIRECT_DEBIT' && subscription.directDebit){
-        		var defaultDate = new Date(subscription.subscriptionStartDate.getFullYear(), subscription.subscriptionStartDate.getMonth()+1, 0);
-        		subscription.directDebit.atDayOfMonth = subscription.directDebit.atDayOfMonth || 5;
-        		subscription.directDebit.afterDate = subscription.directDebit.afterDate || defaultDate;
-        	}*/
+        	if (subscription.paymentMethod=='DIRECT_DEBIT' && !subscription.directDebit){
+        		subscription.directDebit = {};
+        		if ($scope.member.mandates.length > 0){ //Si des mandats, on initialise les valeurs
+            		var defaultDate = new Date(subscription.subscriptionStartDate.getFullYear(), subscription.subscriptionStartDate.getMonth()+1, 0);
+            		subscription.directDebit = {
+            				atDayOfMonth: 5,
+            				afterDate: defaultDate,
+            				amount: subscription.membership.priceTaxIncl
+            		}
+        		}
+        	}
+        }
+        $scope.cannotEditSubscription = function(s){
+        	return s.signatureDate != null;
         }
         $scope.isSubscriptionInvalid = function(s){
         	var invalid = !s.membership || 
@@ -186,7 +195,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
         		var dd = s.directDebit;
         		invalid = !dd.afterDate ||
 	        		!dd.atDayOfMonth ||
-	        		!dd.firstPaymentTaxIncl ||
+	        		dd.firstPaymentTaxIncl==null ||
+	        		dd.amount==null ||
 	        		!dd.firstPaymentMethod ||
 	        		!dd.mandate;
         	}
@@ -200,7 +210,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
     			(
 					directDebit.afterDate ||
 					directDebit.atDayOfMonth ||
-					directDebit.firstPaymentTaxIncl ||
+					directDebit.amount != null ||
+					directDebit.firstPaymentTaxIncl != null ||
 					directDebit.firstPaymentMethod ||
 					directDebit.mandate
     		);

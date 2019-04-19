@@ -22,9 +22,7 @@ angular.module('crossfitApp')
     	}
     			
         $scope.init = function(){
-        	
-        	$scope.logoUrl = $rootScope.box.billLogoUrl;
-        	
+        	        	
         	$scope.member = Member.get({id : $stateParams.memberId}, function(result){
                 $scope.member = result;
             	$scope.mandate = $scope.member.mandates.find(m => m.id == $stateParams.mandateId);
@@ -42,7 +40,7 @@ angular.module('crossfitApp')
         $scope.sign = function(){
             Signature.signmandate($scope.mandateSigned, function(){;
             	$scope.init();
-            })
+            });
         }
         
         $scope.init();
