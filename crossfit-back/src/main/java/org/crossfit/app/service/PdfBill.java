@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Bill;
 import org.crossfit.app.domain.BillLine;
 import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.service.util.PdfUtils;
 import org.joda.time.LocalDate;
 import org.xml.sax.SAXException;
 
@@ -152,36 +153,36 @@ public class PdfBill {
         table.setWidthPercentage(100);
         table.setSpacingBefore(10);
         table.setWidths(new int[]{55, 5, 10, 10, 12, 12});
-        table.addCell(getCell(getI18n("bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n("bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n("bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n("bill.pdf.label.line.taxPerCent"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(getI18n("bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.label"), Element.ALIGN_LEFT, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.quantity"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.priceTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.taxPerCent"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.totalTaxExcl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.line.totalTaxIncl"), Element.ALIGN_CENTER, font12b, TAB_HEADER_COLOR));
         for (BillLine line : bill.getLines()) {
         	String label = line.getLabel();
         	if (line.getSubscription() != null && line.getPeriodStart() != null) {
         		label += " ("+ formatDate(line.getPeriodStart(), i18n) + " au " + formatDate(line.getPeriodEnd(), i18n) + ")";
         	}
-            table.addCell(getCell(label, Element.ALIGN_LEFT, font12));
-            table.addCell(getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
-            table.addCell(getCell(formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
-            table.addCell(getCell(formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
-            table.addCell(getCell(formatPrice(line.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
-            table.addCell(getCell(formatPrice(line.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(label, Element.ALIGN_LEFT, font12));
+            table.addCell(PdfUtils.getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(formatPrice(line.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(formatPrice(line.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         }
 
-        table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n("bill.pdf.label.totalTaxExcl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(formatPrice(bill.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
+        table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTaxExcl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
 
-        table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n("bill.pdf.label.totalTax"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(formatPrice(bill.getTotalTax()), Element.ALIGN_RIGHT, font12));        
+        table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTax"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTax()), Element.ALIGN_RIGHT, font12));        
 
-        table.addCell(getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
-        table.addCell(getCell(getI18n("bill.pdf.label.totalTaxIncl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(getCell(formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
+        table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
+        table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTaxIncl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
+        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         document.add(table);
 
         if (StringUtils.isNotBlank(box.getBillLogoUrl())){
@@ -223,35 +224,6 @@ public class PdfBill {
     private String formatPerCent(double value) {
     	return value + "%";
 	}
-
-    public PdfPCell getCell(String value, int alignment, Font font, BaseColor backgroundColor) {
-    	return getCell(value, alignment, font, 0, backgroundColor, -1);
-    }
-    public PdfPCell getCell(String value, int alignment, Font font, int colspan, int border) {
-    	return getCell(value, alignment, font, colspan, null, border);
-    }
-    public PdfPCell getCell(String value, int alignment, Font font) {
-    	return getCell(value, alignment, font, 0, null, -1);
-    }
- 
-    public PdfPCell getCell(String value, int alignment, Font font, int colspan, BaseColor backgroundColor, int border) {
-        PdfPCell cell = new PdfPCell();
-        cell.setUseAscender(true);
-        cell.setUseDescender(true);
-        cell.setPadding(5);
-        cell.setColspan(colspan);
-        if (border != -1)
-        	cell.setBorder(border);
-        if (backgroundColor !=null)
-        	cell.setBackgroundColor(backgroundColor);
-        cell.setHorizontalAlignment(alignment);
-        Paragraph p = new Paragraph(value, font);
-        p.setAlignment(alignment);
-        cell.addElement(p);
-        return cell;
-    }
- 
- 
     public String convertDate(Date d, String newFormat) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat(newFormat);
         return sdf.format(d);
