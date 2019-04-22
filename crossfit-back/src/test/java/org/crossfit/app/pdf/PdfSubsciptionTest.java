@@ -2,9 +2,9 @@ package org.crossfit.app.pdf;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.xmp.XMPException;
-import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.PersistentToken;
-import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.*;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.PersistentTokenRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
@@ -51,11 +51,24 @@ public class PdfSubsciptionTest {
 
         PdfSubscription.SubcriptionLegalText legalText = new PdfSubscription.SubcriptionLegalText();
         legalText.logoUrl = "http://www.crossfit-nancy.fr/img/logo_web.png";
-
+        legalText.designationBeneficiaireText = "KOOPER inc, Société par Actions Simplifiée ayant son siège au 24/26 Boulevard du 26ème RI – 54 000 NANCY, au capital de 7 500 euros, immatriculée au RCS NANCY - SIRET 820 035 004 00010 - APE/NAF 8551Z. Personne morale représentant l’affiliation « CROSSFIT NANCY », Ci-après désignée « KOOPER inc - CROSSFIT NANCY Affiliate », d’autre part, S’établit un lien de droit de par la signature du présent document. \n" +
+                "Tout litige entre les parties signataires sera réglé directement entre elles conformément à l’article 1165 du Code Civil.";
         Subscription sub = new Subscription();
         sub.setId(2157521L);
-
-
+        sub.setMember(new Member());
+        sub.getMember().setTitle(Title.MS);
+        sub.getMember().setLastName("Gangloff");
+        sub.setMembership(new Membership());
+        sub.getMembership().setName("Triplet");
+        sub.getMembership().setInformation("This is information");
+        sub.getMembership().setPriceTaxIncl(75.0);
+        sub.setPaymentMethod(PaymentMethod.DIRECT_DEBIT);
+        sub.setDirectDebit(new SubscriptionDirectDebit());
+        sub.getDirectDebit().setFirstPaymentTaxIncl(33.5);
+        sub.getDirectDebit().setFirstPaymentMethod(PaymentMethod.BANK_CHECK);
+        sub.getDirectDebit().setAtDayOfMonth(3);
+        sub.getDirectDebit().setAfterDate(new LocalDate());
+        sub.getDirectDebit().setAmount(55.0);
         File tempFile = File.createTempFile("subscription", ".pdf");
         try(FileOutputStream os = new FileOutputStream(tempFile)){
             PdfSubscription.getBuilder().createPdf(legalText, sub, os);

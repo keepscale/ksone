@@ -166,23 +166,23 @@ public class PdfBill {
         	}
             table.addCell(PdfUtils.getCell(label, Element.ALIGN_LEFT, font12));
             table.addCell(PdfUtils.getCell(String.valueOf(line.getQuantity()), Element.ALIGN_RIGHT, font12));
-            table.addCell(PdfUtils.getCell(formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
-            table.addCell(PdfUtils.getCell(formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
-            table.addCell(PdfUtils.getCell(formatPrice(line.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
-            table.addCell(PdfUtils.getCell(formatPrice(line.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(line.getPriceTaxExcl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(PdfUtils.formatPerCent(line.getTaxPerCent()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(line.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
+            table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(line.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         }
 
         table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
         table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTaxExcl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
+        table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(bill.getTotalTaxExcl()), Element.ALIGN_RIGHT, font12));
 
         table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
         table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTax"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTax()), Element.ALIGN_RIGHT, font12));        
+        table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(bill.getTotalTax()), Element.ALIGN_RIGHT, font12));        
 
         table.addCell(PdfUtils.getCell("", Element.ALIGN_RIGHT, font12b, 4, PdfPCell.NO_BORDER));
         table.addCell(PdfUtils.getCell(getI18n("bill.pdf.label.totalTaxIncl"), Element.ALIGN_RIGHT, font12b, TAB_HEADER_COLOR));
-        table.addCell(PdfUtils.getCell(formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
+        table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(bill.getTotalTaxIncl()), Element.ALIGN_RIGHT, font12));
         document.add(table);
 
         if (StringUtils.isNotBlank(box.getBillLogoUrl())){
@@ -200,7 +200,7 @@ public class PdfBill {
     }
 
 	private String formatDate(LocalDate date, ResourceBundle i18n) throws UnsupportedEncodingException {
-		return date == null ? "" : date.toString(getI18n("bill.pdf.label.date.format"));
+		return PdfUtils.formatDate(date, getI18n("bill.pdf.label.date.format"));
 	}
 
 	private void addLineInfo(PdfPTable tableInfo, String label, String value) {
@@ -217,15 +217,5 @@ public class PdfBill {
 		cell.addElement(new Paragraph(value, font12));        
         tableInfo.addCell(cell);
 	}
- 
-	private String formatPrice(double value) {
-		return NumberFormat.getCurrencyInstance(Locale.FRANCE).format(value);
-	}
-    private String formatPerCent(double value) {
-    	return value + "%";
-	}
-    public String convertDate(Date d, String newFormat) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(newFormat);
-        return sdf.format(d);
-    }
+
 }
