@@ -1,17 +1,19 @@
 package org.crossfit.app.service.util;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import org.joda.time.LocalDate;
-
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.ResourceBundle;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
 
 
 public class PdfUtils {
@@ -45,6 +47,9 @@ public class PdfUtils {
 
 
 
+    public static String formatDate(DateTime date, String format) throws UnsupportedEncodingException {
+        return date == null ? "" : date.toString(format);
+    }
     public static String formatDate(LocalDate date, String format) throws UnsupportedEncodingException {
         return date == null ? "" : date.toString(format);
     }
