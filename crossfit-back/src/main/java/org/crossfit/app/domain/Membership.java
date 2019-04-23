@@ -34,18 +34,12 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
     private Long id;
     
     @NotNull        
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
-    @Column(name = "information")
-    private String information;
-
-    @Column(name = "resiliation_information")
-    private String resiliationInformation;
-    
     @NotNull        
     @Column(name = "price_tax_incl", nullable=false)
-    private double priceTaxIncl;
+    private double defaultPriceTaxIncl;
 
     @NotNull
     @Column(name = "tax_per_cent", nullable = false)
@@ -82,22 +76,6 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
         this.name = name;
     }
 
-	public String getInformation() {
-		return information;
-	}
-
-	public void setInformation(String information) {
-		this.information = information;
-	}
-
-	public String getResiliationInformation() {
-		return resiliationInformation;
-	}
-
-	public void setResiliationInformation(String resiliationInformation) {
-		this.resiliationInformation = resiliationInformation;
-	}
-
 	public int getNbMonthValidity() {
 		return nbMonthValidity;
 	}
@@ -131,24 +109,23 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
 		this.addByDefault = addByDefault;
 	}
 
-	
-	public double getPriceTaxIncl() {
-		return priceTaxIncl;
-	}
+    public double getDefaultPriceTaxIncl() {
+        return defaultPriceTaxIncl;
+    }
 
-	public void setPriceTaxIncl(double priceTaxIncl) {
-		this.priceTaxIncl = priceTaxIncl;
-	}
+    public void setDefaultPriceTaxIncl(double defaultPriceTaxIncl) {
+        this.defaultPriceTaxIncl = defaultPriceTaxIncl;
+    }
 
-	public double getTaxPerCent() {
-		return taxPerCent;
-	}
+    public double getTaxPerCent() {
+        return taxPerCent;
+    }
 
-	public void setTaxPerCent(double taxPerCent) {
-		this.taxPerCent = taxPerCent;
-	}
+    public void setTaxPerCent(double taxPerCent) {
+        this.taxPerCent = taxPerCent;
+    }
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -174,7 +151,7 @@ public class Membership extends AbstractAuditingEntity implements Serializable {
         return "Membership{" +
                 "id=" + id +
                 ", name='" + name + "'" +
-                ", price='" + priceTaxIncl + "'" +
+                ", defaultPriceTaxIncl='" + defaultPriceTaxIncl + "'" +
                 '}';
     }
 }
