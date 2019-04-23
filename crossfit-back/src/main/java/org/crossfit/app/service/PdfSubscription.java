@@ -1,26 +1,40 @@
 package org.crossfit.app.service;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.xmp.XMPException;
-import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.service.util.PdfUtils;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.service.util.PdfUtils;
+import org.xml.sax.SAXException;
+
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.xmp.XMPException;
 
 public class PdfSubscription {
 
@@ -68,7 +82,6 @@ public class PdfSubscription {
 
     public String getI18n(String key) throws UnsupportedEncodingException {
     	return new String(i18n.getString(key).getBytes("ISO-8859-1"), "UTF-8");
-//        return i18n.getString(key);
     }
 
     public void createPdf(SubcriptionLegalText data, Subscription sub, OutputStream os) throws ParserConfigurationException, SAXException, TransformerException, IOException, DocumentException, XMPException, ParseException {
@@ -82,7 +95,21 @@ public class PdfSubscription {
         // step 3
         document.open();
 
-        PdfPCell cSubNumber = new PdfPCell();
+        createBlock(document, null,  createPreambule(data, sub));
+        createBlock(document, getI18n("sub.pdf.designation.header"), createDesignation(data, sub));
+        createBlock(document, getI18n("sub.pdf.subscription.header"), createSubscription(data, sub));
+        createBlock(document, getI18n("sub.pdf.resiliation.header"), createResiliation(data, sub));
+        createBlock(document, getI18n("sub.pdf.cgv.header"), createCGV(data, sub));
+        createBlock(document, getI18n("sub.pdf.signature.header"), createSignature(data, sub));
+
+        // step 5
+        document.close();
+    }
+
+	private List<Element> createPreambule(SubcriptionLegalText data, Subscription sub)
+			throws UnsupportedEncodingException, BadElementException, MalformedURLException, IOException,
+			DocumentException {
+		PdfPCell cSubNumber = new PdfPCell();
         cSubNumber.setBorder(PdfPCell.NO_BORDER);
 
         cSubNumber.addElement(new Paragraph(getI18n("sub.pdf.label.number") + sub.getId(), font14));
@@ -100,15 +127,60 @@ public class PdfSubscription {
         table.addCell(cLogo);
         table.addCell(cSubNumber);
 
-        document.add(table);
+        List<Element> pp = new ArrayList<>();
+        pp.add(table);
+        pp.add(new Paragraph(getI18n("sub.pdf.label.preambule"), font10));
+        
+        return pp;
+	}
 
-        document.add(new Paragraph(getI18n("sub.pdf.label.preambule"), font10));
 
-        Paragraph subscription = new Paragraph();
+    private List<Element> createSignature(SubcriptionLegalText data, Subscription sub) throws BadElementException, MalformedURLException, IOException {
+        List<Element> elements = new ArrayList<>();
+        elements.add(createParagraph(getI18n("sub.pdf.signature.declare.label"), font10));
+        
+        com.itextpdf.text.List romanList = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
+        for (String c : data.signatureInformationText) {
+        	ListItem li = new ListItem(c, font10);
+        	li.setAlignment(Element.ALIGN_JUSTIFIED);
+			romanList.add(li);
+		}
+        elements.add(romanList);
+        
+        String base64Image = sub.getSignatureDataEncoded().split(",")[1];
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+        Image img = Image.getInstance(imageBytes);
+        img.scaleToFit(568, 220);
+		elements.add(img);
+        elements.add(createParagraph(sub.getMember().getFirstName() + " " + sub.getMember().getLastName(), font10));
+        elements.add(createParagraph(
+        		getI18n("sub.pdf.signature.date.label") + " " + 
+				PdfUtils.formatDate(sub.getSignatureDate(), getI18n("sub.pdf.signature.date.format")), font10));
+        
+        return elements;
+    }
+    
+    private List<Element> createCGV(SubcriptionLegalText data, Subscription sub) {
+		List<Element> elements = new ArrayList<>();
+    	elements.add(createParagraph(data.cgvText, font10));
+    	
+        for (String s : data.cgvs) {
+        	elements.add(createParagraph(s, font10));
+		}
+        
+        return elements;
+	}
+	
+	private List<Element> createResiliation(SubcriptionLegalText data, Subscription sub) {
+		List<Element> elements = new ArrayList<>();
+		elements.add(createParagraph(sub.getMembership().getResiliationInformation(), font10));
+		return elements;
+	}
 
-        table = new PdfPTable(3);
+	private List<Element> createSubscription(SubcriptionLegalText data, Subscription sub) throws DocumentException, UnsupportedEncodingException {
+		PdfPTable table = new PdfPTable(3);
+        
         table.setWidthPercentage(100);
-        table.setSpacingBefore(10);
         table.setWidths(new int[]{20, 20, 11});
         table.addCell(PdfUtils.getCell(getI18n("sub.pdf.subscription.tab.designation.label"), Element.ALIGN_CENTER, font12bWhite, HEADER_COLOR));
         table.addCell(PdfUtils.getCell(getI18n("sub.pdf.subscription.tab.prestation.label"), Element.ALIGN_CENTER, font12bWhite, HEADER_COLOR));
@@ -143,23 +215,19 @@ public class PdfSubscription {
                     Element.ALIGN_LEFT, font10White, 2, HEADER_COLOR,-1));
             table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(sub.getMembership().getPriceTaxIncl()), Element.ALIGN_RIGHT, font10));
         }
-        subscription.add(table);
-        createBlock(document, getI18n("sub.pdf.designation.header"), createDesignation(data, sub));
-        createBlock(document, getI18n("sub.pdf.subscription.header"), subscription);
-        createBlock(document, getI18n("sub.pdf.resiliation.header"), new Paragraph("Entre"));
-        createBlock(document, getI18n("sub.pdf.cgv.header"), new Paragraph("Entre"));
+        
+		List<Element> elements = new ArrayList<>();
+		elements.add(table);
+		return elements;
+	}
 
-        // step 5
-        document.close();
-    }
-
-    private Paragraph createDesignation(SubcriptionLegalText data, Subscription sub) throws UnsupportedEncodingException {
-        Paragraph designation = createParagraph(getI18n("sub.pdf.designation.entre.label"), font10b);
+    private List<Element> createDesignation(SubcriptionLegalText data, Subscription sub) throws UnsupportedEncodingException {
+        List<Element> elements = new ArrayList<>();
+    	
+    	elements.add(createParagraph(getI18n("sub.pdf.designation.entre.label"), font10b));
 
         PdfPTable tEntre = new PdfPTable(2);
         tEntre.setWidthPercentage(100);
-        tEntre.setSpacingBefore(10);
-        tEntre.setSpacingAfter(10);
         createLine(tEntre, "sub.pdf.designation.civilite.label", getI18n("sub.pdf.designation.civilite."+ sub.getMember().getTitle()));
         createLine(tEntre, "sub.pdf.designation.nom.label", sub.getMember().getLastName());
         createLine(tEntre, "sub.pdf.designation.prenom.label", sub.getMember().getFirstName());
@@ -167,11 +235,11 @@ public class PdfSubscription {
         createLine(tEntre, "sub.pdf.designation.city.label", sub.getMember().getCity(), "sub.pdf.designation.zipcode.label", sub.getMember().getZipCode());
         createLine(tEntre, "sub.pdf.designation.mail.label", sub.getMember().getLogin(), "sub.pdf.designation.tel.label", sub.getMember().getTelephonNumber());
 
-        designation.add(tEntre);
-        designation.add(createParagraph(getI18n("sub.pdf.designation.adherent.label")));
-        designation.add(createParagraph(getI18n("sub.pdf.designation.et.label"), font10b));
-        designation.add(createParagraph(data.designationBeneficiaireText));
-        return designation;
+        elements.add(tEntre);
+        elements.add(createParagraph(getI18n("sub.pdf.designation.adherent.label")));
+        elements.add(createParagraph(getI18n("sub.pdf.designation.et.label"), font10b));
+        elements.add(createParagraph(data.designationBeneficiaireText));
+        return elements;
     }
 
     private Paragraph createParagraph(String text) {
@@ -212,32 +280,39 @@ public class PdfSubscription {
         table.addCell(cell2);
     }
 
-    private void createBlock(Document document, String header, Element innerContent) throws UnsupportedEncodingException, DocumentException {
-        PdfPCell content = new PdfPCell();
-        content.setBorder(PdfPCell.NO_BORDER);
-        content.setUseAscender(true);
-        content.setUseDescender(true);
-        content.setPadding(10);
-        content.setPaddingLeft(20);
-        content.setPaddingRight(20);
-        content.addElement(innerContent);
+    private void createBlock(Document document, String header, List<Element> elements) throws UnsupportedEncodingException, DocumentException {
 
-        PdfPCell cell = new PdfPCell();
-        cell.setBorder(PdfPCell.NO_BORDER);
-        cell.setBackgroundColor(HEADER_COLOR);
-        cell.setUseAscender(true);
-        cell.setUseDescender(true);
-        cell.setPadding(5);
-        cell.setPaddingLeft(10);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
-        Paragraph phrase = new Paragraph(header, font12bWhite);
         PdfPTable t = new PdfPTable(1);
         t.setSpacingBefore(10);
         t.setWidthPercentage(100);
+        t.setKeepTogether(true);
+        
+        if (header != null) {
+            PdfPCell cell = new PdfPCell();
 
-        cell.addElement(phrase);
-        t.addCell(cell);
-        t.addCell(content);
+            cell.setBorder(PdfPCell.NO_BORDER);
+            cell.setBackgroundColor(HEADER_COLOR);
+            cell.setUseAscender(true);
+            cell.setUseDescender(true);
+            cell.setPadding(5);
+            cell.setPaddingLeft(10);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.addElement(new Paragraph(header, font12bWhite));
+            t.addCell(cell);
+        }
+
+        for (Element e : elements) {
+        	PdfPCell content = new PdfPCell();
+        	content.setBorder(PdfPCell.NO_BORDER);
+            content.setUseAscender(true);
+            content.setUseDescender(true);
+            content.setPadding(10);
+            content.setPaddingLeft(20);
+            content.setPaddingRight(20);
+            content.addElement(e);
+            t.addCell(content);
+		}
+        
         document.add(t);
 
     }
@@ -246,8 +321,8 @@ public class PdfSubscription {
         public String logoUrl;
         public String preambuleText;
         public String designationBeneficiaireText;
-        public List<String> cgv = new ArrayList<>();
-        public String signatureText;
+        public List<String> cgvs = new ArrayList<>();
         public List<String> signatureInformationText = new ArrayList<>();
+		public String cgvText;
     }
 }
