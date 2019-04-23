@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
 import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
@@ -61,6 +62,10 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @Column(name = "subscription_end_date", nullable = false)
     private LocalDate subscriptionEndDate;
 
+	@NotNull
+	@Column(name = "price_tax_incl", nullable=false)
+	private double priceTaxIncl;
+
     @NotNull        
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
@@ -69,6 +74,10 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
     @JoinColumn(name = "subscription_direct_debit_id")
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private SubscriptionDirectDebit directDebit;
+
+	@NotNull
+	@ManyToOne(optional=false, cascade = {}, fetch = FetchType.LAZY)
+	private VersionContractSubscription versionContractSubscription;
 
     @Basic(fetch=FetchType.LAZY)
     @Column(name = "signature_data_base64")
@@ -159,6 +168,22 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 
 	public void setDirectDebit(SubscriptionDirectDebit directDebit) {
 		this.directDebit = directDebit;
+	}
+
+	public VersionContractSubscription getVersionContractSubscription() {
+		return versionContractSubscription;
+	}
+
+	public void setVersionContractSubscription(VersionContractSubscription versionContractSubscription) {
+		this.versionContractSubscription = versionContractSubscription;
+	}
+
+	public double getPriceTaxIncl() {
+		return priceTaxIncl;
+	}
+
+	public void setPriceTaxIncl(double priceTaxIncl) {
+		this.priceTaxIncl = priceTaxIncl;
 	}
 
 	public String getSignatureDataEncoded() {

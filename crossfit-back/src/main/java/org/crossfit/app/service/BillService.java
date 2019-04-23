@@ -126,11 +126,11 @@ public class BillService {
 				line.setLabel(sub.getMembership().getName());
 				line.setQuantity(1.0);
 				if (MembershipService.isMembershipPaymentByMonth(sub.getMembership())) {
-					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl());
+					line.setPriceTaxIncl(sub.getPriceTaxIncl());
 				}
 				else if (new Interval(startDateBill.toDateTimeAtStartOfDay(), endDateBill.plusDays(1).toDateTimeAtStartOfDay())
 						.contains(sub.getSubscriptionStartDate().toDateTimeAtStartOfDay())){
-					line.setPriceTaxIncl(sub.getMembership().getPriceTaxIncl()); //On facture si la date d'abo est avant la date de fin de periode
+					line.setPriceTaxIncl(sub.getPriceTaxIncl()); //On facture si la date d'abo est avant la date de fin de periode
 					billDate = sub.getSubscriptionStartDate();
 				}
 				else {
