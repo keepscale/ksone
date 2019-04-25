@@ -1,14 +1,10 @@
-package org.crossfit.app.service;
+package org.crossfit.app.service.pdf;
  
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;

@@ -50,6 +50,9 @@ public class SubscriptionDTO implements Serializable {
 		dto.setPaymentMethod(s.getPaymentMethod());
 		if (s.getDirectDebit() != null)
 			dto.setDirectDebit(SubscriptionDirectDebitDTO.fullMapper.apply(s.getDirectDebit()));
+		dto.setPriceTaxIncl(s.getPriceTaxIncl());
+		if (s.getContractModel() != null)
+			dto.setContractModel(SubscriptionContractModelDTO.fullMapper.apply(s.getContractModel()));
 		dto.setSignatureDataEncoded(s.getSignatureDataEncoded());
 		dto.setSignatureDate(s.getSignatureDate());
 		return dto;
@@ -72,9 +75,13 @@ public class SubscriptionDTO implements Serializable {
     @NotNull
     private PaymentMethod paymentMethod;
 
+	@NotNull
+	private double priceTaxIncl;
+
     private Long bookingCount;
     private int maxCount;
-    
+
+    private SubscriptionContractModelDTO contractModel;
 
     private SubscriptionDirectDebitDTO directDebit = new SubscriptionDirectDebitDTO();
 
@@ -188,5 +195,20 @@ public class SubscriptionDTO implements Serializable {
 	public void setSignatureDataEncoded(String signatureDataEncoded) {
 		this.signatureDataEncoded = signatureDataEncoded;
 	}
-	
+
+	public double getPriceTaxIncl() {
+		return priceTaxIncl;
+	}
+
+	public void setPriceTaxIncl(double priceTaxIncl) {
+		this.priceTaxIncl = priceTaxIncl;
+	}
+
+	public SubscriptionContractModelDTO getContractModel() {
+		return contractModel;
+	}
+
+	public void setContractModel(SubscriptionContractModelDTO contractModel) {
+		this.contractModel = contractModel;
+	}
 }

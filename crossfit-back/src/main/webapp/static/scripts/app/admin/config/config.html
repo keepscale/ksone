@@ -110,11 +110,6 @@
     </div>
 
 	<div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal"
-			ng-click="clear()">
-			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
-				translate="entity.action.cancel">Cancel</span>
-		</button>
 		<button type="submit"
 			ng-disabled="form.$invalid"
 			class="btn btn-primary">
@@ -124,3 +119,60 @@
 	</div>
 </form>
 
+
+
+<form name="form" role="formcontract" novalidate>
+
+	<div class="modal-header">
+		<h4 class="modal-title" id="">
+			Modèle de contrat
+
+			<a ng-click="addContractModel()">
+				<span class="glyphicon glyphicon-plus" title="Ajouter un modèle de contrat"></span>
+			</a>
+		</h4>
+
+	</div>
+
+	<div class="modal-body">
+		<div class="row" ng-repeat="m in contractModels">
+			<div class="col-xs-12">
+				<jh-alert-error></jh-alert-error>
+			</div>
+			<div class="col-xs-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-3 form-group">
+						<label for="field_id">ID</label>
+						<input type="text" class="form-control" readonly disabled name="id" id="field_id" ng-model="m.id">
+					</div>
+					<div class="col-xs-12 col-sm-3 form-group">
+						<label for="field_VersionData">Nom version modèle</label>
+						<input type="text" class="form-control" name="VersionData" id="field_VersionData" ng-model="m.versionData" required>
+					</div>
+					<div class="col-xs-12 col-sm-3 form-group">
+						<label>Version Format</label>
+						<select class="form-control" required ng-model="m.versionFormat">
+							<option ng-repeat="v in versionFormats" value="{{v}}">{{v}}</option>
+						</select>
+					</div>
+					<div class="col-xs-12 col-sm-3 form-group">
+						<label>Actions</label>
+						<button type="submit" ng-disabled="formcontract.$invalid"
+								ng-click="saveContractModel(m)" class="btn btn-primary form-control">
+							<span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+						</button>
+					</div>
+
+					<div class="col-xs-12">
+						<label for="field_jsonValue">JSON</label>
+						<textarea class="form-control" name="jsonValue" id="field_jsonValue" ng-model="m.jsonValue" style="height: 400px;"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+			</div>
+		</div>
+	</div>
+</form>

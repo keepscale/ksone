@@ -26,7 +26,7 @@
 		<dropColumn tableName="MEMBERSHIP" columnName="information"/>
 		<dropColumn tableName="MEMBERSHIP" columnName="resiliation_information"/>
 
-		<createTable tableName="VERSION_CONTRACT_SUBSCRIPTION">
+		<createTable tableName="SUBSCRIPTION_CONTRACT_MODEL">
 
 			<column name="id" type="bigint" autoIncrement="${autoIncrement}" >
 				<constraints primaryKey="true" nullable="false"/>
@@ -56,25 +56,33 @@
 		</createTable>
 
 		<addForeignKeyConstraint baseColumnNames="box_id"
-								 baseTableName="VERSION_CONTRACT_SUBSCRIPTION"
-								 constraintName="fk_version_contract_sub_box_id"
+								 baseTableName="SUBSCRIPTION_CONTRACT_MODEL"
+								 constraintName="fk_sub_contract_model_box_id"
 								 referencedColumnNames="id"
 								 referencedTableName="CROSSFITBOX"/>
 
 		<addColumn tableName="SUBSCRIPTION">
-			<column name="version_contract_subscription_id" type="bigint">
+			<column name="subscription_contract_model_id" type="bigint">
+				<constraints nullable="true"/>
+			</column>
+			<column name="price_tax_incl" type="decimal(10,2)">
 				<constraints nullable="true"/>
 			</column>
 		</addColumn>
 
-		<addForeignKeyConstraint baseColumnNames="version_contract_subscription_id"
+		<addForeignKeyConstraint baseColumnNames="subscription_contract_model_id"
 								 baseTableName="SUBSCRIPTION"
-								 constraintName="fk_subscription_version_contract_sub_id"
+								 constraintName="fk_subscription_sub_contract_model_id_id"
 								 referencedColumnNames="id"
-								 referencedTableName="VERSION_CONTRACT_SUBSCRIPTION"/>
+								 referencedTableName="SUBSCRIPTION_CONTRACT_MODEL"/>
 
-		create SUBSCRIPTION.price_tax_incl
-		update SUBSCRIPTION set price_tax_incl;
+		<sql>
+			update SUBSCRIPTION set price_tax_incl =
+				( select price_tax_incl from MEMBERSHIP where id = membership_id);
+		</sql>
+
+		<addNotNullConstraint tableName="SUBSCRIPTION" columnName="price_tax_incl"></addNotNullConstraint>
+
 
 	</changeSet>
 </databaseChangeLog>

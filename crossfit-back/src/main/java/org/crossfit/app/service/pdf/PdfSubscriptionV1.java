@@ -1,4 +1,17 @@
-package org.crossfit.app.service;
+package org.crossfit.app.service.pdf;
+
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.SubscriptionDirectDebit;
+import org.crossfit.app.domain.enumeration.PaymentMethod;
+import org.crossfit.app.domain.enumeration.Title;
+import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
+import org.crossfit.app.service.util.PdfUtils;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,104 +20,53 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
-import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.SubscriptionDirectDebit;
-import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
-import org.crossfit.app.service.util.PdfUtils;
-
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.ListItem;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-public class PdfSubscriptionV1 implements PdfSubscriptionBuilder {
-
-    private static final String FONTS_CFN_TTF = "fonts/cfn.ttf";
-    private static final BaseColor HEADER_COLOR = new BaseColor(87,113,138);
-
-    protected Font fontCFN;
-    protected Font fontCFN30;
-    protected Font font10;
-    protected Font font10White;
-    protected Font font10b;
-    protected Font font12;
-    protected Font font12White;
-    protected Font font12b;
-    protected Font font12bWhite;
-    protected Font font14;
-
-    private JSONObject json;
-
-    Long subContractNumber;
-    String membershipId;
-    private String membershipName;
-    private Double membershipPriceTaxIncl;
-
-    private SubscriptionDirectDebit directDebit;
-
-    private DateTime signatureDate;
-    private String signatureDataEncoded;
-
-    private String memberLastName;
-    private String memberFirstName;
-    private String memberTitle;
-    private String memberAddress;
-    private String memberCity;
-    private String memberZipCode;
-    private String memberLogin;
-    private String memberTelephonNumber;
-    private PaymentMethod paymentMethod;
+public class PdfSubscriptionV1 extends AbstractPdf {
 
 
-    private PdfSubscriptionV1(Long subId) throws DocumentException, IOException {
-        BaseFont bf = BaseFont.createFont();
-        BaseFont bfCFN = BaseFont.createFont(FONTS_CFN_TTF, BaseFont.WINANSI, BaseFont.EMBEDDED);
-        BaseFont bfb = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.EMBEDDED);
-        fontCFN = new Font(bfCFN, 18);
-        fontCFN30 = new Font(bfCFN, 30);
-        font10 = new Font(bf, 10);
-        font10b = new Font(bfb, 10);
-        font12 = new Font(bf, 12);
-        font12b = new Font(bfb, 12);
-        font14 = new Font(bf, 14);
-
-        font10White = new Font(font10);
-        font10White.setColor(BaseColor.WHITE);
-        font12bWhite = new Font(font12b);
-        font12bWhite.setColor(BaseColor.WHITE);
-        font12White = new Font(font12);
-        font12White.setColor(BaseColor.WHITE);
-    }
 
 
-    public String getStringMembership(String pointer){
-        return getString("membership."+membershipId+"."+pointer);
-    }
+    private final Long subContractNumber;
+    private final Long membershipId;
+    private final String membershipName;
 
-    public List<String> getStrings(String pointer){
-        return ((JSONArray)json.query(pointer)).toList().stream().map(Object::toString).collect(Collectors.toList());
-    }
-    public String getString(String pointer){
-        return json.query(pointer).toString();
+
+    private final PaymentMethod paymentMethod;
+    private final Double priceTaxIncl;
+    private final SubscriptionDirectDebit directDebit;
+
+    private final DateTime signatureDate;
+    private final String signatureDataEncoded;
+
+    private final String memberLastName;
+    private final String memberFirstName;
+    private final Title memberTitle;
+    private final String memberAddress;
+    private final String memberCity;
+    private final String memberZipCode;
+    private final String memberLogin;
+    private final String memberTelephonNumber;
+
+
+    public PdfSubscriptionV1(String json, Subscription sub) throws IOException, DocumentException {
+        super(json);
+        this.subContractNumber = sub.getId();
+        this.membershipId = sub.getMembership().getId();
+        this.membershipName = sub.getMembership().getName();
+        this.paymentMethod = sub.getPaymentMethod();
+        this.priceTaxIncl = sub.getPriceTaxIncl();
+        this.directDebit = sub.getDirectDebit();
+        this.signatureDate = sub.getSignatureDate();
+        this.signatureDataEncoded = sub.getSignatureDataEncoded();
+        Member m = sub.getMember();
+        this.memberLastName = m.getLastName();
+        this.memberFirstName = m.getFirstName();
+        this.memberTitle = m.getTitle();
+        this.memberAddress = m.getAddress();
+        this.memberCity = m.getCity();
+        this.memberZipCode = m.getZipCode();
+        this.memberLogin = m.getLogin();
+        this.memberTelephonNumber = m.getTelephonNumber();
     }
 
     @Override
@@ -194,7 +156,7 @@ public class PdfSubscriptionV1 implements PdfSubscriptionBuilder {
 
         table.addCell(PdfUtils.getCell(getStringMembership("designation") , Element.ALIGN_LEFT, font10));
         table.addCell(PdfUtils.getCell(getStringMembership("prestation") , Element.ALIGN_LEFT, font10));
-        table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(membershipPriceTaxIncl), Element.ALIGN_RIGHT, font10));
+        table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(priceTaxIncl), Element.ALIGN_RIGHT, font10));
 
         if (directDebit != null && directDebit.getFirstPaymentMethod() != PaymentMethod.NA){
 
@@ -219,7 +181,7 @@ public class PdfSubscriptionV1 implements PdfSubscriptionBuilder {
             table.addCell(PdfUtils.getCell(getString("subscription.tab.payment.label")
                             +  getString("subscription.tab.payment." + paymentMethod),
                     Element.ALIGN_LEFT, font10White, 2, HEADER_COLOR,-1));
-            table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(membershipPriceTaxIncl), Element.ALIGN_RIGHT, font10));
+            table.addCell(PdfUtils.getCell(PdfUtils.formatPrice(priceTaxIncl), Element.ALIGN_RIGHT, font10));
         }
 
         List<Element> elements = new ArrayList<>();
@@ -270,90 +232,9 @@ public class PdfSubscriptionV1 implements PdfSubscriptionBuilder {
 
         return elements;
     }
-    private Paragraph createParagraph(String text) {
-        return createParagraph(text, font10);
-    }
-    private Paragraph createParagraph(String text, Font font){
-        Paragraph p = new Paragraph(text, font);
-        p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
-        return p;
-    }
-    private void createLine(PdfPTable table, String label, String value) throws UnsupportedEncodingException {
-        this.createLine(table, label, value, null, null);
-    }
-    private void createLine(PdfPTable table, String label, String value, String label2, String value2) throws UnsupportedEncodingException {
-        Phrase p1 = new Phrase(getString(label), font10b);
-        p1.add(new Chunk(value == null ? "" : value, font10));
-        PdfPCell cell = new PdfPCell();
-        cell.setBorder(PdfPCell.NO_BORDER);
-        cell.setUseAscender(true);
-        cell.setUseDescender(true);
-        cell.setPaddingLeft(0);
-        cell.addElement(p1);
-        table.addCell(cell);
 
-
-        Phrase p2 = new Phrase();
-
-        if (label2 != null){
-            p2.add(new Phrase(getString(label2), font10b));
-            p2.add(new Chunk(value2 == null ? "" : value2, font10));
-        }
-
-        PdfPCell cell2 = new PdfPCell();
-        cell2.setBorder(PdfPCell.NO_BORDER);
-        cell2.setUseAscender(true);
-        cell2.setUseDescender(true);
-        cell2.addElement(p2);
-        table.addCell(cell2);
+    public String getStringMembership(String pointer){
+        return getString("membership."+membershipName+"."+pointer);
     }
 
-    private void createBlock(Document document, String header, List<Element> elements) throws UnsupportedEncodingException, DocumentException {
-
-        if (elements.isEmpty())
-            return;
-
-        PdfPTable t = new PdfPTable(1);
-        t.setSpacingBefore(10);
-        t.setWidthPercentage(100);
-        //t.setKeepTogether(true);
-        
-        if (header != null) {
-            PdfPCell cell = new PdfPCell();
-
-            cell.setBorder(PdfPCell.NO_BORDER);
-            cell.setBackgroundColor(HEADER_COLOR);
-            cell.setUseAscender(true);
-            cell.setUseDescender(true);
-            cell.setPadding(5);
-            cell.setPaddingLeft(20);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.addElement(new Paragraph(header, font12bWhite));
-            t.addCell(cell);
-        }
-
-        for (Element e : elements) {
-        	PdfPCell content = new PdfPCell();
-        	content.setBorder(PdfPCell.NO_BORDER);
-            content.setUseAscender(true);
-            content.setUseDescender(true);
-            content.setPadding(10);
-            content.setPaddingLeft(30);
-            content.setPaddingRight(30);
-            content.addElement(e);
-            t.addCell(content);
-		}
-        
-        document.add(t);
-
-    }
-
-    public static class SubcriptionLegalText{
-        public String logoUrl;
-        public String preambuleText;
-        public String designationBeneficiaireText;
-        public List<String> cgvs = new ArrayList<>();
-        public List<String> signatureInformationText = new ArrayList<>();
-		public String cgvText;
-    }
 }
