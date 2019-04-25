@@ -1,4 +1,4 @@
-package org.crossfit.app.service;
+package org.crossfit.app.service.pdf;
 
 import com.itextpdf.text.DocumentException;
 import org.crossfit.app.domain.Subscription;

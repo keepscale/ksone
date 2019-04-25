@@ -5,12 +5,8 @@ import java.util.Objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
-import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
-import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
@@ -76,8 +72,9 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 	private SubscriptionDirectDebit directDebit;
 
 	@NotNull
+	@JoinColumn(name = "subscription_contract_model_id")
 	@ManyToOne(optional=false, cascade = {}, fetch = FetchType.LAZY)
-	private VersionContractSubscription versionContractSubscription;
+	private SubscriptionContractModel contractModel;
 
     @Basic(fetch=FetchType.LAZY)
     @Column(name = "signature_data_base64")
@@ -170,12 +167,12 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 		this.directDebit = directDebit;
 	}
 
-	public VersionContractSubscription getVersionContractSubscription() {
-		return versionContractSubscription;
+	public SubscriptionContractModel getContractModel() {
+		return contractModel;
 	}
 
-	public void setVersionContractSubscription(VersionContractSubscription versionContractSubscription) {
-		this.versionContractSubscription = versionContractSubscription;
+	public void setContractModel(SubscriptionContractModel contractModel) {
+		this.contractModel = contractModel;
 	}
 
 	public double getPriceTaxIncl() {

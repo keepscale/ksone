@@ -1,17 +1,9 @@
 package org.crossfit.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
-import org.crossfit.app.domain.util.CustomLocalDateSerializer;
-import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,13 +15,11 @@ import java.util.Objects;
  * A MembershipType.
  */
 @Entity
-@Table(name = "VERSION_CONTRACT_SUBSCRIPTION")
+@Table(name = "SUBSCRIPTION_CONTRACT_MODEL")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class VersionContractSubscription extends AbstractAuditingEntity implements Serializable {
+public class SubscriptionContractModel extends AbstractAuditingEntity implements Serializable {
 
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -49,7 +39,6 @@ public class VersionContractSubscription extends AbstractAuditingEntity implemen
 
 
     @Column(name = "json_value")
-    @JsonIgnore
     private String jsonValue;
     
 
@@ -66,7 +55,7 @@ public class VersionContractSubscription extends AbstractAuditingEntity implemen
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VersionContractSubscription that = (VersionContractSubscription) o;
+        SubscriptionContractModel that = (SubscriptionContractModel) o;
         return Objects.equals(id, that.id);
     }
 

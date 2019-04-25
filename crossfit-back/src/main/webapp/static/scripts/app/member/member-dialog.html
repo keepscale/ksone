@@ -308,16 +308,35 @@
 
 							</div>
 
-							<div class="col-xs-12 col-sm-6 col-lg-3 form-group">
-			  					<label>Mode de paiement</label>
+							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
+								<label for="priceTaxIncl">Tarif TTC</label>
+								<input type="number" class="form-control" id="priceTaxIncl"
+									   name="priceTaxIncl"
+									   ng-disabled="cannotEditSubscription(subscription)"
+									   ng-model="subscription.priceTaxIncl" ng-maxlength=12
+									   required>
+							</div>
+
+							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
+								<label>Mode de paiement</label>
 								<select class="form-control" id="sel1" ng-click="paymentMethodChanged(subscription)"
-									ng-disabled="cannotEditSubscription(subscription)"
-									ng-model="subscription.paymentMethod" required>
+										ng-disabled="cannotEditSubscription(subscription)"
+										ng-model="subscription.paymentMethod" required>
 									<option ng-repeat="p in paymentMethods" value="{{p}}">
 										{{'crossfitApp.bill.paymentMethod.enum.' + p | translate }}
 									</option>
 								</select>
 							</div>
+
+							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
+								<label>Modele contrat</label>
+								<select class="form-control"
+										ng-disabled="cannotEditSubscription(subscription)"
+										ng-model="subscription.contractModel" required
+										ng-options='contractModel as (contractModel.versionData) for contractModel in contractModels track by contractModel.id'>
+								</select>
+							</div>
+
 
 							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
 			  						<label>&nbsp</label>

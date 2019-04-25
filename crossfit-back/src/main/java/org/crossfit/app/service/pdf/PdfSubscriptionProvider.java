@@ -1,9 +1,8 @@
-package org.crossfit.app.service;
+package org.crossfit.app.service.pdf;
 
 import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.VersionContractSubscription;
+import org.crossfit.app.domain.SubscriptionContractModel;
 import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -22,8 +21,8 @@ public class PdfSubscriptionProvider {
         Map<String, PdfSubscriptionBuilder> beansOfType = ctx.getBeansOfType(PdfSubscriptionBuilder.class);
 
         Optional<VersionFormatContractSubscription> versionFormat = Optional.ofNullable(sub)
-                .map(Subscription::getVersionContractSubscription)
-                .map(VersionContractSubscription::getVersionFormat);
+                .map(Subscription::getContractModel)
+                .map(SubscriptionContractModel::getVersionFormat);
 
         Optional<PdfSubscriptionBuilder> optBuilder = versionFormat.flatMap(
                 vFormat -> beansOfType.values().stream().filter(bean -> bean.support(vFormat)).findFirst());
