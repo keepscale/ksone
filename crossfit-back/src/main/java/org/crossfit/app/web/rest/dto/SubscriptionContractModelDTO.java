@@ -31,6 +31,10 @@ public class SubscriptionContractModelDTO implements Serializable {
 		dto.setId(s.getId());
 		dto.setVersionData(s.getVersionData());
 		dto.setVersionFormat(s.getVersionFormat());
+		return dto;
+	};
+	public static Function<SubscriptionContractModel, SubscriptionContractModelDTO> adminMapper = s->{
+		SubscriptionContractModelDTO dto = fullMapper.apply(s);
 		dto.setJsonValue(s.getJsonValue());
 		return dto;
 	};

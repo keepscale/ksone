@@ -2,6 +2,7 @@ package org.crossfit.app.web.rest.stats;
 
 import org.crossfit.app.stats.service.MembershipStatsService;
 import org.joda.time.LocalDate;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -26,11 +27,12 @@ public class StatsResource {
 
     /**
      * GET  /membership
+     * @throws JSONException 
      */
     @RequestMapping(value = "/membership",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String membership() {
+    public String membership() throws JSONException {
         log.debug("REST request to get membership stats");
         LocalDate start = new LocalDate(0);
         LocalDate end = new LocalDate().plusMonths(6);

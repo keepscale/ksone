@@ -49,6 +49,9 @@ public class MemberService {
 
 	@Inject
 	private MembershipRepository membershipRepository;
+	
+	@Inject
+	private SubscriptionContractModelRepository contractModelRepository;
 
 	@Inject
 	private SubscriptionDirectDebitRepository subscriptionDirectDebitRepository;
@@ -256,6 +259,11 @@ public class MemberService {
         	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
         	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
         	s.setPaymentMethod(dto.getPaymentMethod());
+        	s.setPriceTaxIncl(dto.getPriceTaxIncl());
+        	if (dto.getContractModel() != null)
+        		s.setContractModel(contractModelRepository.getOne(dto.getContractModel().getId()));
+        	else
+        		s.setContractModel(null);
 
         	if (mustSaveDirectDebit(dto)){
 				SubscriptionDirectDebit directDebit = Optional.ofNullable(s.getDirectDebit()).orElse(new SubscriptionDirectDebit());

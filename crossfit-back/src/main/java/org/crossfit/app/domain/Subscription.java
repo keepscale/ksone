@@ -71,9 +71,8 @@ public class Subscription extends AbstractAuditingEntity implements Serializable
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private SubscriptionDirectDebit directDebit;
 
-	@NotNull
 	@JoinColumn(name = "subscription_contract_model_id")
-	@ManyToOne(optional=false, cascade = {}, fetch = FetchType.LAZY)
+	@ManyToOne(optional=true, cascade = {}, fetch = FetchType.LAZY)
 	private SubscriptionContractModel contractModel;
 
     @Basic(fetch=FetchType.LAZY)
