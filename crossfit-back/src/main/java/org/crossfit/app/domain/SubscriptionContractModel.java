@@ -1,14 +1,22 @@
 package org.crossfit.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Objects;
 
 
 /**
@@ -37,8 +45,8 @@ public class SubscriptionContractModel extends AbstractAuditingEntity implements
 	@Column(name = "version_format", nullable = false)
     private VersionFormatContractSubscription versionFormat = VersionFormatContractSubscription.V_1;
 
-
     @Column(name = "json_value")
+    @Basic(fetch=FetchType.LAZY)
     private String jsonValue;
     
 

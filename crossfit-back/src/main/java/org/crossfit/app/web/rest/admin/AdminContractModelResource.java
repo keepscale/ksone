@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/admin")
-public class ContractModelResource {
+public class AdminContractModelResource {
 
-	private final Logger log = LoggerFactory.getLogger(ContractModelResource.class);
+	private final Logger log = LoggerFactory.getLogger(AdminContractModelResource.class);
 
 
     @Inject
@@ -53,7 +53,7 @@ public class ContractModelResource {
             return ResponseEntity.badRequest().header("Failure", "A new contractModelDTO cannot already have an ID")
                     .body(null);
         }
-        SubscriptionContractModelDTO result = SubscriptionContractModelDTO.fullMapper.apply(contractModelService.save(contractModelDTO));
+        SubscriptionContractModelDTO result = SubscriptionContractModelDTO.adminMapper.apply(contractModelService.save(contractModelDTO));
         return ResponseEntity.created(new URI("/admin/contractmodels/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert("contractmodel", result.getId().toString()))
                 .body(result);
@@ -69,7 +69,7 @@ public class ContractModelResource {
         if (contractModelDTO.getId() == null) {
             return create(contractModelDTO);
         }
-        SubscriptionContractModelDTO result = SubscriptionContractModelDTO.fullMapper.apply(contractModelService.save(contractModelDTO));
+        SubscriptionContractModelDTO result = SubscriptionContractModelDTO.adminMapper.apply(contractModelService.save(contractModelDTO));
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert("contractmodel", result.getId().toString()))
                 .body(result);
@@ -82,7 +82,7 @@ public class ContractModelResource {
     public List<SubscriptionContractModelDTO> getAll() {
         log.debug("REST request to get all contractmodels");
         return contractModelService.findAllOfCurrentBox()
-                .stream().map(SubscriptionContractModelDTO.fullMapper).collect(Collectors.toList());
+                .stream().map(SubscriptionContractModelDTO.adminMapper).collect(Collectors.toList());
     }
 
 

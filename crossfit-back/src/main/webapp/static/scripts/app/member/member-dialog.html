@@ -281,7 +281,7 @@
 								<select ng-disabled="subscription.bookingCount > 0 || cannotEditSubscription(subscription)"
 									class="form-control" id="field_membership" name="membership"
 									ng-model="subscription.membership" required
-									ng-click="calculateEndDate(subscription)"
+									ng-click="onSelectMembership(subscription)"
 									ng-options='membership as (membership.name + " - " + membership.priceTaxIncl) for membership in memberships track by membership.id'>
 								</select>
 							</div>
@@ -326,27 +326,6 @@
 										{{'crossfitApp.bill.paymentMethod.enum.' + p | translate }}
 									</option>
 								</select>
-							</div>
-
-							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
-								<label>Modele contrat</label>
-								<select class="form-control"
-										ng-disabled="cannotEditSubscription(subscription)"
-										ng-model="subscription.contractModel" required
-										ng-options='contractModel as (contractModel.versionData) for contractModel in contractModels track by contractModel.id'>
-								</select>
-							</div>
-
-
-							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
-			  						<label>&nbsp</label>
-			  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
-			  							ng-if="subscription.id != null" >
-										<button type="button" class="btn btn-primary form-control">
-											<span ng-if="subscription.signatureDate == null">Générer contrat</span>
-											<span ng-if="subscription.signatureDate != null">Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
-										</button>
-									</a>
 							</div>
 
 						</div>
@@ -441,6 +420,30 @@
 							</div>
 						</div>
 
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
+								<label>Modele contrat</label>
+								<select class="form-control"
+										ng-disabled="cannotEditSubscription(subscription)"
+										ng-model="subscription.contractModel"
+										ng-options='contractModel as (contractModel.versionData) for contractModel in contractModels track by contractModel.id'>
+										<option value="">Choississez un modèle</option>
+								</select>
+							</div>
+
+
+							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
+		  						<label>&nbsp</label>
+		  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
+		  							ng-if="subscription.contractModel.id != null" >
+									<button type="button" class="btn btn-primary form-control">
+										<span ng-if="subscription.signatureDate == null">Générer contrat</span>
+										<span ng-if="subscription.signatureDate != null">Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
+									</button>
+								</a>
+							</div>
+						</div>
 					</div>
 		    	</div>
 

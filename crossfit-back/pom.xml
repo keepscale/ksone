@@ -395,6 +395,7 @@
 					    
 					    <jsSourceFile>/scripts/components/planning/planning.service.js</jsSourceFile>
 					    <jsSourceFile>/scripts/components/subscription/subscription.service.js</jsSourceFile>
+					    <jsSourceFile>/scripts/components/contractmodel/contractmodel.service.js</jsSourceFile>
 					    
 					    
 					    <jsSourceFile>/scripts/app/timeSlot/timeSlot.js</jsSourceFile>

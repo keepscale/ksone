@@ -72,6 +72,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 			+ "left join fetch m.subscriptions s "
 			+ "left join fetch s.directDebit sdeb "
 			+ "left join fetch sdeb.mandate mandate "
+			+ "left join fetch s.contractModel cm "
 			+ "where m.id = :id")
 	Member findOneForUpdate(@Param("id") Long id);
 

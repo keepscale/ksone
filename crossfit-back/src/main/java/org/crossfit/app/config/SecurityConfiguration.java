@@ -149,6 +149,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/membershipTypes/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/bills/**", "/api/bills.csv").hasAnyAuthority(AuthoritiesConstants.COMPTABLE, AuthoritiesConstants.ADMIN)
             
+            .antMatchers(HttpMethod.GET, "/api/contractmodels/**").hasAnyAuthority(AuthoritiesConstants.COMPTABLE, AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers(HttpMethod.GET, "/api/members/**").hasAnyAuthority(AuthoritiesConstants.COMPTABLE, AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers(HttpMethod.GET, "/api/products").hasAnyAuthority(AuthoritiesConstants.COMPTABLE, AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)
             .antMatchers(HttpMethod.GET, "/api/memberships").hasAnyAuthority(AuthoritiesConstants.COMPTABLE, AuthoritiesConstants.MANAGER, AuthoritiesConstants.ADMIN)

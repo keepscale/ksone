@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$q', '$scope', '$stateParams', '$state', '$uibModalInstance', 'Member', 'Membership', 'Booking', 'Authority', 'Bill',
-        function($q, $scope, $stateParams, $state, $modalInstance, Member, Membership, Booking, Authority, Bill) {
+    ['$q', '$scope', '$stateParams', '$state', '$uibModalInstance', 'Member', 'Membership', 'Booking', 'Authority', 'Bill', 'ContractModel',
+        function($q, $scope, $stateParams, $state, $modalInstance, Member, Membership, Booking, Authority, Bill, ContractModel) {
 
     	$scope.now = new Date();
 
@@ -30,6 +30,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.memberships = Membership.query();
         $scope.roles = Authority.query();
         $scope.paymentMethods = Bill.paymentMethods();
+        $scope.contractModels = ContractModel.query();
         
         $scope.$on('$locationChangeSuccess', function(event) { 
         	$scope.view = $stateParams.view;
@@ -138,9 +139,12 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	$scope.member.mandates.splice(idx, 1);
         };
         
-        $scope.calculateEndDate = function(subscription){
+        $scope.onSelectMembership = function(subscription){
         	if (!subscription.subscriptionEndDate){
         		$scope.addMonthToSubscriptionEndDate(subscription);
+        	}
+        	if (!subscription.priceTaxIncl && subscription.membership){
+        		subscription.priceTaxIncl = subscription.membership.priceTaxIncl;
         	}
         }
         $scope.caculateCssDate = function(actual, prev, next, dir){

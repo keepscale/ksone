@@ -1,17 +1,16 @@
 package org.crossfit.app.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Membership;
-import org.crossfit.app.domain.MembershipRules;
 import org.crossfit.app.domain.SubscriptionContractModel;
-import org.crossfit.app.repository.MembershipRepository;
 import org.crossfit.app.repository.SubscriptionContractModelRepository;
 import org.crossfit.app.web.rest.dto.SubscriptionContractModelDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.List;
 
 @Service
 @Transactional
@@ -44,5 +43,9 @@ public class SubscriptionContractModelService {
 
     public List<SubscriptionContractModel> findAllOfCurrentBox(){
         return contractModelRepository.findAllByBox(boxService.findCurrentCrossFitBox());
+    }
+    
+    public Optional<SubscriptionContractModel> findById(Long id) {
+    	return this.contractModelRepository.findById(id);
     }
 }
