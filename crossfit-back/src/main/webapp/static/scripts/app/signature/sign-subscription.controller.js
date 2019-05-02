@@ -2,8 +2,8 @@
 
 angular.module('crossfitApp')
     .controller('SignSubscriptionController', 
-    		['$scope', '$stateParams', '$state', '$rootScope', 'Member', 'Signature',
-	function($scope, $stateParams, $state, $rootScope, Member, Signature) {
+    		['$scope', '$stateParams', '$state', '$rootScope', 'Member', 'Signature', 'ContractModel',
+	function($scope, $stateParams, $state, $rootScope, Member, Signature, ContractModel) {
 		
     	
 		
@@ -11,6 +11,9 @@ angular.module('crossfitApp')
         	$scope.member = Member.get({id : $stateParams.memberId}, function(result){
                 $scope.member = result;
         	    $scope.sub = $scope.member.subscriptions.find(m => m.id == $stateParams.subscriptionId);
+                ContractModel.data({id: $scope.sub.contractModel.id}, function(data){
+                    $scope.contractModel = data;
+                });
         	});
 
         }
