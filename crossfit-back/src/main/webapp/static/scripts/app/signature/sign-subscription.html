@@ -3,74 +3,77 @@
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 word-doc">
 			
 			<div class="paragraphe">
-				<div class="logo"><img src="{{box.contrat.logoURL}}"/></div>
+				<div class="logo"><img src="{{contractModel.preambule.logo.url}}"/></div>
 				
 				<div class="">
-					<span class="contract-number">Contrat d’adhésion n° {{sub.id}}</span>
-					<span>à durée indéterminée</span>
+					<span class="contract-number">{{contractModel.preambule.number.label}} {{sub.id}}</span>
+					<span>{{contractModel.preambule.indetermine.label}}</span>
 				</div>
 				
-				<div class="preambule" ng-bind-html="box.contrat.preambuleText"></div>
+				<div class="preambule" ng-bind-html="contractModel.preambule.text"></div>
 			</div>
 			
-			<div class="title" ng-bind-html="box.contrat.designation.titleText"></div>
+			<div class="title" ng-bind-html="contractModel.designation.header.text"></div>
 			<div class="paragraphe">
 
-				<div class="italic">Entre</div>
+				<div class="italic">{{contractModel.designation.entre.label}}</div>
 				
-				<div class="line dotted"><label>Civilité : </label><span>{{member.title}}</span></div>
-				<div class="line dotted"><label>Nom : </label><span>{{member.firstName}}</span></div>
-				<div class="line dotted"><label>Prénom : </label><span>{{member.lastName}}</span></div>
-				<div class="line dotted"><label>Adresse : </label><span>{{member.address}}</span></div>
+				<div class="line dotted"><label>{{contractModel.designation.civilite.label}}</label><span>{{member.title}}</span></div>
+				<div class="line dotted"><label>{{contractModel.designation.prenom.label}}</label><span>{{member.firstName}}</span></div>
+				<div class="line dotted"><label>{{contractModel.designation.nom.label}}</label><span>{{member.lastName}}</span></div>
+				<div class="line dotted"><label>{{contractModel.designation.adresse.label}}</label><span>{{member.address}}</span></div>
 				<div class="line">
-					<div class="moitie dotted"><label>Code postal : </label><span>{{member.zipCode}}</span></div>
-					<div class="moitie dotted"><label>Ville : </label><span>{{member.city}}</span></div>
+					<div class="moitie dotted"><label>{{contractModel.designation.zipcode.label}}</label><span>{{member.zipCode}}</span></div>
+					<div class="moitie dotted"><label>{{contractModel.designation.city.label}}</label><span>{{member.city}}</span></div>
 				</div>
 				<div class="line">
-					<div class="moitie dotted"><label>Tél : </label><span>{{member.telephonNumber}}</span></div>
-					<div class="moitie dotted"><label>Mail : </label><span>{{member.email}}</span></div>
+					<div class="moitie dotted"><label>{{contractModel.designation.tel.label}}</label><span>{{member.telephonNumber}}</span></div>
+					<div class="moitie dotted"><label>{{contractModel.designation.mail.label}}</label><span>{{member.email}}</span></div>
 				</div>				
 			</div>
-			<div class="paragraphe" ng-bind-html="box.contrat.designation.adherentText"></div>
+			<div class="paragraphe" ng-bind-html="contractModel.designation.adherent.label"></div>
 			
 			<div class="paragraphe">				
-				<div class="italic">Et</div>
+				<div class="italic">{{contractModel.designation.et.label}}</div>
 				
-				<div class="line" ng-bind-html="box.contrat.designation.beneficiaireText"></div>
+				<div class="line" ng-bind-html="contractModel.designation.beneficiaire.text"></div>
 			</div>
 
-			<div class="title">
-				Formule d'adhésion
-			</div>
+			<div class="title" ng-bind-html="contractModel.subscription.header.text"></div>
 
 			<div class="paragraphe">	
 				<table border="0">
 					<thead>
 						<tr>
-							<th class="background-blue">Désignation</th>
-							<th class="background-blue">Prestation</th>
-							<th class="background-blue">Tarif mensuel TTC</th>
+							<th class="background-blue" ng-bind-html="contractModel.subscription.tab.designation.label"></th>
+							<th class="background-blue" ng-bind-html="contractModel.subscription.tab.prestation.label"></th>
+							<th class="background-blue" ng-bind-html="contractModel.subscription.tab.ttc.label"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>{{sub.membership.name}}</td>
-							<td>{{sub.membership.information}}</td>
+							<td>{{contractModel.membership[sub.membership.name].designation}}</td>
+							<td>{{contractModel.membership[sub.membership.name].prestation}}</td>
 							<td class="text-right">{{sub.membership.priceTaxIncl | currency:'€' }}</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr ng-if="sub.directDebit.id && sub.directDebit.firstPaymentMethod != 'NA'"> 
-							<th class="background-blue" colspan="2">Réglement du premier mois en {{'crossfitApp.bill.paymentMethod.enum.' + sub.directDebit.firstPaymentMethod | translate }}</th>
+							<th class="background-blue" colspan="2">
+								{{contractModel.subscription.tab.firstpayment.label}} {{'crossfitApp.bill.paymentMethod.enum.' + sub.directDebit.firstPaymentMethod | translate }}</th>
 							<th class="text-right">{{sub.directDebit.firstPaymentTaxIncl | currency:'€' }}</th>
 						</tr>
 						<tr ng-if="sub.directDebit.id"> 
-							<th class="background-blue" colspan="2">Montant des mensualités à compter du {{sub.directDebit.afterDate | date:'dd/MM/yyyy'}} le {{sub.directDebit.atDayOfMonth}} de chaque mois</th>
+							<th class="background-blue" colspan="2">
+								{{contractModel.subscription.tab.directdebit.afterdate.label}} {{sub.directDebit.afterDate | date:'dd/MM/yyyy'}}
+								{{contractModel.subscription.tab.directdebit.atday.before.label}} {{sub.directDebit.atDayOfMonth}}
+								{{contractModel.subscription.tab.directdebit.atday.after.label}}</th>
 							<th class="text-right">{{sub.directDebit.amount | currency:'€' }}</th>
 						</tr>
-						
-						<tr ng-if="sub.paymentMethod != 'DIRECT_DEBIT'"> 
-							<th class="background-blue" colspan="2">Réglement en {{'crossfitApp.bill.paymentMethod.enum.' + sub.paymentMethod | translate }}</th>
+
+						<tr ng-if="sub.paymentMethod != 'DIRECT_DEBIT'">
+							<th class="background-blue" colspan="2">
+								{{contractModel.subscription.tab.payment.label}} {{'crossfitApp.bill.paymentMethod.enum.' + sub.paymentMethod | translate }}</th>
 							<th class="text-right">{{sub.membership.priceTaxIncl | currency:'€' }}</th>
 						</tr>
 					</tfoot>
@@ -78,34 +81,40 @@
 			</div>
 			
 
-			<div class="no-page-break">
-				<div class="title">
-					Résiliation
-				</div>
+			<div class="no-page-break" ng-if="contractModel.membership[sub.membership.name].resiliation">
+				<div class="title" ng-bind-html="contractModel.resiliation.header.text"></div>
 				
 				<div class="paragraphe">	
-					{{sub.membership.resiliationInformation}}
+					{{contractModel.membership[sub.membership.name].resiliation}}
 				</div>
 			</div>
-			
-			<div class="title" ng-bind-html="box.contrat.cgv.titleText"></div>	
-			
-			<div class="paragraphe no-page-break" ng-repeat="cgv in box.contrat.cgv.content" ng-bind-html="cgv"></div>
-			
-			<div class="no-page-break">		
-				
-				<div class="title" ng-bind-html="box.contrat.signature.titleText"></div>	
+
+			<div class="title" ng-bind-html="contractModel.cgv.header.text"></div>
+
+			<div class="paragraphe no-page-break" ng-bind-html="contractModel.cgv.text"></div>
+
+			<div class="paragraphe no-page-break"
+				 ng-repeat="cgv in contractModel.cgv.paragraph" ng-bind-html="cgv"></div>
+
+
+
+			<div class="no-page-break">
+
+				<div class="title" ng-bind-html="contractModel.signature.header.text"></div>
 				<div class="paragraphe">
 					
-					<p ng-bind-html="box.contrat.signature.contentText"></p>
-					
+					<p ng-bind-html="contractModel.signature.declare.label"></p>
+					<ul>
+						<li ng-repeat="t in contractModel.signature.information.text" ng-bind-html="t"></li>
+					</ul>
+
 					<input type="button" value="Lu et approuvé" ng-if="sub.signatureDate == null"
 						ng-click="readAndApproved()"/>
 						
 					<div ng-if="sub.signatureDate != null">
 						<img alt="" src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
 						{{member.firstName}} {{member.lastName}} <br/>
-						Contrat lu et approuvé le {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+						C{{contractModel.signature.date.text}} {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
 					</div>
 				</div>
 			</div>
