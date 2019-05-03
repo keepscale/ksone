@@ -3,7 +3,7 @@
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 word-doc">
 			
 			<div class="paragraphe">
-				<div class="logo"><img src="{{contractModel.preambule.logo.url}}"/></div>
+				<div class="logo"><img ng-src="{{contractModel.preambule.logo.url}}"/></div>
 				
 				<div class="">
 					<span class="contract-number">{{contractModel.preambule.number.label}} {{sub.id}}</span>
@@ -112,9 +112,9 @@
 						ng-click="readAndApproved()"/>
 						
 					<div ng-if="sub.signatureDate != null">
-						<img alt="" src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
+						<img ng-src="{{sub.signatureDataEncoded}}" height="100px" style="float: left; margin: 10px;"> <br/>
 						{{member.firstName}} {{member.lastName}} <br/>
-						C{{contractModel.signature.date.text}} {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+						{{contractModel.signature.date.label}} {{sub.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
 					</div>
 				</div>
 			</div>
@@ -127,7 +127,7 @@
             <div class="modal-content">
                 <form name="signatureForm">
 					<div class="modal-header">
-						Contrat lu et approuvé le {{subSigned.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
+						{{contractModel.signature.date.label}} {{subSigned.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}
 					</div>
 					<div class="modal-body" style="height: 220px;">
 						<signature-pad accept="accept" clear="clear" height="220"

@@ -1,5 +1,6 @@
 package org.crossfit.app.web.rest.api;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import javax.inject.Inject;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.DocumentException;
+
 /**
  * REST controller for managing Subscription.
  */
@@ -34,7 +37,7 @@ public class SignatureResource {
 
 
 	@RequestMapping(value = "/sign/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<SubscriptionDTO> sign(@RequestBody SubscriptionDTO dto) throws URISyntaxException, AlreadySignedException {
+	public ResponseEntity<SubscriptionDTO> sign(@RequestBody SubscriptionDTO dto) throws URISyntaxException, AlreadySignedException, IOException, DocumentException {
 		log.debug("REST request to sign Subscription : {}", dto);
 		
 		Subscription result = subscriptionService.sign(dto);

@@ -1,13 +1,14 @@
 package org.crossfit.app.mail;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
+import com.sendgrid.Attachments;
 import com.sendgrid.Content;
-import com.sendgrid.Email;
 import com.sendgrid.Mail;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -25,21 +26,36 @@ public class SendGridMailSender implements MailSender {
 		this.apiKey = apiKey;
 	}
 	
+	@Override
+	public void sendEmail(String from, String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+		sendEmail(new Email(from, to, subject, content, isMultipart, isHtml));
+	}
+
 	@Async
 	@Override
-	public void sendEmail(String fromStr, String toStr, String subject, String contentStr, boolean isMultipart, boolean isHtml) {
+	public void sendEmail(Email email) {
 		
-		Email from = new Email(fromStr);
-		Email to = new Email(toStr);
-		Content content = new Content(isHtml ? "text/html" : "text/plain", contentStr);
+		com.sendgrid.Email from = new com.sendgrid.Email(email.getFrom());
+		com.sendgrid.Email to = new com.sendgrid.Email(email.getTo());
+		Content content = new Content(email.isHtml() ? "text/html" : "text/plain", email.getContent());
 
-		Mail mail = new Mail(from, subject, to, content);
+		Mail mail = new Mail(from, email.getSubject(), to, content);
+		for (EmailAttachment a : email.getAttachments()) {
+
+			Attachments attachments = new Attachments();
+			attachments.setContent(a.getContent());
+			attachments.setContentId(a.getContentId());
+			attachments.setDisposition(a.getDisposition());
+			attachments.setFilename(a.getFileName());
+			attachments.setType(a.getType());
+			mail.addAttachments(attachments);
+		}
 
 		SendGrid sg = new SendGrid(apiKey);
 		Request request = new Request();
 		try {
 			
-			log.debug("Send mail to {} from {} with subject {} and content {}", to, from, subject, content);
+			log.debug("Send mail to {} from {} with subject {} and content {}", to, from, email.getSubject(), content);
 			
 			request.setMethod(Method.POST);
 			request.setEndpoint("mail/send");
