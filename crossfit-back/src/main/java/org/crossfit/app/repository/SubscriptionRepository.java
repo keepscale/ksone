@@ -36,6 +36,13 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
     		+ "where s.id = :id")
 	Subscription findOneWithRules(@Param("id") Long id);
 
+    @Query("select s from Subscription s  "
+    		+ "left join fetch s.directDebit dd "
+    		+ "left join fetch dd.mandate m "
+    		+ "left join fetch s.contractModel cm "
+    		+ "where s.id = :id")
+	Subscription findOneWithContract(@Param("id") Long id);
+
 	List<Subscription> findAllByMembership(Membership membership);
    
 	

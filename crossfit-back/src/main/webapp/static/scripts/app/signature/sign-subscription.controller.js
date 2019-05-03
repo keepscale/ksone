@@ -5,8 +5,6 @@ angular.module('crossfitApp')
     		['$scope', '$stateParams', '$state', '$rootScope', 'Member', 'Signature', 'ContractModel',
 	function($scope, $stateParams, $state, $rootScope, Member, Signature, ContractModel) {
 		
-    	
-		
         $scope.init = function(){
         	$scope.member = Member.get({id : $stateParams.memberId}, function(result){
                 $scope.member = result;

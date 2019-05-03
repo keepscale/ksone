@@ -4,6 +4,9 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import aQute.bnd.annotation.component.Component;
+
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.SubscriptionDirectDebit;
@@ -27,7 +30,6 @@ public class PdfSubscriptionV1 extends AbstractPdf {
 
 
     private final Long subContractNumber;
-    private final Long membershipId;
     private final String membershipName;
 
 
@@ -51,7 +53,6 @@ public class PdfSubscriptionV1 extends AbstractPdf {
     public PdfSubscriptionV1(String json, Subscription sub) throws IOException, DocumentException {
         super(json);
         this.subContractNumber = sub.getId();
-        this.membershipId = sub.getMembership().getId();
         this.membershipName = sub.getMembership().getName();
         this.paymentMethod = sub.getPaymentMethod();
         this.priceTaxIncl = sub.getPriceTaxIncl();

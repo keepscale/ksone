@@ -1,7 +1,11 @@
 package org.crossfit.app.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import javax.inject.Inject;
 
+import org.apache.commons.codec.binary.Base64OutputStream;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Signable;
@@ -10,6 +14,7 @@ import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.exception.AlreadySignedException;
 import org.crossfit.app.repository.MandateRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.service.pdf.PdfSubscriptionProvider;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
@@ -17,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.itextpdf.text.DocumentException;
 
 /**
  * Service class for managing signature.
@@ -29,6 +36,12 @@ public class SignatureService {
 
     @Inject
     private CrossFitBoxSerivce boxService;
+
+    @Inject
+    private MailService mailService;
+    
+    @Inject
+    private PdfSubscriptionProvider pdfSubscriptionProvider;
 
 	@Inject
 	private SubscriptionRepository subscriptionRepository;
@@ -48,13 +61,16 @@ public class SignatureService {
 	}
 	
 
-	public Subscription sign(SubscriptionDTO dto) throws AlreadySignedException {
+	public Subscription sign(SubscriptionDTO dto) throws AlreadySignedException, IOException, DocumentException {
 		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
-		Subscription subscription = subscriptionRepository.getOne(dto.getId());
+		Subscription subscription = subscriptionRepository.findOneWithContract(dto.getId());
 		
 		sign(subscription, dto.getSignatureDate(), dto.getSignatureDataEncoded());
 		
-		//TODO: generate pdf && send by mail ?
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		pdfSubscriptionProvider.getBuilderForSubscription(subscription).createPdf(baos);		
+		mailService.sendSubscription(subscription, baos.toByteArray());		
+		baos.close();
 		
 		return subscriptionRepository.save(subscription);
 	}
