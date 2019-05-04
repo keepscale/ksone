@@ -66,9 +66,8 @@ public class SignatureService {
 		Subscription subscription = subscriptionRepository.findOneWithContract(dto.getId());
 		
 		sign(subscription, dto.getSignatureDate(), dto.getSignatureDataEncoded());
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		pdfSubscriptionProvider.getBuilderForSubscription(subscription).createPdf(baos);		
+
+		ByteArrayOutputStream baos = pdfSubscriptionProvider.getOutputStreamPdfForSubscription(subscription);
 		mailService.sendSubscription(subscription, baos.toByteArray());		
 		baos.close();
 		

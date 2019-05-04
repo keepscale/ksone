@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractPdf implements PdfSubscriptionBuilder  {
+public abstract class AbstractPdf  {
     protected static final BaseColor HEADER_COLOR = new BaseColor(87,113,138);
     protected Font font10;
     protected Font font10White;

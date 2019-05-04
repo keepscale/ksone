@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.subscriptionNotification.title}">Contrat d'adhésion</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p th:text="#{email.subscriptionNotification.hello(${user.firstName}, ${user.lastName})}">
+            Bonjour Loic G,
+        </p>
+        <p th:text="#{email.subscriptionNotification.text1}">
+            Tu trouveras en pièce jointe le contrat d'adhésion que tu viens de signer.
+        </p>
+
+        <p>
+            <span th:text="#{email.subscriptionNotification.link.text}">
+				Clique ici pour effectuer tes réservations:
+			</span>
+            <a th:href="@{${linkResa}}">Réservation en ligne</a>
+        </p>
+        
+        <p>
+            <em th:text="#{email.signature(${box.name})}">Crossfit Team.</em>
+        </p>
+    </body>
+</html>

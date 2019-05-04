@@ -26,9 +26,6 @@ import java.util.List;
 
 public class PdfSubscriptionV1 extends AbstractPdf {
 
-
-
-
     private final Long subContractNumber;
     private final String membershipName;
 
@@ -68,11 +65,6 @@ public class PdfSubscriptionV1 extends AbstractPdf {
         this.memberZipCode = m.getZipCode();
         this.memberLogin = m.getLogin();
         this.memberTelephonNumber = m.getTelephonNumber();
-    }
-
-    @Override
-    public boolean support(VersionFormatContractSubscription versionFormat) {
-        return versionFormat == VersionFormatContractSubscription.V_1;
     }
 
     public void createPdf(OutputStream os) throws IOException, DocumentException {

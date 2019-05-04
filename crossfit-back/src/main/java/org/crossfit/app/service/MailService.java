@@ -109,6 +109,10 @@ public class MailService {
 		context.setVariable("user", member);
 		context.setVariable("sub", subscription);
 
+		String link = member.getBox().getBookingwebsite();
+		context.setVariable("linkResa", link);
+		context.setVariable("box", member.getBox());
+
 		String content = templateEngine.process("subscriptionNotification", context);
 		String subject = messageSource.getMessage("email.subscriptionNotification.title", new Object[] { }, locale);
 		Email email = new Email(member.getBox().getEmailFrom(), member.getLogin(), subject, content, true, true);

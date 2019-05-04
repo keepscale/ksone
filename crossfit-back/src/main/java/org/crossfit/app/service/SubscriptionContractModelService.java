@@ -44,7 +44,11 @@ public class SubscriptionContractModelService {
     public List<SubscriptionContractModel> findAllOfCurrentBox(){
         return contractModelRepository.findAllByBox(boxService.findCurrentCrossFitBox());
     }
-    
+
+    public String getJsonById(Long id){
+        return findById(id).map(SubscriptionContractModel::getJsonValue).orElse("{}");
+    }
+
     public Optional<SubscriptionContractModel> findById(Long id) {
     	return this.contractModelRepository.findById(id);
     }
