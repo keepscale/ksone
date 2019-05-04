@@ -45,7 +45,7 @@ public class ContractModelResource {
     @RequestMapping(value = "/contractmodels/{id}/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String geContractModelData(@PathVariable Long id) {
         log.debug("REST request to get all contractmodels");
-        return contractModelService.findById(id).map(SubscriptionContractModel::getJsonValue).orElse("{}");
+        return contractModelService.getJsonById(id);
     }
 
 }
