@@ -1,5 +1,5 @@
 
-<form name="form" role="form" novalidate ng-submit="save(true)">
+<form name="form" role="form" novalidate ng-submit="save(true)" disableable-form disabled="!editMode">
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
@@ -27,6 +27,11 @@
 					<a ng-click="refresh()">
 						<span class="glyphicon {{isLoading() ? 'wait-spinner':'glyphicon-refresh'}}" 
 							title="{{isLoading() ? 'Chargement en cours, veuillez patienter...':'Rafrachir les informations'}}"></span>
+					</a>
+				</li>
+				<li>
+					<a ng-click="editMode=!editMode">
+						<span class="glyphicon glyphicon-pencil">{{editMode}}</span>
 					</a>
 				</li>
 			</ul>
@@ -433,10 +438,10 @@
 							</div>
 
 
-							<div class="col-sm-6 col-lg-3 form-group hidden-xs">
+							<div class="col-sm-6 col-lg-4 form-group hidden-xs">
 		  						<label>&nbsp</label>
 		  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
-		  							ng-if="subscription.contractModel.id != null" >
+		  							ng-if="subscription.contractModel.id != null && subscription.id != null" >
 									<button type="button" class="btn btn-primary form-control">
 										<span ng-if="subscription.signatureDate == null">Générer contrat</span>
 										<span ng-if="subscription.signatureDate != null">Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
