@@ -9,6 +9,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.member = {};
         $scope.memberBookings = [];
         $scope.view = $stateParams.view;
+        
+        $scope.editMode = false;
 
         if (!$stateParams.id){
             $scope.member = {

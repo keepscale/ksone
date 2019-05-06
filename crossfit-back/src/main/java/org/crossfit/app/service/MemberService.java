@@ -240,7 +240,7 @@ public class MemberService {
 		//Supprime les subscription qui ne sont plus dans le dto
 
 		final Set<Subscription> memberSubscriptions = member.getSubscriptions();
-		memberSubscriptions.removeIf(sub->memberdto.getSubscriptions().stream().noneMatch(dto->sub.getId().equals(dto.getId())));
+		memberSubscriptions.removeIf(sub->sub.getSignatureDate()==null && memberdto.getSubscriptions().stream().noneMatch(dto->sub.getId().equals(dto.getId())));
 		
 		
 		for (SubscriptionDTO dto : memberdto.getSubscriptions()) {
@@ -254,35 +254,38 @@ public class MemberService {
 				.orElseThrow(()->new IllegalStateException("La souscription " + dto.getId() + " n'appartient pas à l'utilisateur " + memberdto.getId()));
 			}
         	
-        	
-        	s.setMembership(membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox));
-        	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
-        	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
-        	s.setPaymentMethod(dto.getPaymentMethod());
-        	s.setPriceTaxIncl(dto.getPriceTaxIncl());
-        	if (dto.getContractModel() != null)
-        		s.setContractModel(contractModelRepository.getOne(dto.getContractModel().getId()));
-        	else
-        		s.setContractModel(null);
 
-        	if (mustSaveDirectDebit(dto)){
-				SubscriptionDirectDebit directDebit = Optional.ofNullable(s.getDirectDebit()).orElse(new SubscriptionDirectDebit());
-				SubscriptionDirectDebitDTO directDebitDto = dto.getDirectDebit();
-				directDebit.setAfterDate(directDebitDto.getAfterDate());
-				directDebit.setAmount(directDebitDto.getAmount());
-				directDebit.setAtDayOfMonth(directDebitDto.getAtDayOfMonth());
-				directDebit.setFirstPaymentMethod(directDebitDto.getFirstPaymentMethod());
-				directDebit.setFirstPaymentTaxIncl(directDebitDto.getFirstPaymentTaxIncl());
-				directDebit.setMandate(Optional.of(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
-				
-				directDebit.setSubscription(s);
-	    		s.setDirectDebit(directDebit);
-			}
-        	else {
-        		if(s.getDirectDebit() != null){
-					subscriptionDirectDebitRepository.delete(s.getDirectDebit());
+        	s.setSubscriptionEndDate(dto.getSubscriptionEndDate());
+
+			if (s.getSignatureDate() == null) {
+	        	s.setMembership(membershipRepository.findOne(dto.getMembership().getId(), currentCrossFitBox));
+	        	s.setSubscriptionStartDate(dto.getSubscriptionStartDate());
+	        	s.setPaymentMethod(dto.getPaymentMethod());
+	        	s.setPriceTaxIncl(dto.getPriceTaxIncl());
+	        	if (dto.getContractModel() != null)
+	        		s.setContractModel(contractModelRepository.getOne(dto.getContractModel().getId()));
+	        	else
+	        		s.setContractModel(null);
+
+	        	if (mustSaveDirectDebit(dto)){
+					SubscriptionDirectDebit directDebit = Optional.ofNullable(s.getDirectDebit()).orElse(new SubscriptionDirectDebit());
+					SubscriptionDirectDebitDTO directDebitDto = dto.getDirectDebit();
+					directDebit.setAfterDate(directDebitDto.getAfterDate());
+					directDebit.setAmount(directDebitDto.getAmount());
+					directDebit.setAtDayOfMonth(directDebitDto.getAtDayOfMonth());
+					directDebit.setFirstPaymentMethod(directDebitDto.getFirstPaymentMethod());
+					directDebit.setFirstPaymentTaxIncl(directDebitDto.getFirstPaymentTaxIncl());
+					directDebit.setMandate(Optional.of(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
+					
+					directDebit.setSubscription(s);
+		    		s.setDirectDebit(directDebit);
 				}
-        		s.setDirectDebit(null);
+	        	else {
+	        		if(s.getDirectDebit() != null){
+						subscriptionDirectDebitRepository.delete(s.getDirectDebit());
+					}
+	        		s.setDirectDebit(null);
+				}
 			}
 
 			s.setMember(member);
@@ -294,7 +297,8 @@ public class MemberService {
 		// &&
 		// qui ne sont pas utilisé dans une souscription
 		member.getMandates().removeIf(mandate-> {
-			return	memberdto.getMandates().stream().noneMatch(dto -> mandate.getId().equals(dto.getId())) &&
+			return	mandate.getSignatureDate()==null && 
+					memberdto.getMandates().stream().noneMatch(dto -> mandate.getId().equals(dto.getId())) &&
 					memberSubscriptions.stream().map(Subscription::getDirectDebit).filter(Objects::nonNull).noneMatch(deb-> mandate.equals(deb.getMandate()));
 		});
 
@@ -311,7 +315,7 @@ public class MemberService {
 			}
 
 			//On ne met à jour que les mandats en attente d'approbation
-			if (mandate.getStatus() == MandateStatus.PENDING_CUSTOMER_APPROVAL){
+			if (mandate.getStatus() == MandateStatus.PENDING_CUSTOMER_APPROVAL && mandate.getSignatureDate() == null){
 				mandate.setBic(dto.getBic());
 				mandate.setIban(dto.getIban());
 				mandate.setIcs(dto.getIcs());
