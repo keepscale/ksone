@@ -1,8 +1,8 @@
 
-<form name="form" role="form" novalidate ng-submit="save(true)" disableable-form disabled="!editMode">
+<form name="form" role="form" novalidate ng-submit="save(true)" disabled-form="!editMode">
 
 	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
+		<button type="button" class="close" data-dismiss="modal" ng-if="!editMode"
 			aria-hidden="true" ng-click="clear()">&times;</button>
 		
 		<h4 class="modal-title modal-title-center">
@@ -13,25 +13,20 @@
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
 			<ul class="nav navbar-nav navbar-right">
 				
-				<li ng-show="view == 'abonnements'">
+				<li ng-show="view == 'abonnements' && editMode"">
 					<a ng-click="addSubscription()">
 						<span class="glyphicon glyphicon-plus" title="Ajouter un abonnement"></span>
 					</a>
 				</li>
-				<li ng-show="view == 'mandats'">
+				<li ng-show="view == 'mandats' && editMode"">
 					<a ng-click="addMandat()">
 						<span class="glyphicon glyphicon-plus" title="Ajouter un mandat"></span>
 					</a>
 				</li>
-				<li ng-if="member.id">
+				<li ng-if="member.id && !editMode">
 					<a ng-click="refresh()">
 						<span class="glyphicon {{isLoading() ? 'wait-spinner':'glyphicon-refresh'}}" 
 							title="{{isLoading() ? 'Chargement en cours, veuillez patienter...':'Rafrachir les informations'}}"></span>
-					</a>
-				</li>
-				<li>
-					<a ng-click="editMode=!editMode">
-						<span class="glyphicon glyphicon-pencil">{{editMode}}</span>
 					</a>
 				</li>
 			</ul>
@@ -268,7 +263,7 @@
 							<span ng-if="subscription.bookingCount>0"
 								style="white-space: nowrap;">{{subscription.bookingCount}}
 								résa.</span>
-							<button ng-if="subscription.bookingCount==0" type="button"
+							<button ng-if="subscription.bookingCount==0 && editMode" type="button"
 								class="btn btn-xs btn-danger"
 								ng-click="deleteSubscription(subscription)"
 								ng-disabled="subscription.bookingCount > 0">
@@ -307,8 +302,14 @@
 									</div>
 									
 									<datetimepicker name="subscriptionEndDate" how-weeks="false"
-										show-meridian="false" date-format="dd/MM/yyyy"
+										show-meridian="false" date-format="dd/MM/yyyy" ng-hide="!editMode"
 										hidden-time="true" ng-model="subscription.subscriptionEndDate"></datetimepicker>
+																	
+									<div class="datetimepicker-wrapper" ng-if="!editMode">
+										<input type="text" class="form-control" ng-disabled="true"
+												value="{{subscription.subscriptionEndDate | date: 'dd/MM/yyyy'}}">
+									</div>
+								
 								</div>
 
 							</div>
@@ -438,15 +439,30 @@
 							</div>
 
 
-							<div class="col-sm-6 col-lg-4 form-group hidden-xs">
+							<div class="col-sm-6 col-lg-4 form-group hidden-xs" ng-if="!editMode">
 		  						<label>&nbsp</label>
 		  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
-		  							ng-if="subscription.contractModel.id != null && subscription.id != null" >
+		  							ng-if="subscription.contractModel.id != null && subscription.signatureDate == null" >
 									<button type="button" class="btn btn-primary form-control">
 										<span ng-if="subscription.signatureDate == null">Générer contrat</span>
-										<span ng-if="subscription.signatureDate != null">Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
 									</button>
-								</a>
+								</a>								
+								<div ng-if="subscription.signatureDate != null">
+									<label>Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
+									
+									<button type="button"  title="Renvoyer le contrat par mail"
+										class="btn btn-sm btn-default"
+										ng-click="sendPdf(subscription)">
+										<span class="glyphicon glyphicon-envelope"></span>
+									</button>
+									
+									<button type="button"  title="Télécharger le contrat"
+										class="btn btn-sm btn-default"
+										ng-click="downloadPdf(subscription)">
+										<span class="glyphicon glyphicon-cloud-download"></span>
+									</button>
+								</div>
+								
 							</div>
 						</div>
 					</div>
@@ -482,7 +498,7 @@
 						<span ng-if="mandate.createdDate"> | Créé le {{mandate.createdDate | date:"dd/MM/yyyy 'à' HH:mm"}}</span>
 
 
-						<div class="pull-right">
+						<div class="pull-right" ng-if="editMode">
 							<button type="button"
 								class="btn btn-xs btn-danger"
 								ng-click="deleteMandate(mandate)"
@@ -560,7 +576,7 @@
 										<label>Statut : {{'crossfitApp.member.mandate.status.'+ mandate.status | translate }}</label>
 									
 									
-				  						<a ng-if="mandate.id" ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank">
+				  						<a ng-if="mandate.id && !editMode" ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank">
 											<button type="button" class="btn btn-primary form-control">
 												<span ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'">Signer le mandat</span>
 												<span ng-if="mandate.signatureDate != null">Mandat signé le {{mandate.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
@@ -592,7 +608,7 @@
 
 				       	{{booking.startAt | date:"EEE dd MMM yyyy 'à' HH:mm"}} - {{booking.title}}
 
-						<button type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
+						<button ng-if="!editMode" type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
 	                    	<span class="glyphicon glyphicon-remove"></span></button>
 					</li>
 				</ul>
@@ -625,18 +641,26 @@
 			<span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
 				translate="entity.action.cancel">Cancel</span>
 		</button>
-		<button type="button"
+		<button type="button" ng-if="editMode"
 			ng-disabled="form.$invalid"
 			class="btn btn-primary hidden-xs"
 			ng-click="save(false)">
 			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
 				translate="entity.action.save">Save</span>
 		</button>
-		<button type="submit"
+		<button type="submit" ng-if="editMode"
 			ng-disabled="form.$invalid"
 			class="btn btn-primary">
 			<span class="glyphicon glyphicon-save"></span>&nbsp;<span
 				translate="entity.action.saveAndQuit">Save & Quit</span>
+		</button>
+		
+		<button type="button"
+			ng-if="!editMode"
+			class="btn btn-primary"
+			ng-click="changeToEditMode()">
+			<span class="glyphicon glyphicon-pencil"></span>&nbsp;<span
+				translate="entity.action.edit">Modifier</span>
 		</button>
 	</div>
 </form>
