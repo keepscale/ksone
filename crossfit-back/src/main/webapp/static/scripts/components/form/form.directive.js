@@ -26,19 +26,22 @@ angular.module('crossfitApp')
 	    };
 	})
 
-    .directive('disableableForm', function() {
+    .directive('disabledForm', function() {
         return {
-            restrict: 'A',
+            restrict: 'AEC',
             scope: {
-            	disabled: '@'
+            	disabledForm: '='
             },
-            controller: function ($scope, $element, $attrs) {
-            	$scope.$watch('disabled', function(disabled) {
-                	$element.find('input[ng-model],textarea[ng-model],select[ng-model]').each(function() {
-                        var $input = $(this);                        
-                        $input.prop('disabled', disabled);
+            link: function ($scope, $element, $attrs) {
+            	$scope.$watch('disabledForm', function(disabledForm, oldValue) {
+                    $element.find('.modal-body').each(function() {
+                    	$(this).find('input,textarea[ng-model],select[ng-model],datetimepicker').each(function() {                            var $input = $(this);
+                            if (disabledForm || !$input[0].hasAttribute('ng-disabled')){
+                            	$input.prop('disabled', disabledForm);
+                            }
+                        });
                     });
-                });
+                }, true);
             }
         };
     });

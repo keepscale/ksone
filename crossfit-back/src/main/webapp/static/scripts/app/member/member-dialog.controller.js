@@ -11,6 +11,11 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.view = $stateParams.view;
         
         $scope.editMode = false;
+        
+        $scope.changeToEditMode = function(){
+        	$scope.refresh();
+            $scope.editMode = !$scope.editMode;
+        }
 
         if (!$stateParams.id){
             $scope.member = {
@@ -53,7 +58,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
                         $state.go('member.edit', {id: result.id});
             	    }
             	    else{
-            	    	$scope.refresh();
+                		$scope.cancel();
             	    }
             	}
             };
@@ -65,8 +70,17 @@ angular.module('crossfitApp').controller('MemberDialogController',
             }
         };
 
+        $scope.cancel = function(){
+    		$scope.editMode = false;
+	    	$scope.refresh();
+        }
         $scope.clear = function() {
-            $modalInstance.dismiss('cancel');
+        	if ($scope.editMode){
+        		$scope.cancel();
+        	}
+        	else{
+                $modalInstance.dismiss('cancel');
+        	}
         };
 
         $scope.refresh = function(){
@@ -190,7 +204,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	}
         }
         $scope.cannotEditSubscription = function(s){
-        	return s.signatureDate != null;
+        	return !$scope.editMode || s.signatureDate != null;
         }
         $scope.isSubscriptionInvalid = function(s){
         	var invalid = !s.membership || 
