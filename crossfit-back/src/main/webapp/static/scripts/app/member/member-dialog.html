@@ -13,12 +13,12 @@
 		<nav class="navbar navbar-inverse navbar-cf-nancy ng-scope" role="navigation">
 			<ul class="nav navbar-nav navbar-right">
 				
-				<li ng-show="view == 'abonnements' && editMode"">
+				<li ng-show="view == 'abonnements'"">
 					<a ng-click="addSubscription()">
 						<span class="glyphicon glyphicon-plus" title="Ajouter un abonnement"></span>
 					</a>
 				</li>
-				<li ng-show="view == 'mandats' && editMode"">
+				<li ng-show="view == 'mandats'"">
 					<a ng-click="addMandat()">
 						<span class="glyphicon glyphicon-plus" title="Ajouter un mandat"></span>
 					</a>
@@ -266,7 +266,7 @@
 							<button ng-if="subscription.bookingCount==0 && editMode" type="button"
 								class="btn btn-xs btn-danger"
 								ng-click="deleteSubscription(subscription)"
-								ng-disabled="subscription.bookingCount > 0">
+								ng-disabled="subscription.bookingCount > 0 || subscription.signatureDate != null">
 								<span class="glyphicon glyphicon-remove"></span>
 							</button>
 						</div>
@@ -354,7 +354,7 @@
 											ng-model="subscription.directDebit.afterDate"></datetimepicker>
 											
 										<input type="text" class="form-control" ng-disabled="true" ng-if="cannotEditSubscription(subscription)"
-												value="{{subscription.subscriptionStartDate | date: 'dd/MM/yyyy'}}">
+												value="{{subscription.directDebit.afterDate | date: 'dd/MM/yyyy'}}">
 									</div>
 
 									<div class="col-xs-6 col-sm-5 col-md-3 form-group">
@@ -426,7 +426,7 @@
 							</div>
 						</div>
 
-						<div class="row">
+						<div class="row" ng-if="subscription.signatureDate == null">
 
 							<div class="col-xs-12 col-sm-6 col-lg-2 form-group">
 								<label>Modele contrat</label>
@@ -439,30 +439,31 @@
 							</div>
 
 
-							<div class="col-sm-6 col-lg-4 form-group hidden-xs" ng-if="!editMode">
+							<div class="col-xs-12 col-sm-6 col-lg-4 form-group hidden-xs" ng-if="subscription.contractModel.id != null && !editMode">
 		  						<label>&nbsp</label>
-		  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank"
-		  							ng-if="subscription.contractModel.id != null && subscription.signatureDate == null" >
+		  						<a ui-sref="sign-subscription({memberId: member.id, subscriptionId: subscription.id})" ui-sref-opts="{relative: false}" target="_blank">
 									<button type="button" class="btn btn-primary form-control">
-										<span ng-if="subscription.signatureDate == null">Générer contrat</span>
+										<span>Générer contrat</span>
 									</button>
-								</a>								
-								<div ng-if="subscription.signatureDate != null">
-									<label>Contrat signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
-									
-									<button type="button"  title="Renvoyer le contrat par mail"
-										class="btn btn-sm btn-default"
-										ng-click="sendPdf(subscription)">
-										<span class="glyphicon glyphicon-envelope"></span>
-									</button>
-									
-									<button type="button"  title="Télécharger le contrat"
-										class="btn btn-sm btn-default"
-										ng-click="downloadPdf(subscription)">
-										<span class="glyphicon glyphicon-cloud-download"></span>
-									</button>
-								</div>
-								
+								</a>
+							</div>
+						</div>
+
+						<div class="row" ng-if="subscription.signatureDate != null">
+							<div class="col-xs-12">
+								<label>Contrat {{subscription.contractModel.versionData}} signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
+
+								<button type="button"  title="Renvoyer le contrat par mail"
+										class="btn btn-sm btn-default hidden-xs"
+										ng-click="sendSubscriptionPdf(subscription)">
+									<span class="glyphicon glyphicon-envelope"></span>
+								</button>
+
+								<button type="button"  title="Télécharger le contrat"
+										class="btn btn-sm btn-default hidden-xs"
+										ng-click="downloadSubscriptionPdf(subscription)">
+									<span class="glyphicon glyphicon-cloud-download"></span>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -576,10 +577,9 @@
 										<label>Statut : {{'crossfitApp.member.mandate.status.'+ mandate.status | translate }}</label>
 									
 									
-				  						<a ng-if="mandate.id && !editMode" ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank">
+				  						<a ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL' && !editMode" ui-sref="sign-mandate({memberId: member.id, mandateId: mandate.id})" ui-sref-opts="{relative: false}" target="_blank">
 											<button type="button" class="btn btn-primary form-control">
-												<span ng-if="mandate.status === 'PENDING_CUSTOMER_APPROVAL'">Signer le mandat</span>
-												<span ng-if="mandate.signatureDate != null">Mandat signé le {{mandate.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</span>
+												<span>Signer le mandat</span>
 											</button>
 										</a>
 									
@@ -587,6 +587,24 @@
 									
 									
 								</div>
+							</div>
+						</div>
+
+						<div class="row" ng-if="mandate.signatureDate != null">
+							<div class="col-xs-12">
+								<label>Mandat signé le {{mandate.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
+
+								<button type="button"  title="Renvoyer le mandat par mail"
+										class="btn btn-sm btn-default hidden-xs"
+										ng-click="sendMandatePdf(mandate)">
+									<span class="glyphicon glyphicon-envelope"></span>
+								</button>
+
+								<button type="button"  title="Télécharger le mandat"
+										class="btn btn-sm btn-default hidden-xs"
+										ng-click="downloadMandatePdf(mandate)">
+									<span class="glyphicon glyphicon-cloud-download"></span>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -624,7 +642,7 @@
 		<div class="row form-group" ng-show="view == 'authority' && member">
   			<div class="col-xs-12">
 				<label ng-repeat="role in roles" class="checkbox-inline" style="margin-left: 10px">
-				  <input type="checkbox" value="{{role}}"
+				  <input type="checkbox" value="{{role}}" ng-disabled="!editMode"
 					    ng-checked="member.roles.indexOf(role) > -1"
   						ng-click="toggleSelectedRole(role)"> {{'crossfitApp.member.role.' + role | translate}}
 				</label>
