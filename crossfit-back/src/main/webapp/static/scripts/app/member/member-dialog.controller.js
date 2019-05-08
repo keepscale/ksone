@@ -9,13 +9,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.member = {};
         $scope.memberBookings = [];
         $scope.view = $stateParams.view;
-        
-        $scope.editMode = false;
-        
-        $scope.changeToEditMode = function(){
-        	$scope.refresh();
-            $scope.editMode = !$scope.editMode;
-        }
+
 
         if (!$stateParams.id){
             $scope.member = {
@@ -38,7 +32,16 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.roles = Authority.query();
         $scope.paymentMethods = Bill.paymentMethods();
         $scope.contractModels = ContractModel.query();
-        
+
+        $scope.editMode = false;
+
+        $scope.changeToEditMode = function(callBack){
+        	$scope.refresh(function(){
+        	    $scope.editMode = !$scope.editMode;
+        	    callBack();
+        	});
+        }
+
         $scope.$on('$locationChangeSuccess', function(event) { 
         	$scope.view = $stateParams.view;
         });
@@ -83,15 +86,16 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	}
         };
 
-        $scope.refresh = function(){
-            $scope.loadMember();
-            $scope.loadBooking();
+        $scope.refresh = function(callBack){
+            $scope.loadMember().$promise.then(function(member){
+                $scope.loadBooking().$promise.then(callBack);
+            });
         }
         
         $scope.loadMember = function(){
             if ($stateParams.id != null) {
                 $scope.member = null;
-                Member.get({id : $stateParams.id}, function(result){
+                return Member.get({id : $stateParams.id}, function(result){
                     $scope.member = result;
                 });
             }
@@ -99,7 +103,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.loadBooking = function(){
             if ($stateParams.id != null) {
                 $scope.memberBookings = null;
-	        	Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
+	        	return Booking.getByMember({memberId : $stateParams.id}, function(resultBookings) {
 	            	$scope.memberBookings = resultBookings;
 	            });
             }
@@ -130,30 +134,56 @@ angular.module('crossfitApp').controller('MemberDialogController',
         }
 
         $scope.addSubscription = function() {
-        	//TODO: Recupere les membership par defaut
-        	$scope.member.subscriptions.push({
-        		subscriptionStartDate : new Date(),
-        		bookingCount: 0
-        	});
+
+            if (!$scope.editMode){
+                 $scope.changeToEditMode($scope.addSubscription);
+            }
+            else{
+                $scope.member.subscriptions.push({
+                    subscriptionStartDate : new Date(),
+                    bookingCount: 0
+                });
+            }
+
         };
         $scope.deleteSubscription = function(subscription) {
         	var idx = $scope.member.subscriptions.indexOf(subscription);
         	$scope.member.subscriptions.splice(idx, 1);
         };
+        $scope.sendSubscriptionPdf = function(subscription){
+            //TODO: to implement
+        }
+        $scope.downloadSubscriptionPdf = function(subscription){
+            //TODO: to implement
+        }
 
 
         $scope.addMandat = function() {
-        	$scope.member.mandates.push({
-        		rum : 'toto',
-        		ics: 'ABS',
-        		status: 'DRAFT'
-        	});
+
+            if (!$scope.editMode){
+                 $scope.changeToEditMode($scope.addMandat);
+            }
+            else{
+                //TODO: initialise ics
+                $scope.member.mandates.push({
+                    rum : 'toto',
+                    ics: 'ABS',
+                    status: 'DRAFT'
+                });
+            }
         };
 
         $scope.deleteMandate = function(mandate) {
         	var idx = $scope.member.mandates.indexOf(mandate);
         	$scope.member.mandates.splice(idx, 1);
         };
+
+        $scope.sendMandatePdf = function(mandate){
+            //TODO: to implement
+        }
+        $scope.downloadMandatePdf = function(mandate){
+            //TODO: to implement
+        }
         
         $scope.onSelectMembership = function(subscription){
         	if (!subscription.subscriptionEndDate){
