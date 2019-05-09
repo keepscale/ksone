@@ -17,7 +17,11 @@
         	"adminwebsite" : "Url du site d'admin",
             "bookingwebsite": "Url du site de résa.",
         	"rootwebsite" : "Racine du site",
-        	
+        	"toEmailContract" : "Copie contrat à l'email",
+        	"toEmailMandate" : "Copie Mandat à l'email",
+        	"defautICS" : "Identifiant Creancier Sepa",
+        	"jsonMandate" : "Config Mandate PDF",
+
             "emailFrom": "Email d'envoi des mails",
         	"logoUrl" : "Url du logo",
         	"socialEnabled": "Activer les fonctionnalités 'social'",

@@ -5,14 +5,11 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import aQute.bnd.annotation.component.Component;
-
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.SubscriptionDirectDebit;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.domain.enumeration.Title;
-import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
 import org.crossfit.app.service.util.PdfUtils;
 import org.joda.time.DateTime;
 
@@ -97,9 +94,8 @@ public class PdfSubscriptionV1 extends AbstractPdf {
         cSubNumber.addElement(new Paragraph(getString("preambule.indetermine.label"), font12));
 
 
-        Image imgLogo = Image.getInstance(new URL(getString("preambule.logo.url")));
-        imgLogo.scaleToFit(100, 100);
-        PdfPCell cLogo = new PdfPCell(imgLogo);
+        PdfPCell cLogo = new PdfPCell();
+        cLogo.addElement( createImgFromURL(getString("preambule.logo.url"), 100, 100));
         cLogo.setBorder(PdfPCell.NO_BORDER);
 
         PdfPTable table = new PdfPTable(2);
@@ -213,11 +209,8 @@ public class PdfSubscriptionV1 extends AbstractPdf {
         }
         elements.add(romanList);
 
-        String base64Image = signatureDataEncoded.split(",")[1];
-        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-        Image img = Image.getInstance(imageBytes);
-        img.scaleToFit(258, 100);
-        elements.add(img);
+
+        elements.add(createImgFromB64(signatureDataEncoded, 258, 100));
         elements.add(createParagraph(memberFirstName + " " + memberLastName, font10));
         elements.add(createParagraph(
                 getString("signature.date.label") + " " +
@@ -225,6 +218,7 @@ public class PdfSubscriptionV1 extends AbstractPdf {
 
         return elements;
     }
+
 
     public String getStringMembership(String pointer){
         return getString("membership.['"+membershipName+"']."+pointer);

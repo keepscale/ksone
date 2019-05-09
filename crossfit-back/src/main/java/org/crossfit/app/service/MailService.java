@@ -1,21 +1,14 @@
 package org.crossfit.app.service;
 
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import org.apache.commons.codec.binary.Base64OutputStream;
+import aQute.lib.base64.Base64;
+import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.mail.Email;
 import org.crossfit.app.mail.EmailAttachment;
 import org.crossfit.app.mail.MailSender;
+import org.crossfit.app.service.pdf.PdfProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +19,14 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import aQute.lib.base64.Base64;
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Service for sending e-mails.
@@ -48,6 +48,10 @@ public class MailService {
 
 	@Inject
 	private SpringTemplateEngine templateEngine;
+
+
+	@Inject
+	private PdfProvider pdfProvider;
 
 	@Async
 	public void sendActivationEmail(Member member, String clearPassword) {
@@ -102,7 +106,7 @@ public class MailService {
 		mailSender.sendEmail(member.getBox().getEmailFrom(), member.getLogin(), subject, content, false, true);
 	}
 
-	public void sendSubscription(Subscription subscription, byte[] pdf) {
+	public void sendSubscription(Subscription subscription) throws IOException {
 		Member member = subscription.getMember();
 		Locale locale = Locale.forLanguageTag(member.getLangKey() == null ? "fr" : member.getLangKey());
 		Context context = new Context(locale);
@@ -115,8 +119,50 @@ public class MailService {
 
 		String content = templateEngine.process("subscriptionNotification", context);
 		String subject = messageSource.getMessage("email.subscriptionNotification.title", new Object[] { }, locale);
+
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		pdfProvider.writePdfForSubscription(subscription, os);
+		String pdfBase64 = Base64.encodeBase64(os.toByteArray());
+		os.close();
+
 		Email email = new Email(member.getBox().getEmailFrom(), member.getLogin(), subject, content, true, true);
-		email.addAttachment(new EmailAttachment(Base64.encodeBase64(pdf), UUID.randomUUID().toString(), "attachment", "contrat.pdf", MediaType.APPLICATION_PDF_VALUE));
-		mailSender.sendEmail(email );
+		email.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "contrat.pdf", MediaType.APPLICATION_PDF_VALUE));
+		mailSender.sendEmail(email);
+
+
+		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailContract(), "Contrat " + member.getLastName() + " " + member.getFirstName(),
+				"", true, false);
+		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "contrat.pdf", MediaType.APPLICATION_PDF_VALUE));
+		mailSender.sendEmail(email);
 	}
+
+    public void sendMandate(Mandate mandate) throws IOException {
+
+		Member member = mandate.getMember();
+		Locale locale = Locale.forLanguageTag(member.getLangKey() == null ? "fr" : member.getLangKey());
+		Context context = new Context(locale);
+		context.setVariable("user", member);
+		context.setVariable("mandate", mandate);
+
+		String link = member.getBox().getBookingwebsite();
+		context.setVariable("linkResa", link);
+		context.setVariable("box", member.getBox());
+
+		String content = templateEngine.process("mandateNotification", context);
+		String subject = messageSource.getMessage("email.mandateNotification.title", new Object[] { }, locale);
+
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		pdfProvider.writePdfForMandate(mandate, os);
+		String pdfBase64 = Base64.encodeBase64(os.toByteArray());
+		os.close();
+
+		Email email = new Email(member.getBox().getEmailFrom(), member.getLogin(), subject, content, true, true);
+		email.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "mandat.pdf", MediaType.APPLICATION_PDF_VALUE));
+		mailSender.sendEmail(email);
+
+		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailMandate(), "Mandat " + member.getLastName() + " " + member.getFirstName(),
+				"", true, false);
+		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "mandat.pdf", MediaType.APPLICATION_PDF_VALUE));
+		mailSender.sendEmail(email);
+    }
 }

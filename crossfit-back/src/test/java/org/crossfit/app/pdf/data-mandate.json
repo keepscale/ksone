@@ -1,0 +1,57 @@
+{
+  "preambule": {
+    "logo": {
+      "url": "http://127.0.0.1:8080/assets/images/sepa-logo.png"
+    },
+    "text": "En signant ce formulaire de mandat, vous autorisez la société KOOPER inc - CROSSFIT NANCY Affiliate à envoyer des instructions à votre banque pour débiter votre compte, et votre banque à débiter votre compte conformément aux instructions de KOOPER inc - CROSSFIT NANCY Affiliate. Vous bénéficiez du droit d’être remboursé par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle.\nUne demande de remboursement doit être présentée : dans les 8 semaines suivant la date de débit de votre compte pour un prélèvement autorisé, sans tarder et au plus tard dans les 13 mois en cas de prélèvement non authorisé, et vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque."
+  },
+  "designation": {
+    "civilite": {
+      "label": "Civilité: ",
+      "MS": "Madame",
+      "MR": "Monsieur"
+    },
+    "nom": {
+      "label": "Nom: "
+    },
+    "prenom": {
+      "label": "Prénom: "
+    },
+    "adresse": {
+      "label": "Adresse: "
+    },
+    "city": {
+      "label": "Ville: "
+    },
+    "zipcode": {
+      "label": "Code Postal: "
+    },
+    "beneficiaire": {
+      "text": "Pour le compte de:\nKooper inc\n24/26 bd du 26ème Régiment d’Infanterie\n54000 Nancy"
+    }
+  },
+  "info": {
+    "paiement": {
+      "label": "Paiement: ",
+      "value": "Récurrent"
+    },
+    "iban": {
+      "label": "À débiter sur: "
+    },
+    "bic": {
+      "label": "BIC: "
+    },
+    "rum": {
+      "label": "Référence Unique du Mandat: "
+    },
+    "ics": {
+      "label": "Identifiant Créancier SEPA: "
+    }
+  },
+  "signature": {
+    "date": {
+      "label": "Nancy, le",
+      "format": "dd/MM/yyyy"
+    }
+  }
+}

@@ -49,7 +49,7 @@ public class SignatureResource {
 
 
 	@RequestMapping(value = "/sign/mandate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MandateDTO> sign(@RequestBody MandateDTO dto) throws URISyntaxException, AlreadySignedException {
+	public ResponseEntity<MandateDTO> sign(@RequestBody MandateDTO dto) throws URISyntaxException, AlreadySignedException, IOException {
 		log.debug("REST request to sign Mandate : {}", dto);
 		
 		Mandate result = subscriptionService.sign(dto);

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.mandateNotification.title}">Contrat d'adhésion</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p th:text="#{email.mandateNotification.hello(${user.firstName}, ${user.lastName})}">
+            Bonjour Loic G,
+        </p>
+        <p th:text="#{email.mandateNotification.text1}">
+            Tu trouveras en pièce jointe le mandat SEPA que tu viens de signer et que tu dois transmettre à ta banque.
+        </p>
+
+        <p>
+            <em th:text="#{email.signature(${box.name})}">Crossfit Team.</em>
+        </p>
+    </body>
+</html>
