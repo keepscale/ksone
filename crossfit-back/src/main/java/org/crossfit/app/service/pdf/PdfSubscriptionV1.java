@@ -216,7 +216,7 @@ public class PdfSubscriptionV1 extends AbstractPdf {
         String base64Image = signatureDataEncoded.split(",")[1];
         byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
         Image img = Image.getInstance(imageBytes);
-        img.scaleToFit(568, 220);
+        img.scaleToFit(258, 100);
         elements.add(img);
         elements.add(createParagraph(memberFirstName + " " + memberLastName, font10));
         elements.add(createParagraph(
@@ -227,7 +227,7 @@ public class PdfSubscriptionV1 extends AbstractPdf {
     }
 
     public String getStringMembership(String pointer){
-        return getString("membership."+membershipName+"."+pointer);
+        return getString("membership.['"+membershipName+"']."+pointer);
     }
 
 }
