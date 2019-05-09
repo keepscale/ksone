@@ -40,6 +40,7 @@ public class PdfSubscriptionProvider {
             switch (contractModel.getVersionFormat()){
                 case V_1:
                     PdfSubscriptionV1 v1 = new PdfSubscriptionV1(contractModelService.getJsonById(contractModel.getId()), sub);
+                    v1.createPdf(baos);
                     break;
                 default:
                     throw new RuntimeException("Version " + contractModel.getVersionFormat() + " non supportée.");
