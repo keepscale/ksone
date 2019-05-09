@@ -13,7 +13,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractPdf  {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    
     protected static final BaseColor HEADER_COLOR = new BaseColor(87,113,138);
     protected Font font10;
     protected Font font10White;
@@ -56,7 +62,9 @@ public abstract class AbstractPdf  {
     }
     protected String getString(String pointer){
         try{
-            return jsonData.read("$."+pointer);
+            String path = "$."+pointer;
+            log.debug("Reading path {}", path);
+			return jsonData.read(path);
         }catch (PathNotFoundException e){
             return pointer;
         }

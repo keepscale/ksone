@@ -1,9 +1,11 @@
 package org.crossfit.app.web.rest.api;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,7 +20,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Authority;
@@ -26,12 +31,15 @@ import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CardEvent;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.CardEventRepository;
 import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.service.*;
+import org.crossfit.app.service.pdf.PdfBill;
+import org.crossfit.app.service.pdf.PdfSubscriptionProvider;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
@@ -63,6 +71,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.xml.sax.SAXException;
+
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.xmp.XMPException;
 
 import net.bytebuddy.asm.Advice.Return;
 
@@ -99,8 +111,35 @@ public class MemberResource {
     private SubscriptionRepository subscriptionRepository;
     @Inject
     private BookingRepository bookingRepository;
+
+    @Inject
+    private PdfSubscriptionProvider pdfSubscriptionProvider;
     
     
+	@RequestMapping(value = "/members/{memberId}/subscription/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
+	public void getToPdf(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
+		log.debug("REST request to get PdfForSubscription : {}", id);
+
+		Subscription subscription = subscriptionRepository.findOneWithContract(id);
+		
+		if (!subscription.getMember().getId().equals(memberId)) {
+			response.sendError(404);
+			return;
+		}
+		
+		ByteArrayOutputStream o = pdfSubscriptionProvider.getOutputStreamPdfForSubscription(subscription);
+		
+		byte[] byteArray = o.toByteArray();
+		
+		response.getOutputStream().write(byteArray);
+
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "attachment; filename=\"contrat-" + subscription.getMember().getLastName() + "-" + id + ".pdf\"");
+		response.flushBuffer();
+
+	}
+	
+	
 	/**
 	 * POST /members -> Create a new member.
 	 */
