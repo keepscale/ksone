@@ -1,6 +1,5 @@
 package org.crossfit.app.web.rest.api;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -26,32 +25,21 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.crossfit.app.domain.Authority;
-import org.crossfit.app.domain.Booking;
-import org.crossfit.app.domain.CardEvent;
-import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.*;
 import org.crossfit.app.exception.CSVParseException;
-import org.crossfit.app.repository.BookingRepository;
-import org.crossfit.app.repository.CardEventRepository;
-import org.crossfit.app.repository.MemberRepository;
-import org.crossfit.app.repository.SubscriptionRepository;
+import org.crossfit.app.repository.*;
 import org.crossfit.app.service.*;
-import org.crossfit.app.service.pdf.PdfBill;
-import org.crossfit.app.service.pdf.PdfSubscriptionProvider;
+import org.crossfit.app.service.pdf.PdfProvider;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
-import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -70,13 +58,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.xmp.XMPException;
-
-import net.bytebuddy.asm.Advice.Return;
 
 /**
  * REST controller for managing Member.
@@ -107,17 +92,19 @@ public class MemberResource {
     private CardEventRepository cardEventRepository;
 	@Inject
 	private DirectDebitService directDebitService;
-    @Inject
-    private SubscriptionRepository subscriptionRepository;
+	@Inject
+	private SubscriptionRepository subscriptionRepository;
+	@Inject
+	private MandateRepository mandateRepository;
     @Inject
     private BookingRepository bookingRepository;
 
     @Inject
-    private PdfSubscriptionProvider pdfSubscriptionProvider;
+    private PdfProvider pdfProvider;
     
     
 	@RequestMapping(value = "/members/{memberId}/subscription/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
-	public void getToPdf(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
+	public void getPdfForSubscription(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
 		log.debug("REST request to get PdfForSubscription : {}", id);
 
 		Subscription subscription = subscriptionRepository.findOneWithContract(id);
@@ -126,15 +113,30 @@ public class MemberResource {
 			response.sendError(404);
 			return;
 		}
-		
-		ByteArrayOutputStream o = pdfSubscriptionProvider.getOutputStreamPdfForSubscription(subscription);
-		
-		byte[] byteArray = o.toByteArray();
-		
-		response.getOutputStream().write(byteArray);
+
+		pdfProvider.writePdfForSubscription(subscription, response.getOutputStream());
 
 		response.setContentType("application/pdf");
 		response.setHeader("Content-Disposition", "attachment; filename=\"contrat-" + subscription.getMember().getLastName() + "-" + id + ".pdf\"");
+		response.flushBuffer();
+
+	}
+
+	@RequestMapping(value = "/members/{memberId}/mandate/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
+	public void getPdfForMandate(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
+		log.debug("REST request to get PdfForMandate : {}", id);
+
+		Mandate m = mandateRepository.findOneWithMember(id);
+
+		if (!m.getMember().getId().equals(memberId)) {
+			response.sendError(404);
+			return;
+		}
+
+		pdfProvider.writePdfForMandate(m, response.getOutputStream());
+
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "attachment; filename=\"mandat-" + m.getMember().getLastName() + "-" + id + ".pdf\"");
 		response.flushBuffer();
 
 	}

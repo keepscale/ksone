@@ -9,11 +9,15 @@ public class SimpleBoxDTO {
     private String billLogoUrl;
     
     private boolean socialEnabled = false;
-    
-    public SimpleBoxDTO(CrossFitBox box) {
+
+	private String defautICS;
+
+
+	public SimpleBoxDTO(CrossFitBox box) {
     	this.name = box.getName();
     	this.billLogoUrl = box.getBillLogoUrl();
     	this.socialEnabled = box.isSocialEnabled();
+    	this.defautICS = box.getDefautICS();
     }
 
 	public String getName() {
@@ -40,6 +44,11 @@ public class SimpleBoxDTO {
 		this.socialEnabled = socialEnabled;
 	}
 
-    
-    
+	public String getDefautICS() {
+		return defautICS;
+	}
+
+	public void setDefautICS(String defautICS) {
+		this.defautICS = defautICS;
+	}
 }

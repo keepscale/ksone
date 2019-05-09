@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('crossfitApp').controller('MemberDialogController',
-    ['$q', '$scope', '$stateParams', '$state', '$uibModalInstance', 'Member', 'Membership', 'Booking', 'Authority', 'Bill', 'ContractModel',
-        function($q, $scope, $stateParams, $state, $modalInstance, Member, Membership, Booking, Authority, Bill, ContractModel) {
+    ['$q', '$scope', '$rootScope', '$window', '$stateParams', '$state', '$uibModalInstance', 'Member', 'Membership', 'Booking', 'Authority', 'Bill', 'ContractModel',
+        function($q, $scope, $rootScope, $window, $stateParams, $state, $modalInstance, Member, Membership, Booking, Authority, Bill, ContractModel) {
 
     	$scope.now = new Date();
 
@@ -26,6 +26,10 @@ angular.module('crossfitApp').controller('MemberDialogController',
                 ],
                 mandates: []
             };
+            $scope.editMode = true;
+        }
+        else{
+            $scope.editMode = false;
         }
 
         $scope.memberships = Membership.query();
@@ -33,7 +37,6 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.paymentMethods = Bill.paymentMethods();
         $scope.contractModels = ContractModel.query();
 
-        $scope.editMode = false;
 
         $scope.changeToEditMode = function(callBack){
         	$scope.refresh(function(){
@@ -87,9 +90,15 @@ angular.module('crossfitApp').controller('MemberDialogController',
         };
 
         $scope.refresh = function(callBack){
-            $scope.loadMember().$promise.then(function(member){
-                $scope.loadBooking().$promise.then(callBack);
-            });
+
+            if ($stateParams.id != null) {
+                $scope.loadMember().$promise.then(function(member){
+                    $scope.loadBooking().$promise.then(callBack);
+                });
+            }
+            else if (callBack){
+                callBack();
+            }
         }
         
         $scope.loadMember = function(){
@@ -150,11 +159,9 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	var idx = $scope.member.subscriptions.indexOf(subscription);
         	$scope.member.subscriptions.splice(idx, 1);
         };
-        $scope.sendSubscriptionPdf = function(subscription){
-            //TODO: to implement
-        }
+
         $scope.downloadSubscriptionPdf = function(subscription){
-            //TODO: to implement
+			$window.open("api/members/"+$scope.member.id+"/subscription/"+subscription.id+".pdf");
         }
 
 
@@ -164,10 +171,9 @@ angular.module('crossfitApp').controller('MemberDialogController',
                  $scope.changeToEditMode($scope.addMandat);
             }
             else{
-                //TODO: initialise ics
+                var ics = $rootScope.box.defautICS;
                 $scope.member.mandates.push({
-                    rum : 'toto',
-                    ics: 'ABS',
+                    ics: ics,
                     status: 'DRAFT'
                 });
             }
@@ -177,12 +183,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
         	var idx = $scope.member.mandates.indexOf(mandate);
         	$scope.member.mandates.splice(idx, 1);
         };
-
-        $scope.sendMandatePdf = function(mandate){
-            //TODO: to implement
-        }
         $scope.downloadMandatePdf = function(mandate){
-            //TODO: to implement
+			$window.open("api/members/"+$scope.member.id+"/mandate/"+mandate.id+".pdf");
         }
         
         $scope.onSelectMembership = function(subscription){

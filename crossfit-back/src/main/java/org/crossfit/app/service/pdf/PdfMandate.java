@@ -4,16 +4,8 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import aQute.bnd.annotation.component.Component;
-
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.Subscription;
-import org.crossfit.app.domain.SubscriptionDirectDebit;
-import org.crossfit.app.domain.enumeration.PaymentMethod;
-import org.crossfit.app.domain.enumeration.Title;
-import org.crossfit.app.domain.enumeration.VersionFormatContractSubscription;
 import org.crossfit.app.service.util.PdfUtils;
 import org.joda.time.DateTime;
 
@@ -65,7 +57,7 @@ public class PdfMandate extends AbstractPdf {
 
 
         // step 1
-        Document document = new Document(PageSize.A4, 0, 0, 20, 20);
+        Document document = new Document(PageSize.A4, 20, 20, 20, 20);
         // step 2
         PdfWriter writer = PdfWriter.getInstance(document, os);
         writer.setPdfVersion(PdfWriter.VERSION_1_7);
@@ -83,97 +75,136 @@ public class PdfMandate extends AbstractPdf {
 
     private List<Element> createSepa() throws MalformedURLException, IOException, DocumentException {
         List<Element> elements = new ArrayList<>();
-        
-        
-        PdfPCell cSubNumber = new PdfPCell();
-        cSubNumber.setBorder(PdfPCell.NO_BORDER);
 
-        cSubNumber.addElement(new Paragraph(getString("preambule.text"), font12));
+        elements.add(createPreambule());
+        elements.add(createDesignation());
+        elements.add(createModeEtIBANBIC());
+        elements.add(createSignature());
+
+        return elements;
+    }
+
+    private Element createPreambule() throws IOException, DocumentException {
+        PdfPCell text = new PdfPCell();
+        text.setBorder(PdfPCell.NO_BORDER);
+
+        Paragraph p = new Paragraph(getString("preambule.text"), font6);
+        p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
+        text.addElement(p);
 
 
-        Image imgLogo = Image.getInstance(new URL(getString("preambule.logo.url")));
-        imgLogo.scaleToFit(100, 100);
-        PdfPCell cLogo = new PdfPCell(imgLogo);
+        PdfPCell cLogo = new PdfPCell();
+        cLogo.addElement(createImgFromURL(getString("preambule.logo.url"), 100, 100));
         cLogo.setBorder(PdfPCell.NO_BORDER);
 
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{30, 100});
+        table.setWidths(new int[]{2, 8});
         table.addCell(cLogo);
-        table.addCell(cSubNumber);
-
-        elements.add(table);
-        
-        PdfPTable tableAdresse = new PdfPTable(2);
-        tableAdresse.setWidthPercentage(100);
-        table.addCell(createDesignation());
-
-        PdfPCell addressTo = new PdfPCell();
-        addressTo.setBorder(PdfPCell.NO_BORDER);
-        addressTo.addElement(new Paragraph(getString("address.to"), font12));
-        table.addCell(addressTo);
-        
-        elements.add(createParagraph(getString("signature.declare.label"), font10));
-
-        com.itextpdf.text.List romanList = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
-        for (String c : getStrings("signature.information.text")) {
-            ListItem li = new ListItem(c, font10);
-            li.setAlignment(Element.ALIGN_JUSTIFIED);
-            romanList.add(li);
-        }
-        elements.add(romanList);
-
-        String base64Image = signatureDataEncoded.split(",")[1];
-        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-        Image img = Image.getInstance(imageBytes);
-        img.scaleToFit(258, 100);
-        elements.add(img);
-        elements.add(createParagraph(memberFirstName + " " + memberLastName, font10));
-        elements.add(createParagraph(
-                getString("signature.date.label") + " " +
-                        PdfUtils.formatDate(signatureDate, getString("signature.date.format")), font10));
-
-        return elements;
+        table.addCell(text);
+        return table;
     }
-    
 
-    private PdfPCell createDesignation() throws UnsupportedEncodingException {
-    	PdfPCell cell = new PdfPCell();
-    	cell.setBorder(PdfPCell.NO_BORDER);
-    	
 
+    private PdfPTable createDesignation() throws UnsupportedEncodingException {
         PdfPTable tEntre = new PdfPTable(2);
         tEntre.setWidthPercentage(100);
         createLine(tEntre, "designation.nom.label", memberLastName, "designation.prenom.label", memberFirstName);
-        createLine(tEntre, "designation.adresse.label", memberAddress);
+        Phrase p1 = new Phrase(getString("designation.adresse.label"), font10b);
+        p1.add(new Chunk(memberAddress == null ? "" : memberAddress, font10));
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(PdfPCell.NO_BORDER);
+        cell.setUseAscender(true);
+        cell.setUseDescender(true);
+        cell.setPaddingLeft(0);
+        cell.setColspan(2);
+        cell.addElement(p1);
+        tEntre.addCell(cell);
         createLine(tEntre, "designation.city.label", memberCity, "designation.zipcode.label", memberZipCode);
 
-        elements.add(createParagraph(getString("designation.adherent.label")));
-        elements.add(createParagraph(getString("designation.et.label"), font10b));
-        elements.add(createParagraph(getString("designation.beneficiaire.text")));
-        return elements;
+        Paragraph pEt = new Paragraph(getString("designation.beneficiaire.text"), font10);
+        pEt.setAlignment(Paragraph.ALIGN_CENTER);
+
+
+        PdfPTable tDesgination = new PdfPTable(2);
+        tDesgination.setWidthPercentage(100);
+        createLine(tDesgination, tEntre);
+        createLine(tDesgination, pEt);
+
+        return tDesgination;
     }
 
-    protected void createSepaBlock(Document document, List<Element> elements) throws UnsupportedEncodingException, DocumentException {
+
+    private PdfPTable createModeEtIBANBIC() throws UnsupportedEncodingException {
+
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        createLine(table, "info.paiement.label", getString("info.paiement.value"));
+        createLine(table, "info.iban.label", iban, "info.bic.label", bic);
+        return table;
+    }
+
+    private PdfPTable createSignature() throws IOException, BadElementException {
+
+        PdfPTable tLeft = new PdfPTable(1);
+        tLeft.setWidthPercentage(100);
+
+        Phrase p1 = new Phrase(getString("info.rum.label"), font10b);
+        p1.add(new Chunk(rum, font10));
+        createLine(tLeft, p1);
+
+        Phrase p2 = new Phrase(getString("info.ics.label"), font10b);
+        p2.add(new Chunk(ics, font10));
+        createLine(tLeft, p2);
+        createLine(tLeft, new Phrase("\n\n\n\n"));
+        createLine(tLeft, createParagraph(
+                getString("signature.date.label") + " " +
+                        PdfUtils.formatDate(signatureDate, getString("signature.date.format")), font10));
+
+
+        PdfPCell cellSignature = new PdfPCell();
+        cellSignature.setBorderWidth(1);
+        cellSignature.addElement(createImgFromB64(signatureDataEncoded, 258, 100));
+
+
+        PdfPTable tSginature = new PdfPTable(2);
+        tSginature.setWidthPercentage(100);
+        createLine(tSginature, tLeft);
+        tSginature.addCell(cellSignature);
+
+        return tSginature;
+    }
+
+    protected void createSepaBlock(Document document, List<Element> elements) throws DocumentException {
 
         if (elements.isEmpty())
             return;
 
         PdfPTable t = new PdfPTable(1);
-        t.setSpacingBefore(10);
         t.setWidthPercentage(100);
         
         for (Element e : elements) {
             PdfPCell content = new PdfPCell();
-            content.setBorder(1);
+            content.setBorder(PdfPCell.NO_BORDER);
             content.setUseAscender(true);
             content.setUseDescender(true);
-            content.setPadding(10);
+            content.setPadding(5);
             content.addElement(e);
             t.addCell(content);
         }
 
-        document.add(t);
+
+        PdfPTable tFinal = new PdfPTable(1);
+        tFinal.setWidthPercentage(100);
+        PdfPCell content = new PdfPCell();
+        content.setBorderWidth(1);
+        content.setUseAscender(true);
+        content.setUseDescender(true);
+        content.addElement(t);
+        tFinal.addCell(content);
+
+
+        document.add(tFinal);
 
     }
 

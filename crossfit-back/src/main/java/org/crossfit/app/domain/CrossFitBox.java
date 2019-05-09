@@ -5,15 +5,11 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -65,7 +61,7 @@ public class CrossFitBox implements Serializable {
     @Column(name = "rootwebsite", nullable = false)
     private String rootwebsite;
 
-    @Email
+    @javax.validation.constraints.Email
     @NotNull        
     @Column(name = "email_from", nullable = false)
     private String emailFrom;
@@ -88,6 +84,23 @@ public class CrossFitBox implements Serializable {
     @NotNull        
     @Column(name = "alert_when_med_cert_expires_in_days", nullable = false)
     private int alertWhenMedicalCertificateExpiresInDays;
+
+    @Size(max=64)
+    @Column(name = "default_ics", nullable = true)
+    private String defautICS;
+
+    @Column(name = "json_mandate")
+    private String jsonMandate;
+
+    @javax.validation.constraints.Email
+    @NotNull
+    @Column(name = "to_email_contract")
+    private String toEmailContract;
+
+    @javax.validation.constraints.Email
+    @NotNull
+    @Column(name = "to_email_mandate")
+    private String toEmailMandate;
 
     public Long getId() {
         return id;
@@ -219,7 +232,39 @@ public class CrossFitBox implements Serializable {
 		this.alertWhenMedicalCertificateExpiresInDays = alertWhenMedicalCertificateExpiresInDays;
 	}
 
-	@Override
+    public String getDefautICS() {
+        return defautICS;
+    }
+
+    public void setDefautICS(String defautICS) {
+        this.defautICS = defautICS;
+    }
+
+    public String getJsonMandate() {
+        return jsonMandate;
+    }
+
+    public void setJsonMandate(String jsonMandate) {
+        this.jsonMandate = jsonMandate;
+    }
+
+    public String getToEmailContract() {
+        return toEmailContract;
+    }
+
+    public void setToEmailContract(String toEmailContract) {
+        this.toEmailContract = toEmailContract;
+    }
+
+    public String getToEmailMandate() {
+        return toEmailMandate;
+    }
+
+    public void setToEmailMandate(String toEmailMandate) {
+        this.toEmailMandate = toEmailMandate;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

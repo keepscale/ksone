@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import org.apache.commons.codec.binary.Base64OutputStream;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Signable;
@@ -14,7 +13,7 @@ import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.exception.AlreadySignedException;
 import org.crossfit.app.repository.MandateRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
-import org.crossfit.app.service.pdf.PdfSubscriptionProvider;
+import org.crossfit.app.service.pdf.PdfProvider;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
@@ -39,9 +38,7 @@ public class SignatureService {
 
     @Inject
     private MailService mailService;
-    
-    @Inject
-    private PdfSubscriptionProvider pdfSubscriptionProvider;
+
 
 	@Inject
 	private SubscriptionRepository subscriptionRepository;
@@ -49,27 +46,21 @@ public class SignatureService {
 	@Inject
 	private MandateRepository mandateRepository;
 
-	public Mandate sign(MandateDTO dto) throws AlreadySignedException {
-		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+	public Mandate sign(MandateDTO dto) throws AlreadySignedException, IOException {
 		Mandate mandate = mandateRepository.getOne(dto.getId());
 		
 		sign(mandate, dto.getSignatureDate(), dto.getSignatureDataEncoded());
 		mandate.setStatus(MandateStatus.ACTIVE);
-		//TODO: generate pdf && send by mail ?
-		
+		mailService.sendMandate(mandate);
 		return mandateRepository.save(mandate);
 	}
 	
 
-	public Subscription sign(SubscriptionDTO dto) throws AlreadySignedException, IOException, DocumentException {
-		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+	public Subscription sign(SubscriptionDTO dto) throws AlreadySignedException, IOException {
 		Subscription subscription = subscriptionRepository.findOneWithContract(dto.getId());
 		
 		sign(subscription, dto.getSignatureDate(), dto.getSignatureDataEncoded());
-
-		ByteArrayOutputStream baos = pdfSubscriptionProvider.getOutputStreamPdfForSubscription(subscription);
-		mailService.sendSubscription(subscription, baos.toByteArray());		
-		baos.close();
+		mailService.sendSubscription(subscription);
 		
 		return subscriptionRepository.save(subscription);
 	}

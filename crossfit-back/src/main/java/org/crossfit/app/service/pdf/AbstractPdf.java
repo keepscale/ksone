@@ -10,9 +10,11 @@ import com.jayway.jsonpath.PathNotFoundException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ public abstract class AbstractPdf  {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     
     protected static final BaseColor HEADER_COLOR = new BaseColor(87,113,138);
+    protected Font font6;
     protected Font font10;
     protected Font font10White;
     protected Font font10b;
@@ -36,6 +39,7 @@ public abstract class AbstractPdf  {
     protected AbstractPdf(String json) throws IOException, DocumentException {
         BaseFont bf = BaseFont.createFont();
         BaseFont bfb = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.EMBEDDED);
+        font6 = new Font(bf, 6);
         font10 = new Font(bf, 10);
         font10b = new Font(bfb, 10);
         font12 = new Font(bf, 12);
@@ -50,6 +54,27 @@ public abstract class AbstractPdf  {
         font12White.setColor(BaseColor.WHITE);
 
         this.jsonData=JsonPath.parse(json);;
+    }
+
+
+    protected Element createImgFromURL(String url, int fitWidth, int fitHeight) {
+        try{
+            Image img = Image.getInstance(new URL(url));
+            img.scaleToFit(fitWidth, fitHeight);
+            return img;
+        } catch(Exception e){
+            return new Chunk();
+        }
+    }
+    protected Element createImgFromB64(String signatureDataEncoded, int fitWidth, int fitHeight){
+        try{
+            String base64Image = signatureDataEncoded.split(",")[1];
+            Image img = Image.getInstance(javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image));
+            img.scaleToFit(fitWidth, fitHeight);
+            return img;
+        } catch(Exception e){
+            return new Chunk();
+        }
     }
 
     protected List<String> getStrings(String pointer){
@@ -87,13 +112,8 @@ public abstract class AbstractPdf  {
     protected void createLine(PdfPTable table, String label, String value, String label2, String value2) throws UnsupportedEncodingException {
         Phrase p1 = new Phrase(getString(label), font10b);
         p1.add(new Chunk(value == null ? "" : value, font10));
-        PdfPCell cell = new PdfPCell();
-        cell.setBorder(PdfPCell.NO_BORDER);
-        cell.setUseAscender(true);
-        cell.setUseDescender(true);
-        cell.setPaddingLeft(0);
-        cell.addElement(p1);
-        table.addCell(cell);
+
+        createLine(table, p1);
 
 
         Phrase p2 = new Phrase();
@@ -102,13 +122,16 @@ public abstract class AbstractPdf  {
             p2.add(new Phrase(getString(label2), font10b));
             p2.add(new Chunk(value2 == null ? "" : value2, font10));
         }
-
-        PdfPCell cell2 = new PdfPCell();
-        cell2.setBorder(PdfPCell.NO_BORDER);
-        cell2.setUseAscender(true);
-        cell2.setUseDescender(true);
-        cell2.addElement(p2);
-        table.addCell(cell2);
+        createLine(table, p2);
+    }
+    protected void createLine(PdfPTable table, Element e) throws UnsupportedEncodingException {
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(PdfPCell.NO_BORDER);
+        cell.setUseAscender(true);
+        cell.setUseDescender(true);
+        cell.setPaddingLeft(0);
+        cell.addElement(e);
+        table.addCell(cell);
     }
 
     protected void createBlock(Document document, String header, List<Element> elements) throws UnsupportedEncodingException, DocumentException {

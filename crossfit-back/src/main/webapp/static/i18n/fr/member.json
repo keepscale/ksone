@@ -75,6 +75,8 @@
 			"givenMedicalCertificate.notselected.label" : "Certificat médical",
 			"comments" : "Infos. complémentaires",
 			"comments.placeholder" : "",
+			"rum.placeholder": "Référence Unique de Mandat",
+			"ics.placeholder": "Identifiant Créancier SEPA",
 			"iban.placeholder": "FRXX BBBB BGGG GGCC CCCC CCCC CKK",
 			"bic.placeholder" : "DAAEFRPP",
 			"role" : {
