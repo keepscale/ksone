@@ -133,7 +133,7 @@ public class MailService {
 		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailContract(), "Contrat " + member.getLastName() + " " + member.getFirstName(),
 				"", true, false);
 		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "contrat.pdf", MediaType.APPLICATION_PDF_VALUE));
-		mailSender.sendEmail(email);
+		mailSender.sendEmail(mailBox);
 	}
 
     public void sendMandate(Mandate mandate) throws IOException {
@@ -163,6 +163,6 @@ public class MailService {
 		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailMandate(), "Mandat " + member.getLastName() + " " + member.getFirstName(),
 				"", true, false);
 		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "mandat.pdf", MediaType.APPLICATION_PDF_VALUE));
-		mailSender.sendEmail(email);
+		mailSender.sendEmail(mailBox);
     }
 }

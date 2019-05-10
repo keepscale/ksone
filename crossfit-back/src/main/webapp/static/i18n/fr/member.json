@@ -18,6 +18,8 @@
             	"lock": "Bloquer"
         	},
         	"import.ok": "{{ param }} membres ont été mis à jour (numéro adhérent & date certficat).",
+        	"sendmandate.ok": "Le mandat SEPA a été envoyé à l'adresse {{ param }}.",
+        	"sendsubscription.ok": "Le contrat PDF a été envoyé à l'adresse {{ param }}.",
             "lock": {
                 "question": "Etes-vous certain de vouloir bloquer l'adhérent {{ id }} ?"
             },

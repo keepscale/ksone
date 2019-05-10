@@ -138,7 +138,7 @@
     },
     "date": {
       "label": "Contrat lu et approuvé le",
-      "format": "dd/MM/yyyy \\'à\\' HH:mm"
+      "format": "dd/MM/yyyy 'à' HH:mm"
     }
   },
   "membership": {

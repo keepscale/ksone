@@ -63,6 +63,7 @@
 	
 	<div class="modal-body">
 
+		<jh-alert-error></jh-alert-error>
 
 		<div class="row" ng-show="view == 'infoperso'">
 
@@ -452,7 +453,13 @@
 						<div class="row" ng-if="subscription.signatureDate != null">
 							<div class="col-xs-12">
 								<label>Contrat {{subscription.contractModel.versionData}} signé le {{subscription.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
-
+									
+								<button type="button"  title="Renvoyer le contrat par mail"
+									class="btn btn-sm btn-default"
+									ng-click="sendSubscriptionPdf(subscription)">
+									<span class="glyphicon glyphicon-envelope"></span>
+								</button>
+									
 								<button type="button"  title="Télécharger le contrat"
 										class="btn btn-sm btn-default hidden-xs"
 										ng-click="downloadSubscriptionPdf(subscription)">
@@ -587,6 +594,13 @@
 						<div class="row" ng-if="mandate.signatureDate != null">
 							<div class="col-xs-12">
 								<label>Mandat signé le {{mandate.signatureDate | date:'dd/MM/yyyy \'à\' HH:mm'}}</label>
+																
+								<button type="button"  title="Renvoyer le mandat par mail"
+									class="btn btn-sm btn-default"
+									ng-click="sendMandatePdf(mandate)">
+									<span class="glyphicon glyphicon-envelope"></span>
+								</button>
+								
 								<button type="button"  title="Télécharger le mandat"
 										class="btn btn-sm btn-default hidden-xs"
 										ng-click="downloadMandatePdf(mandate)">

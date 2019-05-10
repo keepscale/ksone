@@ -83,6 +83,16 @@ angular.module('crossfitApp')
             	method: 'GET',
                 url: 'api/members/healthIndicators',  
                 isArray: true
+            },
+            'sendSubscriptionPdf': {
+                method: 'GET',
+                url: 'api/members/:id/subscription/:subId/send', 
+                params : {id: '@id', subId: '@subId'}
+            },
+            'sendMandatePdf': {
+                method: 'GET',
+                url: 'api/members/:id/mandate/:mandateId/send', 
+                params : {id: '@id', mandateId: '@mandateId'}
             }
         });
     });
