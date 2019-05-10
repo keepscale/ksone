@@ -38,6 +38,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 
     @Query("select s from Subscription s  "
     		+ "left join fetch s.member me "
+    		+ "left join fetch me.box box "
     		+ "left join fetch s.directDebit dd "
     		+ "left join fetch dd.mandate m "
     		+ "left join fetch s.contractModel cm "

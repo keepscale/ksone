@@ -101,13 +101,15 @@ public class MemberResource {
 
     @Inject
     private PdfProvider pdfProvider;
+    @Inject
+    private MailService mailService;
     
     
-	@RequestMapping(value = "/members/{memberId}/subscription/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
-	public void getPdfForSubscription(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
-		log.debug("REST request to get PdfForSubscription : {}", id);
+	@RequestMapping(value = "/members/{memberId}/subscription/{subscriptionId}.pdf", method = RequestMethod.GET, produces = "application/pdf")
+	public void getPdfForSubscription(@PathVariable Long memberId, @PathVariable Long subscriptionId, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
+		log.debug("REST request to get PdfForSubscription : {}", subscriptionId);
 
-		Subscription subscription = subscriptionRepository.findOneWithContract(id);
+		Subscription subscription = subscriptionRepository.findOneWithContract(subscriptionId);
 		
 		if (!subscription.getMember().getId().equals(memberId)) {
 			response.sendError(404);
@@ -117,16 +119,27 @@ public class MemberResource {
 		pdfProvider.writePdfForSubscription(subscription, response.getOutputStream());
 
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename=\"contrat-" + subscription.getMember().getLastName() + "-" + id + ".pdf\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"contrat-" + subscription.getMember().getLastName() + "-" + subscriptionId + ".pdf\"");
 		response.flushBuffer();
 
 	}
 
-	@RequestMapping(value = "/members/{memberId}/mandate/{id}.pdf", method = RequestMethod.GET, produces = "application/pdf")
-	public void getPdfForMandate(@PathVariable Long memberId, @PathVariable Long id, HttpServletResponse response) throws IOException, ParserConfigurationException, SAXException, TransformerException, DocumentException, XMPException, ParseException{
-		log.debug("REST request to get PdfForMandate : {}", id);
+	@RequestMapping(value = "/members/{memberId}/subscription/{subscriptionId}/send", method = RequestMethod.GET)
+	public ResponseEntity<Void> sendPdfForSubscription(@PathVariable Long memberId, @PathVariable Long subscriptionId) throws IOException{
+		log.debug("REST request to send PdfForSubscription : {}", subscriptionId);
 
-		Mandate m = mandateRepository.findOneWithMember(id);
+		Subscription subscription = subscriptionRepository.findOneWithContract(subscriptionId);
+		mailService.sendSubscription(subscription);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createAlert("crossfitApp.member.sendsubscription.ok", subscription.getMember().getLogin())).build();
+	}
+
+	@RequestMapping(value = "/members/{memberId}/mandate/{mandateId}.pdf", method = RequestMethod.GET, produces = "application/pdf")
+	public void getPdfForMandate(@PathVariable Long memberId, @PathVariable Long mandateId, HttpServletResponse response) throws IOException{
+		log.debug("REST request to get PdfForMandate : {}", mandateId);
+
+		Mandate m = mandateRepository.findOneWithMember(mandateId);
 
 		if (!m.getMember().getId().equals(memberId)) {
 			response.sendError(404);
@@ -136,11 +149,20 @@ public class MemberResource {
 		pdfProvider.writePdfForMandate(m, response.getOutputStream());
 
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Disposition", "attachment; filename=\"mandat-" + m.getMember().getLastName() + "-" + id + ".pdf\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"mandat-" + m.getMember().getLastName() + "-" + mandateId + ".pdf\"");
 		response.flushBuffer();
-
 	}
-	
+
+	@RequestMapping(value = "/members/{memberId}/mandate/{mandateId}/send", method = RequestMethod.GET)
+	public ResponseEntity<Void> sendPdfForMandate(@PathVariable Long memberId, @PathVariable Long mandateId) throws IOException{
+		log.debug("REST request to send PdfForMandate : {}", mandateId);
+
+		Mandate m = mandateRepository.findOneWithMember(mandateId);
+		mailService.sendMandate(m);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createAlert("crossfitApp.member.sendmandate.ok", m.getMember().getLogin())).build();
+	}
 	
 	/**
 	 * POST /members -> Create a new member.

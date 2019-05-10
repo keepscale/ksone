@@ -1,11 +1,9 @@
 package org.crossfit.app.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Signable;
 import org.crossfit.app.domain.Subscription;
@@ -13,7 +11,6 @@ import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.exception.AlreadySignedException;
 import org.crossfit.app.repository.MandateRepository;
 import org.crossfit.app.repository.SubscriptionRepository;
-import org.crossfit.app.service.pdf.PdfProvider;
 import org.crossfit.app.web.rest.dto.MandateDTO;
 import org.crossfit.app.web.rest.dto.SubscriptionDTO;
 import org.joda.time.DateTime;
@@ -21,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.itextpdf.text.DocumentException;
 
 /**
  * Service class for managing signature.
@@ -34,20 +29,16 @@ public class SignatureService {
     private final Logger log = LoggerFactory.getLogger(SignatureService.class);
 
     @Inject
-    private CrossFitBoxSerivce boxService;
-
-    @Inject
     private MailService mailService;
 
-
-	@Inject
+    @Inject
 	private SubscriptionRepository subscriptionRepository;
 
 	@Inject
 	private MandateRepository mandateRepository;
 
 	public Mandate sign(MandateDTO dto) throws AlreadySignedException, IOException {
-		Mandate mandate = mandateRepository.getOne(dto.getId());
+		Mandate mandate = mandateRepository.findOneWithMember(dto.getId());
 		
 		sign(mandate, dto.getSignatureDate(), dto.getSignatureDataEncoded());
 		mandate.setStatus(MandateStatus.ACTIVE);

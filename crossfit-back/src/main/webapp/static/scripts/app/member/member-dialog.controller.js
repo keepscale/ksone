@@ -41,7 +41,8 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.changeToEditMode = function(callBack){
         	$scope.refresh(function(){
         	    $scope.editMode = !$scope.editMode;
-        	    callBack();
+        	    if (callBack)
+        	    	callBack();
         	});
         }
 
@@ -162,6 +163,9 @@ angular.module('crossfitApp').controller('MemberDialogController',
 
         $scope.downloadSubscriptionPdf = function(subscription){
 			$window.open("api/members/"+$scope.member.id+"/subscription/"+subscription.id+".pdf");
+        }        
+        $scope.sendSubscriptionPdf = function(subscription){
+        	 Member.sendSubscriptionPdf({id : $scope.member.id, subId: subscription.id});
         }
 
 
@@ -185,6 +189,10 @@ angular.module('crossfitApp').controller('MemberDialogController',
         };
         $scope.downloadMandatePdf = function(mandate){
 			$window.open("api/members/"+$scope.member.id+"/mandate/"+mandate.id+".pdf");
+        }
+        
+        $scope.sendMandatePdf = function(mandate){
+        	 Member.sendMandatePdf({id : $scope.member.id, mandateId: mandate.id});
         }
         
         $scope.onSelectMembership = function(subscription){

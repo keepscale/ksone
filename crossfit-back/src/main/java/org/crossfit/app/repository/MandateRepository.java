@@ -4,6 +4,7 @@ import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface MandateRepository extends JpaRepository<Mandate,Long> {
 
     @Query("select m from Mandate m "
             + "left join fetch m.member me "
+            + "left join fetch me.box box "
             + "where m.id = :id")
-    Mandate findOneWithMember(Long id);
+    Mandate findOneWithMember(@Param("id") Long id);
 }
