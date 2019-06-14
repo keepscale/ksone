@@ -131,7 +131,7 @@ public class MailService {
 
 
 		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailContract(), "Contrat " + member.getLastName() + " " + member.getFirstName(),
-				"", true, false);
+				"Copîe du contrat d'adhésion", true, false);
 		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "contrat.pdf", MediaType.APPLICATION_PDF_VALUE));
 		mailSender.sendEmail(mailBox);
 	}
