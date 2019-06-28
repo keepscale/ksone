@@ -14,7 +14,11 @@ import org.springframework.data.repository.query.Param;
  */
 public interface BookingEventRepository extends JpaRepository<BookingEvent,Long> {
 
-    @Query("select e from BookingEvent e where e.box = :box AND e.bookingStartDate BETWEEN :start AND :end")
+    @Query("select e from BookingEvent e "
+    		+ "left join fetch e.booking b "
+    		+ "left join fetch b.subscription "
+    		+ "left join fetch e.user "
+    		+ "where e.box = :box AND e.bookingStartDate BETWEEN :start AND :end")
 	List<BookingEvent> findAllByBookingStartBetween(@Param("box") CrossFitBox box, @Param("start") DateTime start, @Param("end") DateTime end);
 
 	

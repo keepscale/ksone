@@ -1,5 +1,6 @@
 package org.crossfit.app.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,5 +34,11 @@ public interface TimeSlotNotificationRepository extends JpaRepository<TimeSlotNo
 	void deleteAll(
 			@Param("date") LocalDate date, 
 			@Param("member") Member member);
+
+    @Query("select notif from TimeSlotNotification notif "
+    		+ "left join fetch notif.member m "
+    		+ "left join fetch notif.timeSlot ts "
+    		+ "left join fetch ts.timeSlotType ")
+	List<TimeSlotNotification> findAll();
 
 }
