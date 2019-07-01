@@ -81,7 +81,7 @@
 				( select price_tax_incl from MEMBERSHIP where id = membership_id);
 		</sql>
 
-		<addNotNullConstraint tableName="SUBSCRIPTION" columnName="price_tax_incl"></addNotNullConstraint>
+		<addNotNullConstraint tableName="SUBSCRIPTION" columnName="price_tax_incl" columnDataType="decimal(10,2)"></addNotNullConstraint>
 
 
 	</changeSet>
