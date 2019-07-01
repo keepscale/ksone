@@ -161,7 +161,7 @@ public class MailService {
 		mailSender.sendEmail(email);
 
 		Email mailBox = new Email(member.getBox().getEmailFrom(), member.getBox().getToEmailMandate(), "Mandat " + member.getLastName() + " " + member.getFirstName(),
-				"", true, false);
+				"Copie du mandat", true, false);
 		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "mandat.pdf", MediaType.APPLICATION_PDF_VALUE));
 		mailSender.sendEmail(mailBox);
     }
