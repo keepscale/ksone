@@ -1,22 +1,29 @@
 package org.crossfit.app.service.pdf;
 
-import com.itextpdf.text.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractPdf  {
 
@@ -81,7 +88,8 @@ public abstract class AbstractPdf  {
         try{
             return jsonData.read("$."+pointer);
         }catch (PathNotFoundException e){
-            return Arrays.asList(pointer);
+            log.info("Path {} not found: {}", pointer, e.getMessage());
+            return new ArrayList<String>();
         }
         //return ((JSONArray)jsonData.query(pointer)).toList().stream().map(Object::toString).collect(Collectors.toList());
     }
@@ -91,7 +99,8 @@ public abstract class AbstractPdf  {
             log.debug("Reading path {}", path);
 			return jsonData.read(path);
         }catch (PathNotFoundException e){
-            return pointer;
+            log.info("Path {} not found: {}", pointer, e.getMessage());
+            return null;
         }
         //return jsonData.query(pointer).toString();
     }
