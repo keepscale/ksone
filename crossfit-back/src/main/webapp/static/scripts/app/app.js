@@ -99,7 +99,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         
         // Initialize angular-translate
         $translateProvider.useLoader('$translatePartialLoader', {
-            urlTemplate: 'i18n/{lang}/{part}.json'
+            urlTemplate: 'i18n/{lang}/{part}.json?v='+$stateProvider.VERSION
         });
 
         $translateProvider.preferredLanguage('fr');
