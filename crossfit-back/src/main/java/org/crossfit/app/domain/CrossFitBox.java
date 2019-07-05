@@ -1,19 +1,21 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
-import java.time.ZoneId;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.Email;
 
 
 /**
@@ -101,6 +103,10 @@ public class CrossFitBox implements Serializable {
     @NotNull
     @Column(name = "to_email_mandate")
     private String toEmailMandate;
+
+    @NotNull        
+    @Column(name = "mandate_mandatory", nullable = false)
+    private boolean mandateMandatory = true;
 
     public Long getId() {
         return id;
@@ -263,8 +269,16 @@ public class CrossFitBox implements Serializable {
     public void setToEmailMandate(String toEmailMandate) {
         this.toEmailMandate = toEmailMandate;
     }
+    
+    public boolean isMandateMandatory() {
+		return mandateMandatory;
+	}
 
-    @Override
+	public void setMandateMandatory(boolean mandateMandatory) {
+		this.mandateMandatory = mandateMandatory;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
