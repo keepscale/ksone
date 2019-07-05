@@ -21,6 +21,7 @@
         	"toEmailMandate" : "Copie Mandat à l'email",
         	"defautICS" : "Identifiant Creancier Sepa",
         	"jsonMandate" : "Config Mandate PDF",
+        	"mandateMandatory" : "Mandat obligatoire en mode prélèvement",
 
             "emailFrom": "Email d'envoi des mails",
         	"logoUrl" : "Url du logo",

@@ -9,6 +9,7 @@ public class SimpleBoxDTO {
     private String billLogoUrl;
     
     private boolean socialEnabled = false;
+    private boolean mandateMandatory = true;
 
 	private String defautICS;
 
@@ -18,6 +19,7 @@ public class SimpleBoxDTO {
     	this.billLogoUrl = box.getBillLogoUrl();
     	this.socialEnabled = box.isSocialEnabled();
     	this.defautICS = box.getDefautICS();
+    	this.mandateMandatory = box.isMandateMandatory();
     }
 
 	public String getName() {
@@ -51,4 +53,13 @@ public class SimpleBoxDTO {
 	public void setDefautICS(String defautICS) {
 		this.defautICS = defautICS;
 	}
+
+	public boolean isMandateMandatory() {
+		return mandateMandatory;
+	}
+
+	public void setMandateMandatory(boolean mandateMandatory) {
+		this.mandateMandatory = mandateMandatory;
+	}
+	
 }

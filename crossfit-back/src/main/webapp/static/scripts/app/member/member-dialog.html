@@ -388,11 +388,11 @@
 									
 									<div class="col-xs-12 col-sm-12 col-md-3 form-group">
 					  					<label>Mandat </label>
-										<select ng-required="mustFillDirectDebitInfo(subscription)"
+										<select ng-required="mustFillDirectDebitInfo(subscription) && box.mandateMandatory"
 											class="form-control" name="subscription.directDebit.mandate"
 											ng-model="subscription.directDebit.mandate"
 											ng-disabled="cannotEditSubscription(subscription)"
-											ng-options='mandate as ( mandate.rum + (mandate.status === "ACTIVE" ? "" : " ( " + ( "crossfitApp.member.mandate.status."+mandate.status | translate) + " )" )) for mandate in (member.mandates | filter:{status:"ACTIVE"} ) track by mandate.id '>
+											ng-options='mandate as ( mandate.rum + (mandate.status === "ACTIVE" ? "" : " ( " + ( "crossfitApp.member.mandate.status."+mandate.status | translate) + " )" )) for mandate in (member.mandates | filter:{} ) track by mandate.id '>
 											<option value="">Choississez un mandat</option>
 										</select>
 									</div>

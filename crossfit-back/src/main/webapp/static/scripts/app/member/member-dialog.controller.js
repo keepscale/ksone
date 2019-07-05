@@ -258,7 +258,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
 	        		dd.firstPaymentTaxIncl==null ||
 	        		dd.amount==null ||
 	        		!dd.firstPaymentMethod ||
-	        		!dd.mandate;
+	        		(!dd.mandate && $rootScope.box.mandateMandatory);
         	}
         	
         	return invalid;
