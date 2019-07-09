@@ -34,6 +34,7 @@ public class MandateDTO implements Serializable {
 	
 
 	public static Function<Mandate, MandateDTO> fullMapper = s->{
+		if (s == null) return null;
 		MandateDTO dto = new MandateDTO();
 		dto.setId(s.getId());
 		dto.setStatus(s.getStatus());

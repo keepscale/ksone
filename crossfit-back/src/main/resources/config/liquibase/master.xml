@@ -55,6 +55,7 @@
     <include file="classpath:config/liquibase/changelog/32_alter_gestion_contrat.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/33_alter_box.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/34_alter_box_mandate_mandatory.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/35_alter_subscription_mandate_null.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>
