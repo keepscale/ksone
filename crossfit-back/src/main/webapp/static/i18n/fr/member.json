@@ -98,6 +98,7 @@
 				"NO_ADDRESS" : "Pas d'adresse",
 				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abonnement de début/fin incohérente",
 				"SUBSCRIPTIONS_OVERLAP" : "Chevauchement d'abonnement",
+				"DIRECT_DEBIT_WITHOUT_MANDATE" : "Prélèvement sans mandat",
 				"SUBSCRIPTIONS_OVERLAP_NON_RECURRENT" : "Chevauchement d'abonnement non récurrent",
 				"SUBSCRIPTIONS_NOT_END_AT_END_MONTH" : "Abonnement ne se terminant pas en fin de mois"
 			},			
@@ -107,6 +108,7 @@
 				"NO_ADDRESS" : "Pas d'adresse",
 				"SUBSCRIPTIONS_BAD_INTERVAL" : "Date d'abo. début/fin",
 				"SUBSCRIPTIONS_OVERLAP" : "Chev. d'abo.",
+				"DIRECT_DEBIT_WITHOUT_MANDATE" : "Prélèv. sans mandat",
 				"SUBSCRIPTIONS_OVERLAP_NON_RECURRENT" : "Chev. d'abo. non récu.",
 				"SUBSCRIPTIONS_NOT_END_AT_END_MONTH" : "Abo. pas en fin de mois"
 			},

@@ -174,6 +174,11 @@ public class MemberService {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		return memberRepository.findAllMemberWithNoAddress(box);
 	}
+
+	public List<Member> findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate() {
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		return memberRepository.findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate(box);
+	}
   
 	
     /**
@@ -275,7 +280,7 @@ public class MemberService {
 					directDebit.setAtDayOfMonth(directDebitDto.getAtDayOfMonth());
 					directDebit.setFirstPaymentMethod(directDebitDto.getFirstPaymentMethod());
 					directDebit.setFirstPaymentTaxIncl(directDebitDto.getFirstPaymentTaxIncl());
-					directDebit.setMandate(Optional.of(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
+					directDebit.setMandate(Optional.ofNullable(directDebitDto.getMandate()).flatMap(mdto->mandateRepository.findById(mdto.getId())).orElse(null));
 					
 					directDebit.setSubscription(s);
 		    		s.setDirectDebit(directDebit);

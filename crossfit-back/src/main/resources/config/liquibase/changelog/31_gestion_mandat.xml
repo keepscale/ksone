@@ -81,7 +81,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="mandate_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false" /> <!-- drop constrains dans le 35_alter_subscription_mandate_null.xml -->
 			</column>
 			<column name="first_payment_tax_incl" type="decimal(10,2)">
 				<constraints nullable="false"/>

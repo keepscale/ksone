@@ -71,7 +71,7 @@ import com.itextpdf.xmp.XMPException;
 public class MemberResource {
 
 	public enum HealthIndicator {
-		SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL, SUBSCRIPTIONS_NOT_END_AT_END_MONTH;
+		DIRECT_DEBIT_WITHOUT_MANDATE, SUBSCRIPTIONS_OVERLAP, SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, NO_SUBSCRIPTION, NO_ADDRESS, NO_CARD, SUBSCRIPTIONS_BAD_INTERVAL, SUBSCRIPTIONS_NOT_END_AT_END_MONTH;
 
 	}
 	public enum CustomCriteria {
@@ -506,6 +506,11 @@ public class MemberResource {
 		Map<HealthIndicator, List<Member>> results = new HashMap<>();
 
 		List<HealthIndicator> asList = Arrays.asList(forHealthIndicators);
+		
+		if (asList.contains(HealthIndicator.DIRECT_DEBIT_WITHOUT_MANDATE)) {
+			results.put(HealthIndicator.DIRECT_DEBIT_WITHOUT_MANDATE, 
+					memberService.findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate());
+		}
 		
 		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_OVERLAP)) {
 			results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 

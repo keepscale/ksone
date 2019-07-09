@@ -131,6 +131,12 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ ") ")
 	List<Member> findAllMemberWithNoAddress(@Param("box") CrossFitBox box);
 
+    @Query("select m from Member m where m.box = :box "
+    		+ "AND m.locked = false "
+    		+ "and exists ( "
+    		+ "select s from Subscription s join s.directDebit dd left join dd.mandate mandate where s.member = m AND ( dd.mandate is null OR mandate.status != 'ACTIVE' ) ) ")
+	List<Member> findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate(@Param("box") CrossFitBox box);
+
     
 
 }

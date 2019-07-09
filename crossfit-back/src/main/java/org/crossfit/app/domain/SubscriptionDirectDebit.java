@@ -36,8 +36,7 @@ public class SubscriptionDirectDebit implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, optional=false, cascade = {})
     private Subscription subscription;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional=false, cascade = {})
+    @ManyToOne(fetch = FetchType.LAZY, optional=true, cascade = {})
     private Mandate mandate;
 
     @Column(name = "first_payment_tax_incl")
