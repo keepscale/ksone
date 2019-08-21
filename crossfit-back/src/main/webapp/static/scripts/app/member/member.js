@@ -49,7 +49,7 @@ angular.module('crossfitApp')
             })
             .state('member.edit', {
                 parent: 'member',
-                url: '/{id}/edit?view',
+                url: '/{id}/edit?view&filterBookingsBySubscriptionId',
                 reloadOnSearch : false,
                 params: {
                 	view: 'infoperso'

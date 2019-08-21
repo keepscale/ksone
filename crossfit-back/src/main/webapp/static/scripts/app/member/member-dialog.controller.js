@@ -48,6 +48,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
 
         $scope.$on('$locationChangeSuccess', function(event) { 
         	$scope.view = $stateParams.view;
+            $scope.selectedFilterBookingsBySubscription = $scope.member.subscriptions.find(s=>s.id==$stateParams.filterBookingsBySubscriptionId);
         });
 
         $scope.isLoading = function(){
@@ -107,6 +108,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
                 $scope.member = null;
                 return Member.get({id : $stateParams.id}, function(result){
                     $scope.member = result;
+                    $scope.selectedFilterBookingsBySubscription = $scope.member.subscriptions.find(s=>s.id==$stateParams.filterBookingsBySubscriptionId);
                 });
             }
         }
@@ -118,6 +120,11 @@ angular.module('crossfitApp').controller('MemberDialogController',
 	            });
             }
         }
+        $scope.onSelectFilterBookingsBySubscription = function() {
+			$state.go('.', {
+				filterBookingsBySubscriptionId: $scope.selectedFilterBookingsBySubscription.id
+			});
+    	}
 
         $scope.openedSubscription = [];
         $scope.openedMandats = [];
@@ -286,7 +293,7 @@ angular.module('crossfitApp').controller('MemberDialogController',
         $scope.quickDeleteBooking = function(booking){
         	if (confirm("Supprimer la réservation de "+booking.title+" ?")){
             	Booking.delete({id : booking.id}, function(){
-            		$scope.loadBooking();
+            		$scope.refresh();
             	});
         	}
         }

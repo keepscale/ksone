@@ -450,7 +450,9 @@ datetimepicker.has-error input{
 	display: block;
 }
 
-
+.member-subscriptions .panel-primary .panel-heading a{
+	color: white;
+}
 
 
 

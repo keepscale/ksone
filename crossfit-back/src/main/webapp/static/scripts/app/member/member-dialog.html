@@ -261,9 +261,14 @@
 
 
 						<div class="pull-right">
-							<span ng-if="subscription.bookingCount>0"
-								style="white-space: nowrap;">{{subscription.bookingCount}}
-								résa.</span>
+							<span ng-if="subscription.bookingCount>0" style="white-space: nowrap;">							
+								<a ui-sref=".({view:'reservations',filterBookingsBySubscriptionId:subscription.id})">
+									Voir les {{subscription.bookingCount}} résa.
+								</a>
+							</span>
+							<span ng-if="subscription.bookingCount==0" style="white-space: nowrap;">							
+								0 résa.
+							</span>
 							<button ng-if="subscription.bookingCount==0 && editMode" type="button"
 								class="btn btn-xs btn-danger"
 								ng-click="deleteSubscription(subscription)"
@@ -618,22 +623,44 @@
 		</div>
 
 		<div class="row form-group" ng-show="view == 'reservations'">
-  			<div class="col-xs-12"  style="max-height: 400px; overflow-y: scroll;">
-
-				<ul class="list-group" ng-if="memberBookings.length">
-					<li class="list-group-item" ng-repeat="booking in memberBookings">
-
-						<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
-
-				       	{{booking.startAt | date:"EEE dd MMM yyyy 'à' HH:mm"}} - {{booking.title}}
-
-						<button ng-if="!editMode" type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
-	                    	<span class="glyphicon glyphicon-remove"></span></button>
-					</li>
-				</ul>
-
-				<div ng-if="memberBookings && memberBookings.length == 0">
-					Aucune réservation
+			<div class="col-xs-12">
+				<div class="row form-group">
+					<div class="col-xs-12">
+	  					<label>Filtrer par abonnement:</label>
+						<select class="form-control ignoreDisabledForm" id="field_filterBookingsBySubscription" name="filterBookingsBySubscription"
+							ng-change="onSelectFilterBookingsBySubscription()"
+							ng-model="selectedFilterBookingsBySubscription"
+							ng-options="subscription as (
+										subscription.membership.name + ' - ' 
+										+ (subscription.subscriptionStartDate | date:'dd/MM/yyyy') + ' - ' + (subscription.subscriptionEndDate | date:'dd/MM/yyyy')
+										+ ' (' + subscription.bookingCount + ' résa.)'
+									) 
+									for subscription in subscriptions = (member.subscriptions | orderBy:['!!id', '-subscriptionEndDate']) track by subscription.id">
+									
+							<option value="">Tous les abonnements</option>									
+						</select>
+					</div>
+				</div>				
+				
+				<div class="row">
+					<div class="col-xs-12"  style="max-height: 400px; overflow-y: scroll;">
+		
+						<ul class="list-group" ng-if="memberBookings.length">
+							<li class="list-group-item" ng-repeat="booking in $parent.filteredMemberBookings = (memberBookings | filter:{subscriptionId:selectedFilterBookingsBySubscription.id} )">
+		
+								<span class="glyphicon glyphicon-thumbs-{{booking.checkInDate ? 'up' : 'down'}} {{booking.cardUuid ? '' : 'no-card'}}"></span>
+		
+						       	{{booking.startAt | date:"EEE dd MMM yyyy 'à' HH:mm"}} - {{booking.title}}
+		
+								<button ng-if="!editMode" type="button" ng-click="quickDeleteBooking(booking)" class="pull-right btn btn-xs btn-danger">
+			                    	<span class="glyphicon glyphicon-remove"></span></button>
+							</li>
+						</ul>
+		
+						<div ng-if="memberBookings && filteredMemberBookings.length == 0">
+							Aucune réservation
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
