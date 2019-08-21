@@ -46,6 +46,7 @@ public class BookingDTO implements Serializable {
 		dto.setCheckInDate(b.getCardEvent().map(CardEvent::getCheckingDate).orElseGet(()->{return null;}));
 		dto.setCardUuid(member.getCardUuid());
 		dto.setMemberId(member.getId());
+		dto.setSubscriptionId(b.getSubscription().getId());
 		return dto;
 	};
 

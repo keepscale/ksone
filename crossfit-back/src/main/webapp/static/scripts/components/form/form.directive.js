@@ -35,7 +35,8 @@ angular.module('crossfitApp')
             link: function ($scope, $element, $attrs) {
             	$scope.$watch('disabledForm', function(disabledForm, oldValue) {
                     $element.find('.modal-body').each(function() {
-                    	$(this).find('input,textarea[ng-model],select[ng-model],datetimepicker').each(function() {                            var $input = $(this);
+                    	$(this).find('input,textarea[ng-model],select[ng-model],datetimepicker').not(".ignoreDisabledForm").each(function() {                            
+                    		var $input = $(this);
                             if (disabledForm || !$input[0].hasAttribute('ng-disabled')){
                             	$input.prop('disabled', disabledForm);
                             }
