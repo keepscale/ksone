@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.exception.CSVParseException;
+import org.crossfit.app.service.payments.external.MemberMandateDTO;
 import org.joda.time.LocalDate;
 
 import com.opencsv.CSVReader;
@@ -101,6 +102,9 @@ public class CSV<T> {
 	}
 	
 
+	private void addMapping(String columnName, BiConsumer<T, String> set) {
+		this.addMapping(columnName, null, set);
+	}
 	public void addMapping(String columnName, Function<T, Object> get, BiConsumer<T, String> set) {
 		this.columns.add(columnName);
 		this.getMapper.put(columnName, get);
@@ -138,4 +142,35 @@ public class CSV<T> {
 		csvMember.addMapping("[ZipCode]", Member::getZipCode, Member::setZipCode);
 		csvMember.addMapping("[City]", Member::getCity, Member::setCity);
 	}
+	
+	
+
+	public static final CSV<MemberMandateDTO> memberMandates(){		
+		return csvMemberMandate;
+	}
+	private static final CSV<MemberMandateDTO> csvMemberMandate = new CSV<>(true, MemberMandateDTO::new);
+	static {
+
+		csvMemberMandate.addMapping("DD_DEST_MAIL", MemberMandateDTO::setEmail);
+		csvMemberMandate.addMapping("DD_IBAN", MemberMandateDTO::setIban);
+		
+		csvMemberMandate.addMapping("DD_BQE_CODEPAYS", MemberMandateDTO::setBanqueCodePays);
+		csvMemberMandate.addMapping("DD_BQE_NOM", MemberMandateDTO::setBanqueNom);
+		csvMemberMandate.addMapping("DD_BQE_BIC", MemberMandateDTO::setBanqueBIC);
+		
+		csvMemberMandate.addMapping("MANDAT_REF", MemberMandateDTO::setMandateRef);
+		csvMemberMandate.addMapping("MANDAT_TYPE", MemberMandateDTO::setMandateType);
+		csvMemberMandate.addMapping("MANDAT_DATE_SIGN", (m, val) -> {
+			if (val!=null) {
+				try {
+					m.setMandatDateSignature(new LocalDate(SDF.parse(val.toString())));
+				} catch (ParseException e) {
+				}
+			}
+		});
+		csvMemberMandate.addMapping("MANDAT_ICS", MemberMandateDTO::setMandateICS);
+	}
+
+
+
 }
