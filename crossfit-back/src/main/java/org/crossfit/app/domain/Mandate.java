@@ -43,8 +43,8 @@ public class Mandate extends AbstractAuditingEntity implements Serializable, Sig
     @Column(name = "iban", length = 34)
     private String iban;
 
-    @Size(max = 8)
-    @Column(name = "bic", length = 8)
+    @Size(max = 11)
+    @Column(name = "bic", length = 11)
     private String bic;
 
     @Basic(fetch= FetchType.LAZY)

@@ -8,20 +8,35 @@
 		    </div>
 		</div>
 		<div class="row">
-			<div class="col-xs-10">
-			
-			</div>
-			
-			<div class="col-xs-2">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-10">
-		 		<div class="form-group">
+			<div class="col-xs-10 col-lg-9">
+				<div class="form-group">
 					<input type="search" ng-model="searchLike" class="form-control" placeholder="Rechercher" ng-keypress="keyPressOnSearchField($event)" />
 				</div>	
-										
-				
+			</div>
+			
+			<div class="col-xs-2 col-lg-3">
+		        <div class="form-group" style="margin-left: 5px;">
+				    
+					<button type="button" class="btn btn-primary" title="{{'entity.action.search' | translate}}" ng-click="search()" >
+						<span class="glyphicon glyphicon-search"></span>
+					</button>
+				    <button type="button" class="btn btn-primary hidden-xs hidden-sm hidden-md" title="{{'entity.action.export' | translate}}" ng-click="export()">
+						<span class="glyphicon glyphicon-cloud-download"></span>
+				    </button>
+				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}" 
+				    	upload-button url="api/members/import" accept="text/csv" on-success="onSuccessImport(response)" on-error="onErrorImport(response)">
+						<span class="glyphicon glyphicon-cloud-upload"></span>
+					</div>
+				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}" 
+				    	upload-button url="api/members/import-sepa" accept="text/csv" on-success="onSuccessImport(response)" on-error="onErrorImport(response)">
+						<span class="glyphicon glyphicon-cloud-upload"></span>
+						<span>Mandats</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row hidden-xs hidden-sm">
+			<div class="col-xs-12">
 				<div class="form-group pull-left">
 				
 					<div class="checkbox-list">
@@ -39,7 +54,7 @@
 						</div>
 					</div>
 				</div>
-				
+			
 				<div class="form-group pull-left">
 					<div class="checkbox-list">
 						<span class="checkbox-title">
@@ -136,31 +151,6 @@
 						</div>
 					</div>
 				</div>	
-			
-			</div>
-			
-			<div class="col-xs-2">
-		        <div class="form-group pull-right" style="margin-left: 5px;">
-				    
-					<button type="button" class="btn btn-primary" title="{{'entity.action.search' | translate}}" ng-click="search()" >
-						<span class="glyphicon glyphicon-search"></span>
-					</button>
-				    <button type="button" class="btn btn-primary" title="{{'entity.action.export' | translate}}" ng-click="export()">
-						<span class="glyphicon glyphicon-cloud-download"></span>
-				    </button>
-				    <div class="btn btn-primary btn-upload" title="{{'entity.action.import' | translate}}" 
-				    	upload-button 
-				    	url="api/members/import" 
-				    	accept="text/csv"
-				    	on-success="onSuccessImport(response)"
-				    	on-error="onErrorImport(response)">
-						<span class="glyphicon glyphicon-cloud-upload"></span>
-					</div>
-
-				</div>
-				<div class="form-group pull-right form-inline">
-					<label>{{totalMember}} membres</label>
-				</div>
 			</div>
 		</div>
 	</form>		
@@ -218,6 +208,9 @@
     </div>
     
     
+	<div class="form-group form-inline hidden-xs hidden-sm">
+		<label>{{totalMember}} membres</label>
+	</div>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -234,19 +227,29 @@
                 'warning': !member.enabled, 
                 'success': member.enabled && !member.locked}">
                     <td> <a href="#" ui-sref="member.edit({id:member.id})"> {{member.lastName}} {{member.firstName}} </a></td>
-                    <td> <a href="mailto:{{member.email}}">{{member.email}}</a></td>
+                    <td> 
+                    	
+						<div class="hidden-xs">
+							<a href="mailto:{{member.email}}">{{member.email}}</a>
+						</div>
+						<div class="hidden-sm hidden-md hidden-lg">
+							<a href="mailto:{{member.email}}">{{ (member.email | limitTo:15) + '...' }}</a>
+						</div>
+						
+					</td>
                     <td> <a href="tel:{{member.telephonNumber}}">{{member.telephonNumber}}</a></td>
                     
                     
                     <td>
 	                    
-		  				<button type="button" class="btn btn-warning btn-primary" ng-click="resetAccount(member.id)">
-							<span translate="crossfitApp.member.action.reset"> Reset</span>
-						</button>
-		  				<button type="button" class="btn btn-danger btn-primary" ng-click="lock(member.id)">
-							<span>Bloquer</span>
-						</button>
-						
+						<div class="hidden-xs">
+			  				<button type="button" class="btn btn-sm btn-warning btn-primary" ng-click="resetAccount(member.id)">
+								<span translate="crossfitApp.member.action.reset"> Reset</span>
+							</button>
+			  				<button type="button" class="btn btn-sm btn-danger btn-primary" ng-click="lock(member.id)">
+								<span>Bloquer</span>
+							</button>
+						</div>
 					</td>
                 </tr>
                 <tr>
