@@ -22,14 +22,18 @@ import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.service.payments.external.MemberMandateDTO;
 import org.joda.time.LocalDate;
 
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
+import com.opencsv.ICSVParser;
 
 public class CSV<T> {
 
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
 
 	private boolean hasHeader;
+	private boolean columnsEquality;
 	
 	private List<String> columns = new ArrayList<>();
 	private Map<String, Function<T, Object>> getMapper = new HashMap<>();
@@ -37,10 +41,16 @@ public class CSV<T> {
 
 	private final Supplier<T> instanceSupplier;
 
-	public CSV(boolean hasHeader, Supplier<T> instanceSupplier ) {
+	private char separator;
+
+
+	public CSV(boolean hasHeader, boolean columnsEquality, char separator, Supplier<T> instanceSupplier) {
 		this.hasHeader = hasHeader;
+		this.columnsEquality = columnsEquality;
+		this.separator = separator;
 		this.instanceSupplier = instanceSupplier;
 	}
+	
 
 	public String format(Iterable<T> datas) throws IOException {
 		StringWriter sw = new StringWriter();
@@ -63,13 +73,20 @@ public class CSV<T> {
 
 	public Collection<T> parse(Reader reader) throws CSVParseException{
 
-		try(CSVReader csvreader = new CSVReader(reader)){
+		CSVReaderBuilder builder = new CSVReaderBuilder(reader);
+		builder.withCSVParser(new CSVParserBuilder().withSeparator(separator ).build());
+		
+		try(CSVReader csvreader = builder.build()){
 
 			List<T> elements = new ArrayList<>();
 			
 			String[] firstLine = csvreader.readNext();
-			if (hasHeader && !columns.equals(Arrays.asList(firstLine))) {
-				throw new CSVParseException("La première ligne ("+Arrays.stream(firstLine).collect(Collectors.joining(";"))+") ne correspond pas à l'entete attendue: " + columnLine());
+			if (hasHeader) {
+				if (columnsEquality && !columns.equals(Arrays.asList(firstLine)))
+					throw new CSVParseException("La première ligne ("+Arrays.stream(firstLine).collect(Collectors.joining(";"))+") ne correspond pas à l'entete attendue: " + columnLine());
+				else if (!Arrays.asList(firstLine).containsAll(columns))					
+					throw new CSVParseException("La première ligne ("+Arrays.stream(firstLine).collect(Collectors.joining(";"))+") ne contient pas toute les entetes attendue: " + columnLine());
+
 			}
 
 			int index = hasHeader ? 1 : 0;
@@ -77,14 +94,15 @@ public class CSV<T> {
 			index ++;
 			while (cells != null) {
 
-				if (cells.length != columns.size())
+				if (this.columnsEquality && cells.length != columns.size())
 					throw new CSVParseException("La ligne " + index + " ne contient que " + cells.length + " colonnes alors qu'elle devrait en contenir " + columns.size());
 				
 
 				T e = instanceSupplier.get();
 				for (int i = 0; i < cells.length; i++) {
 					String cell = cells[i];
-					this.setMapper.get(columns.get(i)).accept(e, cell);
+					String columnName = firstLine[i];
+					this.setMapper.getOrDefault(columnName,(m, val)->{}).accept(e, cell);
 				}
 				elements.add(e);			
 				
@@ -115,7 +133,7 @@ public class CSV<T> {
 		return csvMember;
 	}
 	
-	private static final CSV<Member> csvMember = new CSV<>(true, Member::new);
+	private static final CSV<Member> csvMember = new CSV<>(true, true, ICSVParser.DEFAULT_SEPARATOR, Member::new);
 	static {
 
 		csvMember.addMapping("[Id]", Member::getId, (m, val)->m.setId(Long.valueOf(val)));
@@ -148,7 +166,7 @@ public class CSV<T> {
 	public static final CSV<MemberMandateDTO> memberMandates(){		
 		return csvMemberMandate;
 	}
-	private static final CSV<MemberMandateDTO> csvMemberMandate = new CSV<>(true, MemberMandateDTO::new);
+	private static final CSV<MemberMandateDTO> csvMemberMandate = new CSV<>(true, false, ';', MemberMandateDTO::new);
 	static {
 
 		csvMemberMandate.addMapping("DD_DEST_MAIL", MemberMandateDTO::setEmail);
@@ -157,6 +175,14 @@ public class CSV<T> {
 		csvMemberMandate.addMapping("DD_BQE_CODEPAYS", MemberMandateDTO::setBanqueCodePays);
 		csvMemberMandate.addMapping("DD_BQE_NOM", MemberMandateDTO::setBanqueNom);
 		csvMemberMandate.addMapping("DD_BQE_BIC", MemberMandateDTO::setBanqueBIC);
+		csvMemberMandate.addMapping("DD_EXECUTION", (m, val) -> {
+			if (val!=null) {
+				try {
+					m.setDateExecution(new LocalDate(SDF.parse(val.toString())));
+				} catch (ParseException e) {
+				}
+			}
+		});
 		
 		csvMemberMandate.addMapping("MANDAT_REF", MemberMandateDTO::setMandateRef);
 		csvMemberMandate.addMapping("MANDAT_TYPE", MemberMandateDTO::setMandateType);

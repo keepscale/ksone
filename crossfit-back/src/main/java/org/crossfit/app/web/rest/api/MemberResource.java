@@ -29,6 +29,7 @@ import org.crossfit.app.domain.*;
 import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.repository.*;
 import org.crossfit.app.service.*;
+import org.crossfit.app.service.payments.external.MemberMandateDTO;
 import org.crossfit.app.service.pdf.PdfProvider;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.MandateDTO;
@@ -279,6 +280,24 @@ public class MemberResource {
 		return ResponseEntity.ok().headers(HeaderUtil.createAlert("crossfitApp.member.import.ok", count+"")).build();
     }
     
+
+	@PostMapping("members/import-sepa")
+	public ResponseEntity<Void> handleFileUploadSepa(
+			@RequestParam("file") MultipartFile file)
+			throws CSVParseException {
+
+		Collection<MemberMandateDTO> memberMandatesToUpdate;
+		try {
+
+			memberMandatesToUpdate = CSV.memberMandates().parse(new InputStreamReader(file.getInputStream()));
+		} catch (IOException e) {
+			throw new CSVParseException("Impossible de récupérer le fichier envoyé: " + e.getMessage(), e);
+		}
+		
+		int count = memberService.updateInMassMandates(memberMandatesToUpdate);
+
+		return ResponseEntity.ok().headers(HeaderUtil.createAlert("crossfitApp.member.import-sepa.ok", count+"")).build();
+    }
 
 	private Page<Member> doFindAll(Pageable generatePageRequest, String search, boolean includeAllMemberships, boolean includeAllRoles,
 			boolean includeActif, boolean includeNotEnabled, boolean includeBloque) {

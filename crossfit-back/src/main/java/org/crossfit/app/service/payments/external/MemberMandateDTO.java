@@ -9,6 +9,7 @@ public class MemberMandateDTO {
 	private String banqueNom;
 	private String banqueCodePays;
 	private String banqueBIC;
+	private LocalDate dateExecution;
 	private String mandateRef;
 	private String mandateType;
 	private LocalDate mandatDateSignature;
@@ -42,6 +43,12 @@ public class MemberMandateDTO {
 	}
 	public void setBanqueBIC(String banqueBIC) {
 		this.banqueBIC = banqueBIC;
+	}
+	public LocalDate getDateExecution() {
+		return dateExecution;
+	}
+	public void setDateExecution(LocalDate dateExecution) {
+		this.dateExecution = dateExecution;
 	}
 	public String getMandateRef() {
 		return mandateRef;

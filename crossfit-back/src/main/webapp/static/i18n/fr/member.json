@@ -18,6 +18,7 @@
             	"lock": "Bloquer"
         	},
         	"import.ok": "{{ param }} membres ont été mis à jour (numéro adhérent & date certficat).",
+        	"import-sepa.ok": "{{ param }} membres ont été mis à jour (mandat).",
         	"sendmandate.ok": "Le mandat SEPA a été envoyé à l'adresse {{ param }}.",
         	"sendsubscription.ok": "Le contrat PDF a été envoyé à l'adresse {{ param }}.",
             "lock": {

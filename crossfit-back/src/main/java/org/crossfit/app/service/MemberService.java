@@ -1,12 +1,14 @@
 package org.crossfit.app.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.jni.Mmap;
 import org.crossfit.app.domain.*;
 import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.exception.EmailAlreadyUseException;
 import org.crossfit.app.repository.*;
 import org.crossfit.app.security.SecurityUtils;
+import org.crossfit.app.service.payments.external.MemberMandateDTO;
 import org.crossfit.app.service.util.RandomUtil;
 import org.crossfit.app.web.rest.api.MemberResource.HealthIndicator;
 import org.crossfit.app.web.rest.dto.MandateDTO;
@@ -448,6 +450,51 @@ public class MemberService {
 			}
 		}
     	return count;
+	}
+
+	public int updateInMassMandates(Collection<MemberMandateDTO> memberMandatesToUpdate) {
+		int count = 0;
+
+		CrossFitBox currentCrossFitBox = boxService.findCurrentCrossFitBox();
+
+		log.info("updateInMassMandates: {} lignes en entrée", memberMandatesToUpdate.size());
+		List<MemberMandateDTO> lastMemberMandateExecuted = memberMandatesToUpdate.stream()
+				.collect(Collectors.groupingBy(
+						MemberMandateDTO::getEmail, 
+						Collectors.maxBy(Comparator.comparing(MemberMandateDTO::getDateExecution))))
+				.values()
+				.stream().map(Optional::get).filter(Objects::nonNull).collect(Collectors.toList());
+
+		log.info("updateInMassMandates - {} lignes en entrée mais représente {} utilisateurs", memberMandatesToUpdate.size(), lastMemberMandateExecuted.size());
+		
+		for (MemberMandateDTO memberMandateDTO : lastMemberMandateExecuted) {
+			Optional<Member> findByEmail = memberRepository.findOneByLogin(memberMandateDTO.getEmail(), currentCrossFitBox);
+			if(findByEmail.isPresent()) {
+				Member memberDB = findByEmail.get();
+				if (memberDB.getMandates().isEmpty()) {
+
+					Mandate m = new Mandate();
+					m.setBic(memberMandateDTO.getBanqueBIC());
+					m.setIban(memberMandateDTO.getIban());
+					m.setIcs(memberMandateDTO.getMandateICS());
+					m.setMember(memberDB);
+					m.setRum(memberMandateDTO.getMandateRef());
+					m.setSignatureDate(memberMandateDTO.getMandatDateSignature().toDateTimeAtStartOfDay());
+					m.setStatus(MandateStatus.ACTIVE);
+					
+					mandateRepository.save(m);
+					count++;
+				}
+				else {
+					log.info("Le mail {} a déjà des mandats, on ne le met pas à jour");
+				}
+			}
+			else {
+				log.info("Le mail {} est inconnu", memberMandateDTO.getEmail());
+			}
+		}
+		
+		return count;
 	}
 	
 }
