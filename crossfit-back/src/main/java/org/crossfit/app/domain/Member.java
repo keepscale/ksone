@@ -132,7 +132,8 @@ public class Member extends AbstractAuditingEntity implements Serializable, User
     @Column(name = "medical_certificate_date", nullable = true)
     private LocalDate medicalCertificateDate;
 
-    @Column(name = "comments", nullable = true)
+    @Size(max = 2048)
+    @Column(name = "comments", nullable = true, length = 2048)
     private String comments;
 
     @Size(max = 36)

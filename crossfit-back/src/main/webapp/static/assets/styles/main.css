@@ -358,6 +358,9 @@ datetimepicker.has-error input{
 }
 
 
+.checkbox-list{
+	font-size: small;
+}
 .checkbox-list label {
   	display: block;
 	margin: 0 10px;
@@ -381,6 +384,9 @@ datetimepicker.has-error input{
 	margin-right: 5px;
 }
 
+.checkbox-list .checkbox-title{
+	min-height: 33px;
+}
 .checkbox-list-content {
 	overflow-y: scroll;	
 	height: 80px;

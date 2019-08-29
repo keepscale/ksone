@@ -4,16 +4,20 @@ import org.joda.time.LocalDate;
 
 public class MemberMandateDTO {
 
+	private String code;
 	private String email;
 	private String iban;
 	private String banqueNom;
 	private String banqueCodePays;
 	private String banqueBIC;
-	private LocalDate dateExecution;
 	private String mandateRef;
 	private String mandateType;
 	private LocalDate mandatDateSignature;
 	private String mandateICS;
+	
+	private LocalDate dateExecution;
+	private int montant;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -73,5 +77,17 @@ public class MemberMandateDTO {
 	}
 	public void setMandateICS(String mandateICS) {
 		this.mandateICS = mandateICS;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public int getMontant() {
+		return montant;
+	}
+	public void setMontant(int montant) {
+		this.montant = montant;
 	}	
 }

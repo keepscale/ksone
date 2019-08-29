@@ -47,6 +47,10 @@ spring:
     thymeleaf:
         mode: XHTML
         cache: false
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 5MB
 # Disable the spring security default configuration from spring-boot-actuator
 management.security.enabled: true
 security.basic.enabled: false
