@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.exception.CSVParseException;
@@ -100,7 +101,7 @@ public class CSV<T> {
 
 				T e = instanceSupplier.get();
 				for (int i = 0; i < cells.length; i++) {
-					String cell = cells[i];
+					String cell = StringUtils.trimToNull(cells[i]);
 					String columnName = firstLine[i];
 					this.setMapper.getOrDefault(columnName,(m, val)->{}).accept(e, cell);
 				}
@@ -195,6 +196,16 @@ public class CSV<T> {
 			}
 		});
 		csvMemberMandate.addMapping("MANDAT_ICS", MemberMandateDTO::setMandateICS);
+
+		csvMemberMandate.addMapping("DD_MONTANT", (m, val) -> {
+			if (val!=null) {
+				try {
+					m.setMontant(Integer.valueOf(val));
+				} catch (NumberFormatException e) {
+				}
+			}
+		});
+		csvMemberMandate.addMapping("DEST_CODE", MemberMandateDTO::setCode);
 	}
 
 

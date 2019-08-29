@@ -56,7 +56,9 @@ public class Mandate extends AbstractAuditingEntity implements Serializable, Sig
     @Column(name = "signature_date")
     private DateTime signatureDate;
 
-    //private String externalReference; //Si mandat externalisé
+    @Size(max = 64)
+    @Column(name = "external_reference", length = 64)
+    private String externalReference; //Si mandat externalisé
 
     @Override
     public boolean equals(Object o) {
@@ -142,4 +144,13 @@ public class Mandate extends AbstractAuditingEntity implements Serializable, Sig
     public void setSignatureDate(DateTime signatureDate) {
         this.signatureDate = signatureDate;
     }
+
+	public String getExternalReference() {
+		return externalReference;
+	}
+
+	public void setExternalReference(String externalReference) {
+		this.externalReference = externalReference;
+	}
+    
 }

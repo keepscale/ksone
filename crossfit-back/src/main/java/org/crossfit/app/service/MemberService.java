@@ -1,12 +1,37 @@
 package org.crossfit.app.service;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Mmap;
-import org.crossfit.app.domain.*;
+import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.Mandate;
+import org.crossfit.app.domain.Member;
+import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.SubscriptionDirectDebit;
 import org.crossfit.app.domain.enumeration.MandateStatus;
 import org.crossfit.app.domain.enumeration.PaymentMethod;
 import org.crossfit.app.exception.EmailAlreadyUseException;
-import org.crossfit.app.repository.*;
+import org.crossfit.app.repository.AuthorityRepository;
+import org.crossfit.app.repository.BookingRepository;
+import org.crossfit.app.repository.MandateRepository;
+import org.crossfit.app.repository.MemberRepository;
+import org.crossfit.app.repository.MembershipRepository;
+import org.crossfit.app.repository.PersistentTokenRepository;
+import org.crossfit.app.repository.SubscriptionContractModelRepository;
+import org.crossfit.app.repository.SubscriptionDirectDebitRepository;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.payments.external.MemberMandateDTO;
 import org.crossfit.app.service.util.RandomUtil;
@@ -28,11 +53,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Service class for managing users.
@@ -459,6 +479,8 @@ public class MemberService {
 
 		log.info("updateInMassMandates: {} lignes en entrée", memberMandatesToUpdate.size());
 		List<MemberMandateDTO> lastMemberMandateExecuted = memberMandatesToUpdate.stream()
+				.filter(m->StringUtils.isNotBlank(m.getMandateRef()))
+				.filter(m->m.getEmail()!=null)
 				.collect(Collectors.groupingBy(
 						MemberMandateDTO::getEmail, 
 						Collectors.maxBy(Comparator.comparing(MemberMandateDTO::getDateExecution))))
@@ -473,16 +495,52 @@ public class MemberService {
 				Member memberDB = findByEmail.get();
 				if (memberDB.getMandates().isEmpty()) {
 
-					Mandate m = new Mandate();
-					m.setBic(memberMandateDTO.getBanqueBIC());
-					m.setIban(memberMandateDTO.getIban());
-					m.setIcs(memberMandateDTO.getMandateICS());
-					m.setMember(memberDB);
-					m.setRum(memberMandateDTO.getMandateRef());
-					m.setSignatureDate(memberMandateDTO.getMandatDateSignature().toDateTimeAtStartOfDay());
-					m.setStatus(MandateStatus.ACTIVE);
+					Mandate mandate = new Mandate();
+					mandate.setBic(memberMandateDTO.getBanqueBIC());
+					mandate.setIban(memberMandateDTO.getIban());
+					mandate.setIcs(memberMandateDTO.getMandateICS());
 					
-					mandateRepository.save(m);
+					mandate.setRum(memberMandateDTO.getMandateRef());
+					mandate.setSignatureDate(memberMandateDTO.getMandatDateSignature().toDateTimeAtStartOfDay());
+					mandate.setStatus(MandateStatus.ACTIVE);
+					mandate.setExternalReference("import-mandate:"+memberMandateDTO.getCode());
+
+					mandate.setMember(memberDB);
+					memberDB.getMandates().add(mandate);
+					
+					List<Subscription> matchedSubscription = memberDB.getSubscriptions().stream().filter(s->{
+						return s.getSubscriptionStartDate().isBefore(memberMandateDTO.getDateExecution())
+						 && s.getSubscriptionEndDate().isAfter(memberMandateDTO.getDateExecution());
+					}).collect(Collectors.toList());
+					
+					for (Subscription subscription : matchedSubscription) {
+						if (subscription.getPaymentMethod() != PaymentMethod.DIRECT_DEBIT) {
+							subscription.setPaymentMethod(PaymentMethod.DIRECT_DEBIT);
+						}
+						
+						SubscriptionDirectDebit dd = subscription.getDirectDebit();
+						if (dd == null) {
+							dd = new SubscriptionDirectDebit();
+							subscription.setDirectDebit(dd);
+							dd.setSubscription(subscription);
+
+							dd.setAfterDate(memberMandateDTO.getDateExecution().withDayOfMonth(1));
+							dd.setAmount((double) memberMandateDTO.getMontant());
+							dd.setAtDayOfMonth(memberMandateDTO.getDateExecution().getDayOfMonth());
+							dd.setFirstPaymentMethod(PaymentMethod.NA);
+							dd.setFirstPaymentTaxIncl(0.0);
+							dd.setMandate(mandate);
+
+							addComment(memberDB, "Creation auto des infos de prélèvement", true);
+							if (subscription.getPriceTaxIncl() != memberMandateDTO.getMontant()) {
+								addComment(memberDB, "=> ATTENTION: Montant prélevé ("+memberMandateDTO.getMontant()+") différent du montant de l'abonnement ("+subscription.getPriceTaxIncl()+")", false);
+							}
+						}					
+			    		
+					}
+
+					log.info("Mise à jour des infos de prélèvement de {}", memberDB.getLogin());
+					memberRepository.save(memberDB);
 					count++;
 				}
 				else {
@@ -495,6 +553,14 @@ public class MemberService {
 		}
 		
 		return count;
+	}
+	
+	public void addComment(Member m, String comments, boolean newLine) {
+		String actual = m.getComments() == null ? "" : m.getComments();
+		if (newLine && StringUtils.isNotBlank(actual)) {
+			actual +="\n";
+		}
+		m.setComments(actual + comments);
 	}
 	
 }

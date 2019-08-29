@@ -22,6 +22,10 @@
 
 
 	<changeSet id="201908281758" author="lgangloff">
+		<modifyDataType tableName="MEMBER" columnName="comments" newDataType="varchar(2048)"/>
 		<modifyDataType tableName="MANDATE" columnName="bic" newDataType="varchar(11)"/>
+		<addColumn tableName="MANDATE">
+			<column name="external_reference" type="varchar(64)"></column>
+		</addColumn>
 	</changeSet>
 </databaseChangeLog>

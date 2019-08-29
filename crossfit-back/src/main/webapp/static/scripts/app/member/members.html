@@ -23,11 +23,11 @@
 				    <button type="button" class="btn btn-primary hidden-xs hidden-sm hidden-md" title="{{'entity.action.export' | translate}}" ng-click="export()">
 						<span class="glyphicon glyphicon-cloud-download"></span>
 				    </button>
-				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}" 
+				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}"  has-any-role="ROLE_ADMIN"
 				    	upload-button url="api/members/import" accept="text/csv" on-success="onSuccessImport(response)" on-error="onErrorImport(response)">
 						<span class="glyphicon glyphicon-cloud-upload"></span>
 					</div>
-				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}" 
+				    <div class="btn btn-primary btn-upload hidden-xs hidden-sm hidden-md" title="{{'entity.action.import' | translate}}" has-any-role="ROLE_ADMIN"
 				    	upload-button url="api/members/import-sepa" accept="text/csv" on-success="onSuccessImport(response)" on-error="onErrorImport(response)">
 						<span class="glyphicon glyphicon-cloud-upload"></span>
 						<span>Mandats</span>
@@ -46,7 +46,7 @@
 								type="checkbox" id="include_actif" ng-model="include_actif"> Actif
 							</label> 
 							<label> <input
-								type="checkbox" id="include_not_ennabled" ng-model="include_not_ennabled"> Jamais connecté
+								type="checkbox" id="include_not_ennabled" ng-model="include_not_ennabled"> Jamais con.
 							</label> 
 							<label> <input
 								type="checkbox" id="include_bloque" ng-model="include_bloque"> Bloqué
@@ -66,13 +66,13 @@
 	  						Abonnements
   						</span>
 						<div class="checkbox-list-content">
-							<label ng-repeat="membership in memberships">
+							<label ng-repeat="membership in memberships" title="{{membership.name}}">
 							  <input
 							    type="checkbox"
 							    value="{{membership.id}}"
 							    ng-checked="selectedMemberships.indexOf(membership.id) > -1"
 		  							ng-click="toggleSelectedMembership(membership.id)"
-							  > {{membership.name}}
+							  > {{membership.name | limitTo:20}}
 							</label>
 						</div>
 					</div>
@@ -90,10 +90,10 @@
 							Droits
 						</span>
 						<div class="checkbox-list-content">
-							<label ng-repeat="role in roles">
+							<label ng-repeat="role in roles"  title="{{'crossfitApp.member.role.' + role | translate}}">
 							  <input type="checkbox" value="{{role}}"
 								    ng-checked="selectedRoles.indexOf(role) > -1"
-			  						ng-click="toggleSelectedRole(role)"> {{'crossfitApp.member.role.' + role | translate}}
+			  						ng-click="toggleSelectedRole(role)"> {{'crossfitApp.member.role.' + role | translate | limitTo:6}}.
 							</label>
 						</div>
 
