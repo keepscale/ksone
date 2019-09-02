@@ -23,9 +23,10 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 	
     public static final String START_BETWEEN = ""
     		+ "select b from Booking b "
-    		+ "left join fetch b.subscription s "
-    		+ "left join fetch s.member "
-    		+ "left join fetch s.membership ms "
+    		+ "join fetch b.timeSlotType t "
+    		+ "join fetch b.subscription s "
+    		+ "join fetch s.member "
+    		+ "join fetch s.membership ms "
     		+ "WHERE b.box =:box AND b.startAt BETWEEN :start AND :end";
 
 	@Query(START_BETWEEN)
