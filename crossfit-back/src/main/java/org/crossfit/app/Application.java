@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -32,6 +33,7 @@ import reactor.bus.EventBus;
 @SpringBootApplication
 //@EnableAutoConfiguration
 @EnableAsync
+@EnableCaching
 public class Application implements CommandLineRunner{
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
