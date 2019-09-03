@@ -25,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.crossfit.app.config.CacheConfiguration;
 import org.crossfit.app.domain.*;
 import org.crossfit.app.exception.CSVParseException;
 import org.crossfit.app.repository.*;
@@ -41,6 +42,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -508,6 +510,7 @@ public class MemberResource {
 	 * GET /members/health -> get all the members.
 	 */
 	@RequestMapping(value = "/members/health", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Cacheable(CacheConfiguration.HEALTH_CACHE_NAME)
 	public ResponseEntity<Map<HealthIndicator, Integer>> getAllMemberWithBadHealth(){
 		
 		Map<HealthIndicator, List<Member>> results = calculateHealthIndicators(HealthIndicator.values());
@@ -530,25 +533,26 @@ public class MemberResource {
 			results.put(HealthIndicator.DIRECT_DEBIT_WITHOUT_MANDATE, 
 					memberService.findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate());
 		}
-		
+		CrossFitBox box = boxService.findCurrentCrossFitBox();
+		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_OVERLAP)) {
 			results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP, 
-					memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP));
+					memberService.findAllWithDoubleSubscription(subscriptions, HealthIndicator.SUBSCRIPTIONS_OVERLAP));
 		}
 
 		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT)) {
 			results.put(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT, 
-					memberService.findAllWithDoubleSubscription(HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT));
+					memberService.findAllWithDoubleSubscription(subscriptions, HealthIndicator.SUBSCRIPTIONS_OVERLAP_NON_RECURRENT));
 		}
 
 		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL)) {
 			results.put(HealthIndicator.SUBSCRIPTIONS_BAD_INTERVAL, 
-					memberService.findAllWithSubscriptionEndBeforeStart());
+					memberService.findAllWithSubscriptionEndBeforeStart(subscriptions));
 		}
 
 		if (asList.contains(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH)) {
 			results.put(HealthIndicator.SUBSCRIPTIONS_NOT_END_AT_END_MONTH, 
-					memberService.findAllWithSubscriptionEndNotAtEndMonth());
+					memberService.findAllWithSubscriptionEndNotAtEndMonth(subscriptions));
 		}
 
 		if (asList.contains(HealthIndicator.NO_SUBSCRIPTION)) {
