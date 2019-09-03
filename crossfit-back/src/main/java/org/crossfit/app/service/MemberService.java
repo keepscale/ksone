@@ -118,9 +118,9 @@ public class MemberService {
 		return false;
 	}
 
-	public List<Member> findAllWithSubscriptionEndBeforeStart() {
-		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+	public List<Member> findAllWithSubscriptionEndBeforeStart(Set<Subscription> subscriptions) {
+//		CrossFitBox box = boxService.findCurrentCrossFitBox();
+//		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 	
 		return subscriptions.stream()
 				.collect(Collectors.groupingBy(Subscription::getMember)) //member:list sousscription
@@ -131,9 +131,9 @@ public class MemberService {
 	}
 
 
-	public List<Member> findAllWithSubscriptionEndNotAtEndMonth() {
-		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+	public List<Member> findAllWithSubscriptionEndNotAtEndMonth(Set<Subscription> subscriptions) {
+//		CrossFitBox box = boxService.findCurrentCrossFitBox();
+//		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 		 
 		 Stream<Subscription> stream = subscriptions.stream();
 		 stream = stream.filter(s->membershipService.isMembershipPaymentByMonth(s.getMembership()));
@@ -145,9 +145,9 @@ public class MemberService {
 					.collect(Collectors.toList());	
 	}
 	
-	public List<Member> findAllWithDoubleSubscription(HealthIndicator health) {
-		CrossFitBox box = boxService.findCurrentCrossFitBox();
-		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
+	public List<Member> findAllWithDoubleSubscription(Set<Subscription> subscriptions, HealthIndicator health) {
+//		CrossFitBox box = boxService.findCurrentCrossFitBox();
+//		Set<Subscription> subscriptions = subscriptionRepository.findAllByBoxWithMembership(box);
 	
 		 
 //				.filter(s->s.getMember().getId()==1514)
