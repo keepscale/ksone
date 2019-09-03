@@ -149,7 +149,7 @@ public class BookingPlanningResource {
         			cardEventRepository.findAllBetweenBookingStartDate(currentCrossFitBox, start, end));
     		log.debug("{} cardevents entre {} et {}", cardEvents.size(), start, end);
         	
-			List<TimeSlotNotification> allNotifications = timeSlotNotificationRepository.findAll();
+			List<TimeSlotNotification> allNotifications = timeSlotNotificationRepository.findAllAfter(start.toLocalDate());
 			
 			Stream<TimeSlotInstanceDTO> slotInstancesStream = timeSlotService.findAllTimeSlotInstance(
         			start, end, closedDays, timeSlotExclusions, bookings, allNotifications, cardEvents, BookingDTO.adminMapper, timeService.getDateTimeZone(currentCrossFitBox));
