@@ -36,9 +36,10 @@ public interface TimeSlotNotificationRepository extends JpaRepository<TimeSlotNo
 			@Param("member") Member member);
 
     @Query("select notif from TimeSlotNotification notif "
-    		+ "left join fetch notif.member m "
-    		+ "left join fetch notif.timeSlot ts "
-    		+ "left join fetch ts.timeSlotType ")
-	List<TimeSlotNotification> findAll();
+    		+ "join fetch notif.member m "
+    		+ "join fetch notif.timeSlot ts "
+    		+ "join fetch ts.timeSlotType "
+    		+ "WHERE notif.date >= :after ")
+	List<TimeSlotNotification> findAllAfter(LocalDate after);
 
 }

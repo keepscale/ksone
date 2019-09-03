@@ -22,11 +22,15 @@
 
 
 	<changeSet id="201909021702" author="lgangloff">
-		<createIndex tableName="BOOKING" indexName="idx_booking_start_at">
+		<createIndex tableName="BOOKING" indexName="idx_booking_box_id_start_at">
+			<column name="box_id"></column>
 			<column name="start_at"></column>
 		</createIndex>
 		<createIndex tableName="SUBSCRIPTION" indexName="idx_subscription_member_id">
 			<column name="member_id"></column>
+		</createIndex>
+		<createIndex tableName="TIMESLOT_NOTIFICATION" indexName="idx_timeslot_notification_date">
+			<column name="date"></column>
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>
