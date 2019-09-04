@@ -24,23 +24,21 @@ angular.module('crossfitApp')
 	   		var w = $window.innerWidth;;
 	        var mode;
 	        var view;
-	        var dStart = new Date();
-	        var dEnd = new Date();
+	        var dStart;
 	        if ( w >= 991){
 	        	mode = 'desktop';
 	        	view = 'week';
-	        	dEnd.setDate(dEnd.getDate() + 7); 
+	        	dStart = moment().startOf('isoweek').toDate();
 	        }
 	        else{
 	        	mode = 'mobile';
 	        	view = 'day';
-	        	dEnd.setDate(dEnd.getDate() + 1);
+	        	dStart = new Date();
 	        }
 	        
 	    	var start = DateUtils.formatDateAsDate(dStart);
-	    	var end = DateUtils.formatDateAsDate(dEnd);
 	    	
-	        $state.go('planning', {startDate:start, endDate:end, view:view, mode:mode});
+	        $state.go('planning', {startDate:start, view:view, mode:mode});
 	        
 	        return;
 		}
