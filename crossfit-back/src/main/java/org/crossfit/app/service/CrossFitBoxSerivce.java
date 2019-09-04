@@ -1,27 +1,17 @@
 package org.crossfit.app.service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.crossfit.app.domain.CrossFitBox;
-import org.crossfit.app.domain.Member;
-import org.crossfit.app.exception.CrossFitBoxConfiguration;
-import org.crossfit.app.repository.BookingRepository;
-import org.crossfit.app.repository.CrossFitBoxRepository;
-import org.crossfit.app.repository.MemberRepository;
 import org.crossfit.app.service.box.CrossFitBoxResolverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Service
 @Transactional
@@ -33,10 +23,16 @@ public class CrossFitBoxSerivce {
 	@Autowired
 	private CrossFitBoxResolverService crossFitBoxResolverService;
 	
-	@Autowired
-	private HttpServletRequest request;
-	
+		
 	public CrossFitBox findCurrentCrossFitBox(){
-		return crossFitBoxResolverService.findCrossFitBoxByServername(request.getServerName());
+		return crossFitBoxResolverService.findCrossFitBoxByServername(this.getServerName());
+	}
+	private String getServerName() {
+	    RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
+	    if (attribs instanceof NativeWebRequest) {
+	        HttpServletRequest request = (HttpServletRequest) ((NativeWebRequest) attribs).getNativeRequest();
+	        return request.getServerName();
+	    }
+	    return null;
 	}
 }
