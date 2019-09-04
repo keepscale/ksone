@@ -142,6 +142,14 @@ angular.module('crossfitApp')
 			}
 		}
 
-        $scope.connectWebsocket();
-    	document.addEventListener("visibilitychange", handleVisibilityChange, false);
+		var w = $window.innerWidth;;
+        if ( w >= 991){ //desktop
+	        $scope.connectWebsocket();
+	    	document.addEventListener("visibilitychange", handleVisibilityChange, false);
+        }
+        else{
+        	$scope.statusWS = "CLOSED";
+        	$scope.wsMessage = "Déconnecté";
+        	$scope.loadEvents();
+        }
 });
