@@ -64,9 +64,11 @@ angular.module('crossfitApp')
         }
 
         $scope.loadEvents = function(){
-        	EventBooking.query(function(result, headers){
-        		$scope.events = result;        		
-        	});
+        	if (Principal.isInAnyRole(['ROLE_MANAGER','ROLE_ADMIN','ROLE_COACH'])){
+            	EventBooking.query(function(result, headers){
+            		$scope.events = result;        		
+            	});
+        	}
         }
 
 
