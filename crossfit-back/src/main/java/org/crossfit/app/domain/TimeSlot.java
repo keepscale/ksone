@@ -111,6 +111,9 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
        
     @Transient
     private List<TimeSlotExclusion> exclusions = new ArrayList<TimeSlotExclusion>();
+
+    @Transient
+    private int countBooking = 0;
     
 
     public Long getId() {
@@ -216,6 +219,14 @@ public class TimeSlot extends AbstractAuditingEntity implements Serializable {
 
 	public void setExclusions(List<TimeSlotExclusion> exclusions) {
 		this.exclusions = exclusions;
+	}
+	
+	public int getCountBooking() {
+		return countBooking;
+	}
+
+	public void setCountBooking(int countBooking) {
+		this.countBooking = countBooking;
 	}
 
 	@Override

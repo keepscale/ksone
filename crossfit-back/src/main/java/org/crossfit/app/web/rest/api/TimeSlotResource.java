@@ -17,6 +17,7 @@ import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotExclusion;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.domain.enumeration.TimeSlotRecurrent;
+import org.crossfit.app.repository.BookingRepository;
 import org.crossfit.app.repository.ClosedDayRepository;
 import org.crossfit.app.repository.TimeSlotExclusionRepository;
 import org.crossfit.app.repository.TimeSlotRepository;
@@ -59,6 +60,8 @@ public class TimeSlotResource {
     private TimeSlotRepository timeSlotRepository;
     @Inject
     private TimeSlotService timeSlotService;
+    @Inject
+    private BookingRepository bookingRepository;
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
@@ -204,6 +207,14 @@ public class TimeSlotResource {
 		// TODO: Filtrer par box
 		TimeSlot t = timeSlotRepository.findById(id).map(ts->{
 			ts.setExclusions(timeSlotExclusionRepository.findAllByTimeSlot(ts));
+			int count = 0;
+			if (ts.getRecurrent()==TimeSlotRecurrent.DAY_OF_WEEK) {
+				count = bookingRepository.countByTimeSlot(ts.getDayOfWeek(), ts.getStartTime().getHourOfDay(), ts.getStartTime().getMinuteOfHour(), ts.getTimeSlotType());
+			}
+			else {
+				count = bookingRepository.countByTimeSlot(ts.getDate().withTime(ts.getStartTime()), ts.getTimeSlotType());
+			}
+			ts.setCountBooking(count);
 			return ts;
 		}).orElse(null);
 		return t;
