@@ -7,7 +7,9 @@ import org.crossfit.app.domain.Booking;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
+import org.crossfit.app.domain.TimeSlotType;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -62,4 +64,9 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 	@Query("select count(1) from Booking b where b.subscription = :sub and :after <= b.startAt and b.startAt <= :before")
     Long countBySubscriptionBetween(@Param("sub") Subscription subscription, @Param("after") DateTime startIncl, @Param("before") DateTime endIncl);
 
+	@Query("select count(1) from Booking b where b.timeSlotType = :timeSlotType and EXTRACT(isodow from b.startAt) = :day AND HOUR(b.startAt) = :startHour AND MINUTE(b.startAt) = :startMinute")
+    Integer countByTimeSlot(@Param("day") Integer dayOfWeek, @Param("startHour") Integer startHour, @Param("startMinute") Integer startMinute, @Param("timeSlotType") TimeSlotType timeSlotType);
+
+	@Query("select count(1) from Booking b where b.timeSlotType = :timeSlotType AND b.startAt = :start")
+    Integer countByTimeSlot(@Param("start") DateTime start, @Param("timeSlotType") TimeSlotType timeSlotType);
 }

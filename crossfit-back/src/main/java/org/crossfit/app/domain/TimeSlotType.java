@@ -41,7 +41,7 @@ public class TimeSlotType extends AbstractAuditingEntity implements Serializable
     private String color;
     
     @NotNull   
-    @Size(max = 255)     
+    @Size(max = 512)     
     @Column(name = "description", nullable = false)
     private String description;
     
