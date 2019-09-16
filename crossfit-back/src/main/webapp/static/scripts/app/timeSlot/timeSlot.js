@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/timeSlot/timeSlots.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlots.html?v='+$stateProvider.VERSION,
                         controller: 'TimeSlotController'
                     }
                 },
@@ -30,9 +30,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', function($stateParams, $state, $modal, DateUtils) {
+                onEnter: ['$stateParams', '$state', '$uibModal', 'DateUtils', '$rootScope', function($stateParams, $state, $modal, DateUtils, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html?v='+$rootScope.VERSION,
                         controller: 'TimeSlotDialogController',
                         size: 'lg',
                         resolve: {
@@ -60,9 +60,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog.html?v='+$rootScope.VERSION,
                         controller: 'TimeSlotDialogController',
                         size: 'lg',
                         resolve: {
@@ -82,9 +82,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog-suppr.html',
+                        templateUrl: 'scripts/app/timeSlot/timeSlot-dialog-suppr.html?v='+$rootScope.VERSION,
                         controller: 'TimeSlotDialogSupprController',
                         size: 'lg',
                         resolve: {
