@@ -209,10 +209,13 @@ public class TimeSlotResource {
 			ts.setExclusions(timeSlotExclusionRepository.findAllByTimeSlot(ts));
 			int count = 0;
 			if (ts.getRecurrent()==TimeSlotRecurrent.DAY_OF_WEEK) {
-				count = bookingRepository.countByTimeSlot(ts.getDayOfWeek(), ts.getStartTime().getHourOfDay(), ts.getStartTime().getMinuteOfHour(), ts.getTimeSlotType());
+				count = bookingRepository.countByTimeSlot(ts.getTimeSlotType(), ts.getDayOfWeek(), 
+						ts.getStartTime().getHourOfDay(), ts.getStartTime().getMinuteOfHour(), 
+						ts.getEndTime().getHourOfDay(), ts.getEndTime().getMinuteOfHour());
 			}
 			else {
-				count = bookingRepository.countByTimeSlot(ts.getDate().withTime(ts.getStartTime()), ts.getTimeSlotType());
+				count = bookingRepository.countByTimeSlot(ts.getTimeSlotType(),
+						ts.getDate().withTime(ts.getStartTime()), ts.getDate().withTime(ts.getEndTime()));
 			}
 			ts.setCountBooking(count);
 			return ts;
