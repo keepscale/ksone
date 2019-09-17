@@ -12,7 +12,7 @@ angular.module('crossfitApp')
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/timeSlotType/timeSlotTypes.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotTypes.html?v='+$stateProvider.VERSION,
                         controller: 'TimeSlotTypeController'
                     }
                 },
@@ -30,9 +30,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html?v='+$rootScope.VERSION,
                         controller: 'TimeSlotTypeDialogController',
                         size: 'lg',
                         resolve: {
@@ -53,9 +53,9 @@ angular.module('crossfitApp')
                 data: {
                     roles: ['ROLE_MANAGER', 'ROLE_ADMIN'],
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $modal) {
+                onEnter: ['$stateParams', '$state', '$uibModal', '$rootScope', function($stateParams, $state, $modal, $rootScope) {
                     $modal.open({
-                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html',
+                        templateUrl: 'scripts/app/timeSlotType/timeSlotType-dialog.html?v='+$rootScope.VERSION,
                         controller: 'TimeSlotTypeDialogController',
                         size: 'lg',
                         resolve: {
