@@ -5,6 +5,7 @@ import static reactor.bus.selector.Selectors.$;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 
@@ -19,11 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Description;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import com.jcabi.manifests.Manifests;
 
@@ -86,6 +88,19 @@ public class Application implements CommandLineRunner{
         } else {
             log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
         }
+    }
+	
+	
+    @Bean
+    @Description("Thymeleaf template resolver serving HTML 5 emails")
+    public ClassLoaderTemplateResolver emailTemplateResolver() {
+        ClassLoaderTemplateResolver emailTemplateResolver = new ClassLoaderTemplateResolver();
+        emailTemplateResolver.setPrefix("templates/");
+        emailTemplateResolver.setSuffix(".html");
+        emailTemplateResolver.setTemplateMode("HTML5");
+        emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        emailTemplateResolver.setOrder(1);
+        return emailTemplateResolver;
     }
 
     /**
