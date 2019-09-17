@@ -62,7 +62,7 @@ public class MailService {
 		context.setVariable("clearPassword", clearPassword);
 		log.debug("Sending activation e-mail to '{}'", clearPassword);
 		context.setVariable("box", member.getBox());
-		String content = templateEngine.process("activationCompte", context);
+		String content = templateEngine.process("mails/activationCompte", context);
 		String subject = messageSource.getMessage("email.creation.title", new Object[] { member.getBox().getName() },
 				locale);
 		mailSender.sendEmail(member.getBox().getEmailFrom(), member.getLogin(), subject, content, false, true);
@@ -100,7 +100,7 @@ public class MailService {
 		String link = member.getBox().getBookingwebsite()+"#/planning/mobile/day/"+sdfDateBooking.format(dateResa)+"/"+notif.getTimeSlot().getId()+"/"+sdfDateBooking.format(dateResa);
 		context.setVariable("linkResa", link);
 		context.setVariable("box", member.getBox());
-		String content = templateEngine.process("timeSlotNotification", context);
+		String content = templateEngine.process("mails/timeSlotNotification", context);
 		String subject = messageSource.getMessage("email.timeSlotNotification.title", 
 				new Object[] { }, locale);
 		mailSender.sendEmail(member.getBox().getEmailFrom(), member.getLogin(), subject, content, false, true);
@@ -117,7 +117,7 @@ public class MailService {
 		context.setVariable("linkResa", link);
 		context.setVariable("box", member.getBox());
 
-		String content = templateEngine.process("subscriptionNotification", context);
+		String content = templateEngine.process("mails/subscriptionNotification", context);
 		String subject = messageSource.getMessage("email.subscriptionNotification.title", new Object[] { }, locale);
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -148,7 +148,7 @@ public class MailService {
 		context.setVariable("linkResa", link);
 		context.setVariable("box", member.getBox());
 
-		String content = templateEngine.process("mandateNotification", context);
+		String content = templateEngine.process("mails/mandateNotification", context);
 		String subject = messageSource.getMessage("email.mandateNotification.title", new Object[] { }, locale);
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
