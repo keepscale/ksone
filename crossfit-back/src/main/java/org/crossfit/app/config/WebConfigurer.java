@@ -96,6 +96,7 @@ public class WebConfigurer implements WebMvcConfigurer, ServletContextInitialize
         compressingFilter.addMappingForUrlPatterns(disps, true, "/api/*");
         compressingFilter.addMappingForUrlPatterns(disps, true, "/private/*");
         compressingFilter.addMappingForUrlPatterns(disps, true, "/protected/*");
+        compressingFilter.addMappingForUrlPatterns(disps, true, "/public/*");
         compressingFilter.setAsyncSupported(true);
     }
 
