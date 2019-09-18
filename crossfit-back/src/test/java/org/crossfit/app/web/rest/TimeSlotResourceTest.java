@@ -20,6 +20,7 @@ import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.repository.TimeSlotTypeRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
+import org.crossfit.app.service.cache.CacheService;
 import org.crossfit.app.web.rest.api.TimeSlotResource;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -75,9 +76,11 @@ public class TimeSlotResourceTest {
     private static final Integer DEFAULT_MAX_ATTENDEES = 0;
     private static final Integer UPDATED_MAX_ATTENDEES = 1;
 
-    
+
     @Inject
     private CrossFitBoxSerivce boxService;
+    @Inject
+    private CacheService cacheService;
     @Inject
     private TimeSlotRepository timeSlotRepository;
     @Inject
@@ -104,6 +107,7 @@ public class TimeSlotResourceTest {
         TimeSlotResource timeSlotResource = new TimeSlotResource();
         ReflectionTestUtils.setField(timeSlotResource, "timeService", timeService);
         ReflectionTestUtils.setField(timeSlotResource, "boxService", boxService);
+        ReflectionTestUtils.setField(timeSlotResource, "cacheService", cacheService);
         ReflectionTestUtils.setField(timeSlotResource, "timeSlotExclusionRepository", timeSlotExclusionRepository);
         ReflectionTestUtils.setField(timeSlotResource, "timeSlotRepository", timeSlotRepository);
         
