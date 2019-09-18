@@ -8,11 +8,13 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.crossfit.app.config.CacheConfiguration;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.repository.TimeSlotTypeRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.service.cache.CacheService;
 import org.crossfit.app.web.exception.BadRequestException;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
@@ -44,6 +46,8 @@ public class TimeSlotTypeResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private CacheService cacheService;
     /**
      * GET  /timeSlotTypes -> get all the timeSlotTypes.
      */
@@ -108,6 +112,7 @@ public class TimeSlotTypeResource {
 	protected TimeSlotType doSave(TimeSlotType timeSlotTypes) throws BadRequestException {
 		timeSlotTypes.setBox(boxService.findCurrentCrossFitBox());
 		TimeSlotType result = timeSlotTypeRepository.save(timeSlotTypes);
+		cacheService.clearCache(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME);
 		return result;
 	}
 
@@ -147,6 +152,7 @@ public class TimeSlotTypeResource {
 			List<TimeSlot> slots = timeSlotRepository.findAllByTimeSlotType(timeSlotTypeToDel);
 			if (slots.isEmpty()){
 				timeSlotTypeRepository.deleteById(id);
+				cacheService.clearCache(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME);
 			}
 			else{
 	    		throw new CustomParameterizedException("Il existe des créneaux utilisant ce type");

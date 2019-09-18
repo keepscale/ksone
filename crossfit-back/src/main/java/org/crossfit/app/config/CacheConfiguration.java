@@ -20,13 +20,15 @@ public class CacheConfiguration {
 
 	public static final String BOX_CACHE_NAME = "boxs";
 	public static final String HEALTH_CACHE_NAME = "health";
+	public static final String PUBLIC_TIMESLOT_CACHE_NAME = "public-timeslot";
 	
 	@Bean
 	public CacheManager cacheManager(Ticker ticker) {
 	    CaffeineCache messageCache = buildCache(HEALTH_CACHE_NAME, ticker, 5);
 	    CaffeineCache notificationCache = buildCache(BOX_CACHE_NAME, ticker, 60);
+	    CaffeineCache publicTimeSlotCache = buildCache(PUBLIC_TIMESLOT_CACHE_NAME, ticker, 120);
 	    SimpleCacheManager manager = new SimpleCacheManager();
-	    manager.setCaches(Arrays.asList(messageCache, notificationCache));
+	    manager.setCaches(Arrays.asList(messageCache, notificationCache, publicTimeSlotCache));
 	    return manager;
 	}
 	 

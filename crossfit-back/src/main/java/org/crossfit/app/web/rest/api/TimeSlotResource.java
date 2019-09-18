@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.crossfit.app.config.CacheConfiguration;
 import org.crossfit.app.domain.ClosedDay;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.TimeSlot;
@@ -24,6 +25,7 @@ import org.crossfit.app.repository.TimeSlotRepository;
 import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
+import org.crossfit.app.service.cache.CacheService;
 import org.crossfit.app.web.exception.BadRequestException;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
@@ -65,6 +67,8 @@ public class TimeSlotResource {
 
 	@Inject
 	private CrossFitBoxSerivce boxService;
+	@Inject
+	private CacheService cacheService;
 
     @Inject
     private TimeService timeService;
@@ -141,6 +145,7 @@ public class TimeSlotResource {
 			timeSlotExclusionRepository.save(timeSlotExclusion);
 		}
 
+		cacheService.clearCache(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME);
 		log.debug("Timeslot sauvegardé: {}", result);
 		
 		return result;
@@ -240,6 +245,7 @@ public class TimeSlotResource {
 		if (timeSlot.getBox().equals(boxService.findCurrentCrossFitBox())) {
 			timeSlotExclusionRepository.deleteAll(timeSlotExclusionRepository.findAllByTimeSlot(timeSlot));
 			timeSlotRepository.delete(timeSlot);
+			cacheService.clearCache(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME);
 		}
 	}
 	
