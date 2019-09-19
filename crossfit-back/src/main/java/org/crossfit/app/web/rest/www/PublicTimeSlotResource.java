@@ -1,5 +1,6 @@
 package org.crossfit.app.web.rest.www;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -23,10 +25,15 @@ import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.Instant;
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormat;
+import org.joda.time.format.PeriodFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,6 +43,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * REST controller for managing TimeSlot.
@@ -76,17 +86,27 @@ public class PublicTimeSlotResource {
     			.collect(Collectors.toList());
     	
     	
-				
-    	    	
+
+    	Stream<LocalDate> days = events.parallelStream().map(TimeSlotInstanceDTO::getDate).distinct();
+    	Set<Interval> times = events.parallelStream().map(ts->new Interval(ts.getStart().withDate(LocalDate.now()), ts.getEnd().withDate(LocalDate.now()))).distinct().collect(Collectors.toSet());
+    	Map<Interval, List<TimeSlotInstanceDTO>> eventByDateTime = events.parallelStream().collect(
+    			Collectors.groupingBy(ts->new Interval(ts.getStart(), ts.getEnd())));
+    	
+    	
+    	Map<String, Map<String, List<String>>> collect =
+    			days.collect(Collectors.toMap(
+    					dtfJour::print, day->times.stream().sorted(Comparator.comparing(Interval::getStart)).collect(Collectors.toMap(
+    							time->dtfHeure.print(time.getStart())+"-"+dtfHeure.print(time.getEnd()), 
+    							time->eventByDateTime.getOrDefault(
+    									new Interval(day.toDateTime(time.getStart().toLocalTime()), day.toDateTime(time.getEnd().toLocalTime())), Collections.emptyList()
+    								).stream().map(ts->ts.getTimeSlotType().getName()).collect(Collectors.toList()), (a,b)->a, LinkedHashMap::new
+    							)
+    						), (a,b)->a, LinkedHashMap::new
+    					)
+    				);
+    	
     	AgendaWebDTO agenda = new AgendaWebDTO();
-    	agenda.events = events.parallelStream().collect(
-								Collectors.groupingBy(e->dtfJour.print(e.getStart()), LinkedHashMap::new, 
-								Collectors.groupingBy(e->dtfHeure.print(e.getStart()), LinkedHashMap::new, 
-										Collectors.mapping(ts->new EventWebDTO(ts.getTimeSlotType().getName(), ts.getStart(), ts.getEnd()), Collectors.toList()))));
-    	agenda.days = events.stream().sorted(Comparator.comparing(TimeSlotInstanceDTO::getStart))
-    			.map(e->dtfJour.print(e.getStart())).collect(Collectors.toCollection(LinkedHashSet::new));
-    	agenda.times = events.stream().sorted(Comparator.comparing(ts->ts.getStart().toLocalTime()))
-    			.map(e->dtfHeure.print(e.getStart())).collect(Collectors.toCollection(LinkedHashSet::new));
+    	agenda.events = collect;
     	
     	agenda.definitions = events.stream().map(TimeSlotInstanceDTO::getTimeSlotType).distinct()
     			.collect(Collectors.toMap(TimeSlotType::getName, TimeSlotType::getDescription));
@@ -96,49 +116,16 @@ public class PublicTimeSlotResource {
     
     
     static class AgendaWebDTO{
-    	Set<String> days;
-    	Set<String> times;
     	Map<String, String> definitions;
-    	Map<String, Map<String, List<EventWebDTO>>> events;
+    	Map<String, Map<String, List<String>>> events;
 
-		public Map<String, Map<String, List<EventWebDTO>>> getEvents() {
+		public Map<String, Map<String, List<String>>> getEvents() {
 			return events;
-		}
-		public Set<String> getDays(){
-			return days;
-		}   
-		public Set<String> getTimes(){
-			return times;
 		}
 		public Map<String, String> getDefinitions() {
 			return definitions;
 		}
 		
     	
-    }
-
-    static class EventWebDTO{
-    	String name;
-    	private DateTime start;
-    	private DateTime end;
-
-		public EventWebDTO(String name, DateTime start, DateTime end) {
-			this.name = name;
-			this.start = start;
-			this.end = end;
-		}
-		
-
-		public LocalTime getStart() {
-			return start.toLocalTime();
-		}
-		public LocalTime getEnd() {
-			return end.toLocalTime();
-		}
-
-
-		public String getName() {
-			return name;
-		}
     }
 }
