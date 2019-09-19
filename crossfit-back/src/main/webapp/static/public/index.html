@@ -1,0 +1,43 @@
+
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Mustache.js Inline Method</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.2.0/handlebars.min.js" ></script>
+    <script>
+      
+      $.getJSON('/public/timeslots.json', function(data) {
+    	  const template = Handlebars.compile( document.getElementById('sample_template').innerHTML);
+    	  var output = template(data);
+    	  document.getElementById('person').innerHTML = output;
+    	});
+    </script>
+    
+    
+    <script id="sample_template" type="text/html">
+		{{#each events}}
+			<div class="col-md-2 horaire">
+				<h3>{{@key}}</h3>
+				<ul>
+					{{#each .}}
+						<li>{{@key}}
+
+							{{#each .}}
+								{{.}}<br/>
+							{{/each}}
+	
+						</li>
+					{{/each}}
+				</ul>
+            </div>
+		{{/each}}
+	</script>
+
+  </head>
+  <body>
+    <p id="person"></p>
+  </body>
+</html>
