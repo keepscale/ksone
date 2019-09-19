@@ -322,8 +322,6 @@
 		              <jsSourceFiles>
 		              
 						<jsSourceFile>/bower_components/signature_pad/signature_pad.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/sockjs-client/dist/sockjs.min.js</jsSourceFile>
-						<jsSourceFile>/bower_components/stomp-websocket/lib/stomp.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/modernizer/modernizr.js</jsSourceFile>
 						<jsSourceFile>/bower_components/jquery/dist/jquery.min.js</jsSourceFile>
 						<jsSourceFile>/bower_components/bootstrap/dist/js/bootstrap.min.js</jsSourceFile>
