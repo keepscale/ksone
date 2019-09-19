@@ -1,14 +1,11 @@
 package org.crossfit.app.web.rest.www;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,18 +19,12 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
-import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormat;
-import org.joda.time.format.PeriodFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,10 +33,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * REST controller for managing TimeSlot.
@@ -72,11 +61,13 @@ public class PublicTimeSlotResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)	
     @Cacheable(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME)
-    public ResponseEntity<AgendaWebDTO> getTimeSlotsByDayByHour() {
+    public ResponseEntity<AgendaWebDTO> getTimeSlotsByDayByHour(
+    		@RequestParam(value = "start", required = false) String startStr) {
 
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
 
-    	DateTime startAt = timeService.nowAsDateTime(box).withDayOfWeek(DateTimeConstants.MONDAY);
+    	DateTime startAt = StringUtils.isNotBlank(startStr) ? timeService.parseDate("yyyy-MM-dd", startStr, box) : null;
+    	startAt = startAt==null ? timeService.nowAsDateTime(box).withDayOfWeek(DateTimeConstants.MONDAY) : startAt;
     	DateTime endAt = startAt.plusDays(6);
     	
     	final DateTimeFormatter dtfJour = DateTimeFormat.forPattern("EEEE");
