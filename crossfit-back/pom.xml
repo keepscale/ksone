@@ -354,6 +354,7 @@
         
 						        
 						<jsSourceFile>/bower_components/fullcalendar/dist/fullcalendar.min.js</jsSourceFile>
+						<jsSourceFile>/bower_components/fullcalendar/dist/lang/fr.js</jsSourceFile>
 						<jsSourceFile>/bower_components/fullcalendar/dist/gcal.js</jsSourceFile>
 						<jsSourceFile>/bower_components/angular-ui-calendar/src/calendar.js</jsSourceFile>
 		              
