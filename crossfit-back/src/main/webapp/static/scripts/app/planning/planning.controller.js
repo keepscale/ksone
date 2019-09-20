@@ -46,7 +46,7 @@ angular.module('crossfitApp')
 			
 	    	
 	    	$scope.uiConfig = { calendar:{
-	    		
+	    			lang: 'fr',
 					height: isMobile ? 'auto' : 865,
 					editable: false,
 					eventDurationEditable: false,

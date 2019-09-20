@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public class PublicTimeSlotResource {
     	startAt = startAt==null ? timeService.nowAsDateTime(box).withDayOfWeek(DateTimeConstants.MONDAY) : startAt;
     	DateTime endAt = startAt.plusDays(6);
     	
-    	final DateTimeFormatter dtfJour = DateTimeFormat.forPattern("EEEE");
+    	final DateTimeFormatter dtfJour = DateTimeFormat.forPattern("EEEE").withLocale(Locale.FRENCH);
     	final DateTimeFormatter dtfHeure = DateTimeFormat.forPattern("HH:mm");
 
     	List<TimeSlotInstanceDTO> events = timeSlotService.findAllTimeSlotInstance(startAt, endAt, Collections.emptyList(), Collections.emptyList(), timeService.getDateTimeZone(box))
