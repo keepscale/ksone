@@ -2,6 +2,8 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.crossfit.app.config.CacheConfiguration;
+import org.crossfit.app.domain.Sortable;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotType;
 import org.crossfit.app.repository.TimeSlotRepository;
@@ -61,7 +64,9 @@ public class TimeSlotTypeResource {
     }
 
 	protected List<TimeSlotType> doFindAll() {
-		return timeSlotTypeRepository.findAllByBox(boxService.findCurrentCrossFitBox());
+		List<TimeSlotType> findAllByBox = timeSlotTypeRepository.findAllByBox(boxService.findCurrentCrossFitBox());
+		Collections.sort(findAllByBox);
+		return findAllByBox;
 	}
 
     /**

@@ -21,7 +21,9 @@
             "deleted": "Type de créneau avec l'identifiant {{ param }} supprimé.",
             "name": "Nom du type de créneau",
             "color": "Couleur",
-            "description": "Description",
+            "description": "[WEB] Description",
+            "order": "[WEB] Ordre d'affichage'",
+            "webCssClass": "[WEB] Classe CSS",
             "messages" : {
 	        	"validate" : {
 		        	"name" : {

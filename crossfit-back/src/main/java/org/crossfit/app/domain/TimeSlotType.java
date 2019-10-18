@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "TIMESLOTTYPE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class TimeSlotType extends AbstractAuditingEntity implements Serializable {
+public class TimeSlotType extends AbstractAuditingEntity implements Serializable, Sortable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,6 +49,16 @@ public class TimeSlotType extends AbstractAuditingEntity implements Serializable
     @ManyToOne(optional=false)
     private CrossFitBox box;
 
+    @NotNull
+    @Column(name = "ordre", nullable = false)
+    private Integer order = 0;
+
+    @NotNull
+    @Size(max = 64)     
+    @Column(name = "web_css_class", nullable = false)
+    private String webCssClass = "col-md-3 lexique";
+
+    
     public Long getId() {
         return id;
     }
@@ -87,6 +97,22 @@ public class TimeSlotType extends AbstractAuditingEntity implements Serializable
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public String getWebCssClass() {
+		return webCssClass;
+	}
+
+	public void setWebCssClass(String webCssClass) {
+		this.webCssClass = webCssClass;
 	}
 
 	@Override

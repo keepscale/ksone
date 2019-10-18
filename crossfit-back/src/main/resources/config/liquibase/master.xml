@@ -59,6 +59,7 @@
     <include file="classpath:config/liquibase/changelog/36_alter_mandate_member.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/37_add_index.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/38_modify_timeslottype.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/39_modify_timeslottype.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>
