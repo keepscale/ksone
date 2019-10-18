@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.config.CacheConfiguration;
@@ -36,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * REST controller for managing TimeSlot.
@@ -63,7 +69,8 @@ public class PublicTimeSlotResource {
             produces = MediaType.APPLICATION_JSON_VALUE)	
     @Cacheable(CacheConfiguration.PUBLIC_TIMESLOT_CACHE_NAME)
     public ResponseEntity<AgendaWebDTO> getTimeSlotsByDayByHour(
-    		@RequestParam(value = "start", required = false) String startStr) {
+    		@RequestParam(value = "start", required = false) String startStr,
+    		@RequestParam(value = "v", required = false, defaultValue = "1") String version) {
 
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
 
@@ -100,24 +107,55 @@ public class PublicTimeSlotResource {
     	AgendaWebDTO agenda = new AgendaWebDTO();
     	agenda.events = collect;
     	
-    	agenda.definitions = events.stream().map(TimeSlotInstanceDTO::getTimeSlotType).distinct()
-    			.collect(Collectors.toMap(TimeSlotType::getName, TimeSlotType::getDescription));
+    	Stream<TimeSlotType> sorted = events.stream().map(TimeSlotInstanceDTO::getTimeSlotType).distinct().sorted();
+    	
+    	if ("2".equals(version)) { //En v2 => Liste
+    		agenda.definitions = sorted.map(TimeSlotTypeWebDTO::new).collect(Collectors.toList());
+    	}
+    	else { //Sinon v1 et en v1 => Map
+        	agenda.definitions = sorted.collect(Collectors.toMap(TimeSlotType::getName, TimeSlotType::getDescription));
+    	}
+    	
+   
      	
     	return new ResponseEntity<AgendaWebDTO>(agenda, HttpStatus.OK);
     }
     
     
     static class AgendaWebDTO{
-    	Map<String, String> definitions;
+    	Object definitions;
     	Map<String, Map<String, List<String>>> events;
 
 		public Map<String, Map<String, List<String>>> getEvents() {
 			return events;
 		}
-		public Map<String, String> getDefinitions() {
+		public Object getDefinitions() {
 			return definitions;
 		}
-		
-    	
+    }
+    
+    static class TimeSlotTypeWebDTO{
+
+        private String name;        
+        private String description;        
+        private String cssClass;
+
+        
+        
+        public TimeSlotTypeWebDTO(TimeSlotType t) {
+			super();
+			this.name = t.getName();
+			this.description = t.getDescription();
+			this.cssClass = t.getWebCssClass();
+		}
+		public String getName() {
+			return name;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public String getCssClass() {
+			return cssClass;
+		}
     }
 }
