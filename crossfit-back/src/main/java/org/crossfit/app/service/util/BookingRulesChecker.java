@@ -218,46 +218,48 @@ public class BookingRulesChecker {
 
 			@Override
 			public boolean test(MembershipRules rule) {
-				if(rule.getNumberOfSession() < 0) //illimité => Valid
-					return false;
-				
-				Optional<Booking> lastBooking = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).max(Comparator.comparing((Booking::getStartAt)));
-				DateTime lastBookingDate = lastBooking.map(Booking::getStartAt).orElse(bookingToTest.getStartAt()).plusDays(1);
-				//On cherche les résa a un type de creneau ou s'appplique la regle
-				List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
-				
-				long bookingsCount = 0;
-				DateTime deb = bookingToTest.getStartAt();
-				switch (rule.getType()) {
-					case SUM: //somme total des resa
-						bookingsCount = bookingsForRules.size();
-						break;
-
-					case SUM_PER_WEEK: //somme total des resa de la semaine passe
-						deb = bookingToTest.getStartAt().withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
-						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(1), bookingsForRules, rule);
-						break;
-						
-					case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
-						Optional<Booking> previousBookingBeforeNow = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule) && b.getStartAt().isBefore(bookingToTest.getStartAt())).max(Comparator.comparing((Booking::getStartAt)));
-						DateTime deb4Week = previousBookingBeforeNow.map(Booking::getStartAt).orElse(bookingToTest.getStartAt());
-						deb = deb4Week.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay();
-						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(4), bookingsForRules, rule);
-						break;
-						
-					case SUM_PER_MONTH: //somme total des resa du mois passe
-						deb = bookingToTest.getStartAt().withDayOfMonth(1).withTimeAtStartOfDay(); 
-						bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusMonths(1), bookingsForRules, rule);
-						break;
-				}
-
-				//le total des resa est superieur au total de la regle ? => La regle est viole
-
-				log.debug("Suivant la regle {} limitant a {} resa, on a compte au max {} résa entre le {} et le {}", rule.getType(), rule.getNumberOfSession(), bookingsCount, deb, lastBookingDate);
-
-				
-				if (bookingsCount > rule.getNumberOfSession()){					
-					return true;
+				if (isRuleApplyFor(bookingToTest).test(rule)){
+					if(rule.getNumberOfSession() < 0) //illimité => Valid
+						return false;
+					
+					Optional<Booking> lastBooking = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).max(Comparator.comparing((Booking::getStartAt)));
+					DateTime lastBookingDate = lastBooking.map(Booking::getStartAt).orElse(bookingToTest.getStartAt()).plusDays(1);
+					//On cherche les résa a un type de creneau ou s'appplique la regle
+					List<Booking> bookingsForRules = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule)).collect(Collectors.toList());
+					
+					long bookingsCount = 0;
+					DateTime deb = bookingToTest.getStartAt();
+					switch (rule.getType()) {
+						case SUM: //somme total des resa
+							bookingsCount = bookingsForRules.size();
+							break;
+	
+						case SUM_PER_WEEK: //somme total des resa de la semaine passe
+							deb = bookingToTest.getStartAt().withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay(); //TODO: Attention, le lundi c'est pas forcement le devut de la semaine !
+							bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(1), bookingsForRules, rule);
+							break;
+							
+						case SUM_PER_4_WEEKS: //somme total des resa des 4 semaines passees
+							Optional<Booking> previousBookingBeforeNow = _bookings.stream().filter(b->isRuleApplyFor(b).test(rule) && b.getStartAt().isBefore(bookingToTest.getStartAt())).max(Comparator.comparing((Booking::getStartAt)));
+							DateTime deb4Week = previousBookingBeforeNow.map(Booking::getStartAt).orElse(bookingToTest.getStartAt());
+							deb = deb4Week.withDayOfWeek(DateTimeConstants.MONDAY).withTimeAtStartOfDay();
+							bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusWeeks(4), bookingsForRules, rule);
+							break;
+							
+						case SUM_PER_MONTH: //somme total des resa du mois passe
+							deb = bookingToTest.getStartAt().withDayOfMonth(1).withTimeAtStartOfDay(); 
+							bookingsCount = countMaxBouking(deb, lastBookingDate, d->d.plusMonths(1), bookingsForRules, rule);
+							break;
+					}
+	
+					//le total des resa est superieur au total de la regle ? => La regle est viole
+	
+					log.debug("Suivant la regle {} limitant a {} resa, on a compte au max {} résa entre le {} et le {}", rule.getType(), rule.getNumberOfSession(), bookingsCount, deb, lastBookingDate);
+	
+					
+					if (bookingsCount > rule.getNumberOfSession()){					
+						return true;
+					}
 				}
 				
 				return false;
