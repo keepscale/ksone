@@ -19,7 +19,12 @@ body {
 .modal{
 	display: none;
 }
-
+.no-print{
+	display: none;
+}
+.fc-toolbar{
+	display: none;
+}
 #page-wrapper{
 	margin-top: 0 !important;
 	padding: 0 0;
