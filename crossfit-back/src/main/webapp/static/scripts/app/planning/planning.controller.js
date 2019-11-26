@@ -47,7 +47,7 @@ angular.module('crossfitApp')
 	    	
 	    	$scope.uiConfig = { calendar:{
 	    			lang: 'fr',
-					height: isMobile ? 'auto' : 865,
+					height: isMobile ? 'auto' : 'auto',
 					editable: false,
 					eventDurationEditable: false,
 					eventStartEditable: false,
@@ -70,6 +70,7 @@ angular.module('crossfitApp')
 						month : 'MMMM'
 					},
 					minTime: "06:00:00",
+					maxTime: "23:00:00",
 					selectable: false,
 					selectHelper: true,
 					eventClick: function(calEvent, jsEvent, calendar) {
