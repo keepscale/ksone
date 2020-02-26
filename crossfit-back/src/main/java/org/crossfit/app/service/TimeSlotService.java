@@ -151,7 +151,9 @@ public class TimeSlotService {
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
     	
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
-			return new EventDTO(closeDay.getName(), "CLOSE_DAY", closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)));
+			return new EventDTO(closeDay.getName(), "CLOSE_DAY", 
+					closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)),
+					closeDay.getName(), "#A0A0A0", -1, -1);
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evtCloseDay = new EventSourceDTO(EventSourceType.CLOSED_DAY);
@@ -167,12 +169,14 @@ public class TimeSlotService {
 
 			TimeSlot timeSlot = timeSlotExclusion.getTimeSlot();
 			
-			String title = 
-					(StringUtils.isBlank(timeSlot.getName()) ? timeSlot.getTimeSlotType().getName() : timeSlot.getName() )
-							
-					+ " ("+ timeSlot.getMaxAttendees() + ")";
+			String name = StringUtils.isBlank(timeSlot.getName()) ? timeSlot.getTimeSlotType().getName() : timeSlot.getName();
+			String title = name + " ("+ timeSlot.getMaxAttendees() + ")";
+					
 			
-			return new EventDTO(title, timeSlot.getTimeSlotType().getName(), timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()));
+			return new EventDTO(title, timeSlot.getTimeSlotType().getName(), 
+					timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()),
+					name, "#A0A0A0",
+					-1, timeSlot.getMaxAttendees());
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO(EventSourceType.EXCLUSION);

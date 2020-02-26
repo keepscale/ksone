@@ -251,13 +251,15 @@ public class BookingPlanningResource {
         	
 			List<EventDTO> events = slots.stream() //On créé la liste d'evenement
     			.map(slotInstance ->{
-    				String title = 
-    						(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName() )
-    								
-    						+ " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
+    				String name = StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName();
+					String title = name + " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
 
     				
-					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, slotInstance.getTimeSlotType().getName(), slotInstance.getStart(), slotInstance.getEnd());
+					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, 
+							slotInstance.getTimeSlotType().getName(),
+							slotInstance.getStart(), slotInstance.getEnd(),
+							name, slotInstance.getTimeSlotType().getColor(),
+							slotInstance.getTotalBooking(), slotInstance.getMaxAttendees());
     			}).collect(Collectors.toList());
 			
 			EventSourceType type = EventSourceType.BOOKABLE;

@@ -287,13 +287,14 @@ public class TimeSlotResource {
 	        	
 				List<EventDTO> events = slots.stream() //On créé la liste d'evenement
 	    			.map(slotInstance ->{
-	    				String title = 
-	    						(StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName() )
-	    								
-	    						+ " ("+ slotInstance.getMaxAttendees() + ")";
+	    				String name = StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName();
+						String title = name + " ("+ slotInstance.getMaxAttendees() + ")";
+	    						
 
 	    				
-						return new EventDTO( slotInstance.getId(), title, slotInstance.getTimeSlotType().getName(), slotInstance.getStart(), slotInstance.getEnd());
+						return new EventDTO( slotInstance.getId(), title, slotInstance.getTimeSlotType().getName(), slotInstance.getStart(), slotInstance.getEnd(),
+								name, slotInstance.getTimeSlotType().getColor(),
+								slotInstance.getTotalBooking(), slotInstance.getMaxAttendees());
 	    			}).collect(Collectors.toList());
 				
 				EventSourceDTO evt = new EventSourceDTO(); //On met cette liste d'évènement dans EventSource
