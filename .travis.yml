@@ -15,7 +15,7 @@ before_install:
 - echo $APP_VERSION
 - cd ..
 
-install: "/bin/true"
+install: true
 
 script:
 - cd crossfit-back
