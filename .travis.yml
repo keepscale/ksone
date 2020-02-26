@@ -10,12 +10,11 @@ cache:
 
 before_install:
 - cd crossfit-back
-- export APP_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate
-  -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)'`
+- export APP_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec`
 - echo $APP_VERSION
 - cd ..
 
-install: true
+install: "/bin/true"
 
 script:
 - cd crossfit-back
