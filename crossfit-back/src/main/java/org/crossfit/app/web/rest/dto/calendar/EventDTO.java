@@ -1,6 +1,5 @@
 package org.crossfit.app.web.rest.dto.calendar;
 
-import org.crossfit.app.domain.TimeSlotType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -11,6 +10,11 @@ public class EventDTO {
 	private final String title;
 	private final DateTime start;
 	private final DateTime end;
+
+	private final String name;
+	private final String icon;
+	private final Integer totalAttendees;
+	private final Integer maxAttendees;
 	
 	
 
@@ -29,17 +33,21 @@ public class EventDTO {
 
 	*/
 
-	public EventDTO(String title, String type, DateTime start, DateTime end) {
-		this(null, title, type, start, end);
+	public EventDTO(String title, String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees) {
+		this(null, title, type, start, end, name, icon, totalAttendees, maxAttendees);
 	}	
 
-	public EventDTO(Long id, String title,  String type, DateTime start, DateTime end) {
+	public EventDTO(Long id, String title,  String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.type = type;
 		this.start = start.withZoneRetainFields(DateTimeZone.UTC);
 		this.end = end.withZoneRetainFields(DateTimeZone.UTC);
+		this.name = name;
+		this.icon = icon;
+		this.totalAttendees = totalAttendees;
+		this.maxAttendees = maxAttendees;
 	}
 
 	public Long getId() {
@@ -73,6 +81,23 @@ public class EventDTO {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public Integer getTotalAttendees() {
+		return totalAttendees;
+	}
+
+	public Integer getMaxAttendees() {
+		return maxAttendees;
+	}
+	
 	
 	/*
 	public String getBackgroundColor() {
