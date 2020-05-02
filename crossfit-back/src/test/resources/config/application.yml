@@ -37,6 +37,7 @@ spring:
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: 12345
 security.access.card.token: ABCD
+security.jwt.secret-key: testkey
 
 async:
     corePoolSize: 2
