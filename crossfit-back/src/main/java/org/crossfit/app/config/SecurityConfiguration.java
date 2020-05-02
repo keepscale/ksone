@@ -8,6 +8,9 @@ import org.crossfit.app.security.AjaxAuthenticationSuccessHandler;
 import org.crossfit.app.security.AjaxLogoutSuccessHandler;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.Http401UnauthorizedEntryPoint;
+import org.crossfit.app.security.jwt.JWTAuthenticationFilter;
+import org.crossfit.app.security.jwt.JWTAuthorizationFilter;
+import org.crossfit.app.security.jwt.JwtTokenService;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +58,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Inject
     private RememberMeServices rememberMeServices;
+    
+    @Inject
+    private JwtTokenService jwtTokenService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -132,6 +138,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .headers()
             .frameOptions()
             .disable()
+        .and()
+        	.addFilterBefore(new JWTAuthenticationFilter("/api/token", jwtTokenService, authenticationManager()), BasicAuthenticationFilter.class)
+        	.addFilterBefore(new JWTAuthorizationFilter(jwtTokenService, userDetailsService), JWTAuthenticationFilter.class)
+        	.authorizeRequests()
         .and()
         	.addFilterBefore(
         			new AccessCardAuthenticationFilter(env.getProperty("security.access.card.token")), 
