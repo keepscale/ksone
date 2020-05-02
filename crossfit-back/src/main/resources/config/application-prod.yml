@@ -59,6 +59,7 @@ cache:
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: ${REMEMBER_ME_KEY}
 security.access.card.token: ${CARD_API_KEY}
+security.jwt.secret-key: ${JWT_KEY}
 
 async:
     corePoolSize: 2

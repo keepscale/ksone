@@ -13,7 +13,7 @@ spring:
         active: local
     datasource:
         driverClassName: org.postgresql.Driver        
-        url: jdbc:postgresql://localhost:5432/cf-prod
+        url: jdbc:postgresql://localhost:5432/cf-tmp
         username: postgres
         password: password
         test-on-borrow: true
@@ -58,6 +58,7 @@ security.basic.enabled: false
 # security configuration (this key should be unique for your application, and kept secret)
 security.rememberme.key: 67890
 security.access.card.token: 12345
+security.jwt.secret-key: devkey
 
 async:
     corePoolSize: 2
