@@ -100,7 +100,7 @@ public class EventDTO {
 		return maxAttendees;
 	}
 
-	public boolean hasSubNotif() {
+	public boolean isHasSubNotif() {
 		return hasSubNotif;
 	}
 
