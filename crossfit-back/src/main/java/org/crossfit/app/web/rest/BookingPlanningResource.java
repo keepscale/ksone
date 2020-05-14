@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.TimeSlotService;
 import org.crossfit.app.web.rest.dto.BookingDTO;
+import org.crossfit.app.web.rest.dto.MemberDTO;
 import org.crossfit.app.web.rest.dto.TimeSlotInstanceDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventDTO;
 import org.crossfit.app.web.rest.dto.calendar.EventSourceDTO;
@@ -226,9 +228,10 @@ public class BookingPlanningResource {
 		
 		Map<Long, Booking> bookingsById = bookings.stream().collect(Collectors.toMap(Booking::getId, Function.identity()));
 		
+		List<TimeSlotNotification> allNotifications = timeSlotNotificationRepository.findAllAfter(startAt.toLocalDate());
 		
     	List<EventSourceDTO> eventSources = timeSlotService.findAllTimeSlotInstance(
-    			startAt, endAt, closedDays, timeSlotExclusions, bookings, new ArrayList<>(), new ArrayList<>(), BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
+    			startAt, endAt, closedDays, timeSlotExclusions, bookings, allNotifications, new ArrayList<>(), BookingDTO.publicMapper, timeService.getDateTimeZone(currentCrossFitBox))
     	.collect(Collectors.groupingBy(slotInstance ->{
     		Integer max = slotInstance.getMaxAttendees();
     		Integer count = slotInstance.getTotalBooking();
@@ -254,12 +257,14 @@ public class BookingPlanningResource {
     				String name = StringUtils.isBlank(slotInstance.getName()) ? slotInstance.getTimeSlotType().getName() : slotInstance.getName();
 					String title = name + " ("+ slotInstance.getTotalBooking() + "/" + slotInstance.getMaxAttendees() + ")";
 
-    				
+					boolean notif = slotInstance.getWaintingNotifs().stream()
+							.anyMatch(dto->Objects.equals(dto.getId(), SecurityUtils.getCurrentMember().getId()));
+					
 					return new EventDTO( status == TimeSlotStatus.NO_ABLE ? null : slotInstance.getId(), title, 
 							slotInstance.getTimeSlotType().getName(),
 							slotInstance.getStart(), slotInstance.getEnd(),
 							name, slotInstance.getTimeSlotType().getColor(),
-							slotInstance.getTotalBooking(), slotInstance.getMaxAttendees());
+							slotInstance.getTotalBooking(), slotInstance.getMaxAttendees(), notif);
     			}).collect(Collectors.toList());
 			
 			EventSourceType type = EventSourceType.BOOKABLE;
