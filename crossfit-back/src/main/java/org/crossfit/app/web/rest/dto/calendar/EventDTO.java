@@ -15,6 +15,7 @@ public class EventDTO {
 	private final String icon;
 	private final Integer totalAttendees;
 	private final Integer maxAttendees;
+	private final boolean hasSubNotif;
 	
 	
 
@@ -33,11 +34,11 @@ public class EventDTO {
 
 	*/
 
-	public EventDTO(String title, String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees) {
-		this(null, title, type, start, end, name, icon, totalAttendees, maxAttendees);
+	public EventDTO(String title, String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees, boolean subNotif) {
+		this(null, title, type, start, end, name, icon, totalAttendees, maxAttendees, subNotif);
 	}	
 
-	public EventDTO(Long id, String title,  String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees) {
+	public EventDTO(Long id, String title,  String type, DateTime start, DateTime end, String name, String icon, Integer totalAttendees, Integer maxAttendees, boolean subNotif) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -48,6 +49,7 @@ public class EventDTO {
 		this.icon = icon;
 		this.totalAttendees = totalAttendees;
 		this.maxAttendees = maxAttendees;
+		this.hasSubNotif = subNotif;
 	}
 
 	public Long getId() {
@@ -97,7 +99,11 @@ public class EventDTO {
 	public Integer getMaxAttendees() {
 		return maxAttendees;
 	}
-	
+
+	public boolean hasSubNotif() {
+		return hasSubNotif;
+	}
+
 	
 	/*
 	public String getBackgroundColor() {

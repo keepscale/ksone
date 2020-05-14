@@ -153,7 +153,7 @@ public class TimeSlotService {
 		List<EventDTO> closedDaysAsDTO = closedDays.stream().map(closeDay -> {
 			return new EventDTO(closeDay.getName(), "CLOSE_DAY", 
 					closeDay.getStartAt().withZone(timeService.getDateTimeZone(box)), closeDay.getEndAt().withZone(timeService.getDateTimeZone(box)),
-					closeDay.getName(), "#A0A0A0", -1, -1);
+					closeDay.getName(), "#A0A0A0", -1, -1, false);
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evtCloseDay = new EventSourceDTO(EventSourceType.CLOSED_DAY);
@@ -176,7 +176,7 @@ public class TimeSlotService {
 			return new EventDTO(title, timeSlot.getTimeSlotType().getName(), 
 					timeSlotExclusion.getDate().toDateTime(timeSlot.getStartTime()), timeSlotExclusion.getDate().toDateTime(timeSlot.getEndTime()),
 					name, "#A0A0A0",
-					-1, timeSlot.getMaxAttendees());
+					-1, timeSlot.getMaxAttendees(), false);
 
 		}).collect(Collectors.toList());
 		EventSourceDTO evt = new EventSourceDTO(EventSourceType.EXCLUSION);
