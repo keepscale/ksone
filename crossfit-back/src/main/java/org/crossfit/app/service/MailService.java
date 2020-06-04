@@ -185,7 +185,7 @@ public class MailService {
 		String content = templateEngine.process("mails/rapportActivite", context);
 		String subject = messageSource.getMessage("email.rapportActivite.title", new Object[] { }, locale);
 
-		Email mailBox = new Email(box.getEmailFrom(), to, subject, content, false, false);
+		Email mailBox = new Email(box.getEmailFrom(), to, subject, content, false, true);
 		
 		mailSender.sendEmail(mailBox);
 	}
