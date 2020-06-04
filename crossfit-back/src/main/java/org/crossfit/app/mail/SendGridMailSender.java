@@ -11,6 +11,7 @@ import com.sendgrid.Attachments;
 import com.sendgrid.Content;
 import com.sendgrid.Mail;
 import com.sendgrid.Method;
+import com.sendgrid.Personalization;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -36,10 +37,17 @@ public class SendGridMailSender implements MailSender {
 	public void sendEmail(Email email) {
 		
 		com.sendgrid.Email from = new com.sendgrid.Email(email.getFrom());
-		com.sendgrid.Email to = new com.sendgrid.Email(email.getTo());
+	    Personalization personalization = new Personalization();
+	    for (String toStr : email.getTo()) {
+			personalization.addTo(new com.sendgrid.Email(toStr));
+		}
 		Content content = new Content(email.isHtml() ? "text/html" : "text/plain", email.getContent());
 
-		Mail mail = new Mail(from, email.getSubject(), to, content);
+		Mail mail = new Mail();
+		mail.setFrom(from);
+		mail.addPersonalization(personalization);
+		mail.setSubject(email.getSubject());
+		mail.addContent(content);
 		for (EmailAttachment a : email.getAttachments()) {
 
 			Attachments attachments = new Attachments();
@@ -50,22 +58,21 @@ public class SendGridMailSender implements MailSender {
 			attachments.setType(a.getType());
 			mail.addAttachments(attachments);
 		}
-
 		SendGrid sg = new SendGrid(apiKey);
 		Request request = new Request();
 		try {
 			
-			log.debug("Send mail to {} from {} with subject {} and content {}", to, from, email.getSubject(), content);
+			log.debug("Send mail to {} from {} with subject {} and content {}", email.getTo(), from, email.getSubject(), content);
 			
 			request.setMethod(Method.POST);
 			request.setEndpoint("mail/send");
 			request.setBody(mail.build());
 			Response response = sg.api(request);
 			
-			log.info("Email sent to '{}'. {} {} / Headers: {}", to, response.getStatusCode(), response.getBody(), response.getHeaders());
+			log.info("Email sent to '{}'. {} {} / Headers: {}", email.getTo(), response.getStatusCode(), response.getBody(), response.getHeaders());
 
 		} catch (IOException e) {
-			log.error("E-mail could not be sent to '{}' with SendGrid: {}", to, e.getMessage(), e);
+			log.error("E-mail could not be sent to '{}' with SendGrid: {}", email.getTo(), e.getMessage(), e);
 		}
 	}
 

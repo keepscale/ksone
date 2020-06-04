@@ -1,5 +1,6 @@
 package org.crossfit.app.service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -201,7 +202,10 @@ public class MemberService {
 		CrossFitBox box = boxService.findCurrentCrossFitBox();
 		return memberRepository.findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate(box);
 	}
-  
+
+	public List<Member> findAllMemberWithAuthorities(CrossFitBox box, String... authorities) {
+		return memberRepository.findAllMemberWithAuthorities(box, Arrays.asList(authorities));
+	}
 	
     /**
      * Persistent Token are used for providing automatic authentication, they should be automatically deleted after
@@ -562,5 +566,6 @@ public class MemberService {
 		}
 		m.setComments(actual + comments);
 	}
+
 	
 }

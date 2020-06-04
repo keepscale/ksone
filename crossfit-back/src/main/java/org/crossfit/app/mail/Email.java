@@ -1,11 +1,13 @@
 package org.crossfit.app.mail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 
 public class Email {
 	private final String from;
-	private final String to;
+	private final List<String> to;
 	private final String subject;
 	private final String content;
 	private final boolean isMultipart;
@@ -13,7 +15,11 @@ public class Email {
 
 	private final List<EmailAttachment> attachments = new ArrayList<>();
 
+
 	public Email(String from, String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+		this(from, Arrays.asList(to), subject, content, isMultipart, isHtml);
+	}
+	public Email(String from, List<String> to, String subject, String content, boolean isMultipart, boolean isHtml) {
 		super();
 		this.from = from;
 		this.to = to;
@@ -31,7 +37,7 @@ public class Email {
 		return from;
 	}
 
-	public String getTo() {
+	public List<String> getTo() {
 		return to;
 	}
 

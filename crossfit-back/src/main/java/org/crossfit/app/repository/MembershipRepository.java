@@ -21,6 +21,9 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
 	@Query("select ms from Membership ms where" + BY_BOX + " order by ms.name")
 	List<Membership> findAll(@Param("box") CrossFitBox box);
 	
+	@Query("select ms from Membership ms left join fetch ms.membershipRules where" + BY_BOX)
+	List<Membership> findAllWithRules(@Param("box") CrossFitBox box);
+	
 	@Query("select ms from Membership ms where" + BY_BOX + " and ms.addByDefault = true order by ms.name")
 	List<Membership> findAllByDefault(@Param("box") CrossFitBox box);
 
