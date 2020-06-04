@@ -137,6 +137,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     		+ "select s from Subscription s join s.directDebit dd left join dd.mandate mandate where s.member = m AND ( dd.mandate is null OR mandate.status != 'ACTIVE' ) ) ")
 	List<Member> findAllMemberWithSubscriptionDirectDebitAndNoMandateValidate(@Param("box") CrossFitBox box);
 
+
+    @Query("select m from Member m where m.box = :box and exists (select a from Authority a where a in elements( m.authorities ) and a.name in ( :authorities ) )")
+	List<Member> findAllMemberWithAuthorities(@Param("box") CrossFitBox box, @Param("authorities") List<String> authorities);
+
     
 
 }

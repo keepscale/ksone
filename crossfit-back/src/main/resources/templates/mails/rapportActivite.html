@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.rapportActivite.title}">Rapport d'activité</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p th:text="#{email.rapportActivite.hello}">
+            Bonjour,
+        </p>
+                
+        <p th:text="#{email.rapportActivite.expire.text}" th:if="${not #lists.isEmpty(membersConcerned)}">
+            Voici la liste des adhérents pour lesquels leur abonnement expire prochainement:
+        </p>
+
+        <ul th:if="${not #lists.isEmpty(membersConcerned)}">
+            <li th:each="member: ${membersConcerned}" th:text="${member.firstName + ' ' + member.lastName + ' (' + member.login + ')'}"></li>
+        </ul>
+        
+        <p th:text="#{email.rapportActivite.expire.noboby}" th:if="${#lists.isEmpty(membersConcerned)}">
+            Aucun abonnement n'arrive à expiration prochainement !
+        </p>
+        
+    </body>
+</html>

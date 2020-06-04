@@ -1,6 +1,8 @@
 package org.crossfit.app.domain;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -313,5 +315,12 @@ public class CrossFitBox implements Serializable {
 
 	public String getTimeZoneId() {
 		return TimeZone.getTimeZone(StringUtils.isEmpty(getTimeZone()) ? "Europe/Paris" : getTimeZone()).getID();
+	}
+
+	public List<Integer> getSendRapportActiviteAtDays() {
+		return Arrays.asList(1);
+	}
+	public int getSendRapportActiviteForNextXDay() {
+		return 30;
 	}
 }

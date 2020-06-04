@@ -24,5 +24,9 @@ angular.module('crossfitApp')
                 url: 'admin/contractmodels/versionformat',
                 isArray: true
             },
+            'sendRapportActivite': {
+            	method: 'POST',
+                url: 'admin/rapport-activite'
+            },
         });
     });

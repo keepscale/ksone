@@ -1,6 +1,19 @@
 package org.crossfit.app.service;
 
-import aQute.lib.base64.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Mandate;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
@@ -19,14 +32,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
+import aQute.lib.base64.Base64;
 
 /**
  * Service for sending e-mails.
@@ -165,4 +171,22 @@ public class MailService {
 		mailBox.addAttachment(new EmailAttachment(pdfBase64, UUID.randomUUID().toString(), "attachment", "mandat.pdf", MediaType.APPLICATION_PDF_VALUE));
 		mailSender.sendEmail(mailBox);
     }
+
+	public void sendRapportActivite(CrossFitBox box, List<String> to, Set<Member> membersConcerned) {
+		
+		log.info("Envoi à {}: {} membres dans le rapport ({})", to, membersConcerned.size(), membersConcerned.stream().map(Member::getLogin).limit(3).collect(Collectors.toList()));
+		
+
+		Locale locale = Locale.forLanguageTag("fr");
+		Context context = new Context(locale);
+		context.setVariable("membersConcerned", membersConcerned);
+		
+		
+		String content = templateEngine.process("mails/rapportActivite", context);
+		String subject = messageSource.getMessage("email.rapportActivite.title", new Object[] { }, locale);
+
+		Email mailBox = new Email(box.getEmailFrom(), to, subject, content, false, false);
+		
+		mailSender.sendEmail(mailBox);
+	}
 }

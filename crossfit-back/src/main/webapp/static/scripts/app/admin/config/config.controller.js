@@ -3,6 +3,7 @@
 angular.module('crossfitApp')
     .controller('ConfigController', function ($scope, CrossfitBox) {
  
+    	$scope.rapportActiviteTo = "loic.gangloff@gmail.com";
     	$scope.box = CrossfitBox.current();
     	$scope.contractModels = CrossfitBox.contractmodels();
     	$scope.versionFormats = CrossfitBox.contractmodelsVersionformat();
@@ -17,5 +18,8 @@ angular.module('crossfitApp')
     		CrossfitBox.updatecontractmodel(c, function(){
     	        $scope.contractModels = CrossfitBox.contractmodels();
     		});
+    	};
+    	$scope.sendRapportActivite = function(){
+    		CrossfitBox.sendRapportActivite($scope.rapportActiviteTo);
     	};
     });

@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Description;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -35,6 +36,7 @@ import reactor.bus.EventBus;
 @SpringBootApplication
 //@EnableAutoConfiguration
 @EnableAsync
+@EnableScheduling
 public class Application implements CommandLineRunner{
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);

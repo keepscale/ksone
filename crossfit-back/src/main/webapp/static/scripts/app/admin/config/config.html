@@ -18,7 +18,38 @@
 	</ul>
 </nav>
 
+<form novalidate>
 
+	<div class="modal-header">
+		<h4 class="modal-title" id="myMemberLabel"
+			translate="crossfitApp.config.home.title">Configuration</h4>
+	</div>
+	
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-md-12">
+               	<jh-alert-error></jh-alert-error>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+		        <div class="form-group">
+		            <label for="field_name">Envoi du rapport à (séparé emails par ;)</label>
+		            <input type="text" class="form-control" ng-model="rapportActiviteTo">
+		        </div>
+	        </div>
+        </div>
+    </div>
+    
+	<div class="modal-footer">
+		<button type="button" 
+				ng-click="sendRapportActivite()" class="btn btn-primary">
+			<span class="glyphicon glyphicon-envelope"></span>&nbsp;<span>Envoyer</span>
+		</button>
+    </div>
+    
+</form>
+	
 <form name="form" role="form" novalidate ng-submit="update()">
 
 	<div class="modal-header">
