@@ -1,7 +1,5 @@
 package org.crossfit.app.service;
 
-import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,8 +7,9 @@ import java.util.stream.Collectors;
 import org.crossfit.app.domain.CrossFitBox;
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Membership;
+import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.repository.CrossFitBoxRepository;
-import org.crossfit.app.repository.MembershipRepository;
+import org.crossfit.app.repository.SubscriptionRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -29,7 +28,9 @@ public class RapportActiviteService {
 	@Autowired
 	private CrossFitBoxRepository crossFitBoxRepository;
 	@Autowired
-	private MembershipRepository membershipRepository;
+	private MembershipService membershipService;
+	@Autowired
+	private SubscriptionRepository subscriptionRepository;
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -67,17 +68,14 @@ public class RapportActiviteService {
         
         LocalDate now = LocalDate.now();
         
-		Set<Long> membershipsIds = membershipRepository.findAllWithRules(box).stream().filter(MembershipService::isMembershipPaymentByMonth).map(Membership::getId).collect(Collectors.toSet());
-		List<Member> memberWithSubscriptionNow = memberService.findAllMemberWithActiveSubscriptionAtDate(now.minusDays(1), membershipsIds, false);
-		List<Member> memberWithNoSubscriptionInXDays = memberService.findAllMemberWithNoActiveSubscriptionAtDate(now.plusDays(forNextXDays), membershipsIds, false);
+		Set<Long> membershipsIds = membershipService.findAnnualyMembership(box).stream()
+				.map(Membership::getId)
+				.collect(Collectors.toSet());
 		
-		Set<Member> membersConcerned = memberWithSubscriptionNow.stream()
-		    .distinct()
-		    .filter(memberWithNoSubscriptionInXDays::contains)
-		    .sorted(Comparator.comparing(Member::getFirstName))
-		    .collect(Collectors.toCollection(LinkedHashSet::new));
+		Set<Subscription> subscriptionsExpiring = subscriptionRepository.findAllByBoxAtDateAndNotAtOtherDate(box, now.minusDays(1), now.plusDays(forNextXDays), membershipsIds);
 		
-		mailService.sendRapportActivite(box, to, membersConcerned);
+				
+		mailService.sendRapportActivite(box, to, subscriptionsExpiring);
 	}
 
 	private List<String> getSendTo(CrossFitBox box) {

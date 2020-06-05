@@ -46,6 +46,7 @@ public class BookingDTO implements Serializable {
 		dto.setCheckInDate(b.getCardEvent().map(CardEvent::getCheckingDate).orElseGet(()->{return null;}));
 		dto.setCardUuid(member.getCardUuid());
 		dto.setMemberId(member.getId());
+		dto.setMemberTel(member.getTelephonNumber());
 		dto.setSubscriptionId(b.getSubscription().getId());
 		return dto;
 	};
@@ -100,6 +101,7 @@ public class BookingDTO implements Serializable {
 	private DateTime createdAt;
 
 	private Long memberId;
+	private String memberTel;
 	
 	private String cardUuid;
 	
@@ -209,6 +211,15 @@ public class BookingDTO implements Serializable {
 
 	public void setMedicalCertificateEndDateSoonExpired(LocalDate medicalCertificateEndDateSoonExpired) {
 		this.medicalCertificateEndDateSoonExpired = medicalCertificateEndDateSoonExpired;
+	}
+	
+
+	public String getMemberTel() {
+		return memberTel;
+	}
+
+	public void setMemberTel(String memberTel) {
+		this.memberTel = memberTel;
 	}
 
 	@Override

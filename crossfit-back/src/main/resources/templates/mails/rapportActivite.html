@@ -9,15 +9,20 @@
             Bonjour,
         </p>
                 
-        <p th:text="#{email.rapportActivite.expire.text}" th:if="${not #lists.isEmpty(membersConcerned)}">
+        <p th:text="#{email.rapportActivite.expire.text}" th:if="${not #lists.isEmpty(subscriptionsExpiringByDate)}">
             Voici la liste des adhérents pour lesquels leur abonnement expire prochainement:
         </p>
 
-        <ul th:if="${not #lists.isEmpty(membersConcerned)}">
-            <li th:each="member: ${membersConcerned}" th:text="${member.firstName + ' ' + member.lastName + ' (' + member.login + ')'}"></li>
+        <ul th:if="${not #lists.isEmpty(subscriptionsExpiringByDate)}">
+            <li th:each="entry: ${subscriptionsExpiringByDate}">
+            	<p th:text="${entry.key}"></p>            	
+            	<ul>
+            		<li th:each="member: ${entry.value}" th:text="${member.firstName + ' ' + member.lastName + ' (' + member.login + ')'}"></li>
+            	</ul>
+            </li>
         </ul>
         
-        <p th:text="#{email.rapportActivite.expire.noboby}" th:if="${#lists.isEmpty(membersConcerned)}">
+        <p th:text="#{email.rapportActivite.expire.noboby}" th:if="${#lists.isEmpty(subscriptionsExpiringByDate)}">
             Aucun abonnement n'arrive à expiration prochainement !
         </p>
         

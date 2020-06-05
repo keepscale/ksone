@@ -4,9 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -172,14 +175,30 @@ public class MailService {
 		mailSender.sendEmail(mailBox);
     }
 
-	public void sendRapportActivite(CrossFitBox box, List<String> to, Set<Member> membersConcerned) {
+	public void sendRapportActivite(CrossFitBox box, List<String> to, Set<Subscription> subscriptionsExpiring) {
 		
-		log.info("Envoi à {}: {} membres dans le rapport ({})", to, membersConcerned.size(), membersConcerned.stream().map(Member::getLogin).limit(3).collect(Collectors.toList()));
-		
+		log.info("Envoi à {}: {} membres dans le rapport ({})", to, subscriptionsExpiring.size(), subscriptionsExpiring.stream().map(Subscription::getMember).map(Member::getLogin).limit(3).collect(Collectors.toList()));
+
+		final SimpleDateFormat sdfDateDisplay = new SimpleDateFormat("dd/MM/yyyy");
 
 		Locale locale = Locale.forLanguageTag("fr");
 		Context context = new Context(locale);
-		context.setVariable("membersConcerned", membersConcerned);
+		
+		Map<String, List<Member>> collect = subscriptionsExpiring.stream()
+				.sorted(Comparator.comparing(Subscription::getSubscriptionEndDate))
+				.collect(Collectors.groupingBy(
+						s->sdfDateDisplay.format(s.getSubscriptionEndDate().toDate()),
+						LinkedHashMap::new,
+						Collectors.mapping(Subscription::getMember, 
+								Collectors.collectingAndThen(
+										Collectors.toList(), 
+										e -> e.stream().sorted(Comparator.comparing(Member::getFirstName)).collect(Collectors.toList())
+								)
+						)
+						
+				));
+		
+		context.setVariable("subscriptionsExpiringByDate", collect);
 		
 		
 		String content = templateEngine.process("mails/rapportActivite", context);

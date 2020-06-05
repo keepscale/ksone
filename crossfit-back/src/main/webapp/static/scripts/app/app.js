@@ -111,7 +111,7 @@ angular.module('crossfitApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pasca
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
         
-        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|webcal|chrome-extension):/);
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|webcal|chrome-extension|tel|sms):/);
 
         
     })
