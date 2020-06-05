@@ -75,5 +75,17 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 	 		+ "where ms.box = :box "
 	 		+ "AND ( (s.subscriptionStartDate <= :at AND :at < s.subscriptionEndDate) OR (s.subscriptionStartDate <= :at2 AND :at2 < s.subscriptionEndDate) )")
 	 Set<Subscription> findAllByBoxAtDateOrAtDate(@Param("box") CrossFitBox box, @Param("at")  LocalDate at, @Param("at2")  LocalDate orAt);
+	 
+
+	 @Query("select s1 from Subscription s1 "
+	 		+ "join fetch s1.membership ms "
+	 		+ "join fetch s1.member m "
+	 		+ "where m.box = :box AND s1.membership.id in ( :includeMembershipsIds ) "
+    		+ "and 	   exists ( select s from Subscription s where s = s1 and s.subscriptionStartDate <= :at    AND :at    < s.subscriptionEndDate )"
+    		+ "and not exists ( select s from Subscription s where s = s1 and s.subscriptionStartDate <= :notat AND :notat < s.subscriptionEndDate ) ")
+	 Set<Subscription> findAllByBoxAtDateAndNotAtOtherDate(@Param("box") CrossFitBox box, 
+			 	@Param("at")  LocalDate at, 
+				@Param("notat") LocalDate notat, 
+				@Param("includeMembershipsIds") Set<Long> includeMembershipsIds);
 
 }

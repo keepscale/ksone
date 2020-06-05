@@ -1,5 +1,8 @@
 package org.crossfit.app.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.crossfit.app.domain.CrossFitBox;
@@ -52,5 +55,12 @@ public class MembershipService {
         
         Membership result = membershipRepository.save(membership);
 		return result;
+	}
+	
+	public List<Membership> findAnnualyMembership(CrossFitBox box){
+		return membershipRepository.findAllWithRules(box).stream()
+		.filter(MembershipService::isMembershipPaymentByMonth)
+		.filter(m->m.getNbMonthValidity() == 12)
+		.collect(Collectors.toList());
 	}
 }

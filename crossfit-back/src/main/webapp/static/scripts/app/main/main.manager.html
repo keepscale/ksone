@@ -120,11 +120,21 @@
 																		<span class="glyphicon glyphicon-pencil"></span>
 																	</a>
 																</li>
-																<li class="list-group-item three-points-overflow" ng-repeat="booking in slot.bookings">
-																	<button ng-click="quickDeleteBooking(booking)" has-any-role="ROLE_ADMIN,ROLE_MANAGER" class="btn btn-xs btn-danger pull-right">
-																		<span class="glyphicon glyphicon-remove">
-																	</span></button>
-																	
+																<li class="list-group-item" ng-repeat="booking in slot.bookings">
+																	<div class="btn-group pull-right">
+																	  <button type="button" class="btn btn-xs btn-danger  dropdown-toggle" 
+																	  		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	    ...</span>
+																	  </button>
+																	  <ul class="dropdown-menu">
+																	    <li><a ng-click="quickDeleteBooking(booking)" has-any-role="ROLE_ADMIN,ROLE_MANAGER" >
+																		<span class="glyphicon glyphicon-remove"></span> Supprimer</a></li>
+																	    <li><a href="sms:{{booking.memberTel}}">
+																		<span class="glyphicon glyphicon-phone"></span> SMS</a></li>
+																	    <li><a href="tel:{{booking.memberTel}}">
+																		<span class="glyphicon glyphicon-earphone"></span> Appel</a></li>
+																	  </ul>
+																	</div>
 																	<span has-any-role="ROLE_ADMIN,ROLE_MANAGER">
 																		<button class="btn btn-sm btn-default {{booking.checkInDate || !booking.cardUuid ? 'btn-noborder' : ''}} hidden-xs" 
 																			ng-disabled="booking.checkInDate != null || !booking.cardUuid" ng-click="quickCheckIn(booking)"
