@@ -64,7 +64,7 @@ public class BookingDTO implements Serializable {
 		return  b->{
 //			String membershipName = b.getSubscription().getMembership().getN	ame();
 			String timeslotName = b.getTimeSlotType().getName();
-			String title = "'" + timeslotName+"'";
+			String title = "" + timeslotName+"";
 			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
 			dto.setCreatedAt(b.getCreatedDate());
 			dto.setStartAt(b.getStartAt());			
