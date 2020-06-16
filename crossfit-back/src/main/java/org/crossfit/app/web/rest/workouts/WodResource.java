@@ -20,6 +20,7 @@ import org.crossfit.app.service.CrossFitBoxSerivce;
 import org.crossfit.app.service.TimeService;
 import org.crossfit.app.service.WodService;
 import org.crossfit.app.web.rest.dto.PaginateList;
+import org.crossfit.app.web.rest.dto.WodDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.crossfit.app.web.rest.workouts.dto.WodResultCompute;
@@ -53,7 +54,7 @@ public class WodResource {
 	
 	private final Logger log = LoggerFactory.getLogger(WodResource.class);
 
-/*
+
 	@RequestMapping(value = "/wod/{datestr}/withMyResult", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<WodDTO>> getWodAtDateWithMyResult(@PathVariable String datestr){
 		
@@ -62,7 +63,7 @@ public class WodResource {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		Set<Wod> wodsAtDate = wodService.findWodsBetween(date, date);
+		Set<Wod> wodsAtDate = wodService.findAllWod(date, date);
 		Set<WodResult> myResultsAtDate = wodService.findMyResultsAtDate(date);
 		
 		
@@ -77,7 +78,7 @@ public class WodResource {
 		
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
-	*/
+	
 	/**
 	 * GET /wod -> get all the wod.
 	 */
@@ -171,7 +172,7 @@ public class WodResource {
 	
 	
 
-	//@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId){
 		
 		Wod wod = wodService.findOne(wodId);

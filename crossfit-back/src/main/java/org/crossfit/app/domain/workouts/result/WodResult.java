@@ -58,7 +58,6 @@ public class WodResult {
 	@Column(name = "category", nullable = false)
 	private ResultCategory category;
 	
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "division", nullable = false)
 	private ResultDivision division;
@@ -138,7 +137,12 @@ public class WodResult {
 	public void setTotalReps(Integer totalReps) {
 		this.totalReps = totalReps;
 	}
-	
+	public ResultDivision getDivision() {
+		return division;
+	}
+	public void setDivision(ResultDivision division) {
+		this.division = division;
+	}
 	public ResultCategory getCategory() {
 		return category;
 	}
