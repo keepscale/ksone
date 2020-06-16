@@ -10,11 +10,13 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.WodShareProperties;
 import org.crossfit.app.domain.workouts.enumeration.WodVisibility;
+import org.crossfit.app.domain.workouts.result.ResultDivision;
 import org.crossfit.app.domain.workouts.result.WodResult;
 import org.crossfit.app.repository.EquipmentRepository;
 import org.crossfit.app.repository.MovementRepository;
@@ -64,6 +66,9 @@ public class WodService {
 		return this.movementRepository.findAll(query);
 	}
 
+	public Set<Wod> findAllWod(LocalDate start, LocalDate end) {
+		return findAllWod("%", start, end);
+	}
 
 	public Set<Wod> findAllWod(String search, LocalDate start, LocalDate end) {
 		log.debug("findAllVisibleWod(search={}, start={}, end={}", search, start, end);
@@ -179,6 +184,7 @@ public class WodService {
 		result.setDate(dto.getDate());
 		result.setWod(wod);
 		result.setMember(SecurityUtils.getCurrentMember());
+		result.setDivision(result.getMember().getTitle() == Title.MR ? ResultDivision.MEN : ResultDivision.WOMEN);
 		result.setCategory(dto.getCategory());
 		switch (wod.getScore()) {
 		case FOR_LOAD:
