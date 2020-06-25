@@ -13,13 +13,29 @@
   </div>
   
   
-  <mat-paginator *ngIf="list" 
+  <mat-paginator *ngIf="list!=null  && list.length > 0" 
     [pageSizeOptions]="[5, 10, 25, 100]"
     [length]="list.length"
     [pageSize]="list.pageSize"
     (page)="paginate($event)"></mat-paginator>
 
-  <table mat-table [dataSource]="list ? list.results : []" matSort>
+  <table mat-table [dataSource]="list ? list.results : []" matSort *ngIf="list!=null  && list.length > 0">
+
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()"
+                      *ngIf="selection.isMultipleSelection()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
 
     <!-- ID Column -->
     <ng-container matColumnDef="id">
@@ -27,38 +43,63 @@
       <td mat-cell *matCellDef="let row"> {{row.id}} </td>
     </ng-container>
 
-    <!-- Progress Column -->
+    <!-- name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom </th>
       <td mat-cell *matCellDef="let row"> 
           <a routerLink="/wod/{{row.id}}/detail" routerLinkActive="active">
-            {{row.name}} 
+            {{row.name != null ? row.name : 'WOD'}} 
           </a>
       </td>
     </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
-      <td mat-cell *matCellDef="let row"> {{row.category}} </td>
+    
+    <!-- description Column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> WOD </th>
+      <td mat-cell *matCellDef="let row"> 
+        <p style="white-space: pre;">{{row.description}} </p>
+      </td>
     </ng-container>
 
-    <!-- Color Column -->
+    <!-- publications Column -->
+    <ng-container matColumnDef="publications">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publié le </th>
+      <td mat-cell *matCellDef="let row"> 
+        <ul>
+          <li *ngFor="let pub of row.publications">
+            {{pub.startAt}}
+          </li>
+        </ul>
+      </td>
+    </ng-container>
+
+    <!-- category Column -->
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+      <td mat-cell *matCellDef="let row">
+        {{'wod.category.' + row.category | translate}}
+      </td>
+    </ng-container>
+
+    <!-- score Column -->
     <ng-container matColumnDef="score">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Score </th>
-      <td mat-cell *matCellDef="let row"> {{row.score}} </td>
+      <td mat-cell *matCellDef="let row">  {{'wod.score.' + row.score | translate}} </td>
     </ng-container>
+
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;">
     </tr>
   </table>
 
-  <mat-paginator *ngIf="list" 
+  <mat-paginator *ngIf="list!=null && list.length > 0" 
     [pageSizeOptions]="[5, 10, 25, 100]"
     [length]="list.length"
     [pageSize]="list.pageSize"
     (page)="paginate($event)"></mat-paginator>
 
+  <div *ngIf="list!=null && list.length === 0">Aucun résultat</div>
 
 </form>
