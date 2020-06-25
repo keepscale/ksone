@@ -1,23 +1,15 @@
-<h1 mat-dialog-title>Planifier un wod pour le {{data.date | date:'dd/MM/yyyy'}}</h1>
+<h1 mat-dialog-title>Rechercher un wod à planifier pour le {{data.date | date:'dd/MM/yyyy'}}</h1>
 <div mat-dialog-content>
   
 
-    <form novalidate>
+    <app-wod-list
+      [columns]="['select', 'description', 'publications']" [selection]="selection"
+    ></app-wod-list>
 
-        <div class="form-container">
-          <mat-form-field>
-            <input matInput [(ngModel)]="search.query" name="query" placeholder="Filter">
-          </mat-form-field>
-        </div>
-          
-        <div class="form-footer">
-          <submit-button [i18n]="'button.search'"></submit-button>
-        </div>
-  
-    </form>
 
 </div>
-<div mat-dialog-actions>
-  <button mat-button>No Thanks</button>
-  <button mat-button cdkFocusInitial>Ok</button>
-</div>
+
+<mat-dialog-actions>
+  <button class="mat-raised-button" (click)="close()">Fermer</button>
+  <button class="mat-raised-button mat-primary" (click)="addPublication()" [disabled]="selection.selected.length == 0">Planifier</button>
+</mat-dialog-actions>

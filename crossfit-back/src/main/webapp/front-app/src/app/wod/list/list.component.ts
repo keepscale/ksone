@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AbstractComponent } from 'src/app/common/abstract.component';
 import { Wod } from '../domain/wod.model';
 import { ToolBarService } from 'src/app/toolbar/toolbar.service';
@@ -9,20 +9,27 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as moment from 'moment';
 import { PaginateList } from 'src/app/common/paginate-list.model';
 import { PageEvent } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
-  selector: 'app-list',
+  selector: 'app-wod-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent  extends AbstractComponent implements OnInit {
 
   list:PaginateList<Wod>;
-  displayedColumns: string[] = [/*'id', */'name', 'category', 'score'];
+
+  @Input("columns")
+  displayedColumns: string[] = [/*'id', */'name', 'description', 'publications', 'category', 'score'];
 
   search = new WodSearchRequest();
 
   defaultPageSize: number = 10;
+
+  
+  @Input("selection")
+  selection;
 
   constructor(
     protected toolbar: ToolBarService, 
@@ -36,7 +43,7 @@ export class ListComponent  extends AbstractComponent implements OnInit {
 
   ngOnInit() {
     this.title = "Liste des wods";
-    
+
     this.toolbar.addMenuItem('ROLE_ADMIN', this._importWods.bind(this), "cloud_upload", "Importer les wods");
 
     this.route.queryParams.subscribe(params=>{
@@ -44,7 +51,7 @@ export class ListComponent  extends AbstractComponent implements OnInit {
       this.search.pageIndex = params["pageIndex"] ? params["pageIndex"] : 0;
       this.search.pageSize = params["pageSize"] ? params["pageSize"] : this.defaultPageSize;
       this._refreshData();   
-    })   
+    });
   }
 
   _refreshData(){
@@ -91,4 +98,17 @@ export class ListComponent  extends AbstractComponent implements OnInit {
     this.list = result;
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.list !=null ? this.list.length : 0;
+    return numSelected == numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        (this.list !=null ? this.list.results : []).forEach(row => this.selection.select(row));
+  }
 }

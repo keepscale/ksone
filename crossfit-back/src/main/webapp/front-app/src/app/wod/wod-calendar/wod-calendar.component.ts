@@ -85,7 +85,10 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
   pickAWodForDate(date: Date): void {
     const dialogRef = this.dialog.open(WoDDialogPickerComponent, {
       width: "80%",
-      data: {date: date}
+      data: {date: date},
+      position: {
+        top: '50px'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
