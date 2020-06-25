@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.Title;
@@ -81,6 +82,10 @@ public class WodResult {
     @Column(name = "total_reps")
 	private Integer totalReps;
     
+    @Size(max = 255)
+    @Column(name = "comments", nullable = true, length = 255)
+    private String comments;
+    
     
 	public Long getId() {
 		return id;
@@ -148,6 +153,12 @@ public class WodResult {
 	}
 	public void setCategory(ResultCategory category) {
 		this.category = category;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	@Override
 	public int hashCode() {
