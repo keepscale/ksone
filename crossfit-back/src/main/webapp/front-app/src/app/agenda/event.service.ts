@@ -11,6 +11,7 @@ export class EventService {
   private eventSource = new Subject<Event[]>();
   private eventRequest = new Subject<EventRequest>();
   
+  private lastRequest;
   eventSource$ = this.eventSource.asObservable();
   eventRequested$ = this.eventRequest.asObservable();
 
@@ -21,6 +22,12 @@ export class EventService {
   }
 
   sendEventRequest(request: EventRequest){
+    this.lastRequest = request;
     this.eventRequest.next(request);
+  }
+
+  refresh(){
+    if (this.lastRequest != null)
+      this.sendEventRequest(this.lastRequest);
   }
 }

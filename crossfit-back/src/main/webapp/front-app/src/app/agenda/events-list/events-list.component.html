@@ -1,6 +1,6 @@
 <ul>
     <li *ngFor="let event of day.eventsByPosition" (click)="editEvent(event)">
         <div class="title">{{event.title}}</div>
-        <div class="detail">{{event.detail}}</div>
+        <div class="detail">{{event.detail | truncate:[100, '\n']}}</div>
     </li>
 </ul>
