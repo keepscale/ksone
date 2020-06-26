@@ -12,7 +12,7 @@ import { ErrorService } from 'src/app/error/error.service';
 import { RunnerService } from 'src/app/common/runner.service';
 import { PaginateList } from 'src/app/common/paginate-list.model';
 import { ListComponent } from '../list/list.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { WoDDialogPickerComponent } from '../wod-dialog-picker/wod-dialog-picker.component';
 
 

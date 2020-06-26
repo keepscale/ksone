@@ -6,7 +6,7 @@ import { Principal } from './shared/auth/principal.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ToolBarService } from './toolbar/toolbar.service';
-import { MatDrawerContent, MatSidenav } from '@angular/material';
+import { MatDrawerContent, MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',

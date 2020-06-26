@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PaginateList } from 'src/app/common/paginate-list.model';
 import { RunnerService } from 'src/app/common/runner.service';
 import { Wod, WodPublication } from '../domain/wod.model';

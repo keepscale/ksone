@@ -4,8 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatSidenavModule } from '@angular/material';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
@@ -16,6 +16,7 @@ import { AccountComponent } from './account/account.component';
 import { AccountModule } from './account/account.module';
 import { ErrorComponent } from './error/error.component';
 import { ErrorModule } from './error/error.module';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {

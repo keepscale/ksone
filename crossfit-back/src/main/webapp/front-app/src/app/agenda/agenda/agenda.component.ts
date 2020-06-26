@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Event, Day } from '../event';
 import { EventService, EventRequest } from '../event.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 
 export interface CalendarMode{
   name: string;

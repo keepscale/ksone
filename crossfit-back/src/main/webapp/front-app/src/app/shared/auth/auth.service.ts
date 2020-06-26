@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import { Principal } from '../auth/principal.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private http: Http, private principal: Principal) { }
+  constructor(private http: HttpClient, private principal: Principal) { }
 
   login(username: string, password: string, rememberMe: boolean){
      var data = 'j_username=' + encodeURIComponent(username) +
@@ -13,7 +13,7 @@ export class AuthService {
                     '&remember-me=' + rememberMe + '&submit=Login';
 
     return this.http.post("/api/authentication", data, {
-        headers: new Headers({
+        headers: new HttpHeaders({
           "Content-Type": "application/x-www-form-urlencoded"
         })
       }
