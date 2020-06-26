@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 
 
@@ -15,13 +13,34 @@ import { AuthGuard, RoleManagerGuard, RoleAdminGuard, RoleCoachGuard } from './
 import { SubmitButtonComponent } from './submit-button/submit-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { MatButtonModule, MatIconModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, 
-  MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatSelectModule, MatMenuModule, MatExpansionModule, MatCardModule, MatGridListModule, MatDatepickerModule, NativeDateModule, MatNativeDateModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule, MatPaginatorModule } from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { NativeDateModule, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { TextCompleteModule } from './text-complete/text-complete.module';
 import { StatusBarComponent } from './status-bar/status-bar.component';
 import { IfHasAnyRoleDirective } from './auth/if-has-any-role.directive';
 import { IfIsAuthenticatedDirective } from './auth/if-is-authenticated.directive';
 import { TruncatePipe } from './pipes/truncate.pipe';
+import { HttpClientModule } from '@angular/common/http';
 
 const loginRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -31,7 +50,7 @@ const loginRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(loginRoutes),
-    CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule,
+    CommonModule, HttpClientModule, FormsModule, ReactiveFormsModule, RouterModule,
     TranslateModule,
     MatButtonModule,
     MatIconModule,
@@ -40,7 +59,7 @@ const loginRoutes: Routes = [
     MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule, MatPaginatorModule
   ],
   exports: [TranslateModule,
-    CommonModule, HttpModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
+    CommonModule, HttpClientModule, FormsModule, ReactiveFormsModule, RouterModule, SubmitButtonComponent, MatButtonModule,
     MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule,
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,

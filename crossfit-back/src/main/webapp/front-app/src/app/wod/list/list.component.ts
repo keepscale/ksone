@@ -8,7 +8,7 @@ import { WodService, WodSearchRequest } from '../wod.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import * as moment from 'moment';
 import { PaginateList } from 'src/app/common/paginate-list.model';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({

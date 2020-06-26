@@ -8,7 +8,7 @@ import { WodResult } from './domain/wod-result.model';
 import { WodResultRanking } from './domain/wod-result-ranking.model';
 import * as moment from 'moment';
 import { PaginateList } from '../common/paginate-list.model';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 export class WodSearchRequest{
   constructor(public query?: string, public start?: Date, public end?: Date, public pageIndex?: number, public pageSize?: number){}
