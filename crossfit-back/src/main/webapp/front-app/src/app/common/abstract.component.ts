@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Directive } from '@angular/core';
 import { ToolBarService } from 'src/app/toolbar/toolbar.service';
 import { Principal } from 'src/app/shared/auth/principal.service';
 import { User } from '../shared/domain/user.model';
@@ -7,6 +7,7 @@ import { ErrorService } from '../error/error.service';
 import { RunnerService } from './runner.service';
 import { BaseComponent } from './base.component';
 
+@Directive()
 export class AbstractComponent extends BaseComponent {
 
   constructor(
