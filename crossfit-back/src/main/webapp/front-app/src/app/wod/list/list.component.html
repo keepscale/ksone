@@ -58,7 +58,7 @@
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> WOD </th>
       <td mat-cell *matCellDef="let row"> 
-        <p style="white-space: pre;">{{row.description}} </p>
+        <p style="white-space: pre;"> {{ row.description | truncate:[100, '\n']}}</p>
       </td>
     </ng-container>
 

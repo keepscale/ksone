@@ -92,7 +92,7 @@ export class WodCalendarComponent extends AbstractComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      this.eventService.refresh();
     });
   }
 }

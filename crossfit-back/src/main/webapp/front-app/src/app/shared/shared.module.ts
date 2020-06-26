@@ -21,7 +21,7 @@ import { TextCompleteModule } from './text-complete/text-complete.module';
 import { StatusBarComponent } from './status-bar/status-bar.component';
 import { IfHasAnyRoleDirective } from './auth/if-has-any-role.directive';
 import { IfIsAuthenticatedDirective } from './auth/if-is-authenticated.directive';
-  
+import { TruncatePipe } from './pipes/truncate.pipe';
 
 const loginRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -46,7 +46,7 @@ const loginRoutes: Routes = [
     MatProgressBarModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, ReactiveFormsModule, MatSelectModule, TextCompleteModule,
     MatMenuModule, MatCardModule, MatGridListModule, MatDatepickerModule, MatNativeDateModule,
     MatExpansionModule, MatTabsModule, MatTableModule, MatButtonToggleModule, MatDialogModule,
-    StatusBarComponent, MatPaginatorModule, IfHasAnyRoleDirective, IfIsAuthenticatedDirective
+    StatusBarComponent, MatPaginatorModule, IfHasAnyRoleDirective, IfIsAuthenticatedDirective, TruncatePipe
   ],
   providers:[
 	  AuthGuard,
@@ -58,6 +58,6 @@ const loginRoutes: Routes = [
 	  Principal,
   ],
   declarations: [LoginComponent, LogoutComponent, SubmitButtonComponent, StatusBarComponent, 
-    IfIsAuthenticatedDirective, IfHasAnyRoleDirective]
+    IfIsAuthenticatedDirective, IfHasAnyRoleDirective, TruncatePipe]
 })
 export class SharedModule { }

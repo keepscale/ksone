@@ -15,6 +15,15 @@
 			"logout": "Déconnexion"
 		}
 	},
+	"calendar":{
+		"view": {
+			"Day" : "Jour",
+			"Week" : "Semaine",
+			"Month" : "Mois",
+			"Planning" : "Planning",
+			"4Days" : "4 Jours"
+		}
+	},
 	"login": {
 		"password": {
 			"placeholder": "Mot de passe"
