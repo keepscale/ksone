@@ -1,32 +1,21 @@
 package org.crossfit.app.web.rest.admin;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 
-import org.crossfit.app.domain.VersionJar;
 import org.crossfit.app.domain.workouts.Wod;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
-import org.crossfit.app.repository.VersionJarRepository;
 import org.crossfit.app.service.WodService;
-import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +35,9 @@ public class ImportWodResource {
 	@Inject
 	private WodService wodService;
 
+	@Inject
+	private ApplicationContext appContext;
+
 	private final Logger log = LoggerFactory.getLogger(ImportWodResource.class);
 
 
@@ -60,8 +52,7 @@ public class ImportWodResource {
     	
         log.debug("REST request to import wod");
 
-
-		try(CSVReader csv = new CSVReader(new InputStreamReader(new FileInputStream(ResourceUtils.getFile(WOD_CSV_FILE_PATH))), ';', '"');){
+		try(CSVReader csv = new CSVReader(new InputStreamReader(appContext.getResource(WOD_CSV_FILE_PATH).getInputStream()), ';', '"');){
         	List<Wod> wodsToCreate = csv.readAll().stream().map(line->{
         		Wod wod = new Wod();
         		wod.setName(line[0]);
