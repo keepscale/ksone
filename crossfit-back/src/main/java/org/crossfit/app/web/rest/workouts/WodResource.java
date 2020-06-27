@@ -3,6 +3,7 @@ package org.crossfit.app.web.rest.workouts;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -173,15 +174,18 @@ public class WodResource {
 	
 
 	@RequestMapping(value = "/wod/{wodId}/ranking", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<WodResultCompute>> getRanking(@PathVariable Long wodId){
+	public ResponseEntity<Set<WodResultCompute>> getRanking(@PathVariable Long wodId,
+			@RequestParam(value = "date", required = false) String datestr){
+
+		LocalDate date = StringUtils.isEmpty(datestr) ? null : LocalDate.parse(datestr);
 		
 		Wod wod = wodService.findOne(wodId);
 		Set<WodResult> results = wodService.findAllResult(wod);
 		
-		List<WodResultCompute> rankings = results.stream()
+		Set<WodResultCompute> rankings = results.stream()
+			.filter(r->date==null || r.getDate().equals(date))
 			.collect(Collectors.toMap(WodResult::getMember, Function.identity(), (r1,r2)->wod.getScore().getComparator().compare(r1, r2) > 0 ? r1 : r2 ))
 			.values().stream()
-			.sorted(wod.getScore().getComparator())
 			.map(result->{
 				WodResultCompute compute = new WodResultCompute();
 				compute.setId(result.getId());
@@ -193,10 +197,13 @@ public class WodResource {
 				compute.setDisplayName(displayName);
 				compute.setDate(result.getDate());
 				compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
+				compute.setScore(wod.getScore().getResultClassementMapper().apply(result));
 				compute.setCategory(result.getCategory());
+				compute.setDivision(result.getDivision());
 				return compute;
 			})
-			.collect(Collectors.toList());
+			.sorted(Comparator.reverseOrder())
+			.collect(Collectors.toCollection(LinkedHashSet::new));
 		
 		return new ResponseEntity<>(rankings, HttpStatus.OK);
 	}

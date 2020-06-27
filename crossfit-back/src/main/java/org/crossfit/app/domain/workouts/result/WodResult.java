@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.crossfit.app.domain.Member;
-import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
 import org.crossfit.app.domain.workouts.Wod;
@@ -34,13 +33,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WodResult {
 
-	public static final Comparator<WodResult> COMPARE_FOR_TIME = Comparator.comparing(WodResult::getTotalMinute, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(WodResult::getTotalSecond, Comparator.nullsLast(Comparator.naturalOrder()));
-	public static final Comparator<WodResult> COMPARE_FOR_ROUND = Comparator.comparing(WodResult::getTotalCompleteRound, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(WodResult::getTotalReps, Comparator.nullsLast(Comparator.naturalOrder()));
-	public static final Comparator<WodResult> COMPARE_FOR_LOAD = Comparator.comparing(WodResult::getTotalLoadInKilo, Comparator.nullsLast(Comparator.naturalOrder()));
+	public static final Comparator<WodResult> COMPARE_FOR_TIME = Comparator.comparing(
+			WodResult::getTotalMinute, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(
+			WodResult::getTotalSecond, Comparator.nullsLast(Comparator.naturalOrder()));
+	
+	public static final Comparator<WodResult> COMPARE_FOR_ROUND = Comparator.comparing(
+			WodResult::getTotalCompleteRound, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(
+			WodResult::getTotalReps, Comparator.nullsLast(Comparator.naturalOrder()));
+	
+	public static final Comparator<WodResult> COMPARE_FOR_LOAD = Comparator.comparing(
+			WodResult::getTotalLoadInKilo, Comparator.nullsLast(Comparator.naturalOrder()));
 
 	public static final Function<WodResult, String> RESULT_FORMAT_FOR_TIME = r->r.getTotalMinute()+":"+r.getTotalSecond();
 	public static final Function<WodResult, String> RESULT_FORMAT_FOR_ROUND = r->r.getTotalCompleteRound()+" ("+r.getTotalReps()+")";
 	public static final Function<WodResult, String> RESULT_FORMAT_FOR_LOAD = r->r.getTotalLoadInKilo()+"";
+
+	public static final Function<WodResult, Double> RESULT_CLASSMENT_FOR_TIME = r-> Double.valueOf((r.getTotalMinute()*60) +r.getTotalSecond());
+	public static final Function<WodResult, Double> RESULT_CLASSMENT_FOR_ROUND = r-> Double.valueOf((r.getTotalCompleteRound()*1000) + r.getTotalReps());
+	public static final Function<WodResult, Double> RESULT_CLASSMENT_FOR_LOAD = r->r.getTotalLoadInKilo();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,16 +1,18 @@
 package org.crossfit.app.web.rest.workouts.dto;
 
-import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.workouts.result.ResultCategory;
+import org.crossfit.app.domain.workouts.result.ResultDivision;
 import org.joda.time.LocalDate;
 
-public class WodResultCompute {
+public class WodResultCompute implements Comparable<WodResultCompute>{
 
 	private Long id;
 	private ResultCategory category;
+	private ResultDivision division;
 	private Long memberId;
 	private String displayName;
 	private String displayResult;
+	private Double score;
 	private LocalDate date;
 	
 	public Long getId() {
@@ -44,10 +46,29 @@ public class WodResultCompute {
 	public void setCategory(ResultCategory category) {
 		this.category = category;
 	}
+	public ResultDivision getDivision() {
+		return division;
+	}
+	public void setDivision(ResultDivision division) {
+		this.division = division;
+	}
 	public LocalDate getDate() {
 		return date;
 	}
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+	public Double getScore() {
+		return score;
+	}
+	public void setScore(Double score) {
+		this.score = score;
+	}
+	
+	@Override
+	public int compareTo(WodResultCompute o) {
+		int c = this.category.compareTo(o.getCategory());
+		c = (c==0) ? this.score.compareTo(o.getScore()) : c;
+		return c;
 	}
 }

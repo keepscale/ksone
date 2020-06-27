@@ -6,6 +6,8 @@ import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
 import org.crossfit.app.domain.workouts.enumeration.WodCategory;
 import org.crossfit.app.domain.workouts.enumeration.WodScore;
+import org.crossfit.app.domain.workouts.result.ResultCategory;
+import org.crossfit.app.domain.workouts.result.ResultDivision;
 import org.crossfit.app.service.WodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,20 @@ public class WodEnumResource {
 	@RequestMapping(value = "/wod/categories", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<WodCategory[]> getWodCategory(){
 		return new ResponseEntity<>(WodCategory.values(), HttpStatus.OK);
+	}
+	/**
+	 * GET /result/categories -> get all the result categories.
+	 */
+	@RequestMapping(value = "/wod/result-categories", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultCategory[]> getResultCategory(){
+		return new ResponseEntity<>(ResultCategory.values(), HttpStatus.OK);
+	}
+	/**
+	 * GET /result/division -> get all the ResultDivision.
+	 */
+	@RequestMapping(value = "/wod/result-divisions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultDivision[]> getResultDivision(){
+		return new ResponseEntity<>(ResultDivision.values(), HttpStatus.OK);
 	}
 
 	/**

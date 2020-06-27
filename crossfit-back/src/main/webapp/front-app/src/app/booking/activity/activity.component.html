@@ -34,15 +34,7 @@
             (onSaved)="onSaveResult(wod, $event)"
             (onDelete)="onDeleteResult(wod)" ></app-myresult>
 
-            
-            <mat-tab-group *ngIf="wod.myresultAtDate">
-              <mat-tab label="Classement">
-                  <ng-template mat-tab-label>
-                    <mat-icon>bar_chart</mat-icon>
-                  </ng-template>
-                  <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate"></app-ranking>
-              </mat-tab>
-          </mat-tab-group>
+          <app-ranking [wod]="wod" [myresult]="wod.myresultAtDate" [date]="b.date" *ngIf="wod.myresultAtDate"></app-ranking>
     </mat-expansion-panel>
 
   
