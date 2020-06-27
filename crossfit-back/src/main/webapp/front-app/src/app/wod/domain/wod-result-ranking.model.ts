@@ -9,6 +9,7 @@ export class WodResultRanking{
     public displayResult: string;
     public title: string;
     public category: string;
+    public division: string;
 
     constructor(){
     }

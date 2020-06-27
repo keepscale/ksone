@@ -1,37 +1,57 @@
 <mat-progress-bar mode="indeterminate" *ngIf="!rankings"></mat-progress-bar>
 
-<div *ngIf="rankings != null && rankings.length>0; else noResultYet">
-    <table mat-table [dataSource]="rankings" class="mat-elevation-z8">
+<mat-tab-group dynamicHeight (selectedIndexChange)="onSelectTab($event)">
+  <mat-tab label="{{tab.title}}" *ngFor="let tab of tabs">
+    <ng-template mat-tab-label>
+      <mat-icon *ngIf="tab.icon">{{tab.icon}}</mat-icon>
+      {{tab.title}}
+    </ng-template>
+
+    <div *ngIf="filteredrankings != null && filteredrankings.length>0; else noResultYet">
+        <table mat-table [dataSource]="filteredrankings" class="mat-elevation-z8">
+            
+            <ng-container matColumnDef="order">
+              <th mat-header-cell *matHeaderCellDef> No. </th>
+              <td mat-cell *matCellDef="let element; let i = index;"> 
+                {{i+1}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.displayName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="result">
+              <th mat-header-cell *matHeaderCellDef> Result </th>
+              <td mat-cell *matCellDef="let element"> {{element.displayResult}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef> Catégorie </th>
+              <td mat-cell *matCellDef="let element"> {{'wod.ranking.category.min.' + element.category | translate}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="division">
+              <th mat-header-cell *matHeaderCellDef> Division </th>
+              <td mat-cell *matCellDef="let element"> {{'wod.ranking.division.min.' + element.division | translate}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef> Date </th>
+              <td mat-cell *matCellDef="let element"> {{element.date | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'my-rank':isMyResult(row)}"></tr>
         
-        <ng-container matColumnDef="order">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element; let i = index;" [ngClass]="{'my-rank':isMyResult(element)}"> 
-            {{i+1}}
-          </td>
-        </ng-container>
+        </table>
+    </div>
+    <ng-template #noResultYet>
+      <div>
+        Il n'y a pas encore de résultat pour ce wod.
+      </div>
+    </ng-template>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.displayName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="result">
-          <th mat-header-cell *matHeaderCellDef> Result </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.displayResult}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'my-rank':isMyResult(element)}"> {{element.date | date:'dd/MM/yyyy'}} </td>
-        </ng-container>
-        
-        <tr mat-header-row *matHeaderRowDef="['order', 'name', 'result', 'date']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['order', 'name', 'result', 'date'];"></tr>
-    
-    </table>
-</div>
-<ng-template #noResultYet>
-  <div>
-    Il n'y a pas encore de résultat pour ce wod.
-  </div>
-</ng-template>
+  </mat-tab>
+</mat-tab-group>
