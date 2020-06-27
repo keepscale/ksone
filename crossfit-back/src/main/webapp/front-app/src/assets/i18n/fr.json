@@ -63,13 +63,20 @@
 			},
 			"category.min": {
 				"RX": "Rx",
-				"SCALED": "Sc"
+				"SCALED": "Sc",
+				"NA": "NA"
+			},
+			"division.min": {
+				"MEN": "Homme",
+				"WOMEN": "Femme",
+				"TEAMS": "Equipe"
 			}
 		},
 		"myscore": {
 			"category": {
 				"RX": "Rx",
-				"SCALED": "Scaled"
+				"SCALED": "Scaled",
+				"NA": "Hors C."
 			},
 			"totalCompleteRound": {
 				"placeholder": "Nb de tour fini"
