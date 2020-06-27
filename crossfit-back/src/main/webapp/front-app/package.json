@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en-tmp.json ./src/assets/i18n/fr-tmp.json --clean --sort --format namespaced-json"
+    "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/en-tmp.json ./src/assets/i18n/fr-tmp.json --clean --sort --format namespaced-json",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
