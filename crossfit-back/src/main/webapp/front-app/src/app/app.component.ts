@@ -1,4 +1,4 @@
-import { Component, ViewChild, ChangeDetectorRef, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, OnDestroy, QueryList, ViewChildren, OnInit, AfterViewInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState, MediaMatcher } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { MatDrawerContent, MatSidenav } from '@angular/material/sidenav';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent  implements OnDestroy{
+export class AppComponent  implements OnDestroy, OnInit, AfterViewInit{
 
   @ViewChildren('sidenav') sidenav: QueryList<MatSidenav>;
 
@@ -51,6 +51,10 @@ export class AppComponent  implements OnDestroy{
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit(){
+    this.toolbar.setCanCloseSideNav(this.mobileQuery.matches);
   }
   
 
