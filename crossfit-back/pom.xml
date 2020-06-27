@@ -590,7 +590,7 @@
 									<goal>install-node-and-npm</goal>
 								</goals>
 								<configuration>
-									<nodeVersion>v8.11.2</nodeVersion>
+									<nodeVersion>v12.18.1</nodeVersion>
 									<npmVersion>6.1.0</npmVersion>
 								</configuration>
 							</execution>
