@@ -16,7 +16,7 @@
 
         <div class="wod-publications">
           <h2>Publications du wod</h2>
-          <mat-nav-list dense>
+          <mat-nav-list dense *ngIf="wod.publications.length>0; else noPublicationYet">
               <mat-list-item *ngFor="let pub of wod.publications">
                 
                 <mat-icon matListIcon>{{pub.startAt === pub.endAt ? 'calendar_today' : 'date_range'}}</mat-icon>
@@ -24,11 +24,15 @@
                 <span *ngIf="pub.startAt != pub.endAt">&nbsp;au {{pub.endAt | date:'dd/MM/yyyy'}}</span>
                 
               </mat-list-item>
-            </mat-nav-list>            
+          </mat-nav-list>   
+          
+          <ng-template #noPublicationYet>
+            <div>
+              Ce wod n'a encore jamais été planifié.
+            </div>
+          </ng-template>         
         </div>
-
-
-      
+     
       
       </mat-card-content>
       <mat-card-actions>
@@ -40,5 +44,7 @@
         </a>
       </mat-card-actions>
     </mat-card>  
+    
+    <app-ranking [wod]=wod></app-ranking>
   </div>
 </div>

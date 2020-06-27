@@ -17,6 +17,12 @@ export class WodResultService {
   constructor(private http: HttpClient) { }
 
   
+  getResultCategories(){
+    return this.http.get<string[]>("/api/wod/result-categories");
+  }
+  getResultDivisions(){
+    return this.http.get<string[]>("/api/wod/result-divisions");
+  }
   
   findAllWodAtDateWithMyResult(date: Date){
     return this.http.get<Wod[]>("/api/wod/" + date + "/withMyResult");
@@ -31,8 +37,15 @@ export class WodResultService {
   deleteResult(wod:Wod, result:WodResult){
     return this.http.delete("/api/wod/" + wod.id + "/results/" + result.id);
   }
-  getRanking(wodId){
-    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/ranking");
+  getRanking(wodId, date: Date){
+    let params = new HttpParams();
+    if (date){
+      params = params.set("date", moment(date).format("YYYY-MM-DD"));
+    }
+  
+    return this.http.get<WodResultRanking[]>("/api/wod/" + wodId + "/ranking", {
+      params: params
+    });
   }
   
 }
