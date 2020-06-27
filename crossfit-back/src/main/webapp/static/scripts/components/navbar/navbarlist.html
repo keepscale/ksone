@@ -1,4 +1,4 @@
-	<ul class="nav nav-pills" role="navigation" ng-switch="isAuthenticated() &&  ($state.includes('product') || $state.includes('timeSlot') || $state.includes('closedDay') || $state.includes('timeSlotType') || $state.includes('membership'))">
+	<ul class="nav nav-pills" role="navigation" ng-switch="isAuthenticated() &&  ($state.includes('product') || $state.includes('timeSlot') || $state.includes('closedDay') || $state.includes('timeSlotType') || $state.includes('membership') || $state.includes('bill'))">
 
 		<li ng-class="{active: $state.includes('product')}"  has-any-role="ROLE_MANAGER,ROLE_ADMIN" ng-switch-when="true">
 			<a ui-sref="product">
@@ -35,6 +35,14 @@
 			</a>
 		</li>
 		
+		<li ng-class="{active: $state.includes('bill')}" has-any-role="ROLE_COMPTABLE,ROLE_ADMIN"
+			ng-switch-when="true">
+			<a ui-sref="bill"> 
+				<span class="link-min" >{{'global.menu.bills.min'|translate}}</span>
+				<span class="link-full">{{'global.menu.bills'|translate}}</span>
+		</a></li>
+		
+		
 	</ul>
 	
 
@@ -44,7 +52,7 @@
         display: none;
     }
     
-	@media (min-width: 500px) {
+	@media (min-width: 990px) {
 	    .nav .link-min {
 	        display: none;
 	    }
