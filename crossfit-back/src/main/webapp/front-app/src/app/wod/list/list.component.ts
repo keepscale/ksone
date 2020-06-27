@@ -21,7 +21,7 @@ export class ListComponent  extends AbstractComponent implements OnInit {
   list:PaginateList<Wod>;
 
   @Input("columns")
-  displayedColumns: string[] = [/*'id', */'name', 'description', 'publications', 'category', 'score'];
+  displayedColumns: string[] = [/*'id', */'name', 'publications', 'category', 'score'];
 
   search = new WodSearchRequest();
 

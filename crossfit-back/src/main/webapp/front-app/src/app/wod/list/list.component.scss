@@ -11,3 +11,14 @@ ul{
 .mat-column-select{
     width: 56px !important;
 }
+.mat-column-name p{
+    white-space: pre-line; 
+    font-size: 10px;
+}
+.mat-cell{
+    padding: 5px;
+}
+.mat-row.link:hover{
+    background-color: lightgray;
+    cursor: pointer;
+}

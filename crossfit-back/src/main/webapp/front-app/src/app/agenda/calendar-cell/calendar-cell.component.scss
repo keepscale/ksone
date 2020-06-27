@@ -14,17 +14,20 @@ $light2: darken($light, 3%);
 .cell-header {
 	min-height: 30px;
 
-	.month, .day-action-menu{
+	.month{
 		display: none;
 	}
 
 	.day-action-menu{
 		float: right;
-		width: 30px;
-		height: 30px;
-		line-height: 30px;
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
 		.material-icons{
-			font-size: 18px;
+			font-size: 12px;
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
 		}
 	}
 

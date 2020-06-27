@@ -6,7 +6,7 @@
 
   <div class="cell-header">
 
-    <button class="day-action-menu" mat-icon-button (click)="addEvent(day)" *ngIf="addEventMenu == null">
+    <button class="day-action-menu" mat-icon-button (click)="addEvent(day)" *ngIf="onAddEvent == null && rowIdx != 0">
       <mat-icon>add</mat-icon>
     </button>
 
