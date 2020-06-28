@@ -9,7 +9,6 @@ import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlotType;
 import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,9 +46,12 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
     @Query("select b from Booking b where b.subscription.member = :member order by b.startAt desc")
 	List<Booking> findAllByMember(@Param("member") Member owner);
-    
+
     @Query("select b from Booking b join b.subscription s join s.membership ms where s.member = :member and b.startAt >= :after order by b.startAt asc")
 	Page<Booking> findAllByMemberAfter(@Param("member") Member member, @Param("after") DateTime after, Pageable pageable);
+    
+    @Query("select b from Booking b join b.subscription s where s.member = :member and b.box =:box and b.startAt < :before")
+	Page<Booking> findAllByMemberBefore(@Param("box") CrossFitBox box, @Param("member") Member member, @Param("before") DateTime before, Pageable pageable);
     
     @Modifying
 	@Transactional

@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.crossfit.app.domain.CrossFitBox;
+import org.crossfit.app.domain.Member;
 import org.crossfit.app.domain.enumeration.Title;
 import org.crossfit.app.domain.workouts.Equipment;
 import org.crossfit.app.domain.workouts.Movement;
@@ -246,5 +247,10 @@ public class WodService {
 		}).collect(Collectors.toList());
 		
 		this.wodRepository.saveAll(wodToCreate);
+	}
+
+
+	public Set<WodResult> findAllResultByMember(CrossFitBox box, Member member, LocalDate start, LocalDate end) {
+		return this.wodResultRepository.findAll(box, member, start, end);
 	}
 }

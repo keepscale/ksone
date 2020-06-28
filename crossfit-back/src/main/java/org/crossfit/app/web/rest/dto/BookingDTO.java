@@ -2,11 +2,7 @@ package org.crossfit.app.web.rest.dto;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,8 +13,6 @@ import org.crossfit.app.domain.util.CustomDateTimeDeserializer;
 import org.crossfit.app.domain.util.CustomDateTimeSerializer;
 import org.crossfit.app.domain.util.CustomLocalDateSerializer;
 import org.crossfit.app.domain.util.ISO8601LocalDateDeserializer;
-import org.crossfit.app.domain.workouts.Wod;
-import org.crossfit.app.domain.workouts.result.WodResult;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -56,18 +50,20 @@ public class BookingDTO implements Serializable {
 		dto.setStartAt(b.getStartAt());
 		return dto;
 	};
-	public static Function<Booking, BookingDTO> myBooking(){
-		return myBooking(Collections.emptyList(), Collections.emptySet());
-	}
 
-	public static Function<Booking, BookingDTO> myBooking(Collection<Wod> wods, Set<WodResult> myresult){
+	public static Function<Booking, BookingDTO> myBooking(){
+		return myBooking(null);
+	}
+	
+	public static Function<Booking, BookingDTO> myBooking(Collection<WodDTO> wods){
 		return  b->{
 //			String membershipName = b.getSubscription().getMembership().getN	ame();
 			String timeslotName = b.getTimeSlotType().getName();
 			String title = "" + timeslotName+"";
 			BookingDTO dto = new BookingDTO(b.getId(), b.getStartAt().toLocalDate(), title);
 			dto.setCreatedAt(b.getCreatedDate());
-			dto.setStartAt(b.getStartAt());			
+			dto.setStartAt(b.getStartAt());
+			dto.setWods(wods);
 			return dto;
 		};
 	}
@@ -112,6 +108,8 @@ public class BookingDTO implements Serializable {
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	@JsonDeserialize(using = ISO8601LocalDateDeserializer.class)
 	private LocalDate medicalCertificateEndDateSoonExpired;
+	
+	private Collection<WodDTO> wods;
 	
 	public BookingDTO() {
 		super();
@@ -220,6 +218,14 @@ public class BookingDTO implements Serializable {
 
 	public void setMemberTel(String memberTel) {
 		this.memberTel = memberTel;
+	}
+
+	public Collection<WodDTO> getWods() {
+		return wods;
+	}
+
+	public void setWods(Collection<WodDTO> wods) {
+		this.wods = wods;
 	}
 
 	@Override
