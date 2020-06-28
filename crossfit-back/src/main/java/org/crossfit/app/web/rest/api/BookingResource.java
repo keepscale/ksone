@@ -2,11 +2,16 @@ package org.crossfit.app.web.rest.api;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +27,8 @@ import org.crossfit.app.domain.Subscription;
 import org.crossfit.app.domain.TimeSlot;
 import org.crossfit.app.domain.TimeSlotNotification;
 import org.crossfit.app.domain.enumeration.BookingStatus;
+import org.crossfit.app.domain.workouts.Wod;
+import org.crossfit.app.domain.workouts.result.WodResult;
 import org.crossfit.app.exception.booking.NotBookingOwnerException;
 import org.crossfit.app.exception.booking.UnableToDeleteBooking;
 import org.crossfit.app.exception.rules.ManySubscriptionsAvailableException;
@@ -42,6 +49,7 @@ import org.crossfit.app.service.WodService;
 import org.crossfit.app.service.util.BookingRulesChecker;
 import org.crossfit.app.web.rest.dto.BookingDTO;
 import org.crossfit.app.web.rest.dto.BookingStatusDTO;
+import org.crossfit.app.web.rest.dto.WodDTO;
 import org.crossfit.app.web.rest.errors.CustomParameterizedException;
 import org.crossfit.app.web.rest.util.HeaderUtil;
 import org.crossfit.app.web.rest.util.PaginationUtil;
@@ -52,6 +60,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
@@ -140,21 +151,46 @@ public class BookingResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookingDTO>> getAllPast(
-    		@RequestParam(value = "page" , required = false) Integer offset) throws URISyntaxException {
+    		@RequestParam(value = "page" , required = false) Integer numberOfPage) throws URISyntaxException {
     	
     	CrossFitBox box = boxService.findCurrentCrossFitBox();
-    	DateTime end = timeService.nowAsDateTime(box).minusMillis(1);
-		DateTime start = end.minusMonths(offset);
-		Set<Booking> result = bookingRepository.findAllStartBetween(box, SecurityUtils.getCurrentMember(), start, end);
-//		Set<Wod> wods = wodService.findWodsBetween(start.toLocalDate(), end.toLocalDate());
-//		Set<WodResult> wodResults = wodService.findMyResultsBetween(start.toLocalDate(), end.toLocalDate());
-
-        Comparator<? super BookingDTO> comparator = (b1,b2) ->{
-        	return b2.getStartAt().compareTo(b1.getStartAt());
-        };
-		return new ResponseEntity<>(result.stream().map(BookingDTO.myBooking()).sorted(comparator).collect(Collectors.toList()), HttpStatus.OK);
+    	DateTime end = timeService.nowAsDateTime(box);
+		Pageable pageable = PageRequest.of(0, 10*(numberOfPage==null ? 1 : numberOfPage), Sort.by(Sort.Direction.DESC, "startAt"));
+		
+		Page<Booking> resultPage = bookingRepository.findAllByMemberBefore(box, SecurityUtils.getCurrentMember(), end, pageable);
+		List<Booking> result = resultPage.getContent();
+		
+		Map<LocalDate, List<WodDTO>> wodsByDate;
+		
+		if(result.isEmpty()) {
+			wodsByDate = new HashMap<LocalDate, List<WodDTO>>();
+		}
+		else {
+			DateTime start = result.get(result.size()-1).getStartAt();
+			
+			Set<Wod> wods = wodService.findAllWod(start.toLocalDate(), end.toLocalDate());
+			Set<WodResult> wodResults = wodService.findAllResultByMember(box, SecurityUtils.getCurrentMember(), start.toLocalDate(), end.toLocalDate());
+			
+			Map<Wod, Map<LocalDate, WodResult>> resultByWodByDate = wodResults.stream().collect(
+					Collectors.groupingBy(WodResult::getWod, 
+							Collectors.toMap(WodResult::getDate, Function.identity())));
+	
+			wodsByDate = wods.stream()
+				.map(Wod::getPublications).flatMap(Collection::stream)
+				.map(pub->WodDTO.publicMapper(pub.getStartAt(), getResult(resultByWodByDate, pub.getWod(), pub.getStartAt())).apply(pub.getWod()))
+				.collect(Collectors.groupingBy(WodDTO::getDate));
+		}
+		
+		return new ResponseEntity<>(result.stream()
+				.map(booking-> BookingDTO.myBooking(wodsByDate.get(booking.getStartAt().toLocalDate())).apply(booking))
+				.sorted(Comparator.comparing(BookingDTO::getStartAt).reversed())
+				.collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    private final WodResult getResult(Map<Wod, Map<LocalDate, WodResult>> resultByWodByDate, Wod wod, LocalDate date) {
+    	Map<LocalDate, WodResult> resultByDAte = resultByWodByDate.get(wod);
+    	return resultByDAte == null ? null : resultByDAte.get(date);
+    }
 
 	private TimeSlot findTimeSlot(Long timeSlotId) {
 		TimeSlot selectedTimeSlot = timeSlotRepository.findById(timeSlotId).get();
