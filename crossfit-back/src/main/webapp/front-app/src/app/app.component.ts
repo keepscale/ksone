@@ -6,8 +6,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ToolBarService } from './toolbar/toolbar.service';
 import { MatDrawerContent, MatSidenav } from '@angular/material/sidenav';
-import localeFr from '@angular/common/locales/fr';
 import { registerLocaleData } from '@angular/common';
+import '@angular/common/locales/global/fr';
+import { VersionCheckService } from './shared/version/version-check.service';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class AppComponent  implements OnDestroy, OnInit, AfterViewInit{
     media: MediaMatcher, 
     public toolbar: ToolBarService, 
     public translate: TranslateService, 
+    private versionCheckService: VersionCheckService,
     private principal: Principal) {
 
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -39,13 +41,13 @@ export class AppComponent  implements OnDestroy, OnInit, AfterViewInit{
     this.mobileQuery.addListener(this._mobileQueryListener);
 
     moment.locale("fr");
-    registerLocaleData(localeFr, 'fr');
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('fr');
     const browserLang = translate.getBrowserLang();
     //translate.use(browserLang.match(/en|fr/) ? browserLang : 'fr');
     translate.use('fr');
     
+    this.versionCheckService.initVersionCheck();
 
     this.principal.authenticationUpdated$.subscribe(user=>changeDetectorRef.detectChanges());
   }
