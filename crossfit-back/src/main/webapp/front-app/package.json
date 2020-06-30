@@ -1,11 +1,12 @@
 {
   "name": "front-app",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --base-href /front-app/",
-    "build-prod": "ng build --prod --build-optimizer --output-hashing=all --base-href /front-app/",
+    "build-prod": "ng build --prod --build-optimizer --output-hashing=all --base-href /front-app/ && npm run post-build",
+    "post-build": "node ./post-build.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
