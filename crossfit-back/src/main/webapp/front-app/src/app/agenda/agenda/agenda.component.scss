@@ -10,3 +10,9 @@
 	padding: 5px;
 }
 
+
+@media screen and (max-width: 767px) {
+	.view-buttons mat-form-field{
+		width: 60px;
+	}
+}
