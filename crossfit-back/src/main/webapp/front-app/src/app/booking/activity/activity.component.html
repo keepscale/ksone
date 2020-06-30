@@ -1,6 +1,5 @@
 
-
-<mat-accordion>
+<mat-accordion *ngIf="bookings.length>0; else noBookingYet">
   <mat-expansion-panel *ngFor="let b of bookings; let i = index" [expanded]="currentBookingsDay === b" (opened)="openBookingsDay(b)">
     <mat-expansion-panel-header>
       <mat-panel-title *ngIf="b.bookings.length == 1; else multipleBooking">
@@ -40,3 +39,10 @@
   
   </mat-expansion-panel>
 </mat-accordion>
+
+
+<ng-template #noBookingYet>
+  <div>
+    Encore aucune réservation
+  </div>
+</ng-template>  

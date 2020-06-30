@@ -23,7 +23,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, "./assets/i18n/", ".json");
 }
 const appRoutes: Routes = [
-  { path: '**', redirectTo: '/wod/calendar' }
+  { path: '**', redirectTo: '/activity' }
 ];
 
 @NgModule({
