@@ -1,7 +1,7 @@
 
 <div class="navigation-buttons">
 
-  <button mat-raised-button (click)="today()">
+  <button mat-raised-button (click)="today()" [ngClass]="{'mat-primary':!currentDate.isSame(now, 'd')}">
     Aujourd'hui
   </button>
   <button mat-icon-button (click)="prev()">

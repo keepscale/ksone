@@ -59,6 +59,6 @@ const appRoutes: Routes = [
     AccountModule
   ],
   bootstrap: [AppComponent],
-  providers: []
+  providers: [ { provide: LOCALE_ID, useValue: 'fr' } ],
 })
 export class AppModule { }

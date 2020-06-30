@@ -32,6 +32,8 @@ export class AgendaComponent implements OnInit {
     {name:"4Days",    addValue: 4, addUnit: 'd',  daysByRow: 4,  startOfUnit: ["day"],             endOfUnit: "day"},
   ];
 
+  now = new Date();
+
   currentDate: moment.Moment = moment();
 
   days: Day[] = [];
@@ -66,11 +68,12 @@ export class AgendaComponent implements OnInit {
 
     this.route.queryParams.subscribe(params=>{
       this.currentDate = params["date"] ? moment(params["date"]) : moment();
-      this.mode = this.availableModes.find(p=>p.name===params["mode"]);
+      this.mode = params["mode"] ? this.availableModes.find(p=>p.name===params["mode"]) : 
+            localStorage.getItem("agenda-date") ?  this.availableModes.find(p=>p.name==localStorage.getItem("agenda-mode")) : this.mode;
       this.mode = this.mode == undefined ? this.availableModes[2] : this.mode;
       this.reCalculateDays();
-    })   
-    
+    });
+   
   }
 
   findMinPosition(events: Event[]) : number{
@@ -107,6 +110,7 @@ export class AgendaComponent implements OnInit {
     const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
     queryParams['date'] = this.currentDate.format("Y-MM-D")
     queryParams['mode'] = this.mode.name;
+    localStorage.setItem("agenda-mode", queryParams['mode']);
     this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
   
