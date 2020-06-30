@@ -1,7 +1,12 @@
 
-$blue: #626E7E;
-$light: lighten($blue, 40%);
-$light2: darken($light, 3%);
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+
+$app-primary: mat-palette($mat-indigo);
+$app-accent:  mat-palette($mat-pink, A200, A100, A400);    
+$app-theme: mat-light-theme($app-primary, $app-accent);
 
 :host{
     height: 100%;
@@ -42,8 +47,8 @@ $light2: darken($light, 3%);
 		height: 15px;
 	
 		&.active{
-			background: $blue;
-			color: #fff;
+			background-color:mat-color(map-get($app-theme, accent));
+			color: #FFF;
 		}
 	}
 
@@ -56,14 +61,14 @@ $light2: darken($light, 3%);
 		line-height: 1.8;
 
 		&.active{
-			background: $light;
-			color: $blue;
+			background-color:mat-color(map-get($app-theme, accent));
+			color: #FFF;
 		}
 	}
 }
 
 
-.cell-day-1{
+.cell-day-1, .cell-col-0{
 	
 	.day-number:not(.big-center){
 		float: left;
