@@ -36,10 +36,12 @@ angular.module('crossfitApp')
             	$scope.page = result.page;
             	$scope.planning = result.days;
             });
-            
-            Member.health({}, function(result, headers){
-            	$scope.membersHealthCount = result;
-            })
+
+        	if(Principal.isInAnyRole(['ROLE_MANAGER', 'ROLE_ADMIN'])){
+	            Member.health({}, function(result, headers){
+	            	$scope.membersHealthCount = result;
+	            });
+        	}
         };
 
         $scope.toggle = function(event){
