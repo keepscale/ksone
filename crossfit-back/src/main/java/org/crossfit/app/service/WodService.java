@@ -187,27 +187,21 @@ public class WodService {
 		result.setMember(SecurityUtils.getCurrentMember());
 		result.setDivision(result.getMember().getTitle() == Title.MR ? ResultDivision.MEN : ResultDivision.WOMEN);
 		result.setCategory(dto.getCategory());
+
+		result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
+		result.setTotalMinute(null);
+		result.setTotalSecond(null);
+		result.setTotalCompleteRound(null);
+		result.setTotalReps(null);
+		
 		switch (wod.getScore()) {
-		case FOR_LOAD:
-			result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
-			result.setTotalMinute(null);
-			result.setTotalSecond(null);
-			result.setTotalCompleteRound(null);
-			result.setTotalReps(null);
-			break;
 		case FOR_ROUNDS_REPS:
-			result.setTotalLoadInKilo(null);
-			result.setTotalMinute(null);
-			result.setTotalSecond(null);
 			result.setTotalCompleteRound(getOrDefault(dto.getTotalCompleteRound(), 0));
 			result.setTotalReps(getOrDefault(dto.getTotalReps(), 0));
 			break;
 		case FOR_TIME:
-			result.setTotalLoadInKilo(null);
 			result.setTotalMinute(getOrDefault(dto.getTotalMinute(), 0));
 			result.setTotalSecond(getOrDefault(dto.getTotalSecond(), 0));
-			result.setTotalCompleteRound(null);
-			result.setTotalReps(null);
 			break;
 			
 		}
