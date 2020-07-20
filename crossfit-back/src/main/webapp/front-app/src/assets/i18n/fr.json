@@ -82,7 +82,7 @@
 				"placeholder": "Nb de tour fini"
 			},
 			"totalLoadInKilo": {
-				"placeholder": "Charge total en Kg"
+				"placeholder": "Charge en Kg"
 			},
 			"totalMinute": {
 				"placeholder": "Minutes"

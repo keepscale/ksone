@@ -2,15 +2,6 @@
           
   <form novalidate (ngSubmit)="submit()">
 
-
-    <div *ngSwitchCase="'FOR_LOAD'">      
-      <mat-form-field >
-        <input matInput type="number" placeholder="{{'wod.myscore.totalLoadInKilo.placeholder' | translate}}" 
-         [(ngModel)]="editedResult.totalLoadInKilo" name="result.totalLoadInKilo">
-      </mat-form-field>
-    </div>
-
-
     <div *ngSwitchCase="'FOR_TIME'">
         <mat-form-field >
           <input matInput type="number" placeholder="{{'wod.myscore.totalMinute.placeholder' | translate}}" 
@@ -33,6 +24,13 @@
       </mat-form-field>
     </div>
     
+    <div>      
+      <mat-form-field >
+        <input matInput type="number" placeholder="{{'wod.myscore.totalLoadInKilo.placeholder' | translate}}" 
+         [(ngModel)]="editedResult.totalLoadInKilo" name="result.totalLoadInKilo">
+      </mat-form-field>
+    </div>
+
     <div>
         <mat-button-toggle-group class="category-group" (change)="editedResult.category=$event.value">
           <mat-button-toggle class="category-button" 
@@ -66,9 +64,6 @@
       {{'wod.myscore.category.' + result.category | translate}} |
   </mat-label>
 
-  <span *ngSwitchCase="'FOR_LOAD'">
-    {{result.totalLoadInKilo}} Kg
-  </span>
 
   <span *ngSwitchCase="'FOR_TIME'">
       {{result.totalMinute}}min {{result.totalSecond}}s. 
@@ -76,6 +71,9 @@
 
   <span *ngSwitchCase="'FOR_ROUNDS_REPS'">
       {{result.totalCompleteRound}} tours complet.  {{result.totalReps}} reps. 
+  </span>
+  <span>
+    | {{result.totalLoadInKilo}} Kg
   </span>
 </div>
 
