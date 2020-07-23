@@ -12,6 +12,7 @@ public class WodResultCompute implements Comparable<WodResultCompute>{
 	private Long memberId;
 	private String displayName;
 	private String displayResult;
+	private Double loadInKilo;
 	private Double score;
 	private LocalDate date;
 	
@@ -65,9 +66,16 @@ public class WodResultCompute implements Comparable<WodResultCompute>{
 		this.score = score;
 	}
 	
+	public Double getLoadInKilo() {
+		return loadInKilo;
+	}
+	public void setLoadInKilo(Double loadInKilo) {
+		this.loadInKilo = loadInKilo;
+	}
 	@Override
 	public int compareTo(WodResultCompute o) {
 		int c = this.category.compareTo(o.getCategory());
+		c = (c==0) ? this.loadInKilo.compareTo(o.getLoadInKilo()) : c;
 		c = (c==0) ? this.score.compareTo(o.getScore()) : c;
 		return c;
 	}
