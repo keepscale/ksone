@@ -198,6 +198,7 @@ public class WodResource {
 				compute.setDate(result.getDate());
 				compute.setDisplayResult(wod.getScore().getResultMapper().apply(result));
 				compute.setScore(wod.getScore().getResultClassementMapper().apply(result));
+				compute.setLoadInKilo(result.getTotalLoadInKilo());
 				compute.setCategory(result.getCategory());
 				compute.setDivision(result.getDivision());
 				return compute;
