@@ -185,8 +185,9 @@ public class WodService {
 		result.setDate(dto.getDate());
 		result.setWod(wod);
 		result.setMember(SecurityUtils.getCurrentMember());
-		result.setDivision(result.getMember().getTitle() == Title.MR ? ResultDivision.MEN : ResultDivision.WOMEN);
+		result.setDivision(dto.getDivision());
 		result.setCategory(dto.getCategory());
+		result.setComments(dto.getComments());
 
 		result.setTotalLoadInKilo(getOrDefault(dto.getTotalLoadInKilo(), 0.0));
 		result.setTotalMinute(null);
