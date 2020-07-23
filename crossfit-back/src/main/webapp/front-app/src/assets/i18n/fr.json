@@ -113,6 +113,16 @@
 			"GIRL" : "Girl",
 			"HEROES" : "Heroe",
 			"CUSTOM" : "Personnalisé"
+		},
+		"division": {
+			"MEN": "Homme",
+			"WOMEN": "Femme",
+			"TEAMS": "Equipe"
+		},
+		"category": {
+			"RX": "Rx",
+			"SCALED": "Scaled",
+			"CUSTOM": "Personnalisé"
 		}
 	},
 	"account": {
