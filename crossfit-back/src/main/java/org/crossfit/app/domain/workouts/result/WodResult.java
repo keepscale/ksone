@@ -68,7 +68,8 @@ public class WodResult {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
 	private ResultCategory category;
-	
+
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "division", nullable = false)
 	private ResultDivision division;
