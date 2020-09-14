@@ -61,6 +61,7 @@
     <include file="classpath:config/liquibase/changelog/38_modify_timeslottype.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/39_modify_timeslottype.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/40_modify_wod_result.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/41_unique_contraint_timeslot.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>
