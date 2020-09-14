@@ -21,7 +21,7 @@
 	<property name="floatType" value="float" dbms="mysql, oracle" />
 
 
-	<changeSet id="202009142140" author="lgangloff">
+	<changeSet id="202009142140" author="lgangloff" dbms="postgresql">
 				
 		<dropUniqueConstraint
             constraintName="timeslot_day_of_week_start_time_end_time_timeslottype_id_bo_key"  
