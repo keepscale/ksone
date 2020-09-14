@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+	<property name="now" value="sysdate" dbms="oracle" />
+
+	<property name="autoIncrement" value="true" dbms="mysql,h2,postgresql" />
+	<property name="autoIncrement" value="false" dbms="oracle" />
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+	<property name="now" value="sysdate" dbms="oracle" />
+
+	<property name="autoIncrement" value="true" dbms="mysql,h2,postgresql" />
+	<property name="autoIncrement" value="false" dbms="oracle" />
+
+	<property name="floatType" value="real" dbms="postgresql, h2" />
+	<property name="floatType" value="float" dbms="mysql, oracle" />
+
+
+	<changeSet id="202009142140" author="lgangloff">
+				
+		<dropUniqueConstraint
+            constraintName="timeslot_day_of_week_start_time_end_time_timeslottype_id_bo_key"  
+            tableName="TIMESLOT"  
+            uniqueColumns="day_of_week, start_time, end_time, timeslottype_id, box_id"/>  
+        
+        <sql>
+			<![CDATA[
+				CREATE UNIQUE INDEX unique_timeslot ON TIMESLOT (day_of_week, start_time, end_time, timeslottype_id, box_id) 
+				WHERE (visible_before is null);
+			]]>
+		</sql>
+	    		
+	</changeSet>
+</databaseChangeLog>
