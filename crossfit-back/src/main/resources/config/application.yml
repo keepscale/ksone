@@ -1,0 +1,69 @@
+server:
+    port: 8080
+    
+logback:
+  loglevel: INFO
+  app.loglevel: DEBUG
+
+spring:
+    liquibase:
+        change-log: classpath:config/liquibase/master.xml
+        contexts: dev
+    profiles:
+        active: local
+    datasource:
+        driverClassName: org.postgresql.Driver        
+        url: jdbc:postgresql://localhost:5432/cf-tmp
+        username: postgres
+        password: password
+        test-on-borrow: true
+        test-on-return: true
+        test-while-idle: true
+        validation-query: SELECT 1;
+        validation-interval: 30000
+        remove-abandoned: true
+        remove-abandoned-timeout: 60
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQL82Dialect
+        database: POSTGRESQL
+        openInView: false
+        show_sql: true
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+            naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+            default_schema: public
+        properties:
+            hibernate.cache.use_second_level_cache: true
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: true
+            hibernate.id.new_generator_mappings: false
+            hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+    jackson.serialization.fail-on-empty-beans: false
+    jackson.deserialization.read-unknown-enum-values-as-null: true
+    messages: 
+        cache-seconds: 1
+        basename: i18n/messages
+    thymeleaf:
+        mode: XHTML
+        cache: false
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 5MB
+            
+# Disable the spring security default configuration from spring-boot-actuator
+management.security.enabled: true
+security.basic.enabled: false
+
+# security configuration (this key should be unique for your application, and kept secret)
+security.rememberme.key: 67890
+security.access.card.token: 12345
+security.jwt.secret-key: devkey
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
+
+
