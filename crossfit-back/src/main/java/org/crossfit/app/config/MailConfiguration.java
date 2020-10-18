@@ -22,7 +22,6 @@ public class MailConfiguration {
     private Environment env;
 
 	@Bean
-	@Primary
 	@ConditionalOnProperty("mail.sendgrid.api.key")
 	public MailSender sendGridMailSender() {
     	String apiKey = env.getProperty("mail.sendgrid.api.key");
