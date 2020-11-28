@@ -1,9 +1,9 @@
 package org.crossfit.app.web.rest.api;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -13,21 +13,17 @@ import org.crossfit.app.repository.CrossFitBoxRepository;
 import org.crossfit.app.security.AuthoritiesConstants;
 import org.crossfit.app.security.SecurityUtils;
 import org.crossfit.app.service.CrossFitBoxSerivce;
+import org.crossfit.app.web.rest.dto.BoxDTO;
 import org.crossfit.app.web.rest.dto.SimpleBoxDTO;
 import org.crossfit.app.web.rest.util.HeaderUtil;
-import org.crossfit.app.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -45,6 +41,22 @@ public class CrossFitBoxResource {
     @Inject
     private CrossFitBoxSerivce boxService;
 
+    @RequestMapping(value = "/boxs",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<?>> update() throws URISyntaxException {
+        log.debug("REST request to get all CrossFitBox");
+        
+        List<?> boxs = crossFitBoxRepository.findAll().stream().map(box-> 
+        	SecurityUtils.isUserInAnyRole(AuthoritiesConstants.ADMIN) ? 
+            				box : SecurityUtils.isAuthenticated() ? new SimpleBoxDTO(box) :
+            					new BoxDTO(box)
+        ).collect(Collectors.toList());
+        
+        return new ResponseEntity<List<?>>(boxs, HttpStatus.OK);
+    }
+    
+    
     /**
      * PUT  /boxs -> Updates an existing crossFitBox.
      */
@@ -75,7 +87,8 @@ public class CrossFitBoxResource {
         return Optional.ofNullable(boxService.findCurrentCrossFitBox())
             .map(crossFitBox -> new ResponseEntity<>(
             		SecurityUtils.isUserInAnyRole(AuthoritiesConstants.ADMIN) ? 
-            				crossFitBox : new SimpleBoxDTO(crossFitBox), HttpStatus.OK))
+            				crossFitBox : SecurityUtils.isAuthenticated() ? new SimpleBoxDTO(crossFitBox) :
+            					new BoxDTO(crossFitBox), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

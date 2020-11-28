@@ -2,12 +2,10 @@ package org.crossfit.app.web.rest.dto;
 
 import org.crossfit.app.domain.CrossFitBox;
 
-public class SimpleBoxDTO {
+public class SimpleBoxDTO extends BoxDTO {
 	
-	private String name;
 
     private String billLogoUrl;
-    
     private boolean socialEnabled = false;
     private boolean mandateMandatory = true;
 
@@ -15,20 +13,12 @@ public class SimpleBoxDTO {
 
 
 	public SimpleBoxDTO(CrossFitBox box) {
-    	this.name = box.getName();
+    	super(box);
     	this.billLogoUrl = box.getBillLogoUrl();
     	this.socialEnabled = box.isSocialEnabled();
     	this.defautICS = box.getDefautICS();
     	this.mandateMandatory = box.isMandateMandatory();
     }
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getBillLogoUrl() {
 		return billLogoUrl;

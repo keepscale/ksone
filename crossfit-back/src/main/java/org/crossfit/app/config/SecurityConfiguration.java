@@ -152,6 +152,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/recover/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/boxs/current").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/boxs").permitAll()
             .antMatchers("/api/version").authenticated()
             .antMatchers("/api/account/**").authenticated()
             .antMatchers("/api/boxs/current").authenticated()
